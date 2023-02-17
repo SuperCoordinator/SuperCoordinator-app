@@ -60,21 +60,29 @@ public class conveyor extends Thread {
 
     @Override
     public void run() {
+        System.out.println("Running Thread:" + Thread.currentThread().getName());
         // Assume-se que as peças são sequenciais
         // Caso contrário é necessário um identificador das mesmas
         // Para 1a implementação, o sensor de Start introduz um novo objeto no vetor
         // O sensor de End termina completa essa instancia
-        if (bitPartID.isBlank()) current_partID++;
-        else current_partID = Integer.parseInt(mb.readState(bitPartID));
+        try {
+            synchronized (mb) {
+                if (bitPartID.isBlank()) current_partID++;
+                else current_partID = Integer.parseInt(mb.readState(bitPartID));
 
-        // Assumindo sempre SEQUENCIAL a ordem das peças
-        entryLook();
-        exitLook();
+                // Assumindo sempre SEQUENCIAL a ordem das peças
+                entryLook();
+                exitLook();
 
-        // Probably here see how much time passed and save the mean in some database
-        // and clean local memory
+                // Probably here see how much time passed and save the mean in some database
+                // and clean local memory
 
-        timestamps.forEach((key,value) -> System.out.println("(" + key + ") " + Arrays.toString(value.getPair())));
+                timestamps.forEach((key, value) -> System.out.println("(" + key + ") " + Arrays.toString(value.getPair())));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 

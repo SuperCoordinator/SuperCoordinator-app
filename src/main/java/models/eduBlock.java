@@ -14,7 +14,7 @@ public class eduBlock {
     private final communication com;
     private String name;
 
-    modbus mb;
+    private modbus mb;
     private String io_file_path;
     TreeMap<String, sensor_actuator> io;
 
@@ -45,6 +45,9 @@ public class eduBlock {
         this.name = name;
     }
 
+    public modbus getMb() {
+        return mb;
+    }
 
     public void openCommunication(String ip, int port, int slaveID) {
         try {
@@ -65,9 +68,5 @@ public class eduBlock {
     public void printAllIO() {
         viewer.listAllIO(io);
     }
-
-
-
-
 
 }

@@ -1,12 +1,12 @@
-import communication.modbus;
-
 import models.eduBlock;
+import monitor.time.conveyor;
 import utils.utils;
-import models.sensor_actuator;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class App {
 
@@ -14,7 +14,6 @@ public class App {
 
         int state = 0;
         String in;
-        utils util = new utils();
 
         ArrayList<eduBlock> eduBlocks = new ArrayList<>();
         int current_block = -1;
@@ -31,7 +30,7 @@ public class App {
                         System.out.println();
                         System.out.println("    1 - Create new block; ");
                         System.out.println("    2 - List all blocks;  ");
-                        System.out.println("    3 - List block i;  ");
+//                        System.out.println("    3 - List block i;  ");
                         System.out.println("   -1 - Exit program;");
                         in = input.nextLine();
 
@@ -41,7 +40,7 @@ public class App {
                             for (eduBlock block : eduBlocks) {
                                 System.out.println("    " + "->" + block.getName());
                             }
-                        } else if (Integer.parseInt(in) == 3) {
+                        } /*else if (Integer.parseInt(in) == 3) {
                             System.out.print("  Block name: ");
                             in = input.nextLine();
                             eduBlock temp;
@@ -52,7 +51,8 @@ public class App {
                                 }
                             }
 
-                        } else
+
+                        }*/ else
                             state = -1;
                     }
                     case 1 -> {
@@ -60,7 +60,6 @@ public class App {
                         System.out.println();
                         System.out.print(" Name: ");
                         String name = input.nextLine();
-
 
                         System.out.println("**** Communication Protocol ****");
                         System.out.println();
@@ -79,12 +78,11 @@ public class App {
                         current_block = eduBlocks.size() - 1;
                     }
                     case 2 -> {
-
                         System.out.println("**** Communication Protocol -> Modbus ****");
                         System.out.println();
                         System.out.print(" IP: ");
                         String ip = input.nextLine();
-                        ;
+
                         System.out.print(" Port: ");
                         int port = Integer.parseInt(input.nextLine());
                         System.out.print(" Slave ID (0-255): ");
@@ -110,22 +108,41 @@ public class App {
                             ++state;
                         }
 
+                        eduBlocks.get(current_block).printAllIO();
+
                     }
                     case 4 -> {
-                        System.out.println("****  ****");
-                        System.out.println();
-                        System.out.println("    1 - List IO mapping ");
+                        System.out.println("**** Monitoring Configuration  ****");
+                        System.out.print("    How many elements to monitor?");
                         in = input.nextLine();
-
-                        if (Integer.parseInt(in) == 1) {
-                            eduBlocks.get(current_block).printAllIO();
-                            state = 1;
+                        int nElements = Integer.parseInt(in);
+                        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(nElements);
+                        for (int i = 0; i < nElements; ++i) {
+                            System.out.print(" Name:");
+                            String name = input.nextLine();
+                            System.out.print(" Start sensor:");
+                            String sStart = input.nextLine();
+                            System.out.print(" End sensor:");
+                            String sEnd = input.nextLine();
+                            // VERIFICAR SE OS SENSORES EXISTEM ?
+                            // simpling the remaining parameters for testing
+                            scheduler.scheduleAtFixedRate(
+                                    new conveyor(eduBlocks.get(current_block).getMb(),
+                                            name,
+                                            sStart,
+                                            true,
+                                            sEnd,
+                                            false,
+                                            true,
+                                            ""),0,100, TimeUnit.MILLISECONDS);
                         }
+
+                        //scheduler.close();
+                        state = 0;
                     }
                     default -> {
                     }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
