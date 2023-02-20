@@ -31,8 +31,10 @@ public class App {
                         System.out.println("    1 - Create new block; ");
                         System.out.println("    2 - List all blocks;  ");
 //                        System.out.println("    3 - List block i;  ");
+                        System.out.println("    4 - Active Threads;");
                         System.out.println("   -1 - Exit program;");
                         in = input.nextLine();
+
 
                         if (Integer.parseInt(in) == 1)
                             ++state;
@@ -52,7 +54,9 @@ public class App {
                             }
 
 
-                        }*/ else
+                        }*/ else if (Integer.parseInt(in) == 4) {
+                            System.out.println("#Threads: " + Thread.activeCount());
+                        } else
                             state = -1;
                     }
                     case 1 -> {
@@ -118,26 +122,30 @@ public class App {
                         int nElements = Integer.parseInt(in);
                         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(nElements);
                         for (int i = 0; i < nElements; ++i) {
-                            System.out.print(" Name:");
+                            System.out.print("  Name:");
                             String name = input.nextLine();
-                            System.out.print(" Start sensor:");
+                            System.out.print("  Start sensor:");
                             String sStart = input.nextLine();
-                            System.out.print(" End sensor:");
+                            System.out.print("    Inverse logic (y/n)? ");
+                            String ans = input.nextLine();
+                            boolean invLogic_start = ans.contains("y");
+                            System.out.print("  End sensor:");
                             String sEnd = input.nextLine();
+                            System.out.print("    Inverse logic (y/n)? ");
+                            ans = input.nextLine();
+                            boolean invLogic_end = ans.contains("y");
                             // VERIFICAR SE OS SENSORES EXISTEM ?
-                            // simpling the remaining parameters for testing
+
                             scheduler.scheduleAtFixedRate(
                                     new conveyor(eduBlocks.get(current_block).getMb(),
                                             name,
                                             sStart,
-                                            true,
+                                            invLogic_start,
                                             sEnd,
-                                            false,
+                                            invLogic_end,
                                             true,
-                                            ""),0,100, TimeUnit.MILLISECONDS);
+                                            ""), 0, 100, TimeUnit.MILLISECONDS);
                         }
-
-                        //scheduler.close();
                         state = 0;
                     }
                     default -> {
