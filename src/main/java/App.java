@@ -2,11 +2,10 @@ import models.eduBlock;
 import monitor.time.conveyor;
 import utils.utils;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class App {
 
@@ -120,7 +119,42 @@ public class App {
                         System.out.print("    How many elements to monitor?");
                         in = input.nextLine();
                         int nElements = Integer.parseInt(in);
+/*
                         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(nElements);
+
+                        for (int i = 0; i < nElements; ++i) {
+                            System.out.print("  Name:");
+                            String name = input.nextLine();
+                            System.out.print("  Start sensor:");
+                            String sStart = input.nextLine();
+                            System.out.print("    Inverse logic (y/n)? ");
+                            String ans = input.nextLine();
+                            boolean invLogic_start = ans.contains("y");
+                            System.out.print("  End sensor:");
+                            String sEnd = input.nextLine();
+                            System.out.print("    Inverse logic (y/n)? ");
+                            ans = input.nextLine();
+                            boolean invLogic_end = ans.contains("y");
+                            // VERIFICAR SE OS SENSORES EXISTEM ?
+
+
+                           Runnable task = new conveyor(eduBlocks.get(current_block).getMb(),
+                                    name,
+                                    sStart,
+                                    invLogic_start,
+                                    sEnd,
+                                    invLogic_end,
+                                    true,
+                                    ""
+
+                            );
+
+                            scheduler.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS);
+                        }*/
+
+                        /* WORKING SEGMENT */
+                        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(nElements);
+
                         for (int i = 0; i < nElements; ++i) {
                             System.out.print("  Name:");
                             String name = input.nextLine();
@@ -145,6 +179,49 @@ public class App {
                                             invLogic_end,
                                             true,
                                             ""), 0, 100, TimeUnit.MILLISECONDS);
+                        }
+                        state++;
+
+
+                    }
+                    case 5 -> {
+                        System.out.print("    How many conveyors to manipulate its time ?");
+                        in = input.nextLine();
+                        int nElements = Integer.parseInt(in);
+                        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(nElements);
+                        for (int i = 0; i < nElements; ++i) {
+                            System.out.print("  Name:");
+                            String name = input.nextLine();
+
+                            String[] sensAct = new String[4];
+                            boolean[] invSensAct = new boolean[2];
+
+                            // VERIFICAR SE OS SENSORES EXISTEM ?
+                            System.out.print("  Remover sensor:");
+                            sensAct[0] = input.nextLine();
+                            System.out.print("    Inverse logic (y/n)? ");
+                            String ans = input.nextLine();
+                            invSensAct[0] = ans.contains("y");
+
+                            System.out.print("  Emitter sensor:");
+                            sensAct[1] = input.nextLine();
+                            System.out.print("    Inverse logic (y/n)? ");
+                            ans = input.nextLine();
+                            invSensAct[1] = ans.contains("y");
+
+                            System.out.print("  Remover actuator:");
+                            sensAct[2] = input.nextLine();
+
+                            System.out.print("  Emitter actuator:");
+                            sensAct[3] = input.nextLine();
+
+                            scheduler.scheduleAtFixedRate(
+                                    new failures.conveyor(eduBlocks.get(current_block).getMb(),
+                                            name,
+                                            failures.conveyor.ERROR_TYPE.INCREASE_LINEAR,
+                                            1.5,
+                                            sensAct,
+                                            invSensAct), 0, 100, TimeUnit.MILLISECONDS);
                         }
                         state = 0;
                     }

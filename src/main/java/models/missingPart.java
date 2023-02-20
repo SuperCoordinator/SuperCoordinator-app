@@ -2,38 +2,31 @@ package models;
 
 import java.time.Instant;
 
-public class missingParts extends part {
+public class missingPart extends part {
 
 
     private Instant t_init;
     /**
      * 2s- Minimum time for the remover/emitter pair do not accelerate the part movement
      */
-    private int delay;
+    private double delay;
     private boolean disappear;
 
-    public missingParts(part part, int delay, Instant t_init, boolean disappear) {
+    public missingPart(part part, int delay, Instant t_init, boolean disappear) {
         super(part.getId());
         this.delay = delay;
         this.t_init = t_init;
         this.disappear = disappear;
     }
 
-    public missingParts(part part, int delay, Instant t_init) {
+    public missingPart(part part, double delay, Instant t_init) {
         super(part.getId());
         this.delay = delay;
         this.t_init = t_init;
         this.disappear = false;
     }
 
-    public missingParts(part part, Instant t_init) {
-        super(part.getId());
-        this.delay = 2;
-        this.t_init = t_init;
-        this.disappear = false;
-    }
-
-    public int getDelay() {
+    public double getDelay() {
         return delay;
     }
 

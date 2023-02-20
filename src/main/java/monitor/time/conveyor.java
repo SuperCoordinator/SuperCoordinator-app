@@ -4,15 +4,18 @@ import communication.modbus;
 import communication.opcua;
 import monitor.timestamp_pair;
 import utils.logicalOperators;
+import utils.utils;
 
 import java.text.DecimalFormat;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
 
-public class conveyor extends Thread {
+public class conveyor implements Runnable {
 
-    private String name;
+    private final String name;
     private final TreeMap<Integer, timestamp_pair> timestamps;
 
     private boolean old_sStart;
@@ -26,10 +29,9 @@ public class conveyor extends Thread {
     private modbus mb;
     private opcua opcua;
 
-    private final logicalOperators logOp = new logicalOperators();
+    private final utils util = new utils();
 
     public conveyor(modbus mb, String name, String sStart, boolean invLogic_sStart, String sEnd, boolean invLogic_sEnd, boolean simulatePartsID, String partID_bitName) {
-        Thread.currentThread().setName(name);
         this.mb = mb;
         this.name = name;
         this.timestamps = new TreeMap<>();
@@ -49,7 +51,6 @@ public class conveyor extends Thread {
     }
 
     public conveyor(opcua opcua, String name, String sStart, boolean invLogic_sStart, String sEnd, boolean invLogic_sEnd, boolean simulatePartsID, String partID_bitName) {
-        Thread.currentThread().setName(name);
         this.opcua = opcua;
         this.name = name;
         this.timestamps = new TreeMap<>();
@@ -93,14 +94,13 @@ public class conveyor extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void entryLook() {
         boolean sensvalue = Boolean.parseBoolean(mb.readState(sStart));
         if (invLogic_sStart) sensvalue = !sensvalue;
 
-        boolean RE = logOp.RE_detector(sensvalue, old_sStart);
+        boolean RE = util.getLogicalOperator().RE_detector(sensvalue, old_sStart);
 
         if (RE) {
             if (bitPartID.isBlank()) current_partID++;
@@ -113,7 +113,7 @@ public class conveyor extends Thread {
     private void exitLook() {
         boolean sensvalue = Boolean.parseBoolean(mb.readState(sEnd));
         if (invLogic_sEnd) sensvalue = !sensvalue;
-        boolean RE = logOp.RE_detector(sensvalue, old_sStart);
+        boolean RE = util.getLogicalOperator().RE_detector(sensvalue, old_sEnd);
 
         if (RE) timestamps.get(timestamps.size() - 1).setSecondValue(Instant.now());
         old_sEnd = sensvalue;
@@ -128,14 +128,18 @@ public class conveyor extends Thread {
         if (timestamps.size() % 5 == 0 && !showed) {
             if (timestamps.size() > 0) {
                 long duration = 0;
+                int discount = 0;
                 for (Map.Entry<Integer, timestamp_pair> entry : timestamps.entrySet()) {
                     if (entry.getValue().getPair()[0] != null && entry.getValue().getPair()[1] != null) {
                         duration = duration + entry.getValue().getDuration().toSeconds();
-                    }
+                    } else
+                        discount++;
+
+                    System.out.println("(" + entry.getKey() + ") " + Arrays.toString(entry.getValue().getPair()));
                 }
                 DecimalFormat df = new DecimalFormat("#.###");
                 System.out.println("(" + name + ")Thread:" + Thread.currentThread().getName());
-                System.out.println(timestamps.size() + " parts moved with mean time " + df.format(duration / timestamps.size()) + " s");
+                System.out.println(timestamps.size() + " parts moved with mean time " + df.format(duration / (timestamps.size() - discount)) + " s");
                 System.out.println();
                 showed = true;
             }
@@ -143,35 +147,4 @@ public class conveyor extends Thread {
             showed = false;
     }
 
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    public ArrayList<timestamp_pair> getTimestamps() {
-//        return timestamps;
-//    }
-//
-//    public void addTimestamp(timestamp_pair timestamp) {
-//        this.timestamps.add(timestamp);
-//    }
-//
-//    public String getsStart() {
-//        return sStart;
-//    }
-//
-//    public void setsStart(String sStart) {
-//        this.sStart = sStart;
-//    }
-//
-//    public String getsEnd() {
-//        return sEnd;
-//    }
-//
-//    public void setsEnd(String sEnd) {
-//        this.sEnd = sEnd;
-//    }
 }
