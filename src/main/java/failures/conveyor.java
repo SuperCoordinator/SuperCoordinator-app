@@ -12,17 +12,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-public class conveyor extends Thread {
+public class conveyor implements Runnable {
 
     public enum ERROR_TYPE {
         INCREASE_LINEAR
     }
 
     private final String name;
-    private final modbus MB;
+    private modbus MB;
 
     private final ERROR_TYPE errorType;
-    private  double time_adjust_param;
+    private double time_adjust_param;
 
     private final ArrayList<missingPart> missingParts;
 
@@ -35,15 +35,13 @@ public class conveyor extends Thread {
     private final boolean sEmitter_inv;
 
     /**
-     * @param MB        modbus opened connection
      * @param errorType type of error to inject
      * @param param     value in percentage to increase the time ]0-2]
      * @param senAct    mapping of the input/output following: sRemover,sEmitter,aRemover,aRemover
      * @param invValue  sensors value follows inverse logic? following:sRemover,sEmitter
      */
-    public conveyor(modbus MB, String name, ERROR_TYPE errorType, double param, String[] senAct, boolean[] invValue) {
+    public conveyor(String name, ERROR_TYPE errorType, double param, String[] senAct, boolean[] invValue) {
         this.name = name;
-        this.MB = MB;
         this.errorType = errorType;
         this.time_adjust_param = param;
         this.missingParts = new ArrayList<>();
@@ -55,14 +53,39 @@ public class conveyor extends Thread {
         this.sEmitter_inv = invValue[1];
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public ERROR_TYPE getErrorType() {
+        return errorType;
+    }
+
+    public double getTime_adjust_param() {
+        return time_adjust_param;
+    }
+
     public void setTime_adjust_param(double param) {
         this.time_adjust_param = param;
     }
 
+    public void setMB(modbus MB) {
+        this.MB = MB;
+    }
+
     @Override
     public void run() {
-        removeParts();
-        placeParts();
+
+        try {
+            if (MB != null)
+                synchronized (MB) {
+                    removeParts();
+                    placeParts();
+                }
+            else throw new RuntimeException("Modbus Connection not defined!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private final utils utils = new utils();

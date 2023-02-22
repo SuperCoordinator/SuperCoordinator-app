@@ -17,7 +17,6 @@ public class conveyor implements Runnable {
 
     private final String name;
     private final TreeMap<Integer, timestamp_pair> timestamps;
-
     private boolean old_sStart;
     private final String sStart;
     private final boolean invLogic_sStart;
@@ -31,8 +30,7 @@ public class conveyor implements Runnable {
 
     private final utils util = new utils();
 
-    public conveyor(modbus mb, String name, String sStart, boolean invLogic_sStart, String sEnd, boolean invLogic_sEnd, boolean simulatePartsID, String partID_bitName) {
-        this.mb = mb;
+    public conveyor(String name, String sStart, boolean invLogic_sStart, String sEnd, boolean invLogic_sEnd, boolean simulatePartsID, String partID_bitName) {
         this.name = name;
         this.timestamps = new TreeMap<>();
         this.sStart = sStart;
@@ -50,24 +48,32 @@ public class conveyor implements Runnable {
         }
     }
 
-    public conveyor(opcua opcua, String name, String sStart, boolean invLogic_sStart, String sEnd, boolean invLogic_sEnd, boolean simulatePartsID, String partID_bitName) {
+    public void setMb(modbus mb) {
+        this.mb = mb;
+    }
+
+    public void setOpcua(communication.opcua opcua) {
         this.opcua = opcua;
-        this.name = name;
-        this.timestamps = new TreeMap<>();
-        this.sStart = sStart;
-        this.old_sStart = invLogic_sStart;
-        this.invLogic_sStart = invLogic_sStart;
-        this.sEnd = sEnd;
-        this.old_sEnd = invLogic_sEnd;
-        this.invLogic_sEnd = invLogic_sEnd;
+    }
 
-        if (!simulatePartsID) {
-            bitPartID = partID_bitName;
-        } else {
-            bitPartID = "";
-            current_partID = -1;
-        }
+    public String getName() {
+        return name;
+    }
 
+    public TreeMap<Integer, timestamp_pair> getTimestamps() {
+        return timestamps;
+    }
+
+    public String getsStart() {
+        return sStart;
+    }
+
+    public String getsEnd() {
+        return sEnd;
+    }
+
+    public int getCurrent_partID() {
+        return current_partID;
     }
 
     @Override
@@ -78,19 +84,21 @@ public class conveyor implements Runnable {
         // Para 1a implementação, o sensor de Start introduz um novo objeto no vetor
         // O sensor de End termina completa essa instancia
         try {
-            synchronized (mb) {
+            if (mb != null)
+                synchronized (mb) {
 
-                // Assumindo sempre SEQUENCIAL a ordem das peças
-                entryLook();
-                exitLook();
+                    // Assumindo sempre SEQUENCIAL a ordem das peças
+                    entryLook();
+                    exitLook();
 
-                // Probably here see how much time passed and save the mean in some database
-                // and clean local memory
+                    // Probably here see how much time passed and save the mean in some database
+                    // and clean local memory
 
-                infoMessage();
+                    infoMessage();
 
 //                timestamps.forEach((key, value) -> System.out.println("(" + key + ") " + Arrays.toString(value.getPair())));
-            }
+                }
+            else throw new RuntimeException("MB connection not defined!");
         } catch (Exception e) {
             e.printStackTrace();
         }
