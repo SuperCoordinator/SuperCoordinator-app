@@ -1,3 +1,4 @@
+/*
 package failures;
 
 import communication.modbus;
@@ -27,9 +28,11 @@ public class machine extends Thread {
 
     private final machine.ERROR_TYPE errorType;
 
-    /**
+    */
+/**
      * Default value 2s
-     */
+     *//*
+
     private final int stopping_time;
     private final int safety_margin = 2;
     private final String sMachine_door;
@@ -116,3 +119,4 @@ public class machine extends Thread {
     }
 
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package monitor.time;
 
 import communication.modbus;
@@ -156,3 +157,4 @@ public class conveyor implements Runnable {
     }
 
 }
+*/

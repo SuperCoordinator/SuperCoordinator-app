@@ -1,12 +1,10 @@
-import models.eduBlock;
+/*
+import models.SFEM;
 import monitor.time.conveyor;
 import monitor.timestamp_pair;
-import utils.utils;
 
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.concurrent.*;
 
 public class App {
 
@@ -15,13 +13,13 @@ public class App {
         int state = 0;
         String in;
 
-        ArrayList<eduBlock> eduBlocks = new ArrayList<>();
+        ArrayList<SFEM> eduBlocks = new ArrayList<>();
         int iCurrBlock = -1;
 
         Scanner input = new Scanner(System.in);
 
         // Running time phase
-        eduBlock currBlock;
+        SFEM currBlock;
 
         while (state != -1) {
             try {
@@ -66,7 +64,7 @@ public class App {
                             break;
                         }
 
-                        eduBlocks.add(new eduBlock(name, eduBlock.blockType.SIMULATION, eduBlock.communication.MODBUS));
+                        eduBlocks.add(new SFEM(name, SFEM.SFEM_type.SIMULATION, SFEM.communication.MODBUS));
                         iCurrBlock = eduBlocks.size() - 1;
                     }
                     case 2 -> {
@@ -114,6 +112,7 @@ public class App {
                         System.out.print("    How many elements to monitor?");
                         in = input.nextLine();
                         int nElements = Integer.parseInt(in);
+*/
 /*
                         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(nElements);
 
@@ -144,7 +143,8 @@ public class App {
                             );
 
                             scheduler.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS);
-                        }*/
+                        }*//*
+
 
 
                         for (int i = 0; i < nElements; ++i) {
@@ -242,7 +242,7 @@ public class App {
                         if (Integer.parseInt(in) == 0) {
                             state = -1;
                         } else if (Integer.parseInt(in) == 1) {
-                            for (eduBlock block : eduBlocks) {
+                            for (SFEM block : eduBlocks) {
                                 System.out.println("    -> " + block.getName());
                             }
                         } else if (Integer.parseInt(in) == 2) {
@@ -255,7 +255,7 @@ public class App {
                         System.out.print("    From each block (name)?");
                         in = input.nextLine();
 
-                        for (eduBlock block : eduBlocks) {
+                        for (SFEM block : eduBlocks) {
                             if (block.getName().equalsIgnoreCase(in)) {
                                 currBlock = block;
                                 break;
@@ -330,9 +330,10 @@ public class App {
         }
 
         // Exit program
-        for (eduBlock block : eduBlocks)
+        for (SFEM block : eduBlocks)
             block.closeCommunication();
 
 
     }
 }
+*/

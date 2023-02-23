@@ -1,3 +1,4 @@
+/*
 package monitor;
 
 import communication.modbus;
@@ -41,8 +42,10 @@ public class conveyors_timers extends Thread {
 
     @Override
     public void run() {
-        /*conveyorTime("s_emitter", "s_lids_at_entry", 1);
-        conveyorTime("s_lids_at_exit", "s_remover", 1);*/
+        */
+/*conveyorTime("s_emitter", "s_lids_at_entry", 1);
+        conveyorTime("s_lids_at_exit", "s_remover", 1);*//*
+
         registerTimestamps();
         associateTimestamps();
 
@@ -138,3 +141,4 @@ public class conveyors_timers extends Thread {
     }
 
 }
+*/

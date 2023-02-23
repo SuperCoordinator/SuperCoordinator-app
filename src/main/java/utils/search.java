@@ -13,10 +13,10 @@ public class search {
             treeMap.forEach(
                     (obj_key, obj_val) -> {
                         if (is_sensor) {
-                            if (obj_val.getType().equals(sensor_actuator.Type.INPUT))
+                            if (obj_val.type().equals(sensor_actuator.Type.INPUT))
                                 rTreeMap.put(obj_key, obj_val);
                         } else {
-                            if (obj_val.getType().equals(sensor_actuator.Type.OUTPUT))
+                            if (obj_val.type().equals(sensor_actuator.Type.OUTPUT))
                                 rTreeMap.put(obj_key, obj_val);
                         }
                     });

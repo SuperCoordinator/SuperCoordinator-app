@@ -1,8 +1,9 @@
+/*
 package failures;
 
 import communication.modbus;
 import models.sensor_actuator;
-import models.missingPart;
+//import models.missingPart;
 import models.part;
 import utils.utils;
 
@@ -34,12 +35,14 @@ public class conveyor implements Runnable {
     private final boolean sRemover_inv;
     private final boolean sEmitter_inv;
 
-    /**
+    */
+/**
      * @param errorType type of error to inject
      * @param param     value in percentage to increase the time ]0-2]
      * @param senAct    mapping of the input/output following: sRemover,sEmitter,aRemover,aRemover
      * @param invValue  sensors value follows inverse logic? following:sRemover,sEmitter
-     */
+     *//*
+
     public conveyor(String name, ERROR_TYPE errorType, double param, String[] senAct, boolean[] invValue) {
         this.name = name;
         this.errorType = errorType;
@@ -113,10 +116,12 @@ public class conveyor implements Runnable {
 
         // Using the iterator because remove an object from the arrayList while search on it
         // can lead to memory errors
+*/
 /*
         if (missingPartsArrayList.size() > 0)
             System.out.println("missingParts len: " + missingPartsArrayList.size());
-*/
+*//*
+
         try {
             Iterator<missingPart> iterator = missingParts.iterator();
             while (iterator.hasNext()) {
@@ -161,3 +166,4 @@ public class conveyor implements Runnable {
     }
 
 }
+*/

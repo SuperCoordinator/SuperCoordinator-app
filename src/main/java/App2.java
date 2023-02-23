@@ -1,0 +1,239 @@
+import models.SFEE;
+import models.SFEI.SFEI;
+import models.SFEI.SFEI_conveyor;
+import models.SFEI.SFEI_machine;
+import models.SFEM;
+//import monitor.time.conveyor;
+import monitor.SFEE_monitor;
+import monitor.SFEI_monitor;
+import monitor.timestamp_pair;
+
+import java.text.DecimalFormat;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static java.lang.System.exit;
+
+public class App2 {
+
+    public static void main(String[] args) {
+
+
+        ArrayList<SFEM> SFEMs = new ArrayList<>();
+
+        // Creation of the SFEM
+        SFEMs.add(new SFEM("2CMC"));
+
+        SFEM currSFEM = SFEMs.get(0);
+        // Creation of the SFEE
+        int newSFEM_i = currSFEM.addNewSFEE(new SFEE("CMC1", SFEE.communication.MODBUS, SFEE.SFEE_type.SIMULATION));
+
+        // ----> This setup should be inside SFEM
+        SFEE currSFEE = currSFEM.getSFEEbyIndex(newSFEM_i);
+
+        // Communication setup
+        currSFEE.openCommunication("192.168.240.1", 502, 1);
+        // Import IO
+        currSFEE.importIO("C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\simulation\\Tags_CMC_Modbus.csv");
+
+
+        currSFEE.addNewSFEI_conveyor(
+                "entry_conveyor",
+                "s_emitter",
+                "s_lids_at_entry",
+                Instant.now(),
+                Instant.now(),
+                "entry_remover",
+                "entry_emitter",
+                "s_entry_remover",
+                "s_entry_emitter");
+        currSFEE.addNewSFEI_machine(
+                "MC1",
+                "s_lids_at_entry",
+                "s_lids_at_exit",
+                Instant.now(),
+                Instant.now(),
+                "MC1_stop");
+        currSFEE.addNewSFEI_conveyor(
+                "exit_conveyor",
+                "s_lids_at_exit",
+                "s_remover",
+                Instant.now(),
+                Instant.now(),
+                "exit_remover",
+                "exit_emitter",
+                "s_exit_remover",
+                "s_exit_emitter");
+
+/*        // Write the Serial layout ( C - conv / M - machine / W -warehouse
+        String layoutSketch = "CmC";
+        layoutSketch = layoutSketch.toLowerCase();
+        for (int i = 0; i < layoutSketch.length(); i++) {
+            if (String.valueOf(layoutSketch.charAt(i)).equals("c")) {
+                if (currSFEE.getSFEE_type().equals(SFEE.SFEE_type.SIMULATION))
+                    currSFEE.addNewSFEI_conveyor(
+                            "entry_conveyor",
+                            "s_emitter",
+                            "s_lids_at_entry",
+                            Instant.now(),
+                            Instant.now(),
+                            "entry_remover",
+                            "entry_emitter",
+                            "s_entry_remover",
+                            "s_entry_emitter");
+                else if (currSFEE.getSFEE_type().equals(SFEE.SFEE_type.REAL)) {
+                    currSFEE.addNewSFEI_conveyor(
+                            "entry_conveyor",
+                            "s_emitter",
+                            "s_lids_at_entry",
+                            Instant.now(),
+                            Instant.now(),
+                            "entry_conveyor");
+                }
+
+            } else if (String.valueOf(layoutSketch.charAt(i)).equals("m")) {
+                currSFEE.addNewSFEI_machine(
+                        "MC1",
+                        "s_lids_at",
+                        "s_lids_at_entry",
+                        Instant.now(),
+                        Instant.now(),
+                        "entry_conveyor");
+            }
+        }*/
+        currSFEE.launchSetup();
+
+        System.out.print("Press ENTER to start simulation");
+        Scanner in = new Scanner(System.in);
+        in.nextLine();
+
+        currSFEE.openCommunication("192.168.240.1", 502, 1);
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(currSFEM.getSFEEs().size());
+
+        for (Map.Entry<Integer, SFEE> sfee : currSFEM.getSFEEs().entrySet()) {
+            scheduler.scheduleAtFixedRate(new SFEE_monitor(sfee.getValue()), 0, 100, TimeUnit.MILLISECONDS);
+        }
+
+        // <------------------------
+
+        //exit(0);
+
+
+        /*String in;
+        ArrayList<SFEM> sfems = new ArrayList<>();
+        int iCurrBlock = -1;
+
+        Scanner input = new Scanner(System.in);
+
+        int state = 0;
+
+        while (state != -1) {
+            try {
+                switch (state) {
+                    case 0 -> {
+                        // Clean memory
+                        if (iCurrBlock != -1)
+                            sfems.clear();
+
+                        System.out.println("*********************************************");
+                        System.out.println("**** SuperCoordinator Terminal Interface ****");
+                        System.out.println("******** STEP 1 - Configuration Phase *******");
+                        System.out.println("*********************************************");
+                        System.out.println();
+                        System.out.println("    1 - Create new SFEM; ");
+                        System.out.println("    0 - Exit program;");
+                        in = input.nextLine();
+
+                        if (Integer.parseInt(in) == 1)
+                            state = 1;
+                        else if (Integer.parseInt(in) == 0) {
+                            state = -1;
+                        }
+
+                    }
+                    case 1 -> {
+                        System.out.println("**** New Shop Floor Education Module (SFEM) ****");
+                        System.out.println();
+                        System.out.print(" SFEM name: ");
+                        String name = input.nextLine();
+
+                        System.out.println("**** Communication Protocol ****");
+                        System.out.println();
+                        System.out.println("    1 - Modbus TCP/IP; ");
+                        //System.out.println("    2 - OPC UA;");
+                        System.out.println("    0 - Go back;");
+                        in = input.nextLine();
+                        if (Integer.parseInt(in) == 1)
+                            state = 2;
+                        else if (Integer.parseInt(in) == 0) {
+                            state = 0;
+                            break;
+                        }
+
+                        sfems.add(new SFEM(name));
+                        iCurrBlock = sfems.size() - 1;
+                    }
+                    case 2 -> {
+                        System.out.println("**** Communication Protocol -> Modbus ****");
+                        System.out.println();
+                        System.out.print("    IP: ");
+                        String ip = input.nextLine();
+
+                        System.out.print("    Port: ");
+                        int port = Integer.parseInt(input.nextLine());
+                        System.out.print("    Slave ID (0-255): ");
+                        int slaveID = Integer.parseInt(input.nextLine());
+
+                        sfems.get(iCurrBlock).openCommunication(ip, port, slaveID);
+
+                        System.out.println();
+                        System.out.println("Connection Established!");
+                        state = 3;
+                    }
+                    case 3 -> {
+                        System.out.println("**** Define IO mapping ****");
+                        System.out.println();
+                        System.out.println("    1 - Import from CSV file; ");
+                        System.out.println("    0 - Go back;");
+                        //System.out.println("    2 - Add manually;");
+                        in = input.nextLine();
+
+                        if (Integer.parseInt(in) == 1) {
+                            System.out.print("    File location (path):");
+                            String io_file_path = input.nextLine();
+                            sfems.get(iCurrBlock).importIO(io_file_path);
+                            ++state;
+                        } else if (Integer.parseInt(in) == 0) {
+                            state = 0;
+                        }
+
+                        System.out.print("    Print imported IO (y/n)? ");
+                        String ans = input.nextLine();
+                        if (ans.contains("y"))
+                            sfems.get(iCurrBlock).printAllIO();
+
+                    }
+                    default -> {
+                    }
+                }
+
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Exit program
+        for (SFEM block : sfems)
+            block.closeCommunication();
+
+*/
+    }
+}

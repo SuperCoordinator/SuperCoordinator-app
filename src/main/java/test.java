@@ -13,7 +13,7 @@ public class test {
 
     public static void main(String[] args) {
 
-        try {
+        /*try {
             modbus mb = new modbus();
             TreeMap<String, sensor_actuator> io = new TreeMap<>();
             utils util = new utils();
@@ -22,7 +22,7 @@ public class test {
             mb.writeState("FACTORY I/O (Pause)", "0");
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         /*int test_value = 0;
 
