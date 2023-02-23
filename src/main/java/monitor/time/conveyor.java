@@ -94,7 +94,7 @@ public class conveyor implements Runnable {
                     // Probably here see how much time passed and save the mean in some database
                     // and clean local memory
 
-                    infoMessage();
+                    //infoMessage();
 
 //                timestamps.forEach((key, value) -> System.out.println("(" + key + ") " + Arrays.toString(value.getPair())));
                 }

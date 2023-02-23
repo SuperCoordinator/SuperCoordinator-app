@@ -318,6 +318,7 @@ public class App {
                             }
 
                         }
+                        state = 10;
 
                     }
                     default -> {
@@ -329,9 +330,9 @@ public class App {
         }
 
         // Exit program
-        if (iCurrBlock != -1) {
-            eduBlocks.get(iCurrBlock).closeCommunication();
-        }
+        for (eduBlock block : eduBlocks)
+            block.closeCommunication();
+
 
     }
 }
