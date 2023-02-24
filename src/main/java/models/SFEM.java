@@ -53,5 +53,15 @@ public class SFEM {
         return index;
     }
 
+    public void updateSFEE(int key, SFEE sfee) {
+        SFEEs.put(key, sfee);
+    }
 
+    public void addPartToProductionHistory(part productedPart) {
+        productionHistory.add(productionHistory.size(), productedPart);
+    }
+
+    public ArrayList<part> getProductionHistory() {
+        return productionHistory;
+    }
 }

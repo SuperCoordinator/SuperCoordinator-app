@@ -4,9 +4,7 @@ import models.SFEI.SFEI_conveyor;
 import models.SFEI.SFEI_machine;
 import models.SFEM;
 //import monitor.time.conveyor;
-import monitor.SFEE_monitor;
-import monitor.SFEI_monitor;
-import monitor.timestamp_pair;
+import monitor.*;
 
 import java.text.DecimalFormat;
 import java.time.Instant;
@@ -124,11 +122,17 @@ public class App2 {
         in.nextLine();
 
         currSFEE.openCommunication("192.168.240.1", 502, 1);
+        currSFEE.getMb().writeState(currSFEE.getIObyName("FACTORY I/O (Run)"), "1");
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(currSFEM.getSFEEs().size());
-
+        ArrayList<SFEE_monitor2> SFEEs_monitor = new ArrayList<>();
         for (Map.Entry<Integer, SFEE> sfee : currSFEM.getSFEEs().entrySet()) {
-            scheduler.scheduleAtFixedRate(new SFEE_monitor(sfee.getValue()), 0, 50, TimeUnit.MILLISECONDS);
+            SFEEs_monitor.add(SFEEs_monitor.size(), new SFEE_monitor2(sfee.getValue()));
+            scheduler.scheduleAtFixedRate(SFEEs_monitor.get(SFEEs_monitor.size() - 1), 0, 50, TimeUnit.MILLISECONDS);
         }
+
+        scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(new SFEM_monitor(currSFEM,SFEEs_monitor), 0, 100, TimeUnit.MILLISECONDS);
+
 
         // <------------------------
 
