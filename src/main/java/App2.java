@@ -107,7 +107,17 @@ public class App2 {
                         "entry_conveyor");
             }
         }*/
+
+        /* For simplification, the values are wrote already
+         // entryConv - 9s
+         // MC1 - 33 s
+         // exitConv - 8s
         currSFEE.launchSetup();
+         */
+        currSFEE.autoSetSFEE_InOut();
+        currSFEE.getSFEIbyIndex(0).setMinOperationTime(9);
+        currSFEE.getSFEIbyIndex(1).setMinOperationTime(33);
+        currSFEE.getSFEIbyIndex(2).setMinOperationTime(8);
 
         System.out.print("Press ENTER to start simulation");
         Scanner in = new Scanner(System.in);
@@ -117,7 +127,7 @@ public class App2 {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(currSFEM.getSFEEs().size());
 
         for (Map.Entry<Integer, SFEE> sfee : currSFEM.getSFEEs().entrySet()) {
-            scheduler.scheduleAtFixedRate(new SFEE_monitor(sfee.getValue()), 0, 100, TimeUnit.MILLISECONDS);
+            scheduler.scheduleAtFixedRate(new SFEE_monitor(sfee.getValue()), 0, 50, TimeUnit.MILLISECONDS);
         }
 
         // <------------------------

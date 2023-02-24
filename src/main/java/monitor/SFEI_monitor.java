@@ -1,26 +1,37 @@
 package monitor;
 
 import communication.modbus;
+import models.sensor_actuator;
 import models.SFEI.SFEI;
 import utils.utils;
+
+import java.util.TreeMap;
 
 public class SFEI_monitor implements Runnable {
 
     private final SFEI sfei;
-    private final modbus mb;
-    private final utils utility;
 
-    public SFEI_monitor(SFEI sfei, modbus mb) {
+    private final utils utility;
+    private String[] iBits;
+
+    private TreeMap<String, sensor_actuator> io;
+
+    public SFEI_monitor(SFEI sfei, String[] iBits) {
         this.sfei = sfei;
-        this.mb = mb;
+        this.iBits = iBits;
         this.utility = new utils();
+        io = new TreeMap<>();
+    }
+
+    public void setiBits(String[] iBits) {
+        this.iBits = iBits;
     }
 
     @Override
     public void run() {
         try {
-            synchronized (mb) {
-                // Just look for the IN/OUT sensors and stamp to the part the progress
+            synchronized (iBits) {
+                // Just look for the IN/OUT sensors and stamp to the part its progress
                 inSensorTrigger();
                 outSensorTrigger();
             }
@@ -33,12 +44,12 @@ public class SFEI_monitor implements Runnable {
 
     public void inSensorTrigger() {
 
-        boolean b_inSensor = Boolean.parseBoolean(mb.readState(sfei.getInSensor()));
+        boolean b_inSensor = Boolean.parseBoolean(iBits[sfei.getInSensor().bit_offset()]);
         if (utility.getLogicalOperator().RE_detector(b_inSensor, old_inSensor)) {
-            if (sfei.getPartsATM().last() != null)
-                sfei.getPartsATM().last().addTimestamp(sfei.getName() + "-" + sfei.getInSensor());
-            else
-                System.out.println(Thread.currentThread().getName() + " " + sfei.getName() + " " + sfei.getPartsATM().toString());
+            if (sfei.getPartsATM().size() > 0)
+                sfei.getPartsATM().last().addTimestamp(sfei.getName() + "-" + sfei.getInSensor().name());
+           /* else
+                System.out.println(Thread.currentThread().getName() + " " + sfei.getName());*/
         }
         old_inSensor = b_inSensor;
     }
@@ -47,10 +58,12 @@ public class SFEI_monitor implements Runnable {
 
     public void outSensorTrigger() {
 
-        boolean b_outSensor = Boolean.parseBoolean(mb.readState(sfei.getOutSensor()));
+        boolean b_outSensor = Boolean.parseBoolean(iBits[sfei.getOutSensor().bit_offset()]);
         if (utility.getLogicalOperator().RE_detector(b_outSensor, old_outSensor)) {
-            if (sfei.getPartsATM().last() != null)
-                sfei.getPartsATM().last().addTimestamp(sfei.getName() + "-" + sfei.getOutSensor());
+            if (sfei.getPartsATM().size() > 0) {
+                sfei.getPartsATM().last().addTimestamp(sfei.getName() + "-" + sfei.getOutSensor().name());
+                sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
+            }
         }
         old_outSensor = b_outSensor;
     }

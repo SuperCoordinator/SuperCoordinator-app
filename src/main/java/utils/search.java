@@ -2,11 +2,12 @@ package utils;
 
 import models.sensor_actuator;
 
+import java.util.Iterator;
 import java.util.TreeMap;
 
 public class search {
 
-    protected TreeMap<String, sensor_actuator> getSensorsOrActuators(TreeMap<String, sensor_actuator> treeMap, boolean is_sensor) {
+    public TreeMap<String, sensor_actuator> getSensorsOrActuators(TreeMap<String, sensor_actuator> treeMap, boolean is_sensor) {
 
         TreeMap<String, sensor_actuator> rTreeMap = new TreeMap<>();
         try {
@@ -26,7 +27,28 @@ public class search {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return rTreeMap;
     }
+
+    public sensor_actuator getLargestInputOffset(TreeMap<String, sensor_actuator> treeMap) {
+        sensor_actuator largestOff = null;
+        boolean first = true;
+        try {
+            for (sensor_actuator sa : treeMap.values()) {
+                if (sa.type() == sensor_actuator.Type.INPUT) {
+                    if (first) {
+                        largestOff = sa;
+                        first = false;
+                        continue;
+                    }
+                    if (largestOff.bit_offset() < sa.bit_offset())
+                        largestOff = sa;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return largestOff;
+    }
+
 }

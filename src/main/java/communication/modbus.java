@@ -1,10 +1,13 @@
 package communication;
 
 import models.sensor_actuator;
+import utils.utils;
 import net.wimpi.modbus.facade.ModbusTCPMaster;
 import net.wimpi.modbus.procimg.InputRegister;
 import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.util.BitVector;
+
+import java.util.TreeMap;
 
 public class modbus {
 
@@ -84,6 +87,27 @@ public class modbus {
             e.printStackTrace();
         }
         //System.out.println("readState of " + input.getName() + " : " + currentValue);
+        return currentValue;
+    }
+
+    public String readMultipleRegisters(TreeMap<String, sensor_actuator> io) {
+
+        utils util = new utils();
+        sensor_actuator input = util.getSearch().getLargestInputOffset(io);
+
+        String currentValue = "";
+        try {
+            BitVector state = con.readInputDiscretes(input.register(), input.bit_offset() + 1);
+            for (int i = 0; i < state.size(); i++) {
+                boolean boolValue = state.getBit(i);
+                currentValue = currentValue.concat(boolValue + " ");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Check the inverse logic of sensors
+
         return currentValue;
     }
 

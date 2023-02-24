@@ -62,9 +62,13 @@ public class SFEE {
         return mb;
     }
 
+    public TreeMap<String, sensor_actuator> getIo() {
+        return io;
+    }
+
     /* ***********************************
-                         SFEE Communications
-                ************************************ */
+                             SFEE Communications
+                    ************************************ */
     public void openCommunication(String ip, int port, int slaveID) {
         try {
             if (com == communication.MODBUS) mb.openConnection(ip, port, slaveID);
@@ -137,7 +141,8 @@ public class SFEE {
         return SFEIs.get(index);
     }
 
-    private void autoSetSFEE_InOut() {
+    // Change to PRIVATE in future
+    public void autoSetSFEE_InOut() {
 
         this.inSensor = SFEIs.get(0).getInSensor();
         this.outSensor = SFEIs.get(SFEIs.size() - 1).getOutSensor();
