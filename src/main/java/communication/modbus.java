@@ -31,6 +31,15 @@ public class modbus {
 
     }
 
+    public void reOpenConnection() {
+        try {
+            con = new ModbusTCPMaster(ip, port);
+            con.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getIp() {
         return ip;
     }

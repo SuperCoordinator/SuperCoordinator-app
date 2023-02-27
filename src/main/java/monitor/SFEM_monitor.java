@@ -12,23 +12,18 @@ import java.util.*;
 public class SFEM_monitor implements Runnable {
 
     private final SFEM sfem;
-    private final ArrayList<SFEE_monitor2> SFEE_monitors;
 
     private final Instant init_t = Instant.now();
 
-    public SFEM_monitor(SFEM sfem, ArrayList<SFEE_monitor2> SFEE_monitors) {
+    public SFEM_monitor(SFEM sfem) {
         this.sfem = sfem;
-        this.SFEE_monitors = SFEE_monitors;
     }
 
     @Override
     public void run() {
         try {
             synchronized (this) {
-                // update value of SFEE_monitor
-/*                for (int i = 0; i < SFEE_monitors.size(); i++) {
-                    sfem.updateSFEE(i, SFEE_monitors.get(i).getSFEE());
-                }*/
+
                 // will check the parts from the SFEE and save them into history
                 for (Map.Entry<Integer, SFEE> entry : sfem.getSFEEs().entrySet()) {
                     SFEI lastSFEI_of_SFEE = entry.getValue().getSFEIbyIndex(entry.getValue().getSFEIs().size() - 1);

@@ -17,17 +17,12 @@ public class SFEM {
     private final TreeMap<Integer, SFEE> SFEEs;
 
     private final ArrayList<part> productionHistory;
-    utils utility;
-    private final viewers.SFEM viewer;
+
 
     public SFEM(String name) {
-
         this.name = name;
         this.SFEEs = new TreeMap<>();
         this.productionHistory = new ArrayList<>();
-
-        this.viewer = new viewers.SFEM();
-        this.utility = new utils();
 
     }
 
@@ -51,10 +46,6 @@ public class SFEM {
         int index = SFEEs.size();
         SFEEs.put(index, newSFEE);
         return index;
-    }
-
-    public void updateSFEE(int key, SFEE sfee) {
-        SFEEs.put(key, sfee);
     }
 
     public void addPartToProductionHistory(part productedPart) {

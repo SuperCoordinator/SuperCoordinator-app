@@ -11,8 +11,8 @@ public class csv_reader {
     private record innerForTreeMap(String name, sensor_actuator sensorActuator) {
     }
 
-    public void readModbusTags(String path, TreeMap<String, sensor_actuator> treeMap, boolean dbg) {
-
+    public TreeMap<String, sensor_actuator> readModbusTags(String path, boolean dbg) {
+        TreeMap<String, sensor_actuator> treeMap = new TreeMap<>();
         try {
 
             // Create an object of file-reader class
@@ -68,6 +68,7 @@ public class csv_reader {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return treeMap;
     }
 
     private sensor_actuator createObj(String[] row) {

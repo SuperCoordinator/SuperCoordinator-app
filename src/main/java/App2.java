@@ -1,22 +1,16 @@
+import controllers.SFEM_controller;
 import models.SFEE;
-import models.SFEI.SFEI;
-import models.SFEI.SFEI_conveyor;
-import models.SFEI.SFEI_machine;
 import models.SFEM;
 //import monitor.time.conveyor;
 import monitor.*;
 
-import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static java.lang.System.exit;
 
 public class App2 {
 
@@ -24,24 +18,16 @@ public class App2 {
 
 
         ArrayList<SFEM> SFEMs = new ArrayList<>();
+        SFEM newSFEM = new SFEM("SFEM_test");
 
-        // Creation of the SFEM
-        SFEMs.add(new SFEM("2CMC"));
+        SFEM_controller sfeeController = new SFEM_controller(newSFEM);
+        sfeeController.init();
 
-        SFEM currSFEM = SFEMs.get(0);
-        // Creation of the SFEE
-        int newSFEM_i = currSFEM.addNewSFEE(new SFEE("CMC1", SFEE.communication.MODBUS, SFEE.SFEE_type.SIMULATION));
+        sfeeController.firstRun();
 
-        // ----> This setup should be inside SFEM
-        SFEE currSFEE = currSFEM.getSFEEbyIndex(newSFEM_i);
+        sfeeController.start();
 
-        // Communication setup
-        currSFEE.openCommunication("192.168.240.1", 502, 1);
-        // Import IO
-        currSFEE.importIO("C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\simulation\\Tags_CMC_Modbus.csv");
-
-
-        currSFEE.addNewSFEI_conveyor(
+       /* currSFEE.addNewSFEI_conveyor(
                 "entry_conveyor",
                 "s_emitter",
                 "s_lids_at_entry",
@@ -67,7 +53,7 @@ public class App2 {
                 "exit_remover",
                 "exit_emitter",
                 "s_exit_remover",
-                "s_exit_emitter");
+                "s_exit_emitter");*/
 
 /*        // Write the Serial layout ( C - conv / M - machine / W -warehouse
         String layoutSketch = "CmC";
@@ -112,8 +98,8 @@ public class App2 {
          // exitConv - 8s
         currSFEE.launchSetup();
          */
-        currSFEE.autoSetSFEE_InOut();
-        currSFEE.getSFEIbyIndex(0).setMinOperationTime(9);
+
+      /*  currSFEE.getSFEIbyIndex(0).setMinOperationTime(9);
         currSFEE.getSFEIbyIndex(1).setMinOperationTime(33);
         currSFEE.getSFEIbyIndex(2).setMinOperationTime(8);
 
@@ -124,14 +110,14 @@ public class App2 {
         currSFEE.openCommunication("192.168.240.1", 502, 1);
         currSFEE.getMb().writeState(currSFEE.getIObyName("FACTORY I/O (Run)"), "1");
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(currSFEM.getSFEEs().size());
-        ArrayList<SFEE_monitor2> SFEEs_monitor = new ArrayList<>();
+        ArrayList<SFEE_monitor> SFEEs_monitor = new ArrayList<>();
         for (Map.Entry<Integer, SFEE> sfee : currSFEM.getSFEEs().entrySet()) {
-            SFEEs_monitor.add(SFEEs_monitor.size(), new SFEE_monitor2(sfee.getValue()));
+            SFEEs_monitor.add(SFEEs_monitor.size(), new SFEE_monitor(sfee.getValue()));
             scheduler.scheduleAtFixedRate(SFEEs_monitor.get(SFEEs_monitor.size() - 1), 0, 50, TimeUnit.MILLISECONDS);
         }
 
         scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(new SFEM_monitor(currSFEM,SFEEs_monitor), 0, 100, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(new SFEM_monitor(currSFEM,SFEEs_monitor), 0, 100, TimeUnit.MILLISECONDS);*/
 
         // <------------------------
 

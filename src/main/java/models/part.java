@@ -3,7 +3,7 @@ package models;
 import java.time.Instant;
 import java.util.TreeMap;
 
-public class part /*implements Comparable<part>*/ {
+public class part{
 
     private final int id;
     private final String targetType;
@@ -40,9 +40,4 @@ public class part /*implements Comparable<part>*/ {
     public void setProduced() {
         this.produced = true;
     }
-
-/*    @Override
-    public int compareTo(part p) {
-        return getId() - p.getId();
-    }*/
 }
