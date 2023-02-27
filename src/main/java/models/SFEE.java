@@ -137,7 +137,7 @@ public class SFEE {
         return SFEIs;
     }
 
-    public SFEI getSFEIbyIndex(int index) {
+    public synchronized SFEI getSFEIbyIndex(int index) {
         return SFEIs.get(index);
     }
 

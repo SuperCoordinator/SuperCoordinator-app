@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class SFEE_monitor2 implements Runnable {
 
@@ -30,7 +31,7 @@ public class SFEE_monitor2 implements Runnable {
         init_oldSensorsValues();
     }
 
-    public SFEE getSFEE() {
+    public synchronized SFEE getSFEE() {
         return sfee;
     }
 
@@ -86,7 +87,10 @@ public class SFEE_monitor2 implements Runnable {
                     // If SFEIs outSensor RE, then timestamp that event
                     if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei.getKey()])) {
                         if (sfei.getValue().getPartsATM().size() > 0) {
-                            sfei.getValue().getPartsATM().last().addTimestamp(sfei.getValue().getName() + "-" + sfei_outSensor.name());
+                            if (sfei.getKey() == sfee.getSFEIs().size() - 1)
+                                sfei.getValue().getPartsATM().last().addTimestamp(sfei.getValue().getName() + "-" + sfei_outSensor.name());
+                            else
+                                sfei.getValue().getPartsATM().first().addTimestamp(sfei.getValue().getName() + "-" + sfei_outSensor.name());
                             sfei.getValue().setnPiecesMoved(sfei.getValue().getnPiecesMoved() + 1);
                         }
                     }
@@ -106,9 +110,10 @@ public class SFEE_monitor2 implements Runnable {
                     // End of the SFEE, set part produced flag to TRUE
                     if (sfei.getKey() == sfee.getSFEIs().size() - 1) {
                         boolean sfee_outSensor = Boolean.parseBoolean(iBits[sfee.getOutSensor().bit_offset()]);
-                        if (utility.getLogicalOperator().RE_detector(sfee_outSensor, SFEIs_old_inSensors[sfei.getKey()])) {
-                            if (sfei.getValue().getPartsATM().size() > 0)
+                        if (utility.getLogicalOperator().RE_detector(sfee_outSensor, SFEIs_old_outSensors[sfei.getKey()])) {
+                            if (sfei.getValue().getPartsATM().size() > 0) {
                                 sfei.getValue().getPartsATM().last().setProduced();
+                            }
                         }
                     }
 
@@ -118,7 +123,6 @@ public class SFEE_monitor2 implements Runnable {
 
                 }
 
-
 /*                // Check pieces in the SFEE start -> create part to for tracking
                 //      could also write in the piece on F_IO by the RFID sensor
                 inSensorTrigger();
@@ -127,10 +131,11 @@ public class SFEE_monitor2 implements Runnable {
                 shiftParts();
 
                 // Check pieces in the SFEE end -> change part produced attribute
-                outSensorTrigger();*/
-
+                outSensorTrigger();
+*/
 
                 printDBG();
+
                 /* <-- The order is important to not skip parts that just entered the start SFEI (w/ the emitter) */
 
             }
@@ -194,10 +199,8 @@ public class SFEE_monitor2 implements Runnable {
             if (!printedDBG) {
                 for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
                     System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName());
-                    Iterator<part> itr = sfei.getValue().getPartsATM().descendingIterator();
-                    while (itr.hasNext()) {
-                        part p = itr.next();
-                        System.out.println("  " + p.getId());
+                    for (part p : sfei.getValue().getPartsATM()) {
+                        System.out.println("  part ID:" + p.getId());
                         p.getTimestamps().forEach((key, value) -> {
                             System.out.println("  -> " + key + " " + value.toString());
                         });

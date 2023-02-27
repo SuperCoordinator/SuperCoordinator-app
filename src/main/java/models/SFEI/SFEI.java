@@ -42,11 +42,11 @@ public class SFEI {
         return outSensor;
     }
 
-    public TreeSet<part> getPartsATM() {
+    public synchronized TreeSet<part> getPartsATM() {
         return partsATM;
     }
 
-    public void addNewPartATM(part partATM) {
+    public synchronized void addNewPartATM(part partATM) {
         this.partsATM.add(partATM);
     }
 

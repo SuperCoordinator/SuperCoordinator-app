@@ -133,7 +133,6 @@ public class App2 {
         scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(new SFEM_monitor(currSFEM,SFEEs_monitor), 0, 100, TimeUnit.MILLISECONDS);
 
-
         // <------------------------
 
         //exit(0);
