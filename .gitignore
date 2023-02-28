@@ -14,4 +14,4 @@ blocks/*
 !blocks/control/*.project
 !blocks/simulation/*.factoryio
 
-.idea
+.idea/*
