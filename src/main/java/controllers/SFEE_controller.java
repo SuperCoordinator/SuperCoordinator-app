@@ -14,13 +14,20 @@ import utils.utils;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.LongStream;
 
 public class SFEE_controller {
+
+    private enum operationMode {
+        NORMAL,
+        PROG_FAILURES
+    }
 
     private final SFEE sfee;
 
     private SFEE_monitor sfeeMonitor;
 
+    private operationMode opMode;
     private SFEE_failures sfeeFailures;
 
     private final viewers.SFEE viewer;
@@ -33,6 +40,7 @@ public class SFEE_controller {
         this.utility = new utils();
     }
 
+
     public void init() {
         try {
             //String[] comConfig = viewer.setupComunication(sfee.getCom().ordinal());
@@ -42,6 +50,14 @@ public class SFEE_controller {
             //String csv_path = viewer.readIOpath();
             String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\simulation\\Tags_CMC_Modbus.csv";
             importIO(csv_path);
+
+            //String opMode = viewer.opMode();
+            String mode = "2";
+            if (Integer.parseInt(mode) == 1) {
+                opMode = operationMode.NORMAL;
+            } else {
+                opMode = operationMode.PROG_FAILURES;
+            }
 
             // # of SFEI to be added
             /*
@@ -65,8 +81,7 @@ public class SFEE_controller {
                                 inputs[8]);
 
                     } else {
-                        // For now will not enter here !!!!
-                        SFEI_conveyor sfeiConveyor = addNewSFEI_conveyor(
+                       SFEI_conveyor sfeiConveyor = addNewSFEI_conveyor(
                                 inputs[0],
                                 inputs[1],
                                 inputs[2],
@@ -103,6 +118,7 @@ public class SFEE_controller {
                     "s_lids_at_exit",
                     Instant.now(),
                     Instant.now(),
+                    "MC1_opened",
                     "MC1_stop");
             addNewSFEI_conveyor(
                     "exit_conveyor",
@@ -163,20 +179,20 @@ public class SFEE_controller {
         vector[1] = sfee.getIObyName(aEmitter);
         vector[2] = sfee.getIObyName(sRemover);
         vector[3] = sfee.getIObyName(sEmitter);
-        SFEI_conveyor newObj = new SFEI_conveyor(name, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, vector);
+        SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, vector);
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
 
         return newObj;
     }
 
     public SFEI_conveyor addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor) {
-        SFEI_conveyor newObj = new SFEI_conveyor(name, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(conveyorMotor));
+        SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(conveyorMotor));
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
         return newObj;
     }
 
-    public SFEI_machine addNewSFEI_machine(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String aStop) {
-        SFEI_machine newObj = new SFEI_machine(name, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(aStop));
+    public SFEI_machine addNewSFEI_machine(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String sDoor, String aStop) {
+        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(sDoor), sfee.getIObyName(aStop));
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
         return newObj;
 
@@ -189,7 +205,7 @@ public class SFEE_controller {
         this.sfee.setOutSensor(sfee.getSFEIs().get(sfee.getSFEIs().size() - 1).getOutSensor());
     }
 
-    /* First Run in order to get the minimum working time for each element */
+    /* First Run in order to get the minimum working stochastic for each element */
     public void launchSetup() {
 
         try {
@@ -221,12 +237,49 @@ public class SFEE_controller {
         }
     }
 
-    public void startMonitoring() {
+    public void initFailures() {
+        if (opMode.equals(operationMode.PROG_FAILURES)) {
 
+            // Before definition, print SFEE minimal operation stochastic
+
+            Long[] opTimes = getSFEEOperationTime();
+            long totalTime = 0;
+            for (Long value : opTimes)
+                totalTime = totalTime + value;
+
+            System.out.println("Before start notice that SFEE " + sfee.getName() + " has " + totalTime);
+
+            // Not needed to explicit every SFEI because de firstRun() print that!
+
+            String[] sfeeTime = viewer.SFEEtime();
+
+            if (Integer.parseInt(sfeeTime[0]) == 1) {
+                // Stochastic Time
+                sfeeFailures = new SFEE_failures(sfee);
+                sfeeFailures.setTimeType(SFEE_failures.timeType.STOCHASTIC);
+                sfeeFailures.setMean(Double.parseDouble(sfeeTime[1]));
+                sfeeFailures.setStd_dev(Double.parseDouble(sfeeTime[2]));
+
+            } else if (Integer.parseInt(sfeeTime[0]) == 2) {
+                // Linear Time
+            }
+
+
+        }
+    }
+
+
+    public void startMonitoring() {
         // Launch monitor thread
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(sfeeMonitor, 0, 50, TimeUnit.MILLISECONDS);
 
+    }
+
+    public void startFailures() {
+        // Launch monitor thread
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(sfeeFailures, 0, 50, TimeUnit.MILLISECONDS);
     }
 
     public void launchSimulation() {
@@ -235,6 +288,17 @@ public class SFEE_controller {
 
     public void stopSimulation() {
         sfee.getMb().writeState(sfee.getIObyName("FACTORY I/O (Run)"), "0");
+    }
+
+    private Long[] getSFEEOperationTime() {
+
+        Long[] array = new Long[sfee.getSFEIs().size()];
+
+        for (int i = 0; i < sfee.getSFEIs().size(); i++) {
+            array[i] = sfee.getSFEIbyIndex(i).getMinOperationTime();
+        }
+
+        return array;
     }
 
 

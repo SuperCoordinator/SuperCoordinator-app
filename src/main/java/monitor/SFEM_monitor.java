@@ -62,7 +62,7 @@ public class SFEM_monitor implements Runnable {
 
         if (Duration.between(init_t, Instant.now()).toSeconds() % 5 == 0) {
             if (!printedStats) {
-                // One statistic (production mean-time, max-time and min-time)
+                // One statistic (production mean-stochastic, max-stochastic and min-stochastic)
                 long total_time = 0;
                 if (sfem.getProductionHistory().size() > 0) {
                     for (part p : sfem.getProductionHistory()) {
@@ -74,19 +74,19 @@ public class SFEM_monitor implements Runnable {
                         long p_prodTime = calculateProductionTime(p);
                         if (p_prodTime < calculateProductionTime(min_time)) {
                             min_time = p;
-                            System.out.println("Min: " + Arrays.toString(min_time.getTimestamps().values().toArray()));
+//                            System.out.println("Min: " + Arrays.toString(min_time.getTimestamps().values().toArray()));
                         }
                         if (p_prodTime > calculateProductionTime(max_time)) {
                             max_time = p;
-                            System.out.println("Max: " + Arrays.toString(max_time.getTimestamps().values().toArray()));
+//                            System.out.println("Max: " + Arrays.toString(max_time.getTimestamps().values().toArray()));
                         }
                         total_time = total_time + p_prodTime;
                     }
 
-                    System.out.println("Produced " + sfem.getProductionHistory().size() + " with mean time of " + total_time / sfem.getProductionHistory().size());
+                    System.out.println("Produced " + sfem.getProductionHistory().size() + " with stochastic mean of " + total_time / sfem.getProductionHistory().size() + "s");
                     assert max_time != null;
-                    System.out.println("Max production time" + calculateProductionTime(max_time));
-                    System.out.println("Min production time" + calculateProductionTime(min_time));
+                    System.out.println("Max production stochastic " + calculateProductionTime(max_time) + "s");
+                    System.out.println("Min production stochastic " + calculateProductionTime(min_time) + "s");
                 }
                 printedStats = true;
             }

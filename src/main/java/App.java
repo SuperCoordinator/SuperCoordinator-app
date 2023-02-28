@@ -1,6 +1,6 @@
 /*
 import models.SFEM;
-import monitor.time.conveyor;
+import monitor.stochastic.conveyor;
 import monitor.timestamp_pair;
 
 import java.text.DecimalFormat;
@@ -18,7 +18,7 @@ public class App {
 
         Scanner input = new Scanner(System.in);
 
-        // Running time phase
+        // Running stochastic phase
         SFEM currBlock;
 
         while (state != -1) {
@@ -177,7 +177,7 @@ public class App {
                     }
                     case 5 -> {
                         System.out.println("**** Failure Configuration  ****");
-                        System.out.print("    How many conveyors to manipulate its time ?");
+                        System.out.print("    How many conveyors to manipulate its stochastic ?");
                         in = input.nextLine();
                         int nElements = Integer.parseInt(in);
 
@@ -235,7 +235,7 @@ public class App {
                         System.out.println("*********************************************");
                         System.out.println();
                         System.out.println("    1 - List running blocks;");
-                        System.out.println("    2 - List/Change running time parameters;");
+                        System.out.println("    2 - List/Change running stochastic parameters;");
                         System.out.println("    0 - Exit program;");
 
                         in = input.nextLine();
@@ -251,7 +251,7 @@ public class App {
                     }
                     case 11 -> {
                         currBlock = null;
-                        System.out.println("**** Running time Parameters  ****");
+                        System.out.println("**** Running stochastic Parameters  ****");
                         System.out.print("    From each block (name)?");
                         in = input.nextLine();
 
@@ -269,7 +269,7 @@ public class App {
                             System.out.print("      Print associated timestamps (y/n)?");
                             boolean print = input.nextLine().contains("y");
 
-                            for (monitor.time.conveyor convMon : currBlock.getMonitorTimeConveyors()) {
+                            for (monitor.stochastic.conveyor convMon : currBlock.getMonitorTimeConveyors()) {
                                 System.out.println("   " + convMon.getName());
                                 if (print) {
                                     long duration = 0;
@@ -284,7 +284,7 @@ public class App {
                                     }
 
                                     DecimalFormat df = new DecimalFormat("#.###");
-                                    System.out.println(convMon.getTimestamps().size() + " parts moved with mean time " + df.format(duration / (convMon.getTimestamps().size() - discount)) + " s");
+                                    System.out.println(convMon.getTimestamps().size() + " parts moved with mean stochastic " + df.format(duration / (convMon.getTimestamps().size() - discount)) + " s");
                                     System.out.println();
                                 }
                             }
@@ -296,7 +296,7 @@ public class App {
                             System.out.println("   " + convFail.getName());
                         }
 
-                        System.out.print("     Change stop time (y/n)?");
+                        System.out.print("     Change stop stochastic (y/n)?");
                         if (input.nextLine().contains("y")) {
                             System.out.print("      Which from (name)?");
                             String name = input.nextLine();
@@ -310,8 +310,8 @@ public class App {
                             if (temp == null)
                                 System.out.println();
                             else {
-                                System.out.println("       Current time value: " + temp.getTime_adjust_param());
-                                System.out.print("       New time value:");
+                                System.out.println("       Current stochastic value: " + temp.getTime_adjust_param());
+                                System.out.print("       New stochastic value:");
 
                                 temp.setTime_adjust_param(Double.parseDouble(input.nextLine()));
                                 System.out.println("Value set to :" + temp.getTime_adjust_param());

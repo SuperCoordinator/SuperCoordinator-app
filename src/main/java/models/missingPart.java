@@ -1,7 +1,7 @@
 /*
 package models;
 
-import java.time.Instant;
+import java.stochastic.Instant;
 
 public class missingPart extends part {
 
@@ -9,7 +9,7 @@ public class missingPart extends part {
     private Instant t_init;
     */
 /**
-     * 2s- Minimum time for the remover/emitter pair do not accelerate the part movement
+     * 2s- Minimum stochastic for the remover/emitter pair do not accelerate the part movement
      *//*
 
     private double delay;

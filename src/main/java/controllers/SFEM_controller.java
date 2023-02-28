@@ -59,12 +59,24 @@ public class SFEM_controller {
         sfemMonitor = new SFEM_monitor(sfem);
     }
 
-    public void firstRun() {
-
-        for (SFEE_controller sfeeController : sfeeControllers) {
-            sfeeController.launchSetup();
+    public void firstRun(boolean run) {
+        if (run)
+            for (SFEE_controller sfeeController : sfeeControllers) {
+                sfeeController.launchSetup();
+            }
+        else {
+            sfem.getSFEEbyIndex(0).getSFEIbyIndex(0).setMinOperationTime(9);
+            sfem.getSFEEbyIndex(0).getSFEIbyIndex(1).setMinOperationTime(33);
+            sfem.getSFEEbyIndex(0).getSFEIbyIndex(2).setMinOperationTime(8);
         }
 
+    }
+
+    public void setupFailureMode() {
+
+        for (SFEE_controller sfeeController : sfeeControllers) {
+            sfeeController.initFailures();
+        }
     }
 
     public void start() {
@@ -80,6 +92,11 @@ public class SFEM_controller {
         for (SFEE_controller sfeeController : sfeeControllers) {
             sfeeController.startMonitoring();
         }
+
+        for (SFEE_controller sfeeController : sfeeControllers) {
+            sfeeController.startFailures();
+        }
+
 
         // Launch monitor thread
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);

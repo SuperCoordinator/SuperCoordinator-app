@@ -44,6 +44,18 @@ public class SFEE {
         io.forEach((key, value) -> System.out.println(value.toString()));
     }
 
+    public String opMode(){
+        String str;
+        System.out.println("SFEE Operation Mode?");
+
+        System.out.println("1 - Normal");
+        System.out.println("2 - Programmed Failures");
+        str = in.nextLine();
+
+
+        return str;
+    }
+
     public String nSFEI() {
         String str;
 
@@ -65,9 +77,9 @@ public class SFEE {
         return str;
     }
 
-    public String[] SFEI_params(int num, int type) {
+    public String[] SFEI_params(int num, int type, boolean isSimulation) {
         String[] str = new String[0];
-        if (type == 1) {
+        if (type == 1 && isSimulation) {
             str = new String[9];
 
             System.out.print("SFEI " + num + " name? ");
@@ -96,6 +108,26 @@ public class SFEE {
             System.out.print("Emitter sensor: ");
             str[8] = in.nextLine();
 
+        } else if (type == 1) {
+            str = new String[6];
+
+            System.out.print("SFEI " + num + " name? ");
+            str[0] = in.nextLine();
+
+            System.out.print("inSensor: ");
+            str[1] = in.nextLine();
+
+            System.out.print("outSensor: ");
+            str[2] = in.nextLine();
+
+            // day of birth
+            str[3] = Instant.now().toString();
+            // day of last maintenance
+            str[4] = Instant.now().toString();
+
+            System.out.print("Conveyor actuator: ");
+            str[5] = in.nextLine();
+
         } else if (type == 2) {
             str = new String[6];
 
@@ -120,5 +152,26 @@ public class SFEE {
         return str;
     }
 
+    public String[] SFEEtime(){
+        String[] str = new String[3];
+        System.out.println("SFEE Operation Time?");
+
+        System.out.println("1 - Stochastic N(u,s) ");
+        System.out.println("2 - Linear ");
+        str[0] = in.nextLine();
+
+        if(Integer.parseInt(str[0]) == 1){
+            System.out.println("Mean u :");
+            str[1] = in.nextLine();
+            System.out.println("Deviation s :");
+            str[2] = in.nextLine();
+
+        }else if (Integer.parseInt(str[0]) == 2){
+            System.out.println("Value x :");
+            str[1] = in.nextLine();
+        }
+        return str;
+
+    }
 
 }

@@ -1,7 +1,6 @@
 import controllers.SFEM_controller;
 import models.SFEE;
 import models.SFEM;
-//import monitor.time.conveyor;
 import monitor.*;
 
 import java.time.Instant;
@@ -20,12 +19,23 @@ public class App2 {
         ArrayList<SFEM> SFEMs = new ArrayList<>();
         SFEM newSFEM = new SFEM("SFEM_test");
 
-        SFEM_controller sfeeController = new SFEM_controller(newSFEM);
-        sfeeController.init();
+        SFEM_controller sfemController = new SFEM_controller(newSFEM);
+        sfemController.init();
 
-        sfeeController.firstRun();
+        sfemController.firstRun(false);
+        sfemController.setupFailureMode();
 
-        sfeeController.start();
+        sfemController.start();
+        while (true) {
+            System.out.println("Number of running Threads: " + Thread.activeCount());
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+
+        }
+
 
        /* currSFEE.addNewSFEI_conveyor(
                 "entry_conveyor",

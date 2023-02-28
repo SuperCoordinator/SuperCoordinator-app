@@ -2,11 +2,7 @@ package models;
 
 import models.SFEI.SFEI;
 import communication.modbus;
-import models.SFEI.SFEI_conveyor;
-import models.SFEI.SFEI_machine;
-import utils.utils;
 
-import java.time.Instant;
 import java.util.*;
 
 public class SFEE {
@@ -29,8 +25,7 @@ public class SFEE {
     private TreeMap<String, sensor_actuator> io;
     private final modbus mb;
     private final TreeMap<Integer, SFEI> SFEIs;
-    private final utils utility;
-    private final viewers.SFEM viewer;
+
 
     public SFEE(String name, communication com, SFEE.SFEE_type SFEE_type) {
         this.name = name;
@@ -39,9 +34,6 @@ public class SFEE {
         this.SFEE_type = SFEE_type;
         this.io = new TreeMap<>();
         this.SFEIs = new TreeMap<>();
-
-        this.utility = new utils();
-        this.viewer = new viewers.SFEM();
     }
 
     public String getName() {

@@ -14,9 +14,9 @@ public class SFEI_conveyor extends SFEI {
 
     private final boolean isSimulation;
 
-    public SFEI_conveyor(String name, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth,
-                         Instant dayOfLastMaintenance, sensor_actuator[] sensorActuators) {
-        super(name, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance);
+    public SFEI_conveyor(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
+                         Instant dayOfBirth, Instant dayOfLastMaintenance, sensor_actuator[] sensorActuators) {
+        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance);
         this.aRemover = sensorActuators[0];
         this.aEmitter = sensorActuators[1];
         this.sRemover = sensorActuators[2];
@@ -25,9 +25,9 @@ public class SFEI_conveyor extends SFEI {
         this.isSimulation = true;
     }
 
-    public SFEI_conveyor(String name, sensor_actuator inSensor, sensor_actuator outSensor,
+    public SFEI_conveyor(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
                          Instant dayOfBirth, Instant dayOfLastMaintenance, sensor_actuator aConveyorMotor) {
-        super(name, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance);
+        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance);
         this.aConveyorMotor = aConveyorMotor;
         this.isSimulation = false;
     }

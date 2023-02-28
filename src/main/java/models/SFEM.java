@@ -1,7 +1,7 @@
 package models;
 
 import communication.modbus;
-//import monitor.time.conveyor;
+//import monitor.stochastic.conveyor;
 import utils.utils;
 
 import java.util.ArrayList;

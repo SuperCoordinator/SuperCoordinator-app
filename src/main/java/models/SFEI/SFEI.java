@@ -10,7 +10,14 @@ import java.util.TreeSet;
 
 public class SFEI {
 
+    public enum SFEI_type {
+        CONVEYOR,
+        MACHINE
+    }
+
     private final String name;
+
+    private final SFEI_type sfeiType;
     private final sensor_actuator inSensor;
     private final sensor_actuator outSensor;
     private final TreeSet<part> partsATM;
@@ -19,8 +26,9 @@ public class SFEI {
     private Instant dayOfLastMaintenance;
     private long minOperationTime;
 
-    public SFEI(String name, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance) {
+    public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance) {
         this.name = name;
+        this.sfeiType = sfeiType;
         this.inSensor = inSensor;
         this.outSensor = outSensor;
         this.dayOfBirth = dayOfBirth;
@@ -32,6 +40,10 @@ public class SFEI {
 
     public String getName() {
         return name;
+    }
+
+    public SFEI_type getSfeiType() {
+        return sfeiType;
     }
 
     public sensor_actuator getInSensor() {
