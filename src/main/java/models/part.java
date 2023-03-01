@@ -7,13 +7,13 @@ public class part{
 
     private final int id;
     private final String targetType;
-    private final TreeMap<String, Instant> itemTimestamp;
+    private final TreeMap<String, Instant> itemTimestamps;
     private boolean produced;
 
     public part(int id, String targetType) {
         this.id = id;
         this.targetType = targetType;
-        itemTimestamp = new TreeMap<>();
+        itemTimestamps = new TreeMap<>();
         this.produced = false;
     }
 
@@ -22,7 +22,7 @@ public class part{
     }
 
     public TreeMap<String, Instant> getTimestamps() {
-        return itemTimestamp;
+        return itemTimestamps;
     }
 
     public String getTargetType() {
@@ -30,7 +30,7 @@ public class part{
     }
 
     public void addTimestamp(String itemName) {
-        itemTimestamp.put(itemName, Instant.now());
+        itemTimestamps.put(itemName, Instant.now());
     }
 
     public boolean isProduced() {

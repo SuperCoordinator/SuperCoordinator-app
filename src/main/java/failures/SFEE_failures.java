@@ -25,12 +25,14 @@ public class SFEE_failures implements Runnable {
     private double mean;
     private double std_dev;
 
-    private final ScheduledExecutorService executorService;
+/*    private final ScheduledExecutorService executorService;
+    private final ExecutorService service;*/
 
     public SFEE_failures(SFEE sfee) {
         this.sfee = sfee;
 
-        this.executorService = Executors.newScheduledThreadPool(sfee.getSFEIs().size());
+/*        this.executorService = Executors.newScheduledThreadPool(sfee.getSFEIs().size());
+        this.service = Executors.newFixedThreadPool(1);*/
     }
 
     public void setTimeType(timeType timeType) {
@@ -45,31 +47,48 @@ public class SFEE_failures implements Runnable {
         this.std_dev = std_dev;
     }
 
+
     @Override
     public void run() {
 
         // Launch new thread for interfering on SFEE time
         // Depends on the piece at the emitter os SFEE
-        boolean newPiece = checkNewPiece();
+        try {
+            boolean newPiece = checkNewPiece();
 
-        if (newPiece) {
-            int pickSFEI = pickSFEI();
-            //int pickSFEI = 2;
+            if (newPiece) {
+                int pickSFEI = pickSFEI();
+                //int pickSFEI = 2;
 
-            // The part is in the initial SFEI, so it is needed to select the partID and
-            // associate with the correct SFEI to manipulate the time
-            if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
-                AtomicBoolean stop = new AtomicBoolean(false);
-                int delay = calculateDelay();
-                System.out.println("SFEI index chosen: " + pickSFEI + " to delay: " + delay);
-                new RunnableWrap().runNTimes(
+                // The part is in the initial SFEI, so it is needed to select the partID and
+                // associate with the correct SFEI to manipulate the time
+                if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
+                    AtomicBoolean stop = new AtomicBoolean(false);
+                    int delay = calculateDelay();
+                    System.out.println("SFEI index chosen: " + pickSFEI + " to delay: " + delay);
+/*                new RunnableWrap().runNTimes(
                         new stochastic(sfee.getSFEIbyIndex(pickSFEI), stop, sfee.getSFEIbyIndex(0).getPartsATM().first().getId(), delay, sfee.getMb()),
                         stop,
                         50,
                         TimeUnit.MILLISECONDS,
-                        executorService);
+                        executorService);*/
+
+                    stochastic2 stochastic2 = new stochastic2(sfee.getSFEIbyIndex(pickSFEI), sfee.getSFEIbyIndex(0).getPartsATM().first().getId(), delay, sfee.getMb());
+
+/*                    ExecutorService service = Executors.newFixedThreadPool(1);
+                    service.submit(stochastic2);*/
+
+                    Thread t1 = new Thread(stochastic2);
+                    t1.start();
+
+
+                }
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private int oldPartID = -1;
@@ -102,7 +121,7 @@ public class SFEE_failures implements Runnable {
     private int calculateDelay() {
 
         Random random = new Random();
-        double total_Time = random.nextGaussian() * std_dev + mean;
+        double total_Time = random.nextGaussian() * Math.sqrt(std_dev) + mean;
 
         for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
             total_Time = total_Time - entry.getValue().getMinOperationTime();
