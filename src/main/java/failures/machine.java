@@ -5,8 +5,8 @@ import communication.modbus;
 import models.sensor_actuator;
 import utils.utils;
 
-import java.stochastic.Duration;
-import java.stochastic.Instant;
+import java.stochasticTime.Duration;
+import java.stochasticTime.Instant;
 import java.util.TreeMap;
 
 public class machine extends Thread {

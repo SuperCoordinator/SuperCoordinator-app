@@ -9,7 +9,7 @@ import utils.utils;
 import java.time.Duration;
 import java.time.Instant;
 
-public class stochastic implements Runnable {
+public class stochasticTime implements Runnable {
 
     private enum SM_conv {
         INIT,
@@ -41,7 +41,7 @@ public class stochastic implements Runnable {
 
     private final utils utility;
 
-    public stochastic(SFEI sfei, int partID, int delay, modbus mb) {
+    public stochasticTime(SFEI sfei, int partID, int delay, modbus mb) {
 
         if (sfei.getSfeiType().equals(SFEI.SFEI_type.CONVEYOR)) {
             this.sfeiConveyor = (SFEI_conveyor) sfei;

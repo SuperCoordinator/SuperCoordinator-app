@@ -152,16 +152,18 @@ public class customCalculator {
     }
 
     public boolean evalExpression(String userInput) {
+        error = false;
         processInput(userInput, 1, 1, 1);
         return error;
     }
 
-    public String errorMsg (String userInput){
+    public String errorMsg(String userInput) {
+        errorMsg = "";
         processInput(userInput, 1, 1, 1);
         return errorMsg;
     }
 
-    public double calcExpression(String userInput, double nPieces, double itemAgeMonth, double lastMaintenceDays){
+    public double calcExpression(String userInput, double nPieces, double itemAgeMonth, double lastMaintenceDays) {
         processInput(userInput, nPieces, itemAgeMonth, lastMaintenceDays);
         return result;
     }

@@ -7,14 +7,12 @@ import models.SFEI.SFEI_conveyor;
 import models.SFEI.SFEI_machine;
 import models.sensor_actuator;
 import monitor.SFEE_monitor;
-import monitor.SFEM_monitor;
 import monitor.setupRun;
 import utils.utils;
 
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.LongStream;
 
 public class SFEE_controller {
 
@@ -205,7 +203,7 @@ public class SFEE_controller {
         this.sfee.setOutSensor(sfee.getSFEIs().get(sfee.getSFEIs().size() - 1).getOutSensor());
     }
 
-    /* First Run in order to get the minimum working stochastic for each element */
+    /* First Run in order to get the minimum working stochasticTime for each element */
     public void launchSetup() {
 
         try {
@@ -240,7 +238,7 @@ public class SFEE_controller {
     public void initFailures() {
         if (opMode.equals(operationMode.PROG_FAILURES)) {
 
-            // Before definition, print SFEE minimal operation stochastic
+            // Before definition, print SFEE minimal operation stochasticTime
 
             Long[] opTimes = getSFEEOperationTime();
             long totalTime = 0;
@@ -255,13 +253,15 @@ public class SFEE_controller {
 
             if (Integer.parseInt(sfeeTime[0]) == 1) {
                 // Stochastic Time
-                sfeeFailures = new SFEE_failures(sfee);
-                sfeeFailures.setTimeType(SFEE_failures.timeType.STOCHASTIC);
+                sfeeFailures = new SFEE_failures(sfee, SFEE_failures.timeOptions.GAUSSIAN);
                 sfeeFailures.setMean(sfeeTime[1]);
                 sfeeFailures.setStd_dev(sfeeTime[2]);
 
             } else if (Integer.parseInt(sfeeTime[0]) == 2) {
                 // Linear Time
+                sfeeFailures = new SFEE_failures(sfee, SFEE_failures.timeOptions.LINEAR);
+                sfeeFailures.setMean(sfeeTime[1]);
+                sfeeFailures.setStd_dev("0");
             }
 
 

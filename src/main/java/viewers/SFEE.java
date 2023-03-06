@@ -1,7 +1,9 @@
 package viewers;
 
 import models.sensor_actuator;
+import utils.customCalculator;
 
+import java.io.FilterOutputStream;
 import java.time.Instant;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -44,7 +46,7 @@ public class SFEE {
         io.forEach((key, value) -> System.out.println(value.toString()));
     }
 
-    public String opMode(){
+    public String opMode() {
         String str;
         System.out.println("SFEE Operation Mode?");
 
@@ -152,23 +154,42 @@ public class SFEE {
         return str;
     }
 
-    public String[] SFEEtime(){
+    public String[] SFEEtime() {
         String[] str = new String[3];
+        customCalculator customCalculator = new customCalculator();
+        boolean retry = false;
         System.out.println("SFEE Operation Time?");
 
         System.out.println("1 - Stochastic N(u,s) ");
         System.out.println("2 - Linear ");
         str[0] = in.nextLine();
 
-        if(Integer.parseInt(str[0]) == 1){
-            System.out.println("Mean u :");
-            str[1] = in.nextLine();
-            System.out.println("Deviation s :");
-            str[2] = in.nextLine();
+        if (Integer.parseInt(str[0]) == 1) {
+            do {
+                if (retry)
+                    System.out.println(customCalculator.errorMsg(str[1]));
+                System.out.println("Mean u :");
+                str[1] = in.nextLine();
+                retry = customCalculator.evalExpression(str[1]);
+            } while (retry);
 
-        }else if (Integer.parseInt(str[0]) == 2){
-            System.out.println("Value x :");
-            str[1] = in.nextLine();
+            do {
+                if (retry)
+                    System.out.println(customCalculator.errorMsg(str[2]));
+                System.out.println("Deviation s :");
+                str[2] = in.nextLine();
+                retry = customCalculator.evalExpression(str[2]);
+            } while (retry);
+
+        } else if (Integer.parseInt(str[0]) == 2) {
+            do {
+                if (retry)
+                    System.out.println(customCalculator.errorMsg(str[1]));
+                System.out.println("Value x :");
+                str[1] = in.nextLine();
+                retry = customCalculator.evalExpression(str[1]);
+            } while (retry);
+
         }
         return str;
 

@@ -62,7 +62,7 @@ public class SFEM_monitor implements Runnable {
 
         if (Duration.between(init_t, Instant.now()).toSeconds() % 5 == 0) {
             if (!printedStats) {
-                // One statistic (production mean-stochastic, max-stochastic and min-stochastic)
+                // One statistic (production mean-stochasticTime, max-stochasticTime and min-stochasticTime)
                 long total_time = 0;
                 if (sfem.getProductionHistory().size() > 0) {
                     for (part p : sfem.getProductionHistory()) {
@@ -83,10 +83,10 @@ public class SFEM_monitor implements Runnable {
                         total_time = total_time + p_prodTime;
                     }
 
-                    System.out.println("Produced " + sfem.getProductionHistory().size() + " with stochastic mean of " + total_time / sfem.getProductionHistory().size() + "s");
+                    System.out.println("Produced " + sfem.getProductionHistory().size() + " with stochasticTime mean of " + total_time / sfem.getProductionHistory().size() + "s");
                     assert max_time != null;
-                    System.out.println("Max production stochastic " + calculateProductionTime(max_time) + "s");
-                    System.out.println("Min production stochastic " + calculateProductionTime(min_time) + "s");
+                    System.out.println("Max production stochasticTime " + calculateProductionTime(max_time) + "s");
+                    System.out.println("Min production stochasticTime " + calculateProductionTime(min_time) + "s");
                 }
                 printedStats = true;
             }

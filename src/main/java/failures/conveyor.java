@@ -7,8 +7,8 @@ import models.sensor_actuator;
 import models.part;
 import utils.utils;
 
-import java.stochastic.Duration;
-import java.stochastic.Instant;
+import java.stochasticTime.Duration;
+import java.stochasticTime.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -38,7 +38,7 @@ public class conveyor implements Runnable {
     */
 /**
      * @param errorType type of error to inject
-     * @param param     value in percentage to increase the stochastic ]0-2]
+     * @param param     value in percentage to increase the stochasticTime ]0-2]
      * @param senAct    mapping of the input/output following: sRemover,sEmitter,aRemover,aRemover
      * @param invValue  sensors value follows inverse logic? following:sRemover,sEmitter
      *//*
@@ -151,7 +151,7 @@ public class conveyor implements Runnable {
 
     private double calculateDelay() {
 
-        double rTime = 2; // stochastic in seconds
+        double rTime = 2; // stochasticTime in seconds
 
         switch (errorType) {
             case INCREASE_LINEAR -> {

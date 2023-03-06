@@ -12,14 +12,14 @@ import java.util.Random;
 
 public class SFEE_failures implements Runnable {
 
-    public enum timeType {
-        STOCHASTIC,
+    public enum timeOptions {
+        GAUSSIAN,
         LINEAR
     }
 
     private final SFEE sfee;
 
-    private timeType timeType;
+    private final timeOptions timeType;
 
     // IN case of STOCHASTIC
     private String mean;
@@ -30,16 +30,13 @@ public class SFEE_failures implements Runnable {
 /*    private final ScheduledExecutorService executorService;
     private final ExecutorService service;*/
 
-    public SFEE_failures(SFEE sfee) {
+    public SFEE_failures(SFEE sfee, timeOptions timeType) {
         this.sfee = sfee;
         this.utility = new utils();
+        this.timeType = timeType;
 
 /*        this.executorService = Executors.newScheduledThreadPool(sfee.getSFEIs().size());
         this.service = Executors.newFixedThreadPool(1);*/
-    }
-
-    public void setTimeType(timeType timeType) {
-        this.timeType = timeType;
     }
 
     public void setMean(String mean) {
@@ -69,9 +66,9 @@ public class SFEE_failures implements Runnable {
                     int delay = calculateDelay(pickSFEI);
                     System.out.println("SFEI index chosen: " + pickSFEI + " to delay: " + delay);
 
-                    stochastic stochastic = new stochastic(sfee.getSFEIbyIndex(pickSFEI), sfee.getSFEIbyIndex(0).getPartsATM().first().getId(), delay, sfee.getMb());
+                    stochasticTime stochasticTime = new stochasticTime(sfee.getSFEIbyIndex(pickSFEI), sfee.getSFEIbyIndex(0).getPartsATM().first().getId(), delay, sfee.getMb());
 
-                    Thread t1 = new Thread(stochastic);
+                    Thread t1 = new Thread(stochasticTime);
                     t1.start();
 
                 }
@@ -107,7 +104,7 @@ public class SFEE_failures implements Runnable {
         }
         while (optionalInt.isEmpty());
         int sfei_id = optionalInt.getAsInt();
-        if(sfee.getSFEIbyIndex(sfei_id).getSfeiType().equals(SFEI.SFEI_type.MACHINE) && !re_entrant)
+        if (sfee.getSFEIbyIndex(sfei_id).getSfeiType().equals(SFEI.SFEI_type.MACHINE) && !re_entrant)
             sfei_id = pickSFEI(true);
         return sfei_id;
 
@@ -126,8 +123,16 @@ public class SFEE_failures implements Runnable {
                 (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
                 (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
 
-        Random random = new Random();
-        double total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
+        double total_Time;
+        if (timeType.equals(SFEE_failures.timeOptions.GAUSSIAN)) {
+            Random random = new Random();
+            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
+        } else {
+            total_Time = utility.getCustomCalc().calcExpression(mean,
+                    sfei.getnPiecesMoved(),
+                    (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
+                    (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
+        }
 
         for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
             total_Time = total_Time - entry.getValue().getMinOperationTime();
