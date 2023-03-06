@@ -1,7 +1,7 @@
 /*
 package failures;
 
-import communication.modbus;
+import communicationOption.modbus;
 import models.sensor_actuator;
 import utils.utils;
 

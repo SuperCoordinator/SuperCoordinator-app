@@ -16,11 +16,15 @@ public class modbus {
     private int port;
     private int slaveID;
 
+    private boolean configured = false;
+
     public void openConnection(String ip, int port, int slaveID) {
 
         this.ip = ip;
         this.port = port;
         this.slaveID = slaveID;
+
+        this.configured = true;
 
         try {
             con = new ModbusTCPMaster(ip, port);
@@ -50,6 +54,10 @@ public class modbus {
 
     public int getSlaveID() {
         return slaveID;
+    }
+
+    public boolean isConfigured() {
+        return configured;
     }
 
     public void closeConnection() {

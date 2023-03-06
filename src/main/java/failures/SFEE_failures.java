@@ -85,6 +85,7 @@ public class SFEE_failures implements Runnable {
     private boolean checkNewPiece() {
         int currID = oldPartID;
         if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
+            //System.out.println("*** " + sfee.getName() + " #parts at entryConv: " + sfee.getSFEIbyIndex(0).getPartsATM().size());
             currID = sfee.getSFEIbyIndex(0).getPartsATM().first().getId();
         }
         if (currID != oldPartID) {
@@ -113,10 +114,7 @@ public class SFEE_failures implements Runnable {
     private int calculateDelay(int sfei_id) {
 
         SFEI sfei = sfee.getSFEIbyIndex(sfei_id);
-        double dev = utility.getCustomCalc().calcExpression(std_dev,
-                sfei.getnPiecesMoved(),
-                (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
-                (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
+
 
         double m = utility.getCustomCalc().calcExpression(mean,
                 sfei.getnPiecesMoved(),
@@ -125,13 +123,16 @@ public class SFEE_failures implements Runnable {
 
         double total_Time;
         if (timeType.equals(SFEE_failures.timeOptions.GAUSSIAN)) {
-            Random random = new Random();
-            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
-        } else {
-            total_Time = utility.getCustomCalc().calcExpression(mean,
+
+            double dev = utility.getCustomCalc().calcExpression(std_dev,
                     sfei.getnPiecesMoved(),
                     (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
                     (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
+
+            Random random = new Random();
+            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
+        } else {
+            total_Time = m;
         }
 
         for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {

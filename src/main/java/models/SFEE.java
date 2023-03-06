@@ -7,7 +7,7 @@ import java.util.*;
 
 public class SFEE {
 
-    public enum communication {
+    public enum communicationOption {
         MODBUS, OPC_UA
     }
 
@@ -16,7 +16,7 @@ public class SFEE {
     }
 
     private final String name;
-    private final communication com;
+    private final communicationOption com;
 
     private final SFEE_type SFEE_type;
 
@@ -27,10 +27,10 @@ public class SFEE {
     private final TreeMap<Integer, SFEI> SFEIs;
 
 
-    public SFEE(String name, communication com, SFEE.SFEE_type SFEE_type) {
+    public SFEE(String name, communicationOption com, modbus mb, SFEE.SFEE_type SFEE_type) {
         this.name = name;
         this.com = com;
-        this.mb = new modbus();
+        this.mb = mb;
         this.SFEE_type = SFEE_type;
         this.io = new TreeMap<>();
         this.SFEIs = new TreeMap<>();
@@ -40,7 +40,7 @@ public class SFEE {
         return name;
     }
 
-    public communication getCom() {
+    public communicationOption getCom() {
         return com;
     }
 

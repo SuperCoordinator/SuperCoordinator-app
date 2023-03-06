@@ -41,4 +41,23 @@ public class SFEM {
         return str;
     }
 
+    public String[] setupComunication(int opt) {
+
+        String[] str = new String[3];
+
+        if (opt == 0) {
+            // Modbus
+            System.out.print("IP: ");
+            str[0] = in.nextLine();
+
+            System.out.print("Port: ");
+            str[1] = in.nextLine();
+
+            System.out.print("Slave ID: ");
+            str[2] = in.nextLine();
+        }
+
+        return str;
+    }
+
 }

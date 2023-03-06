@@ -1,8 +1,8 @@
 package controllers;
 
+import communication.modbus;
 import models.SFEE;
 import models.SFEM;
-import monitor.SFEE_monitor;
 import monitor.SFEM_monitor;
 
 import java.util.ArrayList;
@@ -34,21 +34,30 @@ public class SFEM_controller {
         try {
             // # of SFEE to be added
             //String input = viewer.nSFEE();
-            String input = "1";
+            String input = "2";
             for (int i = 0; i < Integer.parseInt(input); i++) {
+                modbus mb = null;
 
                 //String[] inputs = viewer.SFEE_params(i);
-                String[] inputs = {"CMC", "1", "1"};
+                String[] inputs = {"sfee" + i, "1", "1"};
 
+                /* QUESTAO DO SLAVE ID*/
+                //String[] comConfig = viewer.setupComunication(0);
+                String[] comConfig = {"192.168.240.1", "502", String.valueOf(i + 1)};
+                if (Integer.parseInt(inputs[1]) == 1) {
+                    mb = searchForOpenConnections(comConfig);
+                }
+                System.out.println(mb);
                 SFEE sfee = new SFEE(
                         inputs[0],
-                        Integer.parseInt(inputs[1]) == 1 ? SFEE.communication.MODBUS : SFEE.communication.OPC_UA,
+                        Integer.parseInt(inputs[1]) == 1 ? SFEE.communicationOption.MODBUS : SFEE.communicationOption.OPC_UA,
+                        mb,
                         Integer.parseInt(inputs[2]) == 1 ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL);
 
                 sfem.addNewSFEE(sfee);
 
-                SFEE_controller sfeeController = new SFEE_controller(sfee);
-                sfeeController.init();
+                SFEE_controller sfeeController = new SFEE_controller(sfee, i);
+                sfeeController.init(comConfig);
 
                 sfeeControllers.add(sfeeController);
 
@@ -59,15 +68,34 @@ public class SFEM_controller {
         sfemMonitor = new SFEM_monitor(sfem);
     }
 
+    private modbus searchForOpenConnections(String[] comParams) {
+        modbus mb = new modbus();
+
+        for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
+            if (sfee.getValue().getMb().getIp().equals(comParams[0]))
+                if (sfee.getValue().getMb().getPort() == Integer.parseInt(comParams[1])) {
+                    mb = sfee.getValue().getMb();
+                    break;
+                }
+        }
+
+        return mb;
+    }
+
     public void firstRun(boolean run) {
         if (run)
             for (SFEE_controller sfeeController : sfeeControllers) {
                 sfeeController.launchSetup();
             }
         else {
+
             sfem.getSFEEbyIndex(0).getSFEIbyIndex(0).setMinOperationTime(9);
             sfem.getSFEEbyIndex(0).getSFEIbyIndex(1).setMinOperationTime(33);
             sfem.getSFEEbyIndex(0).getSFEIbyIndex(2).setMinOperationTime(8);
+
+            sfem.getSFEEbyIndex(1).getSFEIbyIndex(0).setMinOperationTime(9);
+            sfem.getSFEEbyIndex(1).getSFEIbyIndex(1).setMinOperationTime(33);
+            sfem.getSFEEbyIndex(1).getSFEIbyIndex(2).setMinOperationTime(8);
         }
 
     }

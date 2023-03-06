@@ -64,7 +64,7 @@ public class App {
                             break;
                         }
 
-                        eduBlocks.add(new SFEM(name, SFEM.SFEM_type.SIMULATION, SFEM.communication.MODBUS));
+                        eduBlocks.add(new SFEM(name, SFEM.SFEM_type.SIMULATION, SFEM.communicationOption.MODBUS));
                         iCurrBlock = eduBlocks.size() - 1;
                     }
                     case 2 -> {

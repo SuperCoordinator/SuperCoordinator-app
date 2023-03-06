@@ -22,6 +22,7 @@ public class SFEE_controller {
     }
 
     private final SFEE sfee;
+    private final int temp;
 
     private SFEE_monitor sfeeMonitor;
 
@@ -31,26 +32,29 @@ public class SFEE_controller {
     private final viewers.SFEE viewer;
     private final utils utility;
 
-    public SFEE_controller(SFEE sfee) {
+    public SFEE_controller(SFEE sfee, int temp) {
         this.sfee = sfee;
+
+        this.temp = temp;
 
         this.viewer = new viewers.SFEE();
         this.utility = new utils();
     }
 
 
-    public void init() {
+    public void init(String[] comConfig) {
         try {
-            //String[] comConfig = viewer.setupComunication(sfee.getCom().ordinal());
-            String[] comConfig = {"192.168.240.1", "502", "1"};
+
+            // Initialization of the modbus connection in case of not connected already
             openCommunication(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]));
 
             //String csv_path = viewer.readIOpath();
-            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\simulation\\Tags_CMC_Modbus.csv";
+
+            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
             importIO(csv_path);
 
-            //String opMode = viewer.opMode();
-            String mode = "2";
+            String mode = viewer.opMode();
+            //String mode = "2";
             if (Integer.parseInt(mode) == 1) {
                 opMode = operationMode.NORMAL;
             } else {
@@ -100,39 +104,70 @@ public class SFEE_controller {
             }
             */
 
-            addNewSFEI_conveyor(
-                    "entry_conveyor",
-                    "s_emitter",
-                    "s_lids_at_entry",
-                    Instant.now(),
-                    Instant.now(),
-                    "entry_remover",
-                    "entry_emitter",
-                    "s_entry_remover",
-                    "s_entry_emitter");
-            addNewSFEI_machine(
-                    "MC1",
-                    "s_lids_at_entry",
-                    "s_lids_at_exit",
-                    Instant.now(),
-                    Instant.now(),
-                    "MC1_opened",
-                    "MC1_stop");
-            addNewSFEI_conveyor(
-                    "exit_conveyor",
-                    "s_lids_at_exit",
-                    "s_remover",
-                    Instant.now(),
-                    Instant.now(),
-                    "exit_remover",
-                    "exit_emitter",
-                    "s_exit_remover",
-                    "s_exit_emitter");
-
+            if (temp == 0) {
+                addNewSFEI_conveyor(
+                        "entry_conveyor",
+                        "s_emitter",
+                        "s_lids_at_entry",
+                        Instant.now(),
+                        Instant.now(),
+                        "entry_remover",
+                        "entry_emitter",
+                        "s_entry_remover",
+                        "s_entry_emitter");
+                addNewSFEI_machine(
+                        "MC1",
+                        "s_lids_at_entry",
+                        "s_lids_at_exit",
+                        Instant.now(),
+                        Instant.now(),
+                        "MC1_opened",
+                        "MC1_stop");
+                addNewSFEI_conveyor(
+                        "exit_conveyor",
+                        "s_lids_at_exit",
+                        "s_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        "exit_remover",
+                        "exit_emitter",
+                        "s_exit_remover",
+                        "s_exit_emitter");
+            } else if (temp == 1) {
+                addNewSFEI_conveyor(
+                        "entry_conveyor2",
+                        "s_emitter2",
+                        "s_lids_at_entry2",
+                        Instant.now(),
+                        Instant.now(),
+                        "entry_remover2",
+                        "entry_emitter2",
+                        "s_entry_remover2",
+                        "s_entry_emitter2");
+                addNewSFEI_machine(
+                        "MC2",
+                        "s_lids_at_entry2",
+                        "s_lids_at_exit2",
+                        Instant.now(),
+                        Instant.now(),
+                        "MC2_opened",
+                        "MC2_stop");
+                addNewSFEI_conveyor(
+                        "exit_conveyor2",
+                        "s_lids_at_exit2",
+                        "s_remover2",
+                        Instant.now(),
+                        Instant.now(),
+                        "exit_remover2",
+                        "exit_emitter2",
+                        "s_exit_remover2",
+                        "s_exit_emitter2");
+            }
             // SFEIs do not need controllers (??)
 
             autoSetSFEE_InOut();
             sfeeMonitor = new SFEE_monitor(sfee);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,7 +180,8 @@ public class SFEE_controller {
     ************************************ */
     private void openCommunication(String ip, int port, int slaveID) {
         try {
-            if (sfee.getCom() == SFEE.communication.MODBUS) sfee.getMb().openConnection(ip, port, slaveID);
+            if (!sfee.getMb().isConfigured())
+                if (sfee.getCom() == SFEE.communicationOption.MODBUS) sfee.getMb().openConnection(ip, port, slaveID);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -277,9 +313,11 @@ public class SFEE_controller {
     }
 
     public void startFailures() {
-        // Launch monitor thread
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(sfeeFailures, 0, 50, TimeUnit.MILLISECONDS);
+        if (opMode.equals(operationMode.PROG_FAILURES)) {
+            // Launch monitor thread
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+            scheduler.scheduleAtFixedRate(sfeeFailures, 0, 50, TimeUnit.MILLISECONDS);
+        }
     }
 
     public void launchSimulation() {
