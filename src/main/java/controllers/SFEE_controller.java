@@ -257,8 +257,8 @@ public class SFEE_controller {
                 // Stochastic Time
                 sfeeFailures = new SFEE_failures(sfee);
                 sfeeFailures.setTimeType(SFEE_failures.timeType.STOCHASTIC);
-                sfeeFailures.setMean(Double.parseDouble(sfeeTime[1]));
-                sfeeFailures.setStd_dev(Double.parseDouble(sfeeTime[2]));
+                sfeeFailures.setMean(sfeeTime[1]);
+                sfeeFailures.setStd_dev(sfeeTime[2]);
 
             } else if (Integer.parseInt(sfeeTime[0]) == 2) {
                 // Linear Time

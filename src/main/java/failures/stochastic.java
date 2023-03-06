@@ -8,7 +8,6 @@ import utils.utils;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class stochastic implements Runnable {
 
@@ -25,7 +24,8 @@ public class stochastic implements Runnable {
         LOADING,
         UNLOADING,
         FORCE_PAUSE,
-        RELEASE_PAUSE
+        RELEASE_PAUSE,
+        END
     }
 
     private SM_conv smConv;
@@ -38,10 +38,10 @@ public class stochastic implements Runnable {
     private final long delay;
     private final modbus mb;
 
-    private AtomicBoolean stop;
+
     private final utils utility;
 
-    public stochastic(SFEI sfei, AtomicBoolean stop, int partID, int delay, modbus mb) {
+    public stochastic(SFEI sfei, int partID, int delay, modbus mb) {
 
         if (sfei.getSfeiType().equals(SFEI.SFEI_type.CONVEYOR)) {
             this.sfeiConveyor = (SFEI_conveyor) sfei;
@@ -57,7 +57,6 @@ public class stochastic implements Runnable {
             this.sfeiType = null;
         }
 
-        this.stop = stop;
         this.partID = partID;
         this.delay = delay;
         this.mb = mb;
@@ -69,23 +68,29 @@ public class stochastic implements Runnable {
 
     @Override
     public void run() {
+        while (!smConv.equals(SM_conv.END) && !smMach.equals(SM_mach.END)) {
+            synchronized (mb) {
 
-        synchronized (mb) {
+                if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
 
-            if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
+                    if (sfeiConveyor.isSimulation()) {
+                        // F_IO scene, so have REMOVER and EMITTER
+                        injectFailureF_IOConv();
+                    } else {
+                        // OTHER simulation, so have only a STOP bit
+                        injectFailureSimConv();
+                    }
 
-                if (sfeiConveyor.isSimulation()) {
-                    // F_IO scene, so have REMOVER and EMITTER
-                    injectFailureF_IOConv();
-                } else {
-                    // OTHER simulation, so have only a STOP bit
-                    injectFailureSimConv();
+                } else if (sfeiType.equals(SFEI.SFEI_type.MACHINE)) {
+                    injectFailuresMach();
                 }
 
-            } else if (sfeiType.equals(SFEI.SFEI_type.MACHINE)) {
-                injectFailuresMach();
             }
-
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }
@@ -142,7 +147,7 @@ public class stochastic implements Runnable {
                 old_sEmitter = sensor;
             }
             case END -> {
-                stop.set(true);
+
             }
             default -> {
             }
@@ -225,8 +230,10 @@ public class stochastic implements Runnable {
             }
             case RELEASE_PAUSE -> {
                 mb.writeState(sfeiMachine.getaStop(), "0");
+                smMach = SM_mach.END;
+            }
+            case END -> {
 
-                stop.set(true);
             }
         }
 

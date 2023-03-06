@@ -2,13 +2,13 @@ package failures;
 
 import models.SFEE;
 import models.SFEI.SFEI;
-import utils.RunnableWrap;
+import utils.utils;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Random;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SFEE_failures implements Runnable {
 
@@ -22,14 +22,17 @@ public class SFEE_failures implements Runnable {
     private timeType timeType;
 
     // IN case of STOCHASTIC
-    private double mean;
-    private double std_dev;
+    private String mean;
+    private String std_dev;
+
+    private final utils utility;
 
 /*    private final ScheduledExecutorService executorService;
     private final ExecutorService service;*/
 
     public SFEE_failures(SFEE sfee) {
         this.sfee = sfee;
+        this.utility = new utils();
 
 /*        this.executorService = Executors.newScheduledThreadPool(sfee.getSFEIs().size());
         this.service = Executors.newFixedThreadPool(1);*/
@@ -39,14 +42,13 @@ public class SFEE_failures implements Runnable {
         this.timeType = timeType;
     }
 
-    public void setMean(double mean) {
+    public void setMean(String mean) {
         this.mean = mean;
     }
 
-    public void setStd_dev(double std_dev) {
+    public void setStd_dev(String std_dev) {
         this.std_dev = std_dev;
     }
-
 
     @Override
     public void run() {
@@ -57,30 +59,20 @@ public class SFEE_failures implements Runnable {
             boolean newPiece = checkNewPiece();
 
             if (newPiece) {
-                int pickSFEI = pickSFEI();
+                int pickSFEI = pickSFEI(false);
                 //int pickSFEI = 2;
 
                 // The part is in the initial SFEI, so it is needed to select the partID and
                 // associate with the correct SFEI to manipulate the time
                 if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
-                    AtomicBoolean stop = new AtomicBoolean(false);
-                    int delay = calculateDelay();
+
+                    int delay = calculateDelay(pickSFEI);
                     System.out.println("SFEI index chosen: " + pickSFEI + " to delay: " + delay);
-/*                new RunnableWrap().runNTimes(
-                        new stochastic(sfee.getSFEIbyIndex(pickSFEI), stop, sfee.getSFEIbyIndex(0).getPartsATM().first().getId(), delay, sfee.getMb()),
-                        stop,
-                        50,
-                        TimeUnit.MILLISECONDS,
-                        executorService);*/
 
-                    stochastic2 stochastic2 = new stochastic2(sfee.getSFEIbyIndex(pickSFEI), sfee.getSFEIbyIndex(0).getPartsATM().first().getId(), delay, sfee.getMb());
+                    stochastic stochastic = new stochastic(sfee.getSFEIbyIndex(pickSFEI), sfee.getSFEIbyIndex(0).getPartsATM().first().getId(), delay, sfee.getMb());
 
-/*                    ExecutorService service = Executors.newFixedThreadPool(1);
-                    service.submit(stochastic2);*/
-
-                    Thread t1 = new Thread(stochastic2);
+                    Thread t1 = new Thread(stochastic);
                     t1.start();
-
 
                 }
             }
@@ -105,23 +97,37 @@ public class SFEE_failures implements Runnable {
         return false;
     }
 
-    private int pickSFEI() {
+    private int pickSFEI(boolean re_entrant) {
 
         Random random = new Random();
         OptionalInt optionalInt;
         do {
             // NOT WORKING FOR THE LAST SFEI, WHY???
-            optionalInt = random.ints(0, sfee.getSFEIs().size() - 1).findAny();
+            optionalInt = random.ints(0, sfee.getSFEIs().size()).findAny();
         }
         while (optionalInt.isEmpty());
-        return optionalInt.getAsInt();
+        int sfei_id = optionalInt.getAsInt();
+        if(sfee.getSFEIbyIndex(sfei_id).getSfeiType().equals(SFEI.SFEI_type.MACHINE) && !re_entrant)
+            sfei_id = pickSFEI(true);
+        return sfei_id;
 
     }
 
-    private int calculateDelay() {
+    private int calculateDelay(int sfei_id) {
+
+        SFEI sfei = sfee.getSFEIbyIndex(sfei_id);
+        double dev = utility.getCustomCalc().calcExpression(std_dev,
+                sfei.getnPiecesMoved(),
+                (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
+                (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
+
+        double m = utility.getCustomCalc().calcExpression(mean,
+                sfei.getnPiecesMoved(),
+                (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
+                (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
 
         Random random = new Random();
-        double total_Time = random.nextGaussian() * Math.sqrt(std_dev) + mean;
+        double total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
 
         for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
             total_Time = total_Time - entry.getValue().getMinOperationTime();
