@@ -7,30 +7,24 @@ import java.util.*;
 
 public class SFEE {
 
-    public enum communicationOption {
-        MODBUS, OPC_UA
-    }
+
 
     public enum SFEE_type {
         SIMULATION, REAL
     }
 
     private final String name;
-    private final communicationOption com;
-
     private final SFEE_type SFEE_type;
 
     private sensor_actuator inSensor;
     private sensor_actuator outSensor;
-    private TreeMap<String, sensor_actuator> io;
-    private final modbus mb;
+    private TreeMap<Integer, sensor_actuator> io;
+
     private final TreeMap<Integer, SFEI> SFEIs;
 
 
-    public SFEE(String name, communicationOption com, modbus mb, SFEE.SFEE_type SFEE_type) {
+    public SFEE(String name, SFEE.SFEE_type SFEE_type) {
         this.name = name;
-        this.com = com;
-        this.mb = mb;
         this.SFEE_type = SFEE_type;
         this.io = new TreeMap<>();
         this.SFEIs = new TreeMap<>();
@@ -40,9 +34,7 @@ public class SFEE {
         return name;
     }
 
-    public communicationOption getCom() {
-        return com;
-    }
+
 
     public SFEE.SFEE_type getSFEE_type() {
         return SFEE_type;
@@ -56,23 +48,19 @@ public class SFEE {
         return outSensor;
     }
 
-    public modbus getMb() {
-        return mb;
-    }
-
-    public TreeMap<String, sensor_actuator> getIo() {
+    public TreeMap<Integer, sensor_actuator> getIo() {
         return io;
     }
 
-    public void setIo(TreeMap<String, sensor_actuator> io) {
+    public void setIo(TreeMap<Integer, sensor_actuator> io) {
         this.io = io;
     }
 
     public sensor_actuator getIObyName(String name) {
 
         try {
-            for (Map.Entry<String, sensor_actuator> entry : io.entrySet()) {
-                if (entry.getKey().equalsIgnoreCase(name)) return entry.getValue();
+            for (Map.Entry<Integer, sensor_actuator> entry : io.entrySet()) {
+                if (entry.getValue().name().equalsIgnoreCase(name)) return entry.getValue();
             }
             throw new Exception("IO with name" + name + " not found!");
         } catch (Exception e) {

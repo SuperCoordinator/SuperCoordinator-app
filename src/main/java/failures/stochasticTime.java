@@ -8,8 +8,9 @@ import utils.utils;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 
-public class stochasticTime implements Runnable {
+public class stochasticTime {
 
     private enum SM_conv {
         INIT,
@@ -36,12 +37,12 @@ public class stochasticTime implements Runnable {
     private final SFEI.SFEI_type sfeiType;
     private final int partID;
     private final long delay;
-    private final modbus mb;
+//    private final modbus mb;
 
 
     private final utils utility;
 
-    public stochasticTime(SFEI sfei, int partID, int delay, modbus mb) {
+    public stochasticTime(SFEI sfei, int partID, int delay/*, modbus mb*/) {
 
         if (sfei.getSfeiType().equals(SFEI.SFEI_type.CONVEYOR)) {
             this.sfeiConveyor = (SFEI_conveyor) sfei;
@@ -59,52 +60,57 @@ public class stochasticTime implements Runnable {
 
         this.partID = partID;
         this.delay = delay;
-        this.mb = mb;
+//        this.mb = mb;
 
         this.utility = new utils();
         this.smConv = SM_conv.INIT;
         this.smMach = SM_mach.WAITING;
     }
 
-    @Override
-    public void run() {
-        while (!smConv.equals(SM_conv.END) && !smMach.equals(SM_mach.END)) {
-            synchronized (mb) {
+    public boolean isConveyorFinished() {
+        return smConv.equals(SM_conv.END);
+    }
 
-                if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
+    public boolean isMachineFinished() {
+        return smMach.equals(SM_mach.END);
+    }
 
-                    if (sfeiConveyor.isSimulation()) {
-                        // F_IO scene, so have REMOVER and EMITTER
-                        injectFailureF_IOConv();
-                    } else {
-                        // OTHER simulation, so have only a STOP bit
-                        injectFailureSimConv();
-                    }
+    public String loop(String sensorsState, String actuatorsState) {
+//        if (!smConv.equals(SM_conv.END) && !smMach.equals(SM_mach.END)) {
+//            synchronized (mb) {
+        String ret = actuatorsState;
+        if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
 
-                } else if (sfeiType.equals(SFEI.SFEI_type.MACHINE)) {
-                    injectFailuresMach();
-                }
-
+            if (sfeiConveyor.isSimulation()) {
+                // F_IO scene, so have REMOVER and EMITTER
+                ret = injectFailureF_IOConv(sensorsState, actuatorsState);
+            } else {
+                // OTHER simulation, so have only a STOP bit
+                injectFailureSimConv();
             }
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+
+        } else if (sfeiType.equals(SFEI.SFEI_type.MACHINE)) {
+            ret = injectFailuresMach(sensorsState, actuatorsState);
         }
 
+//            }
+
+//        }
+        return ret;
     }
 
     private boolean old_sRemover = false, old_sEmitter = false;
     private Instant initial_t;
     boolean isRemoverON = false, isEmitterON = false;
 
-    private void injectFailureF_IOConv() {
-
+    private String injectFailureF_IOConv(String sensorsState, String actuatorsState) {
+        String[] iBits = sensorsState.split(" ");
+        String[] oBits = actuatorsState.split(" ");
         boolean sensor;
+//        System.out.println("partID: " + partID + " " + smConv + Arrays.toString(oBits));
         switch (smConv) {
             case INIT -> {
-                sensor = Boolean.parseBoolean(mb.readState(sfeiConveyor.getsRemover()));
+                sensor = Boolean.parseBoolean(iBits[sfeiConveyor.getsRemover().bit_offset()]);
                 if (sfeiConveyor.getPartsATM().size() > 0) {
                     if (sfeiConveyor.getPartsATM().first().getId() == partID && utility.getLogicalOperator().RE_detector(sensor, old_sRemover)) {
                         smConv = SM_conv.REMOVING;
@@ -113,15 +119,19 @@ public class stochasticTime implements Runnable {
                 old_sRemover = sensor;
             }
             case REMOVING -> {
-                sensor = Boolean.parseBoolean(mb.readState(sfeiConveyor.getsRemover()));
+
                 if (!isRemoverON) {
-                    mb.writeState(sfeiConveyor.getaRemover(), "1");
+//                    mb.writeState(sfeiConveyor.getaRemover(), "1");
+                    oBits[sfeiConveyor.getaRemover().bit_offset()] = String.valueOf(true);
                     initial_t = Instant.now();
                     isRemoverON = true;
                 }
 
+                sensor = Boolean.parseBoolean(iBits[sfeiConveyor.getsRemover().bit_offset()]);
+
                 if (utility.getLogicalOperator().FE_detector(sensor, old_sRemover)) {
-                    mb.writeState(sfeiConveyor.getaRemover(), "0");
+//                    mb.writeState(sfeiConveyor.getaRemover(), "0");
+                    oBits[sfeiConveyor.getaRemover().bit_offset()] = String.valueOf(false);
                     isRemoverON = false;
                     smConv = SM_conv.WAITING;
                 }
@@ -133,14 +143,16 @@ public class stochasticTime implements Runnable {
 
             }
             case EMITTING -> {
-                sensor = Boolean.parseBoolean(mb.readState(sfeiConveyor.getsEmitter()));
+                sensor = Boolean.parseBoolean(iBits[sfeiConveyor.getsEmitter().bit_offset()]);
                 if (!isEmitterON) {
-                    mb.writeState(sfeiConveyor.getaEmitter(), "1");
+//                    mb.writeState(sfeiConveyor.getaEmitter(), "1");
+                    oBits[sfeiConveyor.getaEmitter().bit_offset()] = String.valueOf(true);
                     isEmitterON = true;
                 }
                 if (utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                     // Turn off the emitter
-                    mb.writeState(sfeiConveyor.getaEmitter(), "0");
+//                    mb.writeState(sfeiConveyor.getaEmitter(), "0");
+                    oBits[sfeiConveyor.getaEmitter().bit_offset()] = String.valueOf(false);
                     smConv = SM_conv.END;
 
                 }
@@ -152,6 +164,13 @@ public class stochasticTime implements Runnable {
             default -> {
             }
         }
+        String ret = "";
+
+        for (String str : oBits) {
+            ret = ret.concat(str + " ");
+        }
+//        System.out.println(ret);
+        return ret;
 /*
         do {
             oldSensor = Boolean.parseBoolean(mb.readState(sfeiConveyor.getsRemover()));
@@ -192,11 +211,13 @@ public class stochasticTime implements Runnable {
     private Instant safety_margin_start, stopped_at;
     private boolean old_sMachine_door = false;
 
-    private void injectFailuresMach() {
+    private String injectFailuresMach(String sensorsState, String actuatorsState) {
 
+        String[] iBits = sensorsState.split(" ");
+        String[] oBits = actuatorsState.split(" ");
         switch (smMach) {
             case WAITING -> {
-                boolean b_machine_door = Boolean.parseBoolean(mb.readState(sfeiMachine.getsDoor()));
+                boolean b_machine_door = Boolean.parseBoolean(iBits[sfeiMachine.getsDoor().bit_offset()]);
                 if (sfeiMachine.getPartsATM().size() > 0) {
                     if (sfeiMachine.getPartsATM().first().getId() == partID && utility.getLogicalOperator().FE_detector(b_machine_door, old_sMachine_door)) {
                         smMach = SM_mach.LOADING;
@@ -205,7 +226,7 @@ public class stochasticTime implements Runnable {
                 old_sMachine_door = b_machine_door;
             }
             case LOADING -> {
-                boolean b_machine_door = Boolean.parseBoolean(mb.readState(sfeiMachine.getsDoor()));
+                boolean b_machine_door = Boolean.parseBoolean(iBits[sfeiMachine.getsDoor().bit_offset()]);
                 if (utility.getLogicalOperator().RE_detector(b_machine_door, old_sMachine_door)) {
                     smMach = SM_mach.UNLOADING;
                     safety_margin_start = Instant.now();
@@ -226,16 +247,24 @@ public class stochasticTime implements Runnable {
                     smMach = SM_mach.RELEASE_PAUSE;
                 }
 
-                mb.writeState(sfeiMachine.getaStop(), "1");
+//                mb.writeState(sfeiMachine.getaStop(), "1");
+                oBits[sfeiMachine.getaStop().bit_offset()] = String.valueOf(true);
             }
             case RELEASE_PAUSE -> {
-                mb.writeState(sfeiMachine.getaStop(), "0");
+//                mb.writeState(sfeiMachine.getaStop(), "0");
+                oBits[sfeiMachine.getaStop().bit_offset()] = String.valueOf(false);
                 smMach = SM_mach.END;
             }
             case END -> {
 
             }
         }
+        String ret = "";
+
+        for (String str : oBits) {
+            ret = ret.concat(str + " ");
+        }
+        return ret;
 
 
     }

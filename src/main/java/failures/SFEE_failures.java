@@ -1,16 +1,15 @@
 package failures;
 
+import communication.modbus;
 import models.SFEE;
 import models.SFEI.SFEI;
 import utils.utils;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Map;
-import java.util.OptionalInt;
-import java.util.Random;
+import java.util.*;
 
-public class SFEE_failures implements Runnable {
+public class SFEE_failures {
 
     public enum timeOptions {
         GAUSSIAN,
@@ -19,6 +18,7 @@ public class SFEE_failures implements Runnable {
 
     private final SFEE sfee;
 
+    private final LinkedList<stochasticTime> failuresTasks;
     private final timeOptions timeType;
 
     // IN case of STOCHASTIC
@@ -32,6 +32,8 @@ public class SFEE_failures implements Runnable {
 
     public SFEE_failures(SFEE sfee, timeOptions timeType) {
         this.sfee = sfee;
+        this.failuresTasks = new LinkedList<>();
+
         this.utility = new utils();
         this.timeType = timeType;
 
@@ -47,17 +49,15 @@ public class SFEE_failures implements Runnable {
         this.std_dev = std_dev;
     }
 
-    @Override
-    public void run() {
 
-        // Launch new thread for interfering on SFEE time
-        // Depends on the piece at the emitter os SFEE
+    public String loop(String sensorsState,/* modbus mb*/ String actuatorsState) {
+        String ret = actuatorsState;
+        // Depends on the piece at the emitter of SFEE
         try {
             boolean newPiece = checkNewPiece();
-
             if (newPiece) {
                 int pickSFEI = pickSFEI(false);
-                //int pickSFEI = 2;
+//                int pickSFEI = 2;
 
                 // The part is in the initial SFEI, so it is needed to select the partID and
                 // associate with the correct SFEI to manipulate the time
@@ -66,24 +66,38 @@ public class SFEE_failures implements Runnable {
                     int delay = calculateDelay(pickSFEI);
                     System.out.println("SFEI index chosen: " + pickSFEI + " to delay: " + delay);
 
-                    stochasticTime stochasticTime = new stochasticTime(sfee.getSFEIbyIndex(pickSFEI), sfee.getSFEIbyIndex(0).getPartsATM().first().getId(), delay, sfee.getMb());
-
-                    Thread t1 = new Thread(stochasticTime);
-                    t1.start();
+                    stochasticTime stochasticTime = new stochasticTime(sfee.getSFEIbyIndex(pickSFEI), sfee.getSFEIbyIndex(0).getPartsATM().first().getId(), delay/*,mb*/);
+                    failuresTasks.add(stochasticTime);
+/*                    Thread t1 = new Thread(stochasticTime);
+                    t1.start();*/
 
                 }
             }
 
+//            String[] res = ret.split(" ");
+            // Runs the tasks
+            for (stochasticTime object : failuresTasks) {
+                ret = object.loop(sensorsState, ret);
+//                String[] obj_set_ = obj_ret.split(" ");
+//                for (int i = 0; i < obj_set_.length; i++) {
+//                    res[i] = String.valueOf(Boolean.parseBoolean(String.valueOf(Boolean.parseBoolean(res[i]) ^ Boolean.parseBoolean(obj_set_[i]))));
+//                }
+            }
+
+            // Delete the completed tasks
+            failuresTasks.removeIf(object -> object.isConveyorFinished() || object.isMachineFinished());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return ret;
     }
 
     private int oldPartID = -1;
 
     private boolean checkNewPiece() {
         int currID = oldPartID;
+//        System.out.println(Thread.currentThread().getName());
         if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
             //System.out.println("*** " + sfee.getName() + " #parts at entryConv: " + sfee.getSFEIbyIndex(0).getPartsATM().size());
             currID = sfee.getSFEIbyIndex(0).getPartsATM().first().getId();

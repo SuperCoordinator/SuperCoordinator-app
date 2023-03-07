@@ -1,5 +1,6 @@
 package controllers;
 
+import communication.modbus;
 import failures.SFEE_failures;
 import models.SFEE;
 import models.SFEI.SFEI;
@@ -16,7 +17,15 @@ import java.util.concurrent.*;
 
 public class SFEE_controller {
 
-    private enum operationMode {
+    public enum communicationOption {
+        MODBUS, OPC_UA
+    }
+
+    private final communicationOption com;
+
+    private final modbus mb;
+
+    public enum operationMode {
         NORMAL,
         PROG_FAILURES
     }
@@ -32,13 +41,18 @@ public class SFEE_controller {
     private final viewers.SFEE viewer;
     private final utils utility;
 
-    public SFEE_controller(SFEE sfee, int temp) {
+    public SFEE_controller(SFEE sfee, communicationOption communicationOpt, int temp) {
         this.sfee = sfee;
-
+        this.com = communicationOpt;
+        this.mb = new modbus();
         this.temp = temp;
 
         this.viewer = new viewers.SFEE();
         this.utility = new utils();
+    }
+
+    public modbus getMb() {
+        return mb;
     }
 
 
@@ -50,6 +64,7 @@ public class SFEE_controller {
 
             //String csv_path = viewer.readIOpath();
 
+            //String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC\\simulation\\Tags_CMC_Modbus.csv";
             String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
             importIO(csv_path);
 
@@ -166,7 +181,7 @@ public class SFEE_controller {
             // SFEIs do not need controllers (??)
 
             autoSetSFEE_InOut();
-            sfeeMonitor = new SFEE_monitor(sfee);
+            sfeeMonitor = new SFEE_monitor(sfee, mb.readMultipleInputs(sfee.getIo()));
 
 
         } catch (Exception e) {
@@ -180,15 +195,15 @@ public class SFEE_controller {
     ************************************ */
     private void openCommunication(String ip, int port, int slaveID) {
         try {
-            if (!sfee.getMb().isConfigured())
-                if (sfee.getCom() == SFEE.communicationOption.MODBUS) sfee.getMb().openConnection(ip, port, slaveID);
+            if (!mb.isConfigured())
+                if (com == communicationOption.MODBUS) mb.openConnection(ip, port, slaveID);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void closeCommunication() {
-        sfee.getMb().closeConnection();
+        mb.closeConnection();
     }
 
     /* ***********************************
@@ -197,6 +212,7 @@ public class SFEE_controller {
 
     public void importIO(String file_path) {
         sfee.setIo(utility.getReader().readModbusTags(file_path, false));
+//        printAllIO();
     }
 
     public void printAllIO() {
@@ -245,7 +261,7 @@ public class SFEE_controller {
         try {
             List<Callable<Long>> taskList = new ArrayList<>();
             for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
-                taskList.add(new setupRun(sfei.getValue(), sfee.getMb()));
+                taskList.add(new setupRun(sfei.getValue(), mb));
             }
             ExecutorService executorService = Executors.newFixedThreadPool(sfee.getSFEIs().size());
             System.out.print("Press ENTER to start simulation of " + sfee.getName());
@@ -305,7 +321,26 @@ public class SFEE_controller {
     }
 
 
-    public void startMonitoring() {
+    public void loop() {
+
+        String sensorsState = mb.readMultipleInputs(sfee.getIo());
+        String actuatorsStateInit = mb.readMultipleCoils(sfee.getIo());
+        //System.out.println("Outputs before: " + actuatorsState);
+        sfeeMonitor.loop(sensorsState);
+        String actuatorsState = actuatorsStateInit;
+        if (opMode.equals(operationMode.PROG_FAILURES)) {
+            actuatorsState = sfeeFailures.loop(sensorsState/*, mb*/, actuatorsState);
+        }
+        //System.out.println("Outputs after:  " + actuatorsState);
+        if (!actuatorsStateInit.equalsIgnoreCase(actuatorsState)) {
+//            System.out.println("Outputs before: " + actuatorsStateInit);
+//            System.out.println("Outputs after:  " + actuatorsState);
+            mb.writeMultipleCoils(sfee.getIo(), actuatorsState);
+        }
+
+    }
+
+/*    public void startMonitoring() {
         // Launch monitor thread
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(sfeeMonitor, 0, 50, TimeUnit.MILLISECONDS);
@@ -318,14 +353,14 @@ public class SFEE_controller {
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(sfeeFailures, 0, 50, TimeUnit.MILLISECONDS);
         }
-    }
+    }*/
 
     public void launchSimulation() {
-        sfee.getMb().writeState(sfee.getIObyName("FACTORY I/O (Run)"), "1");
+        mb.writeState(sfee.getIObyName("FACTORY I/O (Run)"), "1");
     }
 
     public void stopSimulation() {
-        sfee.getMb().writeState(sfee.getIObyName("FACTORY I/O (Run)"), "0");
+        mb.writeState(sfee.getIObyName("FACTORY I/O (Run)"), "0");
     }
 
     private Long[] getSFEEOperationTime() {

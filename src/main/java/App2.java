@@ -25,8 +25,16 @@ public class App2 {
         sfemController.firstRun(false);
         sfemController.setupFailureMode();
 
-        sfemController.start();
-        while (true) {
+        try {
+            // NOTE: CYCLE DURATION between 60 and 90 ms (avr) with 2 SFEE in the SFEM
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+            scheduler.scheduleAtFixedRate(sfemController, 0, 100, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //sfemController.start();
+
+/*        while (true) {
             System.out.println("Number of running Threads: " + Thread.activeCount());
             try {
                 Thread.sleep(5000);
@@ -34,7 +42,7 @@ public class App2 {
                 ie.printStackTrace();
             }
 
-        }
+        }*/
 
 
        /* currSFEE.addNewSFEI_conveyor(

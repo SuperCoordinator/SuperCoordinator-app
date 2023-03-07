@@ -5,6 +5,8 @@ import models.SFEE;
 import models.SFEM;
 import monitor.SFEM_monitor;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
@@ -12,7 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class SFEM_controller {
+public class SFEM_controller implements Runnable {
 
     private final SFEM sfem;
 
@@ -42,21 +44,22 @@ public class SFEM_controller {
                 String[] inputs = {"sfee" + i, "1", "1"};
 
                 /* QUESTAO DO SLAVE ID*/
-                //String[] comConfig = viewer.setupComunication(0);
-                String[] comConfig = {"192.168.240.1", "502", String.valueOf(i + 1)};
+                String[] comConfig = viewer.setupComunication(0);
+                //String[] comConfig = {"192.168.240.1", "502", String.valueOf(i + 1)};
                 if (Integer.parseInt(inputs[1]) == 1) {
                     mb = searchForOpenConnections(comConfig);
                 }
                 System.out.println(mb);
                 SFEE sfee = new SFEE(
                         inputs[0],
-                        Integer.parseInt(inputs[1]) == 1 ? SFEE.communicationOption.MODBUS : SFEE.communicationOption.OPC_UA,
-                        mb,
                         Integer.parseInt(inputs[2]) == 1 ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL);
 
                 sfem.addNewSFEE(sfee);
 
-                SFEE_controller sfeeController = new SFEE_controller(sfee, i);
+                SFEE_controller sfeeController = new SFEE_controller(
+                        sfee,
+                        Integer.parseInt(inputs[1]) == 1 ? SFEE_controller.communicationOption.MODBUS : SFEE_controller.communicationOption.OPC_UA,
+                        i);
                 sfeeController.init(comConfig);
 
                 sfeeControllers.add(sfeeController);
@@ -71,10 +74,10 @@ public class SFEM_controller {
     private modbus searchForOpenConnections(String[] comParams) {
         modbus mb = new modbus();
 
-        for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
-            if (sfee.getValue().getMb().getIp().equals(comParams[0]))
-                if (sfee.getValue().getMb().getPort() == Integer.parseInt(comParams[1])) {
-                    mb = sfee.getValue().getMb();
+        for (SFEE_controller sfeeController : sfeeControllers) {
+            if (sfeeController.getMb().getIp().equals(comParams[0]))
+                if (sfeeController.getMb().getPort() == Integer.parseInt(comParams[1])) {
+                    mb = sfeeController.getMb();
                     break;
                 }
         }
@@ -107,9 +110,35 @@ public class SFEM_controller {
         }
     }
 
+    private boolean firstExe = true;
+
+    @Override
+    public void run() {
+//        Instant start_t = Instant.now();
+        if (firstExe) {
+            System.out.print("Press ENTER to start simulation");
+            Scanner in = new Scanner(System.in);
+            in.nextLine();
+
+            for (SFEE_controller sfeeController : sfeeControllers){
+                sfeeController.getMb().reOpenConnection();
+            }
+
+            // Launch simulation
+            sfeeControllers.get(0).launchSimulation();
+            firstExe = false;
+        }
+        for (SFEE_controller sfeeController : sfeeControllers) {
+            sfeeController.loop();
+        }
+
+        sfemMonitor.loop();
+//        System.out.println("Cycle duration (ms): " + Duration.between(start_t,Instant.now()).toMillis());
+    }
+
     public void start() {
 
-        System.out.print("Press ENTER to start simulation");
+/*        System.out.print("Press ENTER to start simulation");
         Scanner in = new Scanner(System.in);
         in.nextLine();
 
@@ -131,7 +160,7 @@ public class SFEM_controller {
         scheduler.scheduleAtFixedRate(sfemMonitor, 0, 100, TimeUnit.MILLISECONDS);
 
         // Launch simulation
-        sfeeControllers.get(0).launchSimulation();
+        sfeeControllers.get(0).launchSimulation();*/
 
     }
 }

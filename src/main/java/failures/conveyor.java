@@ -77,7 +77,7 @@ public class conveyor implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void loop() {
 
         try {
             if (MB != null)

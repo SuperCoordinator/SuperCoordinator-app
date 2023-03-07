@@ -60,7 +60,7 @@ public class machine extends Thread {
     }
 
     @Override
-    public void run() {
+    public void loop() {
         evalTransitions();
         executeActions();
 

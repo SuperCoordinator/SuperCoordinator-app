@@ -9,7 +9,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-public class SFEM_monitor implements Runnable {
+public class SFEM_monitor {
 
     private final SFEM sfem;
 
@@ -19,21 +19,18 @@ public class SFEM_monitor implements Runnable {
         this.sfem = sfem;
     }
 
-    @Override
-    public void run() {
-        try {
-            synchronized (this) {
 
-                // will check the parts from the SFEE and save them into history
-                for (Map.Entry<Integer, SFEE> entry : sfem.getSFEEs().entrySet()) {
-                    SFEI lastSFEI_of_SFEE = entry.getValue().getSFEIbyIndex(entry.getValue().getSFEIs().size() - 1);
-                    Iterator<part> iterator = lastSFEI_of_SFEE.getPartsATM().iterator();
-                    while (iterator.hasNext()) {
-                        part p = iterator.next();
-                        if (p.isProduced()) {
-                            sfem.addPartToProductionHistory(p);
-                            iterator.remove();
-                        }
+    public void loop() {
+        try {
+            // will check the parts from the SFEE and save them into history
+            for (Map.Entry<Integer, SFEE> entry : sfem.getSFEEs().entrySet()) {
+                SFEI lastSFEI_of_SFEE = entry.getValue().getSFEIbyIndex(entry.getValue().getSFEIs().size() - 1);
+                Iterator<part> iterator = lastSFEI_of_SFEE.getPartsATM().iterator();
+                while (iterator.hasNext()) {
+                    part p = iterator.next();
+                    if (p.isProduced()) {
+                        sfem.addPartToProductionHistory(p);
+                        iterator.remove();
                     }
                 }
                 printStats();

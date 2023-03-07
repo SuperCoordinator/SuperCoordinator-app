@@ -25,7 +25,7 @@ public class SFEE {
         return str;
     }
 
-    public void listAllIO(TreeMap<String, sensor_actuator> io) {
+    public void listAllIO(TreeMap<Integer, sensor_actuator> io) {
         io.forEach((key, value) -> System.out.println(value.toString()));
     }
 

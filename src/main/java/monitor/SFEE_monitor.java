@@ -11,25 +11,24 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 
-public class SFEE_monitor implements Runnable {
+public class SFEE_monitor {
 
     private final SFEE sfee;
     private final utils utility;
     private final boolean[] SFEIs_old_inSensors;
     private final boolean[] SFEIs_old_outSensors;
-    private final modbus mb;
 
-    public SFEE_monitor(SFEE sfee) {
+    public SFEE_monitor(SFEE sfee, String sensorsState) {
         this.sfee = sfee;
         this.utility = new utils();
         this.SFEIs_old_inSensors = new boolean[sfee.getSFEIs().size()];
         this.SFEIs_old_outSensors = new boolean[sfee.getSFEIs().size()];
-        this.mb = sfee.getMb();
 
-        init_oldSensorsValues();
+        init_oldSensorsValues(sensorsState);
     }
-    private void init_oldSensorsValues() {
-        String sensorsState = mb.readMultipleRegisters(sfee.getIo());
+
+    private void init_oldSensorsValues(String sensorsState) {
+//        String sensorsState = mb.readMultipleInputs(sfee.getIo());
         String[] iBits = sensorsState.split(" ");
 
         for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
@@ -44,11 +43,10 @@ public class SFEE_monitor implements Runnable {
 
     private int pieceCnt = 0;
 
-    @Override
-    public void run() {
+    public void loop(String sensorsState) {
         try {
             synchronized (sfee) {
-                String sensorsState = mb.readMultipleRegisters(sfee.getIo());
+//                String sensorsState = mb.readMultipleInputs(sfee.getIo());
                 String[] iBits = sensorsState.split(" ");
 
                 for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
@@ -128,6 +126,7 @@ public class SFEE_monitor implements Runnable {
     private void printDBG() {
         if (Duration.between(sfee.getSFEIbyIndex(0).getDayOfBirth(), Instant.now()).toSeconds() % 5 == 0) {
             if (!printedDBG) {
+                System.out.println("Number of running Threads: " + Thread.activeCount());
                 for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
                     System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName());
                     for (part p : sfei.getValue().getPartsATM()) {

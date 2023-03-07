@@ -8,11 +8,9 @@ import java.util.*;
 import com.opencsv.*;
 
 public class csv_reader {
-    private record innerForTreeMap(String name, sensor_actuator sensorActuator) {
-    }
 
-    public TreeMap<String, sensor_actuator> readModbusTags(String path, boolean dbg) {
-        TreeMap<String, sensor_actuator> treeMap = new TreeMap<>();
+    public TreeMap<Integer, sensor_actuator> readModbusTags(String path, boolean dbg) {
+        TreeMap<Integer, sensor_actuator> treeMap = new TreeMap<>();
         try {
 
             // Create an object of file-reader class
@@ -26,7 +24,6 @@ public class csv_reader {
                     .build();
             List<String[]> allData = csvReader.readAll();
 
-            ArrayList<innerForTreeMap> tempTreeMap = new ArrayList<>();
             // print Data
             for (String[] row : allData) {
 
@@ -34,7 +31,7 @@ public class csv_reader {
                     throw new Exception("Cannot parse the object " + Arrays.toString(row));
 
                 // TreeMap with object name as KEY and fieldObj as VALUE
-                tempTreeMap.add(new innerForTreeMap(row[0], createObj(row)));
+                treeMap.put(treeMap.size(), createObj(row));
 
                 if (dbg) {
                     for (String cell : row) {
@@ -44,26 +41,27 @@ public class csv_reader {
                 }
             }
             System.out.println("*** All imported IOs ***");
-            for (int i = 0; i < tempTreeMap.size(); i++) {
-                System.out.println("   " + i + " - " + tempTreeMap.get(i).name());
+            for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
+                System.out.println("   " + entry.getKey() + " - " + entry.getValue().name());
             }
-            System.out.println("From the IO which are in inverse logic?");
+/*            System.out.println("From the IO which are in inverse logic?");
 
             Scanner in = new Scanner(System.in);
 
-            //String input = in.nextLine();
-            // System.out.println("Enter following the example pattern: 2,3,1,5");
+            System.out.println("Enter following the example pattern: 2,3,1,5");
+            String input = in.nextLine();*/
+
             String input = "6,7,8,9,10,12,13";
             System.out.println(input);
             for (String str : input.split(",")) {
-                innerForTreeMap inner = tempTreeMap.get(Integer.parseInt(str));
-                treeMap.put(inner.name(), inner.sensorActuator().changeInvLogic(true));
+                int key = Integer.parseInt(str);
+                treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
             }
             // Copy the remaining elements
-
-            for (innerForTreeMap inner : tempTreeMap) {
-                treeMap.putIfAbsent(inner.name(), inner.sensorActuator());
-            }
+//            for (innerForTreeMap inner : tempTreeMap) {
+//                if (!treeMap.containsValue(inner.sensorActuator()))
+//                    treeMap.put(treeMap.size(), inner.sensorActuator());
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
