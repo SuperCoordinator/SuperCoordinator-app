@@ -1,23 +1,21 @@
 package models;
 
-import communication.modbus;
 //import monitor.stochasticTime.conveyor;
-import utils.utils;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class SFEM {
+
+    public record producedPart(part part, int production_time) {
+
+    }
 
     private String name;
 
     private final TreeMap<Integer, SFEE> SFEEs;
 
-    private final ArrayList<part> productionHistory;
-
+    private final ArrayList<producedPart> productionHistory;
 
     public SFEM(String name) {
         this.name = name;
@@ -42,17 +40,16 @@ public class SFEM {
         return SFEEs.get(index);
     }
 
-    public int addNewSFEE(SFEE newSFEE) {
+    public void addNewSFEE(SFEE newSFEE) {
         int index = SFEEs.size();
         SFEEs.put(index, newSFEE);
-        return index;
     }
 
-    public void addPartToProductionHistory(part productedPart) {
-        productionHistory.add(productionHistory.size(), productedPart);
+    public void addPartToProductionHistory(producedPart producedPart) {
+        productionHistory.add(productionHistory.size(), producedPart);
     }
 
-    public ArrayList<part> getProductionHistory() {
+    public ArrayList<producedPart> getProductionHistory() {
         return productionHistory;
     }
 }

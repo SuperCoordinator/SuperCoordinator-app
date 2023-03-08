@@ -64,8 +64,8 @@ public class SFEE_controller {
 
             //String csv_path = viewer.readIOpath();
 
-            //String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC\\simulation\\Tags_CMC_Modbus.csv";
-            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
+            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC\\simulation\\Tags_CMC_Modbus.csv";
+//            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
             importIO(csv_path);
 
             String mode = viewer.opMode();

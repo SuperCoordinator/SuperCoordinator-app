@@ -119,7 +119,6 @@ public class stochasticTime {
                 old_sRemover = sensor;
             }
             case REMOVING -> {
-
                 if (!isRemoverON) {
 //                    mb.writeState(sfeiConveyor.getaRemover(), "1");
                     oBits[sfeiConveyor.getaRemover().bit_offset()] = String.valueOf(true);

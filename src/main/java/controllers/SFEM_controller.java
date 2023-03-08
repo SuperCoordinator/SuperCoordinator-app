@@ -8,6 +8,7 @@ import monitor.SFEM_monitor;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
@@ -36,7 +37,7 @@ public class SFEM_controller implements Runnable {
         try {
             // # of SFEE to be added
             //String input = viewer.nSFEE();
-            String input = "2";
+            String input = "1";
             for (int i = 0; i < Integer.parseInt(input); i++) {
                 modbus mb = null;
 
@@ -96,9 +97,9 @@ public class SFEM_controller implements Runnable {
             sfem.getSFEEbyIndex(0).getSFEIbyIndex(1).setMinOperationTime(33);
             sfem.getSFEEbyIndex(0).getSFEIbyIndex(2).setMinOperationTime(8);
 
-            sfem.getSFEEbyIndex(1).getSFEIbyIndex(0).setMinOperationTime(9);
-            sfem.getSFEEbyIndex(1).getSFEIbyIndex(1).setMinOperationTime(33);
-            sfem.getSFEEbyIndex(1).getSFEIbyIndex(2).setMinOperationTime(8);
+//            sfem.getSFEEbyIndex(1).getSFEIbyIndex(0).setMinOperationTime(9);
+//            sfem.getSFEEbyIndex(1).getSFEIbyIndex(1).setMinOperationTime(33);
+//            sfem.getSFEEbyIndex(1).getSFEIbyIndex(2).setMinOperationTime(8);
         }
 
     }
@@ -111,16 +112,16 @@ public class SFEM_controller implements Runnable {
     }
 
     private boolean firstExe = true;
-
+    private List<Long> runtime = new ArrayList<>();
     @Override
     public void run() {
-//        Instant start_t = Instant.now();
+        Instant start_t = Instant.now();
         if (firstExe) {
             System.out.print("Press ENTER to start simulation");
             Scanner in = new Scanner(System.in);
             in.nextLine();
 
-            for (SFEE_controller sfeeController : sfeeControllers){
+            for (SFEE_controller sfeeController : sfeeControllers) {
                 sfeeController.getMb().reOpenConnection();
             }
 
@@ -132,8 +133,9 @@ public class SFEM_controller implements Runnable {
             sfeeController.loop();
         }
 
-        sfemMonitor.loop();
-//        System.out.println("Cycle duration (ms): " + Duration.between(start_t,Instant.now()).toMillis());
+        sfemMonitor.loop(runtime);
+        runtime.add(Duration.between(start_t, Instant.now()).toMillis());
+        //System.out.println("Cycle duration (ms): " + Duration.between(start_t, Instant.now()).toMillis());
     }
 
     public void start() {

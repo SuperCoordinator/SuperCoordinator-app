@@ -128,7 +128,7 @@ public class SFEE_monitor {
             if (!printedDBG) {
                 System.out.println("Number of running Threads: " + Thread.activeCount());
                 for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
-                    System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName());
+                    System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPiecesMoved() + " parts");
                     for (part p : sfei.getValue().getPartsATM()) {
                         System.out.println("  part ID:" + p.getId());
                         p.getTimestamps().forEach((key, value) -> {

@@ -3,8 +3,11 @@ package failures;
 import communication.modbus;
 import models.SFEE;
 import models.SFEI.SFEI;
+import org.apache.commons.math3.dfp.DfpField;
+import org.apache.commons.math3.util.Precision;
 import utils.utils;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -125,6 +128,8 @@ public class SFEE_failures {
 
     }
 
+    private final Random random = new Random();
+
     private int calculateDelay(int sfei_id) {
 
         SFEI sfei = sfee.getSFEIbyIndex(sfei_id);
@@ -143,10 +148,13 @@ public class SFEE_failures {
                     (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
                     (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
 
-            Random random = new Random();
-            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
+
+//            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
+            total_Time = random.nextGaussian() * dev + m;
+            System.out.println("Calculated Mean: " + m + " and dev:" + dev + " with total time of: " + total_Time);
         } else {
             total_Time = m;
+            System.out.println("Calculated Mean: " + m + " with total time of: " + total_Time);
         }
 
         for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
@@ -154,7 +162,7 @@ public class SFEE_failures {
         }
         if (total_Time < 0)
             return 0;
-        return (int) total_Time;
+        return (int) Precision.round(total_Time, 2, BigDecimal.ROUND_HALF_UP);
     }
 
 }
