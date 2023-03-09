@@ -1,9 +1,10 @@
 package utils;
 
 import models.sensor_actuator;
+import org.apache.commons.math3.util.Pair;
 
-import java.util.Iterator;
-import java.util.TreeMap;
+import java.awt.image.AreaAveragingScaleFilter;
+import java.util.*;
 
 public class search {
 
@@ -50,7 +51,8 @@ public class search {
         }
         return largestOff;
     }
-    public sensor_actuator getLargestOutputOffset(TreeMap<Integer, sensor_actuator> treeMap){
+
+    public sensor_actuator getLargestOutputOffset(TreeMap<Integer, sensor_actuator> treeMap) {
         sensor_actuator largestOff = null;
         boolean first = true;
         try {
@@ -71,4 +73,19 @@ public class search {
         return largestOff;
     }
 
+    public int[] getLargestOffsetperAddressType(TreeMap<Integer, sensor_actuator> treeMap) {
+
+        // coils, discrete inputs, input registers, holding registers
+        int[] cnts = new int[]{0, 0, 0, 0};
+
+        for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
+            switch (entry.getValue().addressType()) {
+                case COIL -> cnts[0]++;
+                case DISCRETE_INPUT -> cnts[1]++;
+                case INPUT_REGISTER -> cnts[2]++;
+                case HOLDING_REGISTER -> cnts[3]++;
+            }
+        }
+        return cnts;
+    }
 }

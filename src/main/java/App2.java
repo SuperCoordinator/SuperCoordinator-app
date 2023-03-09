@@ -26,7 +26,7 @@ public class App2 {
         sfemController.setupFailureMode();
 
         try {
-            // NOTE: CYCLE DURATION between 60 and 90 ms (avr) with 2 SFEE in the SFEM
+
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(sfemController, 0, 100, TimeUnit.MILLISECONDS);
         } catch (Exception e) {

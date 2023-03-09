@@ -9,7 +9,7 @@ import com.opencsv.*;
 
 public class csv_reader {
 
-    public TreeMap<Integer, sensor_actuator> readModbusTags(String path, boolean dbg) {
+    public TreeMap<Integer, sensor_actuator> readModbusTags(String path, int scene, boolean dbg) {
         TreeMap<Integer, sensor_actuator> treeMap = new TreeMap<>();
         try {
 
@@ -52,6 +52,8 @@ public class csv_reader {
             String input = in.nextLine();*/
 
             String input = "6,7,8,9,10,12,13";
+            if(scene == 2)
+                input = input.concat(",17,18,19,20,21,23,24");
             System.out.println(input);
             for (String str : input.split(",")) {
                 int key = Integer.parseInt(str);

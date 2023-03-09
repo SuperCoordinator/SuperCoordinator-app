@@ -53,14 +53,15 @@ public class SFEE_failures {
     }
 
 
-    public String loop(String sensorsState,/* modbus mb*/ String actuatorsState) {
-        String ret = actuatorsState;
+    public /*String*/ void loop(/*String*/ List<Object> sensorsState,/* modbus mb*/ /*String*/ List<Object> actuatorsState) {
+//        String ret = actuatorsState;
+//        List<Object> ret = new ArrayList<>(actuatorsState);
         // Depends on the piece at the emitter of SFEE
         try {
             boolean newPiece = checkNewPiece();
             if (newPiece) {
                 int pickSFEI = pickSFEI(false);
-//                int pickSFEI = 2;
+//                int pickSFEI = 0;
 
                 // The part is in the initial SFEI, so it is needed to select the partID and
                 // associate with the correct SFEI to manipulate the time
@@ -80,7 +81,8 @@ public class SFEE_failures {
 //            String[] res = ret.split(" ");
             // Runs the tasks
             for (stochasticTime object : failuresTasks) {
-                ret = object.loop(sensorsState, ret);
+//                ret = object.loop(sensorsState, ret);
+                object.loop(sensorsState, actuatorsState);
 //                String[] obj_set_ = obj_ret.split(" ");
 //                for (int i = 0; i < obj_set_.length; i++) {
 //                    res[i] = String.valueOf(Boolean.parseBoolean(String.valueOf(Boolean.parseBoolean(res[i]) ^ Boolean.parseBoolean(obj_set_[i]))));
@@ -93,7 +95,7 @@ public class SFEE_failures {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ret;
+//        return ret;
     }
 
     private int oldPartID = -1;
@@ -112,23 +114,26 @@ public class SFEE_failures {
         return false;
     }
 
-    private int pickSFEI(boolean re_entrant) {
+    private final Random random = new Random();
 
-        Random random = new Random();
+    private int pickSFEI(boolean isMachineValid) {
+
         OptionalInt optionalInt;
         do {
-            // NOT WORKING FOR THE LAST SFEI, WHY???
             optionalInt = random.ints(0, sfee.getSFEIs().size()).findAny();
         }
         while (optionalInt.isEmpty());
+
         int sfei_id = optionalInt.getAsInt();
-        if (sfee.getSFEIbyIndex(sfei_id).getSfeiType().equals(SFEI.SFEI_type.MACHINE) && !re_entrant)
-            sfei_id = pickSFEI(true);
-        return sfei_id;
+        if (!sfee.getSFEIbyIndex(sfei_id).getSfeiType().equals(SFEI.SFEI_type.MACHINE))
+            return sfei_id;
+        if (sfee.getSFEIbyIndex(sfei_id).getSfeiType().equals(SFEI.SFEI_type.MACHINE) && isMachineValid) {
+            return sfei_id;
+        }
+        return pickSFEI(isMachineValid);
 
     }
 
-    private final Random random = new Random();
 
     private int calculateDelay(int sfei_id) {
 
@@ -162,7 +167,7 @@ public class SFEE_failures {
         }
         if (total_Time < 0)
             return 0;
-        return (int) Precision.round(total_Time, 2, BigDecimal.ROUND_HALF_UP);
+        return (int) Math.round(total_Time);
     }
 
 }

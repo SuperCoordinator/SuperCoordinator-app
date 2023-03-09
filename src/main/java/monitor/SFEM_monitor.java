@@ -4,6 +4,7 @@ import models.SFEE;
 import models.SFEI.SFEI;
 import models.SFEM;
 import models.part;
+import models.producedPart;
 import viewers.graphs.histogram;
 import viewers.graphs.histogram.intPair;
 
@@ -50,7 +51,7 @@ public class SFEM_monitor {
                         while (iterator.hasNext()) {
                             part p = iterator.next();
                             if (p.isProduced()) {
-                                SFEM.producedPart pp = new SFEM.producedPart(p, calculateProductionTime(p));
+                                producedPart pp = new producedPart(p, calculateProductionTime(p));
                                 sfem.addPartToProductionHistory(pp);
                                 if (productionTime_cnt.containsKey(pp.production_time())) {
                                     int old_value = productionTime_cnt.get(pp.production_time());
@@ -80,18 +81,19 @@ public class SFEM_monitor {
     }
 
     private boolean printedStats = false;
-    private SFEM.producedPart min_time = null;
-    private SFEM.producedPart max_time = null;
+    private producedPart min_time = null;
+    private producedPart max_time = null;
     private boolean firstRun = true;
 
     private void printStats(List<Long> runtime) {
 
         // One statistic (production mean-stochasticTime, max-stochasticTime and min-stochasticTime)
+        System.out.println("Number of running Threads: " + Thread.activeCount());
         System.out.println("Cycle duration (ms): " + calculateRuntime(runtime));
 
         long total_time = 0;
         if (sfem.getProductionHistory().size() > 0) {
-            for (SFEM.producedPart pp : sfem.getProductionHistory()) {
+            for (producedPart pp : sfem.getProductionHistory()) {
                 if (firstRun) {
                     min_time = sfem.getProductionHistory().get(0);
                     max_time = sfem.getProductionHistory().get(0);
@@ -116,7 +118,6 @@ public class SFEM_monitor {
 
         }
 
-
     }
 
     private long calculateRuntime(List<Long> runtime) {
@@ -134,7 +135,8 @@ public class SFEM_monitor {
     private int calculateProductionTime(part p) {
         Object[] orderArray = p.getTimestamps().values().toArray();
         Arrays.sort(orderArray);
-        return (int) Duration.between((Instant) orderArray[0], (Instant) orderArray[orderArray.length - 1]).toSeconds();
+        long duration = Duration.between((Instant) orderArray[0], (Instant) orderArray[orderArray.length - 1]).toMillis();
+        return (int) Math.round(duration * 0.001);
     }
 
 
@@ -169,10 +171,10 @@ public class SFEM_monitor {
 
         TreeMap<Integer, Integer> lastNParts = new TreeMap<>();
 
-        ListIterator<SFEM.producedPart> iterator = sfem.getProductionHistory().listIterator(sfem.getProductionHistory().size());
+        ListIterator<producedPart> iterator = sfem.getProductionHistory().listIterator(sfem.getProductionHistory().size());
         int cnt = n;
         while (iterator.hasPrevious() && cnt > 0) {
-            SFEM.producedPart part = iterator.previous();
+            producedPart part = iterator.previous();
             if (cnt == n) {
                 lastNParts.put(part.production_time(), 1);
             } else if (lastNParts.containsKey(part.production_time())) {

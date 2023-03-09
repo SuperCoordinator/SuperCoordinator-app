@@ -7,9 +7,7 @@ import java.util.TreeMap;
 
 public class SFEM {
 
-    public record producedPart(part part, int production_time) {
 
-    }
 
     private String name;
 
