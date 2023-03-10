@@ -5,7 +5,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleRealTime {
+public class SimpleRealTimeChart {
 
     public static void main(String[] args) throws Exception {
 

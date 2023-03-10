@@ -7,8 +7,6 @@ import java.util.TreeMap;
 
 public class SFEM {
 
-
-
     private String name;
 
     private final TreeMap<Integer, SFEE> SFEEs;

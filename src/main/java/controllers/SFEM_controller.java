@@ -114,7 +114,7 @@ public class SFEM_controller implements Runnable {
     }
 
     private boolean firstExe = true;
-    private List<Long> runtime = new ArrayList<>();
+    private final List<Long> runtime = new ArrayList<>();
 
     @Override
     public void run() {
@@ -133,11 +133,10 @@ public class SFEM_controller implements Runnable {
             firstExe = false;
         }
 
-//        Instant sfeeControllers_t = Instant.now();
         for (SFEE_controller sfeeController : sfeeControllers) {
             sfeeController.loop();
         }
-//        System.out.println("SFEE Controllers time (ms) " + Duration.between(sfeeControllers_t, Instant.now()).toMillis());
+
 
 //        Instant sfemMonitor_t = Instant.now();
         sfemMonitor.loop(runtime);
@@ -146,31 +145,4 @@ public class SFEM_controller implements Runnable {
         //System.out.println("Cycle duration (ms): " + Duration.between(start_t, Instant.now()).toMillis());
     }
 
-    public void start() {
-
-/*        System.out.print("Press ENTER to start simulation");
-        Scanner in = new Scanner(System.in);
-        in.nextLine();
-
-        for (Map.Entry<Integer, SFEE> entry : sfem.getSFEEs().entrySet()) {
-            entry.getValue().getMb().reOpenConnection();
-        }
-
-        for (SFEE_controller sfeeController : sfeeControllers) {
-            sfeeController.startMonitoring();
-        }
-
-        for (SFEE_controller sfeeController : sfeeControllers) {
-            sfeeController.startFailures();
-        }
-
-
-        // Launch monitor thread
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(sfemMonitor, 0, 100, TimeUnit.MILLISECONDS);
-
-        // Launch simulation
-        sfeeControllers.get(0).launchSimulation();*/
-
-    }
 }

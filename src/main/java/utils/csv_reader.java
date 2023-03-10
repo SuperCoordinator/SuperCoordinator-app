@@ -59,11 +59,6 @@ public class csv_reader {
                 int key = Integer.parseInt(str);
                 treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
             }
-            // Copy the remaining elements
-//            for (innerForTreeMap inner : tempTreeMap) {
-//                if (!treeMap.containsValue(inner.sensorActuator()))
-//                    treeMap.put(treeMap.size(), inner.sensorActuator());
-//            }
 
         } catch (Exception e) {
             e.printStackTrace();

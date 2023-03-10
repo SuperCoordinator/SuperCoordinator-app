@@ -40,8 +40,6 @@ public class SFEE_failures {
         this.utility = new utils();
         this.timeType = timeType;
 
-/*        this.executorService = Executors.newScheduledThreadPool(sfee.getSFEIs().size());
-        this.service = Executors.newFixedThreadPool(1);*/
     }
 
     public void setMean(String mean) {
@@ -53,9 +51,9 @@ public class SFEE_failures {
     }
 
 
-    public /*String*/ void loop(/*String*/ List<Object> sensorsState,/* modbus mb*/ /*String*/ List<Object> actuatorsState) {
-//        String ret = actuatorsState;
-//        List<Object> ret = new ArrayList<>(actuatorsState);
+    public void loop(List<Object> sensorsState, List<Object> actuatorsState) {
+
+
         // Depends on the piece at the emitter of SFEE
         try {
             boolean newPiece = checkNewPiece();
@@ -68,25 +66,18 @@ public class SFEE_failures {
                 if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
 
                     int delay = calculateDelay(pickSFEI);
-                    System.out.println("SFEI index chosen: " + pickSFEI + " to delay: " + delay);
+                    System.out.println("SFEI chosen: " + pickSFEI + " to delay: " + delay);
 
                     stochasticTime stochasticTime = new stochasticTime(sfee.getSFEIbyIndex(pickSFEI), sfee.getSFEIbyIndex(0).getPartsATM().first().getId(), delay/*,mb*/);
                     failuresTasks.add(stochasticTime);
-/*                    Thread t1 = new Thread(stochasticTime);
-                    t1.start();*/
+
 
                 }
             }
 
-//            String[] res = ret.split(" ");
             // Runs the tasks
             for (stochasticTime object : failuresTasks) {
-//                ret = object.loop(sensorsState, ret);
                 object.loop(sensorsState, actuatorsState);
-//                String[] obj_set_ = obj_ret.split(" ");
-//                for (int i = 0; i < obj_set_.length; i++) {
-//                    res[i] = String.valueOf(Boolean.parseBoolean(String.valueOf(Boolean.parseBoolean(res[i]) ^ Boolean.parseBoolean(obj_set_[i]))));
-//                }
             }
 
             // Delete the completed tasks
@@ -95,16 +86,15 @@ public class SFEE_failures {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        return ret;
+
     }
 
     private int oldPartID = -1;
 
     private boolean checkNewPiece() {
         int currID = oldPartID;
-//        System.out.println(Thread.currentThread().getName());
+
         if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
-            //System.out.println("*** " + sfee.getName() + " #parts at entryConv: " + sfee.getSFEIbyIndex(0).getPartsATM().size());
             currID = sfee.getSFEIbyIndex(0).getPartsATM().first().getId();
         }
         if (currID != oldPartID) {
@@ -138,7 +128,6 @@ public class SFEE_failures {
     private int calculateDelay(int sfei_id) {
 
         SFEI sfei = sfee.getSFEIbyIndex(sfei_id);
-
 
         double m = utility.getCustomCalc().calcExpression(mean,
                 sfei.getnPiecesMoved(),

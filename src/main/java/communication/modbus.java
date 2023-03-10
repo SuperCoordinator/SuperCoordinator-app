@@ -26,11 +26,11 @@ public class modbus implements Runnable {
     private TreeMap<Integer, sensor_actuator> io;
     private boolean[] inputs_invLogic;
     private boolean[] outputs_invLogic;
-    private AtomicBoolean coilsUpdated = new AtomicBoolean(false);
+    private final AtomicBoolean coilsUpdated = new AtomicBoolean(false);
     private AtomicIntegerArray coils;
     private AtomicIntegerArray discreteInputs;
     private AtomicIntegerArray inputRegisters;
-    private AtomicBoolean hRegUpdated = new AtomicBoolean(false);
+    private final AtomicBoolean hRegUpdated = new AtomicBoolean(false);
     private AtomicLongArray holdingRegisters;
 
     private final utils util = new utils();
@@ -119,7 +119,7 @@ public class modbus implements Runnable {
 
     }
 
-    private List<Long> runtime = new ArrayList<>();
+    private final List<Long> runtime = new ArrayList<>();
     private final Instant init_t = Instant.now();
     private boolean printDBG = false;
 
@@ -142,6 +142,7 @@ public class modbus implements Runnable {
             if (discreteInputs.length() > 0) {
                 BitVector bitVector = con.readInputDiscretes(0, discreteInputs.length());
                 for (int i = 0; i < bitVector.size(); i++) {
+                    // Evaluation of the discrete inputs (sensors) logic
                     discreteInputs.getAndSet(i, inputs_invLogic[i] == bitVector.getBit(i) ? 0 : 1);
                 }
             }
@@ -157,11 +158,13 @@ public class modbus implements Runnable {
                     holdingRegisters.getAndSet(i, registers[i].getValue());
                 }
             }*/
+
             // Write Step
             if (coilsUpdated.get()) {
                 BitVector bitVector = new BitVector(coils.length());
                 for (int i = 0; i < bitVector.size(); i++) {
-                    bitVector.setBit(i, coils.get(i) == 1);
+                    // Evaluation of the coils (outputs) logic
+                    bitVector.setBit(i, outputs_invLogic[i] ? coils.get(i) == 0 : coils.get(i) == 1);
                 }
                 con.writeMultipleCoils(0, bitVector);
                 coilsUpdated.set(false);
@@ -186,8 +189,8 @@ public class modbus implements Runnable {
                         for (Long run_t : runtime) {
                             totalRuntime = totalRuntime + run_t;
                         }
-                        System.out.println("MB runtime (ms): " + totalRuntime / runtime.size());
-                        System.out.println("Runloop: " + runLoop + " Writeloop: " + writeLoop);
+//                        System.out.println("MB runtime (ms): " + totalRuntime / runtime.size());
+//                        System.out.println("Runloop: " + runLoop + " Writeloop: " + writeLoop);
                         printDBG = true;
                     }
                 } else {
@@ -262,177 +265,5 @@ public class modbus implements Runnable {
         coils.getAndSet(offset, newValue);
         coilsUpdated.getAndSet(true);
     }
-
-
-    public List<Object> readState(sensor_actuator input) {
-
-        List<Object> list = new Vector<>();
-
-//        String currentValue = "";
-        try {
-            switch (input.addressType()) {
-                case COIL -> {
-                    //System.out.println("COIL");
-                    //System.out.println(input.getName() + " reg: " + input.getRegister() + " off: " + input.getBit_offset());
-                    BitVector state = con.readCoils(input.register(), input.bit_offset() + 1);
-                    boolean boolValue = state.getBit(input.bit_offset());
-                    list.add(0, input.invLogic() == boolValue ? 0 : 1);
-//                    currentValue = String.valueOf(input.invLogic() != boolValue);
-                }
-                case DISCRETE_INPUT -> {
-                    //System.out.println("DISCRETE_INPUT");
-                    //System.out.println(input.getName() + " reg: " + input.getRegister() + " off: " + input.getBit_offset());
-                    BitVector state = con.readInputDiscretes(input.register(), input.bit_offset() + 1);
-                    boolean boolValue = state.getBit(input.bit_offset());
-                    list.add(0, input.invLogic() == boolValue ? 0 : 1);
-//                    currentValue = String.valueOf(input.invLogic() != boolValue);
-
-                }
-                case INPUT_REGISTER -> {
-                    InputRegister[] state = con.readInputRegisters(input.register(), input.bit_offset() + 1);
-                    for (InputRegister register : state) {
-                        //currentValue = currentValue.concat(register.getValue() + " ");
-                        list.add(list.size(), register.getValue());
-                    }
-                }
-                case HOLDING_REGISTER -> {
-                    Register[] state = con.readMultipleRegisters(input.register(), input.bit_offset() + 1);
-                    for (Register register : state) {
-//                        currentValue = currentValue.concat(register.getValue() + " ");
-                        list.add(list.size(), register.getValue());
-                    }
-                }
-                default -> {
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //System.out.println("readState of " + input.getName() + " : " + currentValue);
-//        return currentValue;
-        System.out.println(Arrays.toString(list.toArray()));
-        return list;
-    }
-
-    public List<Object> /*String*/ readMultipleInputs(TreeMap<Integer, sensor_actuator> io) {
-
-//        Instant start_t = Instant.now();
-
-
-        sensor_actuator input = util.getSearch().getLargestInputOffset(io);
-        List<Object> list = new Vector<>();
-//        System.out.println("Search time (ms)" + Duration.between(start_t, Instant.now()).toMillis());
-//        String currentValue = "";
-        try {
-//            start_t = Instant.now();
-            BitVector state = con.readInputDiscretes(input.register(), input.bit_offset() + 1);
-//            System.out.println("MB Response time (ms)" + Duration.between(start_t, Instant.now()).toMillis());
-//            start_t = Instant.now();
-            ArrayList<sensor_actuator> inputs = new ArrayList<>(util.getSearch().getSensorsOrActuators(io, true).values());
-            for (int i = 0; i < state.size(); i++) {
-                boolean boolValue = state.getBit(i);
-//                currentValue = currentValue.concat((boolValue != inputs.get(i).invLogic()) + " ");
-                list.add(list.size(), inputs.get(i).invLogic() == boolValue ? 0 : 1);
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //
-//        System.out.println("Remaing of Read Inputs (ms) " + Duration.between(start_t, Instant.now()).toMillis());
-        return list;
-//        return currentValue;
-    }
-
-    public String readMultipleCoils(TreeMap<Integer, sensor_actuator> io) {
-
-        sensor_actuator input = util.getSearch().getLargestOutputOffset(io);
-
-        String currentValue = "";
-        try {
-/*            String[] oneByOne = new String[input.bit_offset() + 1];
-            String[] oneByOneName = new String[input.bit_offset() + 1];
-            for (Map.Entry<Integer, sensor_actuator> sa : io.entrySet()) {
-                if (sa.getValue().type().equals(sensor_actuator.Type.OUTPUT) && sa.getValue().addressType().equals(sensor_actuator.AddressType.COIL)) {
-                    oneByOneName[sa.getValue().bit_offset()] = sa.getValue().name();
-                    oneByOne[sa.getValue().bit_offset()] = readState(sa.getValue());
-                }
-            }
-            System.out.println(Arrays.toString(oneByOneName));
-            System.out.println(Arrays.toString(oneByOne));*/
-            BitVector state = con.readCoils(input.register(), input.bit_offset() + 1);
-            ArrayList<sensor_actuator> inputs = new ArrayList<>(util.getSearch().getSensorsOrActuators(io, false).values());
-            for (int i = 0; i < state.size(); i++) {
-                boolean boolValue = state.getBit(i);
-                currentValue = currentValue.concat((boolValue != inputs.get(i).invLogic()) + " ");
-            }
-
-//            Register[] regs = con.readMultipleRegisters(input.register(), 3);
-//            for (int i = 0; i < regs.length; i++) {
-//                System.out.println(regs[i].getValue());
-///*                boolean boolValue = regs[i].getValue();
-//                currentValue = currentValue.concat(boolValue + " ");*/
-//            }
-
-//            InputRegister[] inputRegisters = con.readInputRegisters(0,3);
-//            for (InputRegister register : inputRegisters){
-//                System.out.println(register.getValue());
-//            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return currentValue;
-    }
-
-
-    public void writeState(sensor_actuator input, String newState) {
-
-        try {
-            if (input.type() == sensor_actuator.Type.INPUT)
-                throw new Exception("It is not possible to write in a sensor address!");
-
-            switch (input.addressType()) {
-                case COIL -> {
-                    //Convert to boolean
-                    boolean b_newState = Integer.parseInt(newState) > 0;
-                    con.writeCoil(slaveID, input.bit_offset(), b_newState);
-                }
-                case HOLDING_REGISTER -> {
-                    Register[] registers = con.readMultipleRegisters(input.register(), input.bit_offset() + 1);
-                    registers[input.bit_offset()].setValue(Integer.parseInt(newState));
-
-                    con.writeMultipleRegisters(input.register(), registers);
-                }
-                default -> {
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void writeMultipleCoils(TreeMap<Integer, sensor_actuator> io, String newStates) {
-
-        try {
-            String[] values = newStates.split(" ");
-            BitVector bitVector = new BitVector(values.length);
-
-            ArrayList<sensor_actuator> outputs = new ArrayList<>(util.getSearch().getSensorsOrActuators(io, false).values());
-
-            for (int i = 0; i < values.length; i++) {
-                bitVector.setBit(i, Boolean.parseBoolean(values[i]) != outputs.get(i).invLogic());
-            }
-//            System.out.println("Bit Vector:" + bitVector);
-            con.writeMultipleCoils(0, bitVector);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
 
 }

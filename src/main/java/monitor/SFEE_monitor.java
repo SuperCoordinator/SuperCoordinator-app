@@ -29,15 +29,11 @@ public class SFEE_monitor {
     }
 
     private void init_oldSensorsValues(List<Object> sensorsState) {
-//        String sensorsState = mb.readMultipleInputs(sfee.getIo());
-//        String[] iBits = sensorsState.split(" ");
 
         for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
+
             sensor_actuator sfei_inSensor = sfei.getValue().getInSensor();
             sensor_actuator sfei_outSensor = sfei.getValue().getOutSensor();
-
-//            boolean b_inSensor = Boolean.parseBoolean(iBits[sfei_inSensor.bit_offset()]);
-//            boolean b_outSensor = Boolean.parseBoolean(iBits[sfei_outSensor.bit_offset()]);
 
             boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.bit_offset()) == 1;
             boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.bit_offset()) == 1;
@@ -47,26 +43,21 @@ public class SFEE_monitor {
     }
 
     private int pieceCnt = 0;
-
     public void loop(List<Object> sensorsState) {
         try {
             synchronized (sfee) {
-//                String sensorsState = mb.readMultipleInputs(sfee.getIo());
-//                String[] iBits = sensorsState.split(" ");
 
                 for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
 
                     sensor_actuator sfei_inSensor = sfei.getValue().getInSensor();
                     sensor_actuator sfei_outSensor = sfei.getValue().getOutSensor();
 
-//                    boolean b_inSensor = Boolean.parseBoolean(iBits[sfei_inSensor.bit_offset()]);
-//                    boolean b_outSensor = Boolean.parseBoolean(iBits[sfei_outSensor.bit_offset()]);
                     boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.bit_offset()) == 1;
                     boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.bit_offset()) == 1;
 
                     // SFEE entry, should create new part object
                     if (sfei.getKey() == 0) {
-//                        boolean sfee_inSensor = Boolean.parseBoolean(iBits[sfee.getInSensor().bit_offset()]);
+
                         boolean sfee_inSensor = (int) sensorsState.get(sfee.getInSensor().bit_offset()) == 1;
                         if (utility.getLogicalOperator().RE_detector(sfee_inSensor, SFEIs_old_inSensors[sfei.getKey()])) {
                             part p = new part(pieceCnt, "Blue base");
@@ -81,12 +72,6 @@ public class SFEE_monitor {
                             pieceCnt++;
                         }
                     }
-
-/*                    // If SFEIs inSensor RE, then timestamp that event
-                    if (utility.getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei.getKey()])) {
-                        if (sfei.getValue().getPartsATM().size() > 0)
-                            sfei.getValue().getPartsATM().last().addTimestamp(sfei.getValue().getName() + "-" + sfei_inSensor.name());
-                    }*/
 
                     // Only register on the end (end of item[i-1] = start of item[i])
                     // If SFEIs outSensor RE, then timestamp that event
@@ -119,7 +104,6 @@ public class SFEE_monitor {
 
                     // End of the SFEE, set part produced flag to TRUE
                     if (sfei.getKey() == sfee.getSFEIs().size() - 1) {
-//                        boolean sfee_outSensor = Boolean.parseBoolean(iBits[sfee.getOutSensor().bit_offset()]);
                         boolean sfee_outSensor = (int) sensorsState.get(sfee.getOutSensor().bit_offset()) == 1;
                         if (utility.getLogicalOperator().RE_detector(sfee_outSensor, SFEIs_old_outSensors[sfei.getKey()])) {
                             if (sfei.getValue().getPartsATM().size() > 0) {

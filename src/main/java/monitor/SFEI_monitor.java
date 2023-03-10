@@ -1,3 +1,4 @@
+/*
 package monitor;
 
 import communication.modbus;
@@ -48,8 +49,10 @@ public class SFEI_monitor implements Runnable {
         if (utility.getLogicalOperator().RE_detector(b_inSensor, old_inSensor)) {
             if (sfei.getPartsATM().size() > 0)
                 sfei.getPartsATM().last().addTimestamp(sfei.getName() + "-" + sfei.getInSensor().name());
-           /* else
-                System.out.println(Thread.currentThread().getName() + " " + sfei.getName());*/
+           */
+/* else
+                System.out.println(Thread.currentThread().getName() + " " + sfei.getName());*//*
+
         }
         old_inSensor = b_inSensor;
     }
@@ -69,3 +72,4 @@ public class SFEI_monitor implements Runnable {
     }
 
 }
+*/

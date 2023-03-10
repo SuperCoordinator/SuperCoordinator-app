@@ -151,8 +151,6 @@ public class SFEM_monitor {
         if (productionTime_cnt.size() == 0)
             return null;
 
-//        System.out.println(Arrays.toString(productionTime_cnt.keySet().toArray()));
-//        System.out.println(Arrays.toString(productionTime_cnt.values().toArray()));
 
         intPair pair = new intPair(productionTime_cnt.keySet().toArray(new Integer[0]), productionTime_cnt.values().toArray(new Integer[0]));
         intPair lastNparts = getLastNParts(10);

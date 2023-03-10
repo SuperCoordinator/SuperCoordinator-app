@@ -7,8 +7,6 @@ import java.util.*;
 
 public class SFEE {
 
-
-
     public enum SFEE_type {
         SIMULATION, REAL
     }

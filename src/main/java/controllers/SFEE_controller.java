@@ -11,7 +11,6 @@ import monitor.SFEE_monitor;
 import monitor.setupRun;
 import utils.utils;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
@@ -65,7 +64,7 @@ public class SFEE_controller {
 
 //            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC\\simulation\\Tags_CMC_Modbus.csv";
             String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
-            importIO(csv_path,2);
+            importIO(csv_path, 2);
 
             // Initialization of the modbus connection in case of not connected already
             openCommunication(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]), sfee.getIo());
@@ -221,8 +220,8 @@ public class SFEE_controller {
                     I/O
      ************************************ */
 
-    public void importIO(String file_path,int scene) {
-        sfee.setIo(utility.getReader().readModbusTags(file_path,scene, false));
+    public void importIO(String file_path, int scene) {
+        sfee.setIo(utility.getReader().readModbusTags(file_path, scene, false));
 //        printAllIO();
     }
 
@@ -233,7 +232,7 @@ public class SFEE_controller {
     /* ***********************************
                     SFEI
     ************************************ */
-    public SFEI_conveyor addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String aRemover, String aEmitter, String sRemover, String sEmitter) {
+    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String aRemover, String aEmitter, String sRemover, String sEmitter) {
 
         sensor_actuator[] vector = new sensor_actuator[4];
         vector[0] = sfee.getIObyName(aRemover);
@@ -243,7 +242,6 @@ public class SFEE_controller {
         SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, vector);
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
 
-        return newObj;
     }
 
     public SFEI_conveyor addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor) {
@@ -252,10 +250,9 @@ public class SFEE_controller {
         return newObj;
     }
 
-    public SFEI_machine addNewSFEI_machine(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String sDoor, String aStop) {
+    public void addNewSFEI_machine(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String sDoor, String aStop) {
         SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(sDoor), sfee.getIObyName(aStop));
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
-        return newObj;
 
     }
 
@@ -327,83 +324,46 @@ public class SFEE_controller {
                 sfeeFailures.setStd_dev("0");
             }
 
-
         }
     }
 
 
     public void loop() {
 
-//        List<Object> sensorsState = mb.readMultipleInputs(sfee.getIo());
         List<Object> sensorsState = new ArrayList<>(mb.readDiscreteInputs());
-
-
-//        String sensorsState = mb.readMultipleInputs(sfee.getIo());
-//        String actuatorsStateInit = mb.readMultipleCoils(sfee.getIo());
-
 //        System.out.println("Outputs before: " + Arrays.toString(actuatorsState.toArray()));
 
         sfeeMonitor.loop(sensorsState);
 
-//        String actuatorsState = actuatorsStateInit;
+
         if (opMode.equals(operationMode.PROG_FAILURES)) {
-//            actuatorsState = sfeeFailures.loop(sensorsState/*, mb*/, actuatorsState);
+
             // The function mb.readCoils() is only to initialize the list elements with a given size
             List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
             sfeeFailures.loop(sensorsState, actuatorsState);
 //            System.out.println("Outputs after:  " + Arrays.toString(actuatorsState.toArray()));
 
-            // Write new state no matter if there are changes or not
+            // The writeCoils() function will detect and execute MB instruction only if there are changes
             mb.writeCoils(actuatorsState);
         }
 
 
-/*        //System.out.println("Outputs after:  " + actuatorsState);
-        if (!actuatorsStateInit.equalsIgnoreCase(actuatorsState)) {
-//            System.out.println("Outputs before: " + actuatorsStateInit);
-//            System.out.println("Outputs after:  " + actuatorsState);
-
-            mb.writeMultipleCoils(sfee.getIo(), actuatorsState);
-
-            System.out.println("Maybe writing more times than needed!");
-        }*/
-
-
     }
-
-/*    public void startMonitoring() {
-        // Launch monitor thread
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(sfeeMonitor, 0, 50, TimeUnit.MILLISECONDS);
-
-    }
-
-    public void startFailures() {
-        if (opMode.equals(operationMode.PROG_FAILURES)) {
-            // Launch monitor thread
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-            scheduler.scheduleAtFixedRate(sfeeFailures, 0, 50, TimeUnit.MILLISECONDS);
-        }
-    }*/
 
     public void launchSimulation() {
-//        mb.writeState(sfee.getIObyName("FACTORY I/O (Run)"), "1");
         mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Run)").bit_offset(), 1);
     }
 
     public void stopSimulation() {
-//        mb.writeState(sfee.getIObyName("FACTORY I/O (Run)"), "0");
         mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Run)").bit_offset(), 0);
     }
 
     private Long[] getSFEEOperationTime() {
-
         Long[] array = new Long[sfee.getSFEIs().size()];
 
         for (int i = 0; i < sfee.getSFEIs().size(); i++) {
             array[i] = sfee.getSFEIbyIndex(i).getMinOperationTime();
         }
-
         return array;
     }
 
