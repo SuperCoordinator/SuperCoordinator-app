@@ -10,7 +10,6 @@ public class App {
 
     public static void main(String[] args) {
 
-
         ArrayList<SFEM> SFEMs = new ArrayList<>();
         SFEM newSFEM = new SFEM("SFEM_test");
 

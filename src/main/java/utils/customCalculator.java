@@ -25,7 +25,7 @@ public class customCalculator {
     }
 
     private boolean isOperator(char ch) {
-        return ch == '+' || ch == '-' || ch == '*' || ch == '/';
+        return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%';
     }
 
     private boolean isVariable(char ch) {
@@ -36,7 +36,7 @@ public class customCalculator {
         if (ch == '+' || ch == '-') {
             return 1;
         }
-        if (ch == '*' || ch == '/') {
+        if (ch == '*' || ch == '/' || ch == '%') {
             return 2;
         }
         return 0;
@@ -69,7 +69,9 @@ public class customCalculator {
             r = a * b;
         } else if (t == '/') {
             r = a / b;
-        } else {
+        } else if (t == '%')
+            r = a % b;
+        else {
             error = true;
             errorMsg = "Operator error.";
             return;
@@ -79,6 +81,10 @@ public class customCalculator {
     }
 
     private void processInput(String input, double n, double a, double m) {
+
+        if (input.equalsIgnoreCase("no"))
+            return;
+
         // The tokens that make up the input
         String[] tokens = input.split(" ");
 
@@ -163,9 +169,36 @@ public class customCalculator {
         return errorMsg;
     }
 
-    public double calcExpression(String userInput, double nPieces, double itemAgeMonth, double lastMaintenceDays) {
-        processInput(userInput, nPieces, itemAgeMonth, lastMaintenceDays);
+    public double calcExpression(String userInput, double nPieces, double itemAgeDays, double lastMaintenceDays) {
+        processInput(userInput, nPieces, itemAgeDays, lastMaintenceDays);
         return result;
+    }
+
+    public boolean evalFormula(String formula) {
+        error = false;
+        String[] members;
+        String op;
+        if (formula.contains(" > ")) {
+            members = formula.split("> ");
+            op = ">";
+        } else if (formula.contains(" < ")) {
+            members = formula.split("< ");
+            op = "<";
+        } else if (formula.contains(" = ")) {
+            members = formula.split("= ");
+            op = "=";
+        } else if (formula.contains(" <= ")) {
+            members = formula.split("<= ");
+            op = "<=";
+        } else if (formula.contains(" >= ")) {
+            members = formula.split(">= ");
+            op = ">=";
+        } else {
+            return false;
+        }
+        processInput(members[0], 1, 1, 1);
+        processInput(members[1], 1, 1, 1);
+        return error;
     }
 
 }

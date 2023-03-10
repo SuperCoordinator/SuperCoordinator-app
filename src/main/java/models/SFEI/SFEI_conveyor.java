@@ -15,13 +15,14 @@ public class SFEI_conveyor extends SFEI {
     private final boolean isSimulation;
 
     public SFEI_conveyor(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
-                         Instant dayOfBirth, Instant dayOfLastMaintenance, sensor_actuator[] sensorActuators) {
+                         Instant dayOfBirth, Instant dayOfLastMaintenance, sensor_actuator aConveyorMotor,
+                         sensor_actuator[] sensorActuators) {
         super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance);
         this.aRemover = sensorActuators[0];
         this.aEmitter = sensorActuators[1];
         this.sRemover = sensorActuators[2];
         this.sEmitter = sensorActuators[3];
-
+        this.aConveyorMotor = aConveyorMotor;
         this.isSimulation = true;
     }
 

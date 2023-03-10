@@ -17,7 +17,6 @@ public class SFEE {
     }
 
 
-
     public String readIOpath() {
         String str;
         System.out.print("IO CSV file path: ");
@@ -178,4 +177,53 @@ public class SFEE {
 
     }
 
+    public String[] SFEEFailures() {
+        String[] str = new String[]{"no", "no", "no", "no", "no"};
+        customCalculator customCalculator = new customCalculator();
+        boolean retry = false;
+
+        System.out.println("SFEE Failures ?");
+        System.out.println("Defined variables: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
+        do {
+            if (retry) {
+                System.out.println("break error: " + customCalculator.errorMsg(str[0]));
+                System.out.println("repair error: " + customCalculator.errorMsg(str[4]));
+            }
+            System.out.println("BREAKDOWN WITH REPAIR (break): ");
+            str[0] = in.nextLine();
+            retry = customCalculator.evalFormula(str[0]);
+
+            System.out.println("BREAKDOWN WITH REPAIR (repair): ");
+            str[4] = in.nextLine();
+            retry = retry || customCalculator.evalFormula(str[4]);
+
+        } while (retry);
+
+        do {
+            if (retry)
+                System.out.println(customCalculator.errorMsg(str[1]));
+            System.out.println("BREAKDOWN: ");
+            str[1] = in.nextLine();
+            retry = customCalculator.evalFormula(str[1]);
+        } while (retry);
+
+        do {
+            if (retry)
+                System.out.println(customCalculator.errorMsg(str[2]));
+            System.out.println("PRODUCE FAULTY: ");
+            str[2] = in.nextLine();
+            retry = customCalculator.evalFormula(str[2]);
+        } while (retry);
+
+        do {
+            if (retry)
+                System.out.println(customCalculator.errorMsg(str[3]));
+            System.out.println("PRODUCE MORE: ");
+            str[3] = in.nextLine();
+            retry = customCalculator.evalFormula(str[3]);
+        } while (retry);
+
+
+        return str;
+    }
 }

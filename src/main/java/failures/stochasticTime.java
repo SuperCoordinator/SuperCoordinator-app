@@ -8,9 +8,7 @@ import utils.utils;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class stochasticTime {
 
@@ -34,6 +32,17 @@ public class stochasticTime {
     private SM_conv smConv;
     private SM_mach smMach;
 
+    public enum timeOptions {
+        GAUSSIAN,
+        LINEAR
+    }
+
+    private final timeOptions timeType;
+
+    // IN case of STOCHASTIC
+    private String mean;
+    private String std_dev;
+
     private final SFEI_conveyor sfeiConveyor;
     private final SFEI_machine sfeiMachine;
     private final SFEI.SFEI_type sfeiType;
@@ -42,7 +51,7 @@ public class stochasticTime {
 
     private final utils utility;
 
-    public stochasticTime(SFEI sfei, int partID, int delay) {
+    public stochasticTime(SFEI sfei, int partID, timeOptions timeType, String[] formulas, int minSFEEOperationTime) {
 
         if (sfei.getSfeiType().equals(SFEI.SFEI_type.CONVEYOR)) {
             this.sfeiConveyor = (SFEI_conveyor) sfei;
@@ -59,12 +68,22 @@ public class stochasticTime {
         }
 
         this.partID = partID;
-        this.delay = delay;
+        this.timeType = timeType;
 
+        if (timeType.equals(timeOptions.GAUSSIAN)) {
+            this.mean = formulas[0];
+            this.std_dev = formulas[1];
+        } else if (timeType.equals(timeOptions.LINEAR)) {
+            this.mean = formulas[0];
+            this.std_dev = " ";
+        }
         this.utility = new utils();
+
+        this.delay = calculateDelay(minSFEEOperationTime);
         this.smConv = SM_conv.INIT;
         this.smMach = SM_mach.WAITING;
     }
+
 
     public boolean isConveyorFinished() {
         return smConv.equals(SM_conv.END);
@@ -96,7 +115,7 @@ public class stochasticTime {
     private Instant initial_t;
     boolean isRemoverON = false, isEmitterON = false;
 
-    private void injectFailureF_IOConv(/*String*/ List<Object> sensorsState, List<Object> actuatorsState) {
+    private void injectFailureF_IOConv(List<Object> sensorsState, List<Object> actuatorsState) {
 
         boolean sensor;
         switch (smConv) {
@@ -144,6 +163,7 @@ public class stochasticTime {
             }
         }
     }
+
     private void injectFailureSimConv() {
     }
 
@@ -194,6 +214,46 @@ public class stochasticTime {
             }
         }
 
+    }
+
+    private int calculateDelay(int sumSFEEminOperationTime) {
+
+        Random random = new Random();
+        SFEI sfei;
+        if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
+            sfei = sfeiConveyor;
+        } else {
+            sfei = sfeiMachine;
+        }
+
+        double m = utility.getCustomCalc().calcExpression(mean,
+                sfei.getnPiecesMoved(),
+                (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
+                (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
+
+        double total_Time;
+        if (timeType.equals(timeOptions.GAUSSIAN)) {
+
+            double dev = utility.getCustomCalc().calcExpression(std_dev,
+                    sfei.getnPiecesMoved(),
+                    (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
+                    (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
+
+//            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
+            total_Time = random.nextGaussian() * dev + m;
+            System.out.println("Calculated Mean: " + m + " and dev:" + dev + " with total time of: " + total_Time);
+        } else {
+            total_Time = m;
+            System.out.println("Calculated Mean: " + m + " with total time of: " + total_Time);
+        }
+
+        total_Time = total_Time - sumSFEEminOperationTime;
+
+        System.out.println("Delay " + total_Time + " on SFEI:" + sfei.getName());
+        if (total_Time < 0)
+            return 0;
+
+        return (int) Math.round(total_Time);
     }
 
 }

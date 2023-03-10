@@ -66,9 +66,9 @@ public class SFEM_monitor {
                     printStats(runtime);
                     printedStats = true;
 
-                    if (!isGraphsInited)
+/*                    if (!isGraphsInited)
                         initGraphs();
-                    else updateGraphs();
+                    else updateGraphs();*/
 
                 }
             } else {

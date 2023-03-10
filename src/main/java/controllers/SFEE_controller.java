@@ -2,6 +2,7 @@ package controllers;
 
 import communication.modbus;
 import failures.SFEE_failures;
+import failures.stochasticTime;
 import models.SFEE;
 import models.SFEI.SFEI;
 import models.SFEI.SFEI_conveyor;
@@ -55,16 +56,16 @@ public class SFEE_controller {
         return mb;
     }
 
-
     public void init(String[] comConfig) {
         try {
 
 
             //String csv_path = viewer.readIOpath();
 
-//            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC\\simulation\\Tags_CMC_Modbus.csv";
-            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
-            importIO(csv_path, 2);
+            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC\\simulation\\Tags_CMC_Modbus.csv";
+            importIO(csv_path, 1);
+/*            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
+            importIO(csv_path, 2);*/
 
             // Initialization of the modbus connection in case of not connected already
             openCommunication(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]), sfee.getIo());
@@ -127,6 +128,7 @@ public class SFEE_controller {
                         "s_lids_at_entry",
                         Instant.now(),
                         Instant.now(),
+                        "entry_conveyor",
                         "entry_remover",
                         "entry_emitter",
                         "s_entry_remover",
@@ -145,6 +147,7 @@ public class SFEE_controller {
                         "s_remover",
                         Instant.now(),
                         Instant.now(),
+                        "exit_conveyor",
                         "exit_remover",
                         "exit_emitter",
                         "s_exit_remover",
@@ -156,6 +159,7 @@ public class SFEE_controller {
                         "s_lids_at_entry2",
                         Instant.now(),
                         Instant.now(),
+                        "entry_conveyor2",
                         "entry_remover2",
                         "entry_emitter2",
                         "s_entry_remover2",
@@ -174,6 +178,7 @@ public class SFEE_controller {
                         "s_remover2",
                         Instant.now(),
                         Instant.now(),
+                        "exit_conveyor2",
                         "exit_remover2",
                         "exit_emitter2",
                         "s_exit_remover2",
@@ -232,14 +237,14 @@ public class SFEE_controller {
     /* ***********************************
                     SFEI
     ************************************ */
-    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String aRemover, String aEmitter, String sRemover, String sEmitter) {
+    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor, String aRemover, String aEmitter, String sRemover, String sEmitter) {
 
         sensor_actuator[] vector = new sensor_actuator[4];
         vector[0] = sfee.getIObyName(aRemover);
         vector[1] = sfee.getIObyName(aEmitter);
         vector[2] = sfee.getIObyName(sRemover);
         vector[3] = sfee.getIObyName(sEmitter);
-        SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, vector);
+        SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(conveyorMotor), vector);
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
 
     }
@@ -310,18 +315,22 @@ public class SFEE_controller {
             // Not needed to explicit every SFEI because de firstRun() print that!
 
             String[] sfeeTime = viewer.SFEEtime();
+            String[] sfeeFailures_str = viewer.SFEEFailures();
 
             if (Integer.parseInt(sfeeTime[0]) == 1) {
                 // Stochastic Time
-                sfeeFailures = new SFEE_failures(sfee, SFEE_failures.timeOptions.GAUSSIAN);
-                sfeeFailures.setMean(sfeeTime[1]);
-                sfeeFailures.setStd_dev(sfeeTime[2]);
+                sfeeFailures = new SFEE_failures(
+                        sfee,
+                        stochasticTime.timeOptions.GAUSSIAN,
+                        new String[]{sfeeTime[1], sfeeTime[2]},
+                        new String[]{sfeeFailures_str[0], sfeeFailures_str[1], sfeeFailures_str[2], sfeeFailures_str[3], sfeeFailures_str[4]});
 
             } else if (Integer.parseInt(sfeeTime[0]) == 2) {
                 // Linear Time
-                sfeeFailures = new SFEE_failures(sfee, SFEE_failures.timeOptions.LINEAR);
-                sfeeFailures.setMean(sfeeTime[1]);
-                sfeeFailures.setStd_dev("0");
+                sfeeFailures = new SFEE_failures(sfee,
+                        stochasticTime.timeOptions.LINEAR,
+                        new String[]{sfeeTime[1]},
+                        new String[]{sfeeFailures_str[0], sfeeFailures_str[1], sfeeFailures_str[2], sfeeFailures_str[3], sfeeFailures_str[4]});
             }
 
         }
