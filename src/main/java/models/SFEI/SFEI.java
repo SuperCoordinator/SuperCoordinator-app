@@ -2,8 +2,10 @@ package models.SFEI;
 
 import models.part;
 import models.sensor_actuator;
+import org.apache.commons.math3.util.Pair;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -20,11 +22,13 @@ public class SFEI {
     private final SFEI_type sfeiType;
     private final sensor_actuator inSensor;
     private final sensor_actuator outSensor;
+    private long minOperationTime;
     private final TreeSet<part> partsATM;
     private int nPiecesMoved;
     private final Instant dayOfBirth;
     private Instant dayOfLastMaintenance;
-    private long minOperationTime;
+
+    private final ArrayList<Pair<Integer, Instant>> breakdownHistory;
 
     public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance) {
         this.name = name;
@@ -36,6 +40,8 @@ public class SFEI {
 
         this.nPiecesMoved = 0;
         this.partsATM = new TreeSet<>(Comparator.comparing(part::getId));
+
+        this.breakdownHistory = new ArrayList<>();
     }
 
     public String getName() {
@@ -52,6 +58,14 @@ public class SFEI {
 
     public sensor_actuator getOutSensor() {
         return outSensor;
+    }
+
+    public long getMinOperationTime() {
+        return minOperationTime;
+    }
+
+    public void setMinOperationTime(long minOperationTime) {
+        this.minOperationTime = minOperationTime;
     }
 
     public synchronized TreeSet<part> getPartsATM() {
@@ -82,11 +96,13 @@ public class SFEI {
         this.dayOfLastMaintenance = dayOfLastMaintenance;
     }
 
-    public long getMinOperationTime() {
-        return minOperationTime;
+    public Pair<Integer, Instant> getLastBreakdown() {
+        return breakdownHistory.get(breakdownHistory.size() - 1);
     }
 
-    public void setMinOperationTime(long minOperationTime) {
-        this.minOperationTime = minOperationTime;
+    public void addBreakdown(Pair<Integer, Instant> event) {
+        breakdownHistory.add(event);
     }
+
+
 }

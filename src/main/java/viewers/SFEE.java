@@ -192,10 +192,13 @@ public class SFEE {
             System.out.println("BREAKDOWN WITH REPAIR (break): ");
             str[0] = in.nextLine();
             retry = customCalculator.evalFormula(str[0]);
-
-            System.out.println("BREAKDOWN WITH REPAIR (repair): ");
-            str[4] = in.nextLine();
-            retry = retry || customCalculator.evalFormula(str[4]);
+            if (!str[0].equalsIgnoreCase("no")) {
+                System.out.println("BREAKDOWN WITH REPAIR (repair): ");
+                str[4] = in.nextLine();
+                retry = retry || customCalculator.evalFormula(str[4]);
+            } else {
+                str[4] = "no";
+            }
 
         } while (retry);
 

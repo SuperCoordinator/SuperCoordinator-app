@@ -12,7 +12,7 @@ import java.util.*;
 
 public class SFEE_failures {
 
-    private enum SM_Failures {
+    private enum SM {
         STOCHASTIC,
         BREAKDOWN,
         BREAKDOWN_WITH_REPAIR,
@@ -27,7 +27,7 @@ public class SFEE_failures {
     private final String[] failuresFormulas;
     private final utils utility;
 
-    private SM_Failures state;
+    private SM state;
     private final int sfeiConveyor_idx_failures;
     private final int sfeiMachine_idx_failures;
 
@@ -39,10 +39,32 @@ public class SFEE_failures {
         this.failuresFormulas = failures_f;
         this.utility = new utils();
 
-        this.state = SM_Failures.STOCHASTIC;
+        this.state = SM.STOCHASTIC;
 
         this.sfeiConveyor_idx_failures = pickSFEI(false);
         this.sfeiMachine_idx_failures = pickSFEIMachine();
+
+        this.breakdownRepair = new breakdown_repair(
+                failure.type.BREAKDOWN_WITH_REPAIR,
+                failuresFormulas[0],
+                (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
+                failuresFormulas[4]);
+
+        this.breakdown = new breakdown(
+                failure.type.BREAKDOWN,
+                failuresFormulas[1],
+                (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
+
+        this.produceFaulty = new produce_faulty(
+                failure.type.PRODUCE_FAULTY,
+                failuresFormulas[2],
+                (SFEI_machine) sfee.getSFEIbyIndex(sfeiMachine_idx_failures));
+
+        this.produceMore = new produce_more(
+                failure.type.PRODUCE_MORE,
+                failuresFormulas[3],
+                (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
+
 
     }
 
@@ -58,9 +80,102 @@ public class SFEE_failures {
     private boolean isEmitterON = false;
     private boolean old_sEmitter = false;
 
+    private int cnt = 0;
+    private final breakdown_repair breakdownRepair;
+    private final breakdown breakdown;
+    private final produce_faulty produceFaulty;
+
+    private final produce_more produceMore;
+
     public void loop(List<Object> sensorsState, List<Object> actuatorsState) {
 
         try {
+            // Evaluate of the transitions
+            switch (state) {
+                case STOCHASTIC -> {
+                    breakdownRepair.loop(sensorsState, actuatorsState);
+                    if (breakdownRepair.isActive()) {
+                        state = SM.BREAKDOWN_WITH_REPAIR;
+                    } else {
+                        breakdown.loop(sensorsState, actuatorsState);
+                        if (breakdown.isActive()) {
+                            state = SM.BREAKDOWN;
+                        } else {
+                            produceFaulty.loop(sensorsState, actuatorsState);
+                            if (produceFaulty.isActive()) {
+                                state = SM.PRODUCE_FAULTY;
+                            } else {
+                                produceMore.loop(sensorsState, actuatorsState);
+                                if (produceMore.isActive()) {
+                                    state = SM.PRODUCE_MORE;
+                                } /*else {
+                                    state = SM.STOCHASTIC;
+                                }*/
+                            }
+                        }
+                    }
+                }
+                case BREAKDOWN_WITH_REPAIR -> {
+                    if (!breakdownRepair.isActive()) {
+                        state = SM.STOCHASTIC;
+                    }
+                }
+                case BREAKDOWN -> {
+                    if (!breakdown.isActive()) {
+                        state = SM.STOCHASTIC;
+                    }
+                }
+                case PRODUCE_FAULTY -> {
+                    if (!produceFaulty.isActive()) {
+                        state = SM.STOCHASTIC;
+                    }
+                }
+                case PRODUCE_MORE -> {
+                    if (!produceMore.isActive()) {
+                        state = SM.STOCHASTIC;
+                    }
+                }
+            }
+
+            // Execute tasks
+            switch (state) {
+                case BREAKDOWN_WITH_REPAIR -> breakdownRepair.loop(sensorsState, actuatorsState);
+                case BREAKDOWN -> breakdown.loop(sensorsState, actuatorsState);
+                case PRODUCE_FAULTY -> produceFaulty.loop(sensorsState, actuatorsState);
+                case PRODUCE_MORE -> produceMore.loop(sensorsState, actuatorsState);
+                case STOCHASTIC -> stochasticTimeMode(sensorsState, actuatorsState);
+            }
+//            state = SM.STOCHASTIC;
+            // BREAKDOWN with Repair
+            /*
+            if (!breakdownRepair.loop(sensorsState, actuatorsState)) {
+                stochasticTimeMode(sensorsState, actuatorsState);
+            }else
+            */
+
+            // BREAKDOWN (with manually reset)
+/*            if (!breakdown.loop(sensorsState, actuatorsState)) {
+                stochasticTimeMode(sensorsState, actuatorsState);
+            } else {
+                if(cnt == 620){
+                    breakdown.setResume(true);
+                    cnt = 0;
+                }else{
+                    cnt++;}
+
+            }*/
+
+            // PRODUCE FAULTY
+/*            if (!produceFaulty.loop(sensorsState, actuatorsState)) {
+                stochasticTimeMode(sensorsState, actuatorsState);
+            }*/
+
+            // PRODUCE MORE
+/*            if (!produceMore.loop(sensorsState, actuatorsState)) {
+                stochasticTimeMode(sensorsState, actuatorsState);
+            }*/
+
+/*
             switch (state) {
                 case STOCHASTIC -> {
 
@@ -71,16 +186,16 @@ public class SFEE_failures {
 
                     if (bd_repair_formula || bd_formula || produce_faulty_formula || produce_more_formula) {
                         if (bd_repair_formula && !bd_repair_completed) {
-                            state = SM_Failures.BREAKDOWN_WITH_REPAIR;
+                            state = SM.BREAKDOWN_WITH_REPAIR;
                         }
                         if (bd_formula) {
-                            state = SM_Failures.BREAKDOWN;
+                            state = SM.BREAKDOWN;
                         }
                         if (produce_faulty_formula && !produce_faulty_completed) {
-                            state = SM_Failures.PRODUCE_FAULTY;
+                            state = SM.PRODUCE_FAULTY;
                         }
                         if (produce_more_formula && !produce_more_completed) {
-                            state = SM_Failures.PRODUCE_MORE;
+                            state = SM.PRODUCE_MORE;
                         }
                     } else {
                         // LESS PRIORITY THAN THE OTHER FAILURES
@@ -121,7 +236,7 @@ public class SFEE_failures {
                                 System.out.println("RUN the " + sfeiConveyor.getName());
 
                                 bd_repair_completed = true;
-                                state = SM_Failures.STOCHASTIC;
+                                state = SM.STOCHASTIC;
                                 bd_repair_sfei = -1;
                             }
                         }
@@ -157,7 +272,7 @@ public class SFEE_failures {
                             if (utility.getLogicalOperator().FE_detector(b_machine_door, old_sMachine_door)) {
                                 actuatorsState.set(sfeiMachine.getaStop().bit_offset(), 1);
 
-                                state = SM_Failures.STOCHASTIC;
+                                state = SM.STOCHASTIC;
                                 produce_faulty = -1;
                                 produce_faulty_completed = true;
                             }
@@ -182,7 +297,7 @@ public class SFEE_failures {
                         if (utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                             actuatorsState.set(sfeiConveyor.getaEmitter().bit_offset(), 0);
 
-                            state = SM_Failures.STOCHASTIC;
+                            state = SM.STOCHASTIC;
                             produce_more = -1;
                             produce_more_completed = true;
                         }
@@ -192,6 +307,7 @@ public class SFEE_failures {
                 default -> {
                 }
             }
+        */
         } catch (
                 Exception e) {
             e.printStackTrace();
@@ -313,7 +429,7 @@ public class SFEE_failures {
         }
         members = formula.split(op);
         SFEI sfei = null;
-        // Only if the SM_Failures is not in the BREAKDOWN_WITH_REPAIR MODE
+        // Only if the SM is not in the BREAKDOWN_WITH_REPAIR MODE
         if (idx != 4) {
             // Regarding the type of the Failure, could be in different SFEIs
             // With the index, the formula is available and the corresponding SFEI
