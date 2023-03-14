@@ -314,10 +314,10 @@ public class SFEE_controller {
 
             // Not needed to explicit every SFEI because de firstRun() print that!
 
-            String[] sfeeTime = viewer.SFEEtime();
+            String[] sfeeTime = viewer.SFEE_stochasticTime();
             String[] sfeeFailures_str = viewer.SFEEFailures();
 
-            if (Integer.parseInt(sfeeTime[0]) == 1) {
+            if (sfeeTime[0].contains("gauss")) {
                 // Stochastic Time
                 sfeeFailures = new SFEE_failures(
                         sfee,
@@ -325,7 +325,7 @@ public class SFEE_controller {
                         new String[]{sfeeTime[1], sfeeTime[2]},
                         new String[]{sfeeFailures_str[0], sfeeFailures_str[1], sfeeFailures_str[2], sfeeFailures_str[3], sfeeFailures_str[4]});
 
-            } else if (Integer.parseInt(sfeeTime[0]) == 2) {
+            } else if (sfeeTime[0].contains("linear")) {
                 // Linear Time
                 sfeeFailures = new SFEE_failures(sfee,
                         stochasticTime.timeOptions.LINEAR,

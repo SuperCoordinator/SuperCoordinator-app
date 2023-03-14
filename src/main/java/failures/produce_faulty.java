@@ -33,16 +33,30 @@ public class produce_faulty extends failure {
 
         System.out.println("Will PFaulty on -> " + sfeiMachine.getName());
     }
+
     public boolean isActive() {
         return state != SM.WORKING;
     }
 
+    private int old_nPiecesMoved = 0;
+
     public void loop(List<Object> sensorsState, List<Object> actuatorsState) {
+
+        // Only want to check
 
         // Evaluate transitions
         switch (state) {
             case WORKING -> {
-                if (evalFormula(sfeiMachine.getnPiecesMoved(),
+                if (isProbability()) {
+                    if (sfeiMachine.getnPiecesMoved() != old_nPiecesMoved) {
+                        if (evalFormula(sfeiMachine.getnPiecesMoved(),
+                                (int) Duration.between(sfeiMachine.getDayOfBirth(), Instant.now()).toMinutes(),
+                                (int) Duration.between(sfeiMachine.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
+                            state = SM.WAITING_PART_POSITIONING;
+                        }
+                    }
+                    old_nPiecesMoved = sfeiMachine.getnPiecesMoved();
+                } else if (evalFormula(sfeiMachine.getnPiecesMoved(),
                         (int) Duration.between(sfeiMachine.getDayOfBirth(), Instant.now()).toMinutes(),
                         (int) Duration.between(sfeiMachine.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
                     state = SM.WAITING_PART_POSITIONING;
@@ -64,7 +78,9 @@ public class produce_faulty extends failure {
                 }
             }
             case INJECTED -> {
-                if (!evalFormula(sfeiMachine.getnPiecesMoved(),
+                if (isProbability()) {
+                    state = SM.WORKING;
+                } else if (!evalFormula(sfeiMachine.getnPiecesMoved(),
                         (int) Duration.between(sfeiMachine.getDayOfBirth(), Instant.now()).toMinutes(),
                         (int) Duration.between(sfeiMachine.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
                     state = SM.WORKING;

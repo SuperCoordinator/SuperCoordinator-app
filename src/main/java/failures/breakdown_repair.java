@@ -1,12 +1,12 @@
 package failures;
 
-import models.SFEI.SFEI;
 import models.SFEI.SFEI_conveyor;
 import org.apache.commons.math3.util.Pair;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 public class breakdown_repair extends failure {
 
@@ -36,12 +36,23 @@ public class breakdown_repair extends failure {
         return state != SM.WORKING;
     }
 
+    private int old_nPiecesMoved = 0;
+
     public void loop(List<Object> sensorsState, List<Object> actuatorsState) {
 
         // Evaluate transitions
         switch (state) {
             case WORKING -> {
-                if (evalFormula(sfeiConveyor.getnPiecesMoved(),
+                if (isProbability()) {
+                    if (sfeiConveyor.getnPiecesMoved() != old_nPiecesMoved) {
+                        if (evalFormula(sfeiConveyor.getnPiecesMoved(),
+                                (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
+                                (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
+                            state = SM.DISABLED;
+                        }
+                    }
+                    old_nPiecesMoved = sfeiConveyor.getnPiecesMoved();
+                } else if (evalFormula(sfeiConveyor.getnPiecesMoved(),
                         (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
                         (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
                     state = SM.DISABLED;
@@ -58,7 +69,9 @@ public class breakdown_repair extends failure {
             case REPAIRED -> {
                 // WAIT until the condition is not verified again
                 // The time of repair is calculated based on the instant of breakdown of the SFEI
-                if (!evalFormula(sfeiConveyor.getnPiecesMoved(),
+                if (isProbability()) {
+                    state = SM.WORKING;
+                } else if (!evalFormula(sfeiConveyor.getnPiecesMoved(),
                         (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
                         (int) Duration.between(sfeiConveyor.getLastBreakdown().getSecond(), Instant.now()).toMinutes())) {
                     state = SM.WORKING;
@@ -90,6 +103,7 @@ public class breakdown_repair extends failure {
                 }
             }
         }
+
         old_state = state;
 
 //        return state != SM.WORKING;

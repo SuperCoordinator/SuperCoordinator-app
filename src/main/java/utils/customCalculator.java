@@ -1,6 +1,5 @@
 package utils;
 
-import java.util.Scanner;
 import java.util.Stack;
 
 
@@ -85,6 +84,10 @@ public class customCalculator {
         if (input.equalsIgnoreCase("no"))
             return;
 
+        if (input.contains("prob")) {
+            return;
+        }
+
         // The tokens that make up the input
         String[] tokens = input.split(" ");
 
@@ -164,8 +167,8 @@ public class customCalculator {
     }
 
     public String errorMsg(String userInput) {
-        errorMsg = "";
-        processInput(userInput, 1, 1, 1);
+/*        errorMsg = "";
+        processInput(userInput, 1, 1, 1);*/
         return errorMsg;
     }
 
@@ -174,31 +177,101 @@ public class customCalculator {
         return result;
     }
 
-    public boolean evalFormula(String formula) {
+    private final String[] elements = new String[3];
+
+    public boolean evalStochasticTimeExpression(String formula) {
+
+        boolean error = false;
+
+        if (formula.indexOf(';') == -1) {
+            // Is random or linear
+
+            if (!(formula.indexOf('[') != -1 && formula.indexOf(']') != -1)) {
+                errorMsg = "Invalid formula, missing some [ ] ";
+                return true;
+            }
+
+            elements[0] = formula.substring(0, formula.indexOf('['));
+            elements[1] = formula.substring(formula.indexOf('[') + 1, formula.indexOf(']'));
+
+        } // Is gaussian
+        else {
+            if (!(formula.indexOf('[') != -1 && formula.indexOf(';') != -1 && formula.indexOf(']') != -1)) {
+                errorMsg = "Invalid formula, missing some ; or [ ] ";
+                return true;
+            }
+            elements[0] = formula.substring(0, formula.indexOf('['));
+            elements[1] = formula.substring(formula.indexOf('[') + 1, formula.indexOf(';'));
+            elements[2] = formula.substring(formula.indexOf(';') + 1, formula.indexOf(']'));
+        }
+
+        // remove possible blank space in the beginning of each String
+        if (elements[0].charAt(0) == ' ')
+            elements[0] = elements[0].substring(1);
+        if (elements[1].charAt(0) == ' ')
+            elements[1] = elements[1].substring(1);
+        if (elements[2] != null)
+            if (elements[2].charAt(0) == ' ')
+                elements[2] = elements[2].substring(1);
+
+        // and for the type, remove possible blank space
+        if (elements[0].charAt(elements[0].length() - 1) == ' ')
+            elements[0] = elements[0].substring(0, elements[0].length() - 1);
+
+/*        for (String str : elements) {
+            System.out.print(str + "/");
+        }
+        System.out.println("");*/
+
+        // gaussian
+        if (elements[0].equalsIgnoreCase("gauss")) {
+            boolean b = evalExpression(elements[1]);
+            if (b)
+                return true;
+            b = evalExpression(elements[2]);
+            if (b)
+                return true;
+        } // linear
+        else if (elements[0].equalsIgnoreCase("linear")) {
+            boolean b = evalExpression(elements[1]);
+            if (b)
+                return true;
+        } else {
+            errorMsg = "Unknown prefix (only gauss and linear";
+            return true;
+        }
+
+        // At this point all went well, so save the expression
+        return error;
+    }
+
+    public String[] getStochasticTimeFormulaElements() {
+        return elements;
+    }
+
+    public boolean evalFailureFormula(String formula) {
         error = false;
+
         String[] members;
-        String op;
         if (formula.contains(" > ")) {
             members = formula.split("> ");
-            op = ">";
         } else if (formula.contains(" < ")) {
             members = formula.split("< ");
-            op = "<";
         } else if (formula.contains(" = ")) {
             members = formula.split("= ");
-            op = "=";
         } else if (formula.contains(" <= ")) {
             members = formula.split("<= ");
-            op = "<=";
         } else if (formula.contains(" >= ")) {
             members = formula.split(">= ");
-            op = ">=";
         } else {
             return false;
         }
+
         processInput(members[0], 1, 1, 1);
         processInput(members[1], 1, 1, 1);
+
         return error;
     }
+
 
 }

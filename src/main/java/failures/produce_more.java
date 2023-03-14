@@ -36,12 +36,23 @@ public class produce_more extends failure {
         return state != SM.WORKING;
     }
 
+    private int old_nPiecesMoved = 0;
+
     public void loop(List<Object> sensorsState, List<Object> actuatorsState) {
 
         // Evaluate transitions
         switch (state) {
             case WORKING -> {
-                if (evalFormula(sfeiConveyor.getnPiecesMoved(),
+                if (isProbability()) {
+                    if (sfeiConveyor.getnPiecesMoved() != old_nPiecesMoved) {
+                        if (evalFormula(sfeiConveyor.getnPiecesMoved(),
+                                (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
+                                (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
+                            state = SM.TURN_ON;
+                        }
+                    }
+                    old_nPiecesMoved = sfeiConveyor.getnPiecesMoved();
+                } else if (evalFormula(sfeiConveyor.getnPiecesMoved(),
                         (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
                         (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
                     state = SM.TURN_ON;
@@ -58,7 +69,9 @@ public class produce_more extends failure {
                 old_sEmitter = sensor;
             }
             case TURN_OFF -> {
-                if (!evalFormula(sfeiConveyor.getnPiecesMoved(),
+                if (isProbability()) {
+                    state = SM.WORKING;
+                } else if (!evalFormula(sfeiConveyor.getnPiecesMoved(),
                         (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
                         (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
                     state = SM.WORKING;

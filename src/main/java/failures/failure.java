@@ -1,11 +1,9 @@
 package failures;
 
-import models.SFEI.SFEI_conveyor;
-import models.SFEI.SFEI_machine;
 import utils.*;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.sql.SQLOutput;
+import java.util.Random;
 
 public class failure {
 
@@ -18,6 +16,7 @@ public class failure {
 
     private final type type;
     private final String formula;
+    private final boolean isProbability;
     private final utils utility;
 
     public failure(failure.type type, String formula) {
@@ -26,6 +25,10 @@ public class failure {
 
         this.utility = new utils();
 
+        if (formula.contains("prob"))
+            this.isProbability = true;
+        else
+            this.isProbability = false;
     }
 
     public failure.type getType() {
@@ -34,6 +37,10 @@ public class failure {
 
     public utils getUtility() {
         return utility;
+    }
+
+    public boolean isProbability() {
+        return isProbability;
     }
 
     public boolean evalFormula(int nParts, int age_inDays, int maintenance_inDays) {
@@ -45,6 +52,11 @@ public class failure {
     }
 
     private boolean eval_f(String f, int nParts, int age_inDays, int maintenance_inDays) {
+
+        if (isProbability) {
+            return eval_prob(f, nParts, age_inDays, maintenance_inDays);
+        }
+
         String[] members;
         String op;
         if (f.contains(" > ")) {
@@ -83,5 +95,42 @@ public class failure {
         };
     }
 
+    private boolean eval_prob(String f, int nParts, int age_inDays, int maintenance_inDays) {
+
+        String[] members;
+        String op;
+        if (f.contains(" > ")) {
+            op = "> ";
+        } else if (f.contains(" < ")) {
+            op = "< ";
+        } else if (f.contains(" = ")) {
+            op = "= ";
+        } else if (f.contains(" <= ")) {
+            op = "<= ";
+        } else if (f.contains(" >= ")) {
+            op = ">= ";
+        } else {
+            return false;
+        }
+        members = f.split(op);
+        String[] operator = op.split(" ");
+        boolean leftMember = members[0].contains("prob");
+        double val = utility.getCustomCalc().calcExpression(
+                leftMember ? members[1] : members[0],
+                nParts,
+                age_inDays,
+                maintenance_inDays);
+        Random random = new Random();
+        int prob = random.nextInt(1, 101);
+        System.out.println("prob : " + prob);
+        return switch (operator[0]) {
+            case ">" -> leftMember ? prob > val : val > prob;
+            case "<" -> leftMember ? prob < val : val < prob;
+            case "=" -> prob == val;
+            case "<=" -> leftMember ? prob <= val : val <= prob;
+            case ">=" -> leftMember ? prob >= val : val >= prob;
+            default -> false;
+        };
+    }
 
 }

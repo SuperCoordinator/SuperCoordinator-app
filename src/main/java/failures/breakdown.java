@@ -14,6 +14,7 @@ public class breakdown extends failure {
         DISABLED,
         RESUMING
     }
+
     private SM state;
     private SM old_state;
 
@@ -36,22 +37,34 @@ public class breakdown extends failure {
     public void setResume(boolean resume) {
         this.resume = resume;
     }
+
     public boolean isActive() {
         return state != SM.WORKING;
     }
 
+    private int old_nPiecesMoved = 0;
 
     public void loop(List<Object> sensorsState, List<Object> actuatorsState) {
 
         // Evaluate transitions
         switch (state) {
             case WORKING -> {
-                if (evalFormula(sfeiConveyor.getnPiecesMoved(),
+                if (isProbability()) {
+                    if (sfeiConveyor.getnPiecesMoved() != old_nPiecesMoved) {
+                        if (evalFormula(sfeiConveyor.getnPiecesMoved(),
+                                (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
+                                (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
+                            state = SM.DISABLED;
+                        }
+                    }
+                    old_nPiecesMoved = sfeiConveyor.getnPiecesMoved();
+                } else if (evalFormula(sfeiConveyor.getnPiecesMoved(),
                         (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
                         (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
                     state = SM.DISABLED;
                 }
             }
+
             case DISABLED -> {
                 if (resume) {
                     state = SM.RESUMING;
@@ -60,8 +73,9 @@ public class breakdown extends failure {
             }
             case RESUMING -> {
                 // WAIT until the condition is not verified again
-
-                if (!evalFormula(sfeiConveyor.getnPiecesMoved(),
+                if (isProbability()) {
+                    state = SM.WORKING;
+                } else if (!evalFormula(sfeiConveyor.getnPiecesMoved(),
                         (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
                         (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
                     state = SM.WORKING;
