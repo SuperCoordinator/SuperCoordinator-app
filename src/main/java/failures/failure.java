@@ -17,6 +17,7 @@ public class failure {
     private final type type;
     private final String formula;
     private final boolean isProbability;
+
     private final utils utility;
 
     public failure(failure.type type, String formula) {

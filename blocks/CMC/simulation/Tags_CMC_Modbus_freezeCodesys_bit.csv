@@ -28,6 +28,7 @@ MC1_produce,Output,Bool,Coil 11
 MC1_start,Output,Bool,Coil 12
 MC1_stop,Output,Bool,Coil 13
 Remover,Output,Bool,Coil 14
+freeze_entryConv,Output,Bool,Coil 15
 FACTORY I/O (Time Scale),Input,Real,Input Reg 0
 MC1_progress,Input,Int,Input Reg 1
 FACTORY I/O (Camera Position),Output,Int,Holding Reg 0

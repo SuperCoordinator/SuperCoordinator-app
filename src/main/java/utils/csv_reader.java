@@ -51,7 +51,8 @@ public class csv_reader {
             System.out.println("Enter following the example pattern: 2,3,1,5");
             String input = in.nextLine();*/
 
-            String input = "6,7,8,9,10,12,13";
+            //String input = "6,7,8,9,10,12,13";
+            String input = "12";
             if(scene == 2)
                 input = input.concat(",17,18,19,20,21,23,24");
             System.out.println(input);

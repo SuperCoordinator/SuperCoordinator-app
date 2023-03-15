@@ -2,6 +2,7 @@ package controllers;
 
 import communication.modbus;
 import failures.SFEE_failures;
+import failures.newVersion.SFEE_failures2;
 import failures.stochasticTime;
 import models.SFEE;
 import models.SFEI.SFEI;
@@ -38,6 +39,7 @@ public class SFEE_controller {
 
     private operationMode opMode;
     private SFEE_failures sfeeFailures;
+    private SFEE_failures2 sfeeFailures2;
 
     private final viewers.SFEE viewer;
     private final utils utility;
@@ -317,6 +319,8 @@ public class SFEE_controller {
             String[] sfeeTime = viewer.SFEE_stochasticTime();
             String[] sfeeFailures_str = viewer.SFEEFailures();
 
+            String[] breakdown2 = viewer.breakdown2();
+
             if (sfeeTime[0].contains("gauss")) {
                 // Stochastic Time
                 sfeeFailures = new SFEE_failures(
@@ -327,10 +331,15 @@ public class SFEE_controller {
 
             } else if (sfeeTime[0].contains("linear")) {
                 // Linear Time
-                sfeeFailures = new SFEE_failures(sfee,
+/*                sfeeFailures = new SFEE_failures(sfee,
                         stochasticTime.timeOptions.LINEAR,
                         new String[]{sfeeTime[1]},
-                        new String[]{sfeeFailures_str[0], sfeeFailures_str[1], sfeeFailures_str[2], sfeeFailures_str[3], sfeeFailures_str[4]});
+                        new String[]{sfeeFailures_str[0], sfeeFailures_str[1], sfeeFailures_str[2], sfeeFailures_str[3], sfeeFailures_str[4]});*/
+                sfeeFailures2 = new SFEE_failures2(sfee,
+                        stochasticTime.timeOptions.LINEAR,
+                        new String[]{sfeeTime[1], sfeeTime[2]},
+                        new String[]{sfeeFailures_str[0], sfeeFailures_str[1], sfeeFailures_str[2], sfeeFailures_str[3], sfeeFailures_str[4]},
+                        breakdown2);
             }
 
         }
@@ -349,7 +358,8 @@ public class SFEE_controller {
 
             // The function mb.readCoils() is only to initialize the list elements with a given size
             List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
-            sfeeFailures.loop(sensorsState, actuatorsState);
+//            sfeeFailures.loop(sensorsState, actuatorsState);
+            sfeeFailures2.loop(sensorsState, actuatorsState);
 //            System.out.println("Outputs after:  " + Arrays.toString(actuatorsState.toArray()));
 
             // The writeCoils() function will detect and execute MB instruction only if there are changes

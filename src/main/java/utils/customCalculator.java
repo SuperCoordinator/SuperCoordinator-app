@@ -237,7 +237,7 @@ public class customCalculator {
             if (b)
                 return true;
         } else {
-            errorMsg = "Unknown prefix (only gauss and linear";
+            errorMsg = "Unknown prefix (only gauss and linear)";
             return true;
         }
 

@@ -232,6 +232,7 @@ public class SFEE {
             retry = customCalculator.evalFailureFormula(str[1]);
         } while (retry);
 
+
         do {
             if (retry)
                 System.out.println(customCalculator.errorMsg(str[2]));
@@ -251,4 +252,51 @@ public class SFEE {
 
         return str;
     }
+
+    public String[] breakdown2() {
+        String[] str = new String[3];
+        customCalculator customCalculator = new customCalculator();
+        boolean retry = false;
+        do {
+            if (retry)
+                System.out.println("Msg: " + customCalculator.errorMsg(str[0]));
+            System.out.print("      [n] -> ");
+            str[0] = in.nextLine();
+            if (containsOperator(str[0]))
+                retry = customCalculator.evalStochasticTimeExpression(str[0]);
+            else
+                retry = customCalculator.evalFailureFormula(str[0]);
+        } while (retry);
+
+        do {
+            if (retry)
+                System.out.println("Msg: " + customCalculator.errorMsg(str[1]));
+            System.out.print("      [a] -> ");
+            str[1] = in.nextLine();
+            if (containsOperator(str[1]))
+                retry = customCalculator.evalStochasticTimeExpression(str[1]);
+            else
+                retry = customCalculator.evalFailureFormula(str[1]);
+        } while (retry);
+
+        do {
+            if (retry)
+                System.out.println("Msg: " + customCalculator.errorMsg(str[2]));
+            System.out.print("      [m] -> ");
+            str[2] = in.nextLine();
+            if (containsOperator(str[2]))
+                retry = customCalculator.evalStochasticTimeExpression(str[2]);
+            else
+                retry = customCalculator.evalFailureFormula(str[2]);
+        } while (retry);
+
+
+        return str;
+    }
+
+    private boolean containsOperator(String str) {
+
+        return !str.contains(" > ") && !str.contains(" < ") && !str.contains(" >= ") && !str.contains(" <= ") && !str.contains(" = ");
+    }
+
 }

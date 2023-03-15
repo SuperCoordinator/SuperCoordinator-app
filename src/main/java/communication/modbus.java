@@ -149,13 +149,13 @@ public class modbus implements Runnable {
 /*            if (inputRegisters.length() > 0) {
                 InputRegister[] registers = con.readInputRegisters(0, inputRegisters.length());
                 for (int i = 0; i < registers.length; i++) {
-                    inputRegisters.getAndSet(i, registers[i].getValue());
+                    inputRegisters.getAndSet(i, registers[i].getMean());
                 }
             }
             if (holdingRegisters.length() > 0) {
                 Register[] registers = con.readMultipleRegisters(0, holdingRegisters.length());
                 for (int i = 0; i < registers.length; i++) {
-                    holdingRegisters.getAndSet(i, registers[i].getValue());
+                    holdingRegisters.getAndSet(i, registers[i].getMean());
                 }
             }*/
 

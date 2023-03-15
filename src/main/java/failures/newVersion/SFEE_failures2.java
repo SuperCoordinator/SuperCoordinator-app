@@ -1,6 +1,6 @@
-package failures;
+package failures.newVersion;
 
-import failures.newVersion.breakdown2;
+import failures.*;
 import models.SFEE;
 import models.SFEI.SFEI;
 import models.SFEI.SFEI_conveyor;
@@ -8,7 +8,7 @@ import models.SFEI.SFEI_machine;
 
 import java.util.*;
 
-public class SFEE_failures {
+public class SFEE_failures2 {
 
     private enum SM {
         STOCHASTIC,
@@ -25,7 +25,8 @@ public class SFEE_failures {
     private final stochasticTime.timeOptions stochasticType;
     private final String[] stochasticFormulas;
 
-    public SFEE_failures(SFEE sfee, stochasticTime.timeOptions stochasticType, String[] stochasticTime_f, String[] failures_f) {
+
+    public SFEE_failures2(SFEE sfee, stochasticTime.timeOptions stochasticType, String[] stochasticTime_f, String[] failures_f, String[] breakdown2) {
         this.sfee = sfee;
         this.stochasticTimeTasks = new LinkedList<>();
         this.stochasticType = stochasticType;
@@ -41,11 +42,9 @@ public class SFEE_failures {
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
                 failures_f[4]);
 
-        this.breakdown = new breakdown(
-                failure.type.BREAKDOWN,
-                failures_f[1],
+        this.breakdown2 = new breakdown2(
+                breakdown2,
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
-
 
         this.produceFaulty = new produce_faulty(
                 failure.type.PRODUCE_FAULTY,
@@ -59,8 +58,9 @@ public class SFEE_failures {
     }
 
     private final breakdown_repair breakdownRepair;
-    private final breakdown breakdown;
+    private final breakdown2 breakdown2;
     private final produce_faulty produceFaulty;
+
     private final produce_more produceMore;
 
     public void loop(List<Object> sensorsState, List<Object> actuatorsState) {
@@ -73,8 +73,8 @@ public class SFEE_failures {
                     if (breakdownRepair.isActive()) {
                         state = SM.BREAKDOWN_WITH_REPAIR;
                     } else {
-                        breakdown.loop(sensorsState, actuatorsState);
-                        if (breakdown.isActive()) {
+                        breakdown2.loop(sensorsState, actuatorsState);
+                        if (breakdown2.isActive()) {
                             state = SM.BREAKDOWN;
                         } else {
                             produceFaulty.loop(sensorsState, actuatorsState);
@@ -97,7 +97,7 @@ public class SFEE_failures {
                     }
                 }
                 case BREAKDOWN -> {
-                    if (!breakdown.isActive()) {
+                    if (!breakdown2.isActive()) {
                         state = SM.STOCHASTIC;
                     }
                 }
@@ -116,7 +116,7 @@ public class SFEE_failures {
             // Execute tasks
             switch (state) {
                 case BREAKDOWN_WITH_REPAIR -> breakdownRepair.loop(sensorsState, actuatorsState);
-                case BREAKDOWN -> breakdown.loop(sensorsState, actuatorsState);
+                case BREAKDOWN -> breakdown2.loop(sensorsState, actuatorsState);
                 case PRODUCE_FAULTY -> produceFaulty.loop(sensorsState, actuatorsState);
                 case PRODUCE_MORE -> produceMore.loop(sensorsState, actuatorsState);
                 case STOCHASTIC -> stochasticTimeMode(sensorsState, actuatorsState);

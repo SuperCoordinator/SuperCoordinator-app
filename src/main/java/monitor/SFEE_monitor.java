@@ -43,6 +43,7 @@ public class SFEE_monitor {
     }
 
     private int pieceCnt = 0;
+
     public void loop(List<Object> sensorsState) {
         try {
             synchronized (sfee) {
@@ -60,7 +61,16 @@ public class SFEE_monitor {
 
                         boolean sfee_inSensor = (int) sensorsState.get(sfee.getInSensor().bit_offset()) == 1;
                         if (utility.getLogicalOperator().RE_detector(sfee_inSensor, SFEIs_old_inSensors[sfei.getKey()])) {
-                            part p = new part(pieceCnt, "Blue base");
+
+                            int id = 0;
+                            if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
+                                if (sfee.getSFEIbyIndex(0).getPartsATM().last().getId() >= sfee.getSFEIbyIndex(0).getnPiecesMoved()) {
+                                    id = sfee.getSFEIbyIndex(0).getPartsATM().last().getId() + 1;
+                                }
+                            } else
+                                id = sfee.getSFEIbyIndex(0).getnPiecesMoved();
+
+                            part p = new part(id, "Blue lid");
 
                             // This operation of concat is faster than + operation
                             String itemName = sfei.getValue().getName();
@@ -86,6 +96,7 @@ public class SFEE_monitor {
                                 sfei.getValue().getPartsATM().last().addTimestamp(itemName);
                             else
                                 sfei.getValue().getPartsATM().first().addTimestamp(itemName);
+
                             sfei.getValue().setnPiecesMoved(sfei.getValue().getnPiecesMoved() + 1);
                         }
                     }

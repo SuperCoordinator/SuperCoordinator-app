@@ -40,6 +40,9 @@ public class SFEM_monitor {
         }
     }
 
+    // Avaliador de peças defeituosas baseada no tipo e no tempo de processamento
+
+
     public void loop(List<Long> runtime) {
         try {
             if (Duration.between(init_t, Instant.now()).toSeconds() % 5 == 0) {
@@ -66,9 +69,9 @@ public class SFEM_monitor {
                     printStats(runtime);
                     printedStats = true;
 
-/*                    if (!isGraphsInited)
+                    if (!isGraphsInited)
                         initGraphs();
-                    else updateGraphs();*/
+                    else updateGraphs();
 
                 }
             } else {
@@ -153,7 +156,7 @@ public class SFEM_monitor {
 
 
         intPair pair = new intPair(productionTime_cnt.keySet().toArray(new Integer[0]), productionTime_cnt.values().toArray(new Integer[0]));
-        intPair lastNparts = getLastNParts(10);
+        intPair lastNparts = getLastNParts(20);
 
         List<intPair> list = new ArrayList<>();
         list.add(pair);
