@@ -19,7 +19,6 @@ public class SFEI {
     }
 
     private final String name;
-
     private final SFEI_type sfeiType;
     private final sensor_actuator inSensor;
     private final sensor_actuator outSensor;

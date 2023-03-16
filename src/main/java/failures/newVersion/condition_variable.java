@@ -4,6 +4,7 @@ public class condition_variable {
 
     private validation validation;
 
+    public condition_variable(){}
     public condition_variable(String condition, validation.method method) {
         initialize(condition, method);
     }

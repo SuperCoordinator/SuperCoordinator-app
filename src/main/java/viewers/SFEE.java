@@ -4,6 +4,7 @@ import models.sensor_actuator;
 import utils.customCalculator;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -145,7 +146,7 @@ public class SFEE {
         System.out.println("Valid variables: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
         System.out.println("Valid operator: + - * / % or gauss[ mean ; dev ] linear[ value ] ");
         System.out.println("Please add a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]");
-        System.out.println("Enter expression:");
+        System.out.print("Enter expression:");
         do {
             if (retry)
                 System.out.println("Msg: " + customCalculator.errorMsg(str));
@@ -195,65 +196,67 @@ public class SFEE {
 */
     }
 
-    public String[] SFEEFailures() {
-        String[] str = new String[]{"no", "no", "no", "no", "no"};
+    public /*String[] */    ArrayList<String[]> SFEEFailures() {
+//        String[] str = new String[]{"no", "no", "no"};
+
+        ArrayList<String[]> formulas = new ArrayList<>();
         customCalculator customCalculator = new customCalculator();
-        boolean retry = false;
 
         System.out.println("SFEE Failures ?");
-        System.out.println("Valid variables: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
-        System.out.println("Valid operator: + - * / %  or random [ x ], where x [0, 100] ");
-        System.out.println("Defined variables: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
-        System.out.println("Please add a space between each character/number (p.e: random [ 20 ] OR n % 100 = 0 ");
+        System.out.println("Defined variables x[ n, a, m]: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
+        System.out.println("Valid operations");
+        System.out.println("   -- gauss  [ x ; y ]        => x,y are the numbers related to mean and dev, respectively ");
+        System.out.println("   -- prob   [ x ]    (op)  p => x is a number related to the variable [x] / op [>,=,<,<=,>=] / p [0, 100] ");
+        System.out.println("   -- linear [ x ]            => x is a number related to the variable [x]");
+        System.out.println("That example is interpreted as: the probability of failures after x units (parts or minutes ) is op than p");
+        System.out.println("Please add a space between each character/number (p.e: prob [ 20 ] >= 50 )");
+
+
+        System.out.println("BREAKDOWN WITH REPAIR ");
+        System.out.println("   BREAK ");
+        String[] f_BDwR = variablesFormulas();
+
+        String repair = "gauss [ ";
+        boolean retry = false;
         do {
             if (retry) {
-                System.out.println("break error: " + customCalculator.errorMsg(str[0]));
-                System.out.println("repair error: " + customCalculator.errorMsg(str[4]));
+                System.out.println("Msg (repair): " + customCalculator.errorMsg(repair));
             }
-            System.out.println("BREAKDOWN WITH REPAIR ");
-            System.out.print(" BREAK: ");
-            str[0] = in.nextLine();
-            retry = customCalculator.evalFailureFormula(str[0]);
-            if (!str[0].equalsIgnoreCase("no")) {
-                System.out.print("REPAIR: ");
-                str[4] = in.nextLine();
-                retry = retry || customCalculator.evalFailureFormula(str[4]);
+            if (!(f_BDwR[0].equalsIgnoreCase("no") && f_BDwR[1].equalsIgnoreCase("no") && f_BDwR[2].equalsIgnoreCase("no"))) {
+                System.out.print("   REPAIR (regarding time since break in min): gauss [ ");
+                repair = "gauss [ ";
+                repair = repair.concat(in.nextLine());
+                retry = customCalculator.evalFailureFormula(repair);
             } else {
-                str[4] = "no";
+                repair = "no";
             }
 
         } while (retry);
 
-        do {
-            if (retry)
-                System.out.println(customCalculator.errorMsg(str[1]));
-            System.out.print("BREAKDOWN: ");
-            str[1] = in.nextLine();
-            retry = customCalculator.evalFailureFormula(str[1]);
-        } while (retry);
+        formulas.add(f_BDwR);
+        formulas.add(new String[]{repair});
+
+        System.out.println("BREAKDOWN");
+        String[] f_BD = variablesFormulas();
+
+        formulas.add(f_BD);
+
+        System.out.println("PRODUCE FAULTY");
+        String[] f_PF = variablesFormulas();
+
+        formulas.add(f_PF);
+
+        System.out.println("PRODUCE MORE");
+        String[] f_PM = variablesFormulas();
+
+        formulas.add(f_PM);
 
 
-        do {
-            if (retry)
-                System.out.println(customCalculator.errorMsg(str[2]));
-            System.out.print("PRODUCE FAULTY: ");
-            str[2] = in.nextLine();
-            retry = customCalculator.evalFailureFormula(str[2]);
-        } while (retry);
-
-        do {
-            if (retry)
-                System.out.println(customCalculator.errorMsg(str[3]));
-            System.out.print("PRODUCE MORE: ");
-            str[3] = in.nextLine();
-            retry = customCalculator.evalFailureFormula(str[3]);
-        } while (retry);
-
-
-        return str;
+//        return str;
+        return formulas;
     }
 
-    public String[] breakdown2() {
+    private String[] variablesFormulas() {
         String[] str = new String[3];
         customCalculator customCalculator = new customCalculator();
         boolean retry = false;
@@ -296,7 +299,7 @@ public class SFEE {
 
     private boolean containsOperator(String str) {
 
-        return !str.contains(" > ") && !str.contains(" < ") && !str.contains(" >= ") && !str.contains(" <= ") && !str.contains(" = ");
+        return !str.contains(">") && !str.contains("<") && !str.contains(">=") && !str.contains("<=") && !str.contains("=");
     }
 
 }

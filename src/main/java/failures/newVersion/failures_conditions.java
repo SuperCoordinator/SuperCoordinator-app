@@ -9,17 +9,17 @@ public class failures_conditions extends failure2 {
 
     public failures_conditions(String[] conditions, failure2.type type) {
         super(type);
-        this.nCondition = new condition_variable(conditions[0], validation.method.EVENT);
-        this.aCondition = new condition_variable(conditions[1], validation.method.TIME);
-        this.mCondition = new condition_variable(conditions[2], validation.method.TIME);
+        this.nCondition = conditions[0].equalsIgnoreCase("no") ? null : new condition_variable(conditions[0], validation.method.EVENT);
+        this.aCondition = conditions[1].equalsIgnoreCase("no") ? null : new condition_variable(conditions[1], validation.method.TIME);
+        this.mCondition = conditions[2].equalsIgnoreCase("no") ? null : new condition_variable(conditions[2], validation.method.TIME);
     }
 
     private boolean activated_by_N = false, activated_by_A = false, activated_by_M = false;
 
     public boolean evalConditions(int n, int a, int m) {
-        activated_by_N = nCondition.evalFormula(n);
-        activated_by_A = aCondition.evalFormula(a);
-        activated_by_M = mCondition.evalFormula(m);
+        if (nCondition != null) activated_by_N = nCondition.evalFormula(n);
+        if (aCondition != null) activated_by_A = aCondition.evalFormula(a);
+        if (mCondition != null) activated_by_M = mCondition.evalFormula(m);
 
         if (activated_by_N || activated_by_A || activated_by_M)
             System.out.println("Failure activated by variable n:" + activated_by_N + " a:" + activated_by_A + " m:" + activated_by_M);

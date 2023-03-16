@@ -1,4 +1,4 @@
-package failures;
+package failures.oldVersion;
 
 import models.SFEI.SFEI_conveyor;
 import org.apache.commons.math3.util.Pair;
@@ -6,7 +6,6 @@ import org.apache.commons.math3.util.Pair;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 
 public class breakdown_repair extends failure {
 

@@ -1,7 +1,7 @@
 package controllers;
 
 import communication.modbus;
-import failures.SFEE_failures;
+import failures.oldVersion.SFEE_failures;
 import failures.newVersion.SFEE_failures2;
 import failures.stochasticTime;
 import models.SFEE;
@@ -317,29 +317,24 @@ public class SFEE_controller {
             // Not needed to explicit every SFEI because de firstRun() print that!
 
             String[] sfeeTime = viewer.SFEE_stochasticTime();
-            String[] sfeeFailures_str = viewer.SFEEFailures();
+//            String[] sfeeFailures_str = viewer.SFEEFailures();
 
-            String[] breakdown2 = viewer.breakdown2();
+            ArrayList<String[]> failures_f = viewer.SFEEFailures();
 
             if (sfeeTime[0].contains("gauss")) {
                 // Stochastic Time
-                sfeeFailures = new SFEE_failures(
+                sfeeFailures2 = new SFEE_failures2(
                         sfee,
                         stochasticTime.timeOptions.GAUSSIAN,
                         new String[]{sfeeTime[1], sfeeTime[2]},
-                        new String[]{sfeeFailures_str[0], sfeeFailures_str[1], sfeeFailures_str[2], sfeeFailures_str[3], sfeeFailures_str[4]});
+                        failures_f);
 
             } else if (sfeeTime[0].contains("linear")) {
                 // Linear Time
-/*                sfeeFailures = new SFEE_failures(sfee,
-                        stochasticTime.timeOptions.LINEAR,
-                        new String[]{sfeeTime[1]},
-                        new String[]{sfeeFailures_str[0], sfeeFailures_str[1], sfeeFailures_str[2], sfeeFailures_str[3], sfeeFailures_str[4]});*/
                 sfeeFailures2 = new SFEE_failures2(sfee,
                         stochasticTime.timeOptions.LINEAR,
                         new String[]{sfeeTime[1], sfeeTime[2]},
-                        new String[]{sfeeFailures_str[0], sfeeFailures_str[1], sfeeFailures_str[2], sfeeFailures_str[3], sfeeFailures_str[4]},
-                        breakdown2);
+                        failures_f);
             }
 
         }

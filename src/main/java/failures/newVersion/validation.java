@@ -9,6 +9,7 @@ public class validation {
         EVENT,
         TIME
     }
+
     private final method validationMethod;
 
     private enum formulaType {
@@ -16,6 +17,7 @@ public class validation {
         LINEAR,
         PROBABILITY
     }
+
     private final formulaType formulaPrefix;
 
     private final gaussFormula gaussFormula;
@@ -61,6 +63,7 @@ public class validation {
                 (Duration.between(start_t, Instant.now()).toMinutes() >= 1 && validationMethod.equals(method.TIME))) {
 
             if (formulaPrefix.equals(formulaType.GAUSSIAN)) {
+                System.out.println(formulaPrefix + "currVal: " + gaussFormula.getCurrentValue() + " var: " + var);
                 res = gaussFormula.getCurrentValue() == var;
                 if (res) {
                     gaussFormula.setNextValue();

@@ -1,36 +1,41 @@
-package failures;
+package failures.oldVersion;
 
 import models.SFEI.SFEI_conveyor;
-import models.part;
+import org.apache.commons.math3.util.Pair;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-public class produce_more extends failure {
+public class breakdown extends failure {
 
     private enum SM {
         WORKING,
-        TURN_ON,
-        WAITING,
-        TURN_OFF
-
+        DISABLED,
+        RESUMING
     }
 
     private SM state;
     private SM old_state;
 
-    private final SFEI_conveyor sfeiConveyor;
-    private boolean old_sEmitter = false;
+    private boolean resume;
 
-    public produce_more(failure.type type, String formula, SFEI_conveyor sfeiConveyor) {
+    // For now, support only breakdown with repair on the conveyors
+    private final SFEI_conveyor sfeiConveyor;
+
+    public breakdown(failure.type type, String formula, SFEI_conveyor sfeiConveyor) {
         super(type, formula);
         this.sfeiConveyor = sfeiConveyor;
 
+        this.resume = false;
         this.state = SM.WORKING;
         this.old_state = state;
 
-        System.out.println("Will PMore on -> " + sfeiConveyor.getName());
+        System.out.println("Will BD on -> " + sfeiConveyor.getName());
+    }
+
+    public void setResume(boolean resume) {
+        this.resume = resume;
     }
 
     public boolean isActive() {
@@ -49,45 +54,25 @@ public class produce_more extends failure {
                         if (evalFormula(sfeiConveyor.getnPiecesMoved(),
                                 (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
                                 (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
-                            state = SM.TURN_ON;
+                            state = SM.DISABLED;
                         }
                     }
                     old_nPiecesMoved = sfeiConveyor.getnPiecesMoved();
                 } else if (evalFormula(sfeiConveyor.getnPiecesMoved(),
                         (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
                         (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
-                    state = SM.TURN_ON;
+                    state = SM.DISABLED;
                 }
             }
-            case TURN_ON -> {
-                state = SM.WAITING;
-            }
-            case WAITING -> {
-                boolean sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().bit_offset()) == 1;
-                if (getUtility().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
-                    int id = 0;
-                    if (sfeiConveyor.getPartsATM().size() > 0) {
-                        if (sfeiConveyor.getPartsATM().last().getId() >= sfeiConveyor.getnPiecesMoved()) {
-                            id = sfeiConveyor.getPartsATM().last().getId() + 1;
-                        }
-                    } else
-                        id = sfeiConveyor.getnPiecesMoved();
 
-                    part p = new part(id, "Blue lid");
-
-                    // This operation of concat is faster than + operation
-                    String itemName = sfeiConveyor.getName();
-                    itemName = itemName.concat("-");
-                    itemName = itemName.concat(sfeiConveyor.getInSensor().name());
-
-                    p.addTimestamp(itemName);
-                    sfeiConveyor.addNewPartATM(p);
-
-                    state = SM.TURN_OFF;
+            case DISABLED -> {
+                if (resume) {
+                    state = SM.RESUMING;
+                    resume = false;
                 }
-                old_sEmitter = sensor;
             }
-            case TURN_OFF -> {
+            case RESUMING -> {
+                // WAIT until the condition is not verified again
                 if (isProbability()) {
                     state = SM.WORKING;
                 } else if (!evalFormula(sfeiConveyor.getnPiecesMoved(),
@@ -100,26 +85,31 @@ public class produce_more extends failure {
 
         // Execute actions
         switch (state) {
-            case WORKING, WAITING -> {
+            case WORKING -> {
                 if (state != old_state) {
-                    System.out.println("P_More -> " + state);
+                    sfeiConveyor.setDayOfLastMaintenance(Instant.now());
+                    System.out.println("BD -> " + state);
                 }
             }
-            case TURN_ON -> {
+            case DISABLED -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmitter().bit_offset(), 1);
-                    System.out.println("P_More -> " + state);
+                    // IF SFEI == conveyor !!
+                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().bit_offset(), 1);
+                    sfeiConveyor.addBreakdown(new Pair<>(sfeiConveyor.getnPiecesMoved(), Instant.now()));
+                    System.out.println("BD -> " + state);
                 }
             }
-            case TURN_OFF -> {
+            case RESUMING -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmitter().bit_offset(), 0);
-                    System.out.println("P_More -> " + state);
+                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().bit_offset(), 0);
+                    System.out.println("BD -> " + state);
                 }
             }
+
         }
 
         old_state = state;
+
 //        return state != SM.WORKING;
     }
 

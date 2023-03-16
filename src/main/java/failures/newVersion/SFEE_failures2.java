@@ -26,42 +26,39 @@ public class SFEE_failures2 {
     private final String[] stochasticFormulas;
 
 
-    public SFEE_failures2(SFEE sfee, stochasticTime.timeOptions stochasticType, String[] stochasticTime_f, String[] failures_f, String[] breakdown2) {
+    public SFEE_failures2(SFEE sfee, stochasticTime.timeOptions stochasticType, String[] stochasticTime_f, ArrayList<String[]> failures_f) {
         this.sfee = sfee;
         this.stochasticTimeTasks = new LinkedList<>();
         this.stochasticType = stochasticType;
         this.stochasticFormulas = stochasticTime_f;
         this.state = SM.STOCHASTIC;
 
-        int sfeiConveyor_idx_failures = pickSFEI(false);
+        int sfeiConveyor_idx_failures = /*pickSFEI(false)*/ 2;
         int sfeiMachine_idx_failures = pickSFEIMachine();
 
-        this.breakdownRepair = new breakdown_repair(
-                failure.type.BREAKDOWN_WITH_REPAIR,
-                failures_f[0],
+        this.breakdownRepair2 = new breakdown_repair2(
+                failures_f.get(0),
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
-                failures_f[4]);
+                failures_f.get(1));
 
         this.breakdown2 = new breakdown2(
-                breakdown2,
+                failures_f.get(2),
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
 
-        this.produceFaulty = new produce_faulty(
-                failure.type.PRODUCE_FAULTY,
-                failures_f[2],
+        this.produceFaulty2 = new produce_faulty2(
+                failures_f.get(3),
                 (SFEI_machine) sfee.getSFEIbyIndex(sfeiMachine_idx_failures));
 
-        this.produceMore = new produce_more(
-                failure.type.PRODUCE_MORE,
-                failures_f[3],
+        this.produceMore2 = new produce_more2(
+                failures_f.get(4),
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
     }
 
-    private final breakdown_repair breakdownRepair;
+    private final breakdown_repair2 breakdownRepair2;
     private final breakdown2 breakdown2;
-    private final produce_faulty produceFaulty;
+    private final produce_faulty2 produceFaulty2;
 
-    private final produce_more produceMore;
+    private final produce_more2 produceMore2;
 
     public void loop(List<Object> sensorsState, List<Object> actuatorsState) {
 
@@ -69,20 +66,20 @@ public class SFEE_failures2 {
             // Evaluate of the transitions
             switch (state) {
                 case STOCHASTIC -> {
-                    breakdownRepair.loop(sensorsState, actuatorsState);
-                    if (breakdownRepair.isActive()) {
+                    breakdownRepair2.loop(sensorsState, actuatorsState);
+                    if (breakdownRepair2.isActive()) {
                         state = SM.BREAKDOWN_WITH_REPAIR;
                     } else {
                         breakdown2.loop(sensorsState, actuatorsState);
                         if (breakdown2.isActive()) {
                             state = SM.BREAKDOWN;
                         } else {
-                            produceFaulty.loop(sensorsState, actuatorsState);
-                            if (produceFaulty.isActive()) {
+                            produceFaulty2.loop(sensorsState, actuatorsState);
+                            if (produceFaulty2.isActive()) {
                                 state = SM.PRODUCE_FAULTY;
                             } else {
-                                produceMore.loop(sensorsState, actuatorsState);
-                                if (produceMore.isActive()) {
+                                produceMore2.loop(sensorsState, actuatorsState);
+                                if (produceMore2.isActive()) {
                                     state = SM.PRODUCE_MORE;
                                 } /*else {
                                     state = SM.STOCHASTIC;
@@ -92,7 +89,7 @@ public class SFEE_failures2 {
                     }
                 }
                 case BREAKDOWN_WITH_REPAIR -> {
-                    if (!breakdownRepair.isActive()) {
+                    if (!breakdownRepair2.isActive()) {
                         state = SM.STOCHASTIC;
                     }
                 }
@@ -102,12 +99,12 @@ public class SFEE_failures2 {
                     }
                 }
                 case PRODUCE_FAULTY -> {
-                    if (!produceFaulty.isActive()) {
+                    if (!produceFaulty2.isActive()) {
                         state = SM.STOCHASTIC;
                     }
                 }
                 case PRODUCE_MORE -> {
-                    if (!produceMore.isActive()) {
+                    if (!produceMore2.isActive()) {
                         state = SM.STOCHASTIC;
                     }
                 }
@@ -115,10 +112,10 @@ public class SFEE_failures2 {
 
             // Execute tasks
             switch (state) {
-                case BREAKDOWN_WITH_REPAIR -> breakdownRepair.loop(sensorsState, actuatorsState);
+                case BREAKDOWN_WITH_REPAIR -> breakdownRepair2.loop(sensorsState, actuatorsState);
                 case BREAKDOWN -> breakdown2.loop(sensorsState, actuatorsState);
-                case PRODUCE_FAULTY -> produceFaulty.loop(sensorsState, actuatorsState);
-                case PRODUCE_MORE -> produceMore.loop(sensorsState, actuatorsState);
+                case PRODUCE_FAULTY -> produceFaulty2.loop(sensorsState, actuatorsState);
+                case PRODUCE_MORE -> produceMore2.loop(sensorsState, actuatorsState);
                 case STOCHASTIC -> stochasticTimeMode(sensorsState, actuatorsState);
             }
 
@@ -189,7 +186,10 @@ public class SFEE_failures2 {
 
     private final Random random = new Random();
 
+
     private int pickSFEI(boolean isMachineValid) {
+
+        random.setSeed(3587214);
 
         OptionalInt optionalInt;
         do {

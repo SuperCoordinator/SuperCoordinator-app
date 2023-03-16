@@ -153,7 +153,7 @@ public class stochasticTime {
                     isEmitterON = true;
                 }
                 sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().bit_offset()) == 1;
-                if (utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+                if (sfeiConveyor.getPartsATM().last().getId() == partID && utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                     actuatorsState.set(sfeiConveyor.getaEmitter().bit_offset(), 0);
                     smConv = SM_conv.END;
                 }
@@ -219,6 +219,7 @@ public class stochasticTime {
     private int calculateDelay(int sumSFEEminOperationTime) {
 
         Random random = new Random();
+        random.setSeed(3587214);
         SFEI sfei;
         if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
             sfei = sfeiConveyor;

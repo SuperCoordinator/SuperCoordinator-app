@@ -183,6 +183,9 @@ public class customCalculator {
 
         boolean error = false;
 
+        if(formula.contains("no"))
+            return error;
+
         if (formula.indexOf(';') == -1) {
             // Is random or linear
 

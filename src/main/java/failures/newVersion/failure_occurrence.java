@@ -43,4 +43,8 @@ public class failure_occurrence {
     public Instant getEnd_t() {
         return end_t;
     }
+
+    public activationVariable getActVariable() {
+        return actVariable;
+    }
 }
