@@ -17,6 +17,8 @@ blocks/CMC/control/*
 blocks/CMC2/control/*
 !blocks/CMC2/control/*.project
 
+blocks/CMC2-connection/control/*
+!blocks/CMC2-connection/control/*.project
 
 .idea/*
 *.iml

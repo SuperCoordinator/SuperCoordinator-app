@@ -146,13 +146,13 @@ public class modbus implements Runnable {
                     discreteInputs.getAndSet(i, inputs_invLogic[i] == bitVector.getBit(i) ? 0 : 1);
                 }
             }
-/*            if (inputRegisters.length() > 0) {
+            if (inputRegisters.length() > 0) {
                 InputRegister[] registers = con.readInputRegisters(0, inputRegisters.length());
                 for (int i = 0; i < registers.length; i++) {
-                    inputRegisters.getAndSet(i, registers[i].getMean());
+                    inputRegisters.getAndSet(i, registers[i].getValue());
                 }
             }
-            if (holdingRegisters.length() > 0) {
+/*              if (holdingRegisters.length() > 0) {
                 Register[] registers = con.readMultipleRegisters(0, holdingRegisters.length());
                 for (int i = 0; i < registers.length; i++) {
                     holdingRegisters.getAndSet(i, registers[i].getMean());

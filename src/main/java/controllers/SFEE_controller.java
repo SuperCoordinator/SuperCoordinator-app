@@ -64,10 +64,13 @@ public class SFEE_controller {
 
             //String csv_path = viewer.readIOpath();
 
-            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC\\simulation\\Tags_CMC_Modbus.csv";
-            importIO(csv_path, 1);
+/*            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC\\simulation\\Tags_CMC_Modbus.csv";
+            importIO(csv_path, 1);*/
 /*            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
             importIO(csv_path, 2);*/
+
+            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
+            importIO(csv_path, 3);
 
             // Initialization of the modbus connection in case of not connected already
             openCommunication(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]), sfee.getIo());
@@ -343,10 +346,11 @@ public class SFEE_controller {
 
     public void loop() {
 
-        List<Object> sensorsState = new ArrayList<>(mb.readDiscreteInputs());
+        List<Object> discreteInputsState = new ArrayList<>(mb.readDiscreteInputs());
 //        System.out.println("Outputs before: " + Arrays.toString(actuatorsState.toArray()));
-
-        sfeeMonitor.loop(sensorsState);
+        List<Object> inputRegsValue = new ArrayList<>(mb.readInputRegisters());
+        System.out.println(Arrays.toString(inputRegsValue.toArray()));
+        sfeeMonitor.loop(discreteInputsState);
 
 
         if (opMode.equals(operationMode.PROG_FAILURES)) {
@@ -354,7 +358,7 @@ public class SFEE_controller {
             // The function mb.readCoils() is only to initialize the list elements with a given size
             List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
 //            sfeeFailures.loop(sensorsState, actuatorsState);
-            sfeeFailures2.loop(sensorsState, actuatorsState);
+            sfeeFailures2.loop(discreteInputsState, actuatorsState);
 //            System.out.println("Outputs after:  " + Arrays.toString(actuatorsState.toArray()));
 
             // The writeCoils() function will detect and execute MB instruction only if there are changes

@@ -37,7 +37,7 @@ public class SFEM_controller implements Runnable {
         try {
             // # of SFEE to be added
             //String input = viewer.nSFEE();
-            String input = "1";
+            String input = "2";
             for (int i = 0; i < Integer.parseInt(input); i++) {
                 modbus mb = null;
 
@@ -99,9 +99,9 @@ public class SFEM_controller implements Runnable {
             sfem.getSFEEbyIndex(0).getSFEIbyIndex(1).setMinOperationTime(33);
             sfem.getSFEEbyIndex(0).getSFEIbyIndex(2).setMinOperationTime(8);
 
-/*            sfem.getSFEEbyIndex(1).getSFEIbyIndex(0).setMinOperationTime(9);
+            sfem.getSFEEbyIndex(1).getSFEIbyIndex(0).setMinOperationTime(9);
             sfem.getSFEEbyIndex(1).getSFEIbyIndex(1).setMinOperationTime(33);
-            sfem.getSFEEbyIndex(1).getSFEIbyIndex(2).setMinOperationTime(8);*/
+            sfem.getSFEEbyIndex(1).getSFEIbyIndex(2).setMinOperationTime(8);
         }
 
     }
