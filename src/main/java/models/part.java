@@ -1,30 +1,43 @@
 package models;
 
 import java.time.Instant;
+import java.util.TreeMap;
 
-public class part {
+public class part{
 
     private final int id;
-    /**
-     *  Following the layout of CMC Factory IO block,
-     *  there are 8 presence sensor that will be monitoring the parts times
-     */
-    private final Instant[] timestamps;
+    private final String targetType;
+    private final TreeMap<String, Instant> itemTimestamps;
+    private boolean produced;
 
-    public part(int id) {
+    public part(int id, String targetType) {
         this.id = id;
-        timestamps = new Instant[8];
+        this.targetType = targetType;
+        itemTimestamps = new TreeMap<>();
+        this.produced = false;
     }
 
     public int getId() {
         return id;
     }
 
-    public Instant[] getTimestamps() {
-        return timestamps;
+    public TreeMap<String, Instant> getTimestamps() {
+        return itemTimestamps;
     }
 
-    public void addTimestamp(Instant timestamp, int idx) {
-        this.timestamps[idx] = timestamp;
+    public String getTargetType() {
+        return targetType;
+    }
+
+    public void addTimestamp(String itemName) {
+        itemTimestamps.put(itemName, Instant.now());
+    }
+
+    public boolean isProduced() {
+        return produced;
+    }
+
+    public void setProduced() {
+        this.produced = true;
     }
 }

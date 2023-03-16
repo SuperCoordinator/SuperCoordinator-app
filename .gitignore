@@ -10,6 +10,13 @@ buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
-blocks/*
-!blocks/control/*.project
-!blocks/simulation/*.factoryio
+
+blocks/CMC/control/*
+!blocks/CMC/control/*.project
+
+blocks/CMC2/control/*
+!blocks/CMC2/control/*.project
+
+
+.idea/*
+*.iml

@@ -3,17 +3,14 @@ package utils;
 import models.sensor_actuator;
 
 import java.io.FileReader;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import com.opencsv.*;
 
-import java.util.TreeMap;
-
 public class csv_reader {
 
-    public void readModbusTags(String path, TreeMap<String, sensor_actuator> treeMap, boolean dbg) {
-
+    public TreeMap<Integer, sensor_actuator> readModbusTags(String path, int scene, boolean dbg) {
+        TreeMap<Integer, sensor_actuator> treeMap = new TreeMap<>();
         try {
 
             // Create an object of file-reader class
@@ -34,7 +31,7 @@ public class csv_reader {
                     throw new Exception("Cannot parse the object " + Arrays.toString(row));
 
                 // TreeMap with object name as KEY and fieldObj as VALUE
-                treeMap.put(row[0], createObj(row));
+                treeMap.put(treeMap.size(), createObj(row));
 
                 if (dbg) {
                     for (String cell : row) {
@@ -43,10 +40,31 @@ public class csv_reader {
                     System.out.println();
                 }
             }
+            System.out.println("*** All imported IOs ***");
+            for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
+                System.out.println("   " + entry.getKey() + " - " + entry.getValue().name());
+            }
+/*            System.out.println("From the IO which are in inverse logic?");
+
+            Scanner in = new Scanner(System.in);
+
+            System.out.println("Enter following the example pattern: 2,3,1,5");
+            String input = in.nextLine();*/
+
+            //String input = "6,7,8,9,10,12,13";
+            String input = "12";
+            if(scene == 2)
+                input = input.concat(",17,18,19,20,21,23,24");
+            System.out.println(input);
+            for (String str : input.split(",")) {
+                int key = Integer.parseInt(str);
+                treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return treeMap;
     }
 
     private sensor_actuator createObj(String[] row) {
@@ -95,7 +113,7 @@ public class csv_reader {
         else if (address.contains("input"))
             objAddressType = sensor_actuator.AddressType.DISCRETE_INPUT;
 
-        return new sensor_actuator(objName, objType, objDataType, objAddressType, 0, bit_off);
+        return new sensor_actuator(objName, objType, false, objDataType, objAddressType, 0, bit_off);
     }
 
 }
