@@ -2,47 +2,25 @@ package failures.newVersion;
 
 public class condition_variable {
 
-    public enum validationMethod {
-        EVENT,
-        TIME
-    }
+    private validation validation;
 
-    private final validationMethod method;
-    private eventsValidation eventsValidation;
-    private timeValidation timeValidation;
-
-    public condition_variable(String condition, validationMethod method) {
-        this.method = method;
-        initialize(condition);
-
-/*        this.eventsValidation = new eventsValidation(gaussFormula);
-        this.timeValidation = new timeValidation(linearFormula, probFormula);*/
+    public condition_variable(String condition, validation.method method) {
+        initialize(condition, method);
     }
 
     public boolean evalFormula(int var) {
-        if (method.equals(validationMethod.EVENT))
-            return eventsValidation.validation(var);
-        return timeValidation.validation(var);
+        return validation.validate(var);
     }
 
-    private void initialize(String condition) {
+    private void initialize(String condition, validation.method method) {
         if (condition.contains("gauss")) {
-            if (method.equals(validationMethod.EVENT))
-                this.eventsValidation = new eventsValidation(newGaussFormula(condition));
-            else
-                this.timeValidation = new timeValidation(newGaussFormula(condition));
+            this.validation = new validation(newGaussFormula(condition), method);
 
         } else if (condition.contains("linear")) {
-            if (method.equals(validationMethod.EVENT))
-                this.eventsValidation = new eventsValidation(newLinearFormula(condition));
-            else
-                this.timeValidation = new timeValidation(newLinearFormula(condition));
+            this.validation = new validation(newLinearFormula(condition), method);
 
         } else if (condition.contains("prob")) {
-            if (method.equals(validationMethod.EVENT))
-                this.eventsValidation = new eventsValidation(newProbFormula(condition));
-            else
-                this.timeValidation = new timeValidation(newProbFormula(condition));
+            this.validation = new validation(newProbFormula(condition), method);
 
         } else
             throw new RuntimeException("[condition_variable] initialize(): unknown prefix");

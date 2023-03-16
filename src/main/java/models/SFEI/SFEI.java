@@ -1,5 +1,6 @@
 package models.SFEI;
 
+import failures.newVersion.failure_occurrence;
 import models.part;
 import models.sensor_actuator;
 import org.apache.commons.math3.util.Pair;
@@ -28,6 +29,8 @@ public class SFEI {
     private final Instant dayOfBirth;
     private Instant dayOfLastMaintenance;
 
+    private TreeMap<Integer, failure_occurrence> failuresHistory;
+
     private final ArrayList<Pair<Integer, Instant>> breakdownHistory;
 
     public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance) {
@@ -40,6 +43,8 @@ public class SFEI {
 
         this.nPiecesMoved = 0;
         this.partsATM = new TreeSet<>(Comparator.comparing(part::getId));
+
+        this.failuresHistory = new TreeMap<>();
 
         this.breakdownHistory = new ArrayList<>();
     }
@@ -96,6 +101,14 @@ public class SFEI {
         this.dayOfLastMaintenance = dayOfLastMaintenance;
     }
 
+    public TreeMap<Integer, failure_occurrence> getFailuresHistory() {
+        return failuresHistory;
+    }
+
+    public void addNewFailureOccurrence(failure_occurrence failureOcurrence) {
+        failuresHistory.put(failuresHistory.size(), failureOcurrence);
+    }
+
     public Pair<Integer, Instant> getLastBreakdown() {
         return breakdownHistory.get(breakdownHistory.size() - 1);
     }
@@ -103,6 +116,5 @@ public class SFEI {
     public void addBreakdown(Pair<Integer, Instant> event) {
         breakdownHistory.add(event);
     }
-
 
 }
