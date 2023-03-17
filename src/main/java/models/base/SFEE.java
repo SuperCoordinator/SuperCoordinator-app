@@ -34,9 +34,10 @@ public class SFEE {
 
     private final TreeMap<Integer, SFEI> SFEIs;
 
-    public SFEE(String name, SFEE_type SFEE_type, communicationOption com) {
+    public SFEE(String name, SFEE_type SFEE_type, SFEE_function sfeeFunction, communicationOption com) {
         this.name = name;
         this.SFEE_type = SFEE_type;
+        this.sfeeFunction = sfeeFunction;
         this.com = com;
         this.io = new TreeMap<>();
         this.SFEIs = new TreeMap<>();

@@ -34,7 +34,7 @@ public class SFEM_production_controller implements Runnable {
         try {
             // # of SFEE to be added
             //String input = viewer.nSFEE();
-            String input = "2";
+            String input = "1";
             for (int i = 0; i < Integer.parseInt(input); i++) {
 
                 //String[] inputs = viewer.SFEE_params(i);
@@ -43,6 +43,7 @@ public class SFEM_production_controller implements Runnable {
                 SFEE sfee = new SFEE(
                         inputs[0],
                         Integer.parseInt(inputs[2]) == 1 ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL,
+                        SFEE.SFEE_function.PRODUCTION,
                         Integer.parseInt(inputs[1]) == 1 ? SFEE.communicationOption.MODBUS : SFEE.communicationOption.OPC_UA);
 
                 sfem.addNewSFEE(sfee);

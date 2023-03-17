@@ -62,13 +62,15 @@ public class SFEE_controller {
 
             //String csv_path = viewer.readIOpath();
 
-/*            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC\\simulation\\Tags_CMC_Modbus.csv";
-            importIO(csv_path, 1);*/
+            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
+            importIO(csv_path, 1);
 /*            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
             importIO(csv_path, 2);*/
 
+/*
             String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
             importIO(csv_path, 3);
+*/
 
             // Initialization of the modbus connection in case of not connected already
 //            openCommunication(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]), sfee.getIo());
