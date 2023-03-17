@@ -1,7 +1,7 @@
 package monitor;
 
 import communication.modbus;
-import models.SFEI.SFEI;
+import models.base.SFEI;
 import utils.utils;
 
 import java.time.Duration;

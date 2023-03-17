@@ -1,9 +1,8 @@
 package failures;
 
-import communication.modbus;
-import models.SFEI.SFEI;
-import models.SFEI.SFEI_conveyor;
-import models.SFEI.SFEI_machine;
+import models.base.SFEI;
+import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx_particular.SFEI_machine;
 import utils.utils;
 
 import java.time.Duration;

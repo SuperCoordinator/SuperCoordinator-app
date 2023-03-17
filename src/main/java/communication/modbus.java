@@ -23,6 +23,13 @@ public class modbus implements Runnable {
     private int port;
     private int slaveID;
 
+    public modbus(){}
+    public modbus(String ip, int port, int slaveID) {
+        this.ip = ip;
+        this.port = port;
+        this.slaveID = slaveID;
+    }
+
     private TreeMap<Integer, sensor_actuator> io;
     private boolean[] inputs_invLogic;
     private boolean[] outputs_invLogic;
@@ -45,11 +52,11 @@ public class modbus implements Runnable {
         }
     }
 
-    public void openConnection(String ip, int port, int slaveID, TreeMap<Integer, sensor_actuator> io) {
-
+    public void openConnection(/*String ip, int port, int slaveID,*/ TreeMap<Integer, sensor_actuator> io) {
+/*
         this.ip = ip;
         this.port = port;
-        this.slaveID = slaveID;
+        this.slaveID = slaveID;*/
         this.io = new TreeMap<>(io);
         this.configured = true;
         connect();

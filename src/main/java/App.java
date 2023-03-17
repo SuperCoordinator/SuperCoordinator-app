@@ -1,5 +1,5 @@
-import controllers.SFEM_controller;
-import models.SFEM;
+import controllers.SFEM_production_controller;
+import models.SFEx_particular.SFEM_production;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -10,14 +10,17 @@ public class App {
 
     public static void main(String[] args) {
 
-        ArrayList<SFEM> SFEMs = new ArrayList<>();
-        SFEM newSFEM = new SFEM("SFEM_test");
+        ArrayList<SFEM_production> SFEMs = new ArrayList<>();
+        SFEM_production newSFEM = new SFEM_production("SFEM_test");
 
-        SFEM_controller sfemController = new SFEM_controller(newSFEM);
-        sfemController.init();
+        SFEM_production_controller sfemController = new SFEM_production_controller(newSFEM);
+        sfemController.init_SFEEs();
+        sfemController.init_SFEE_controllers();
+//        sfemController.firstRun(false);
+//        sfemController.setupFailureMode();
 
-        sfemController.firstRun(false);
-        sfemController.setupFailureMode();
+        sfemController.openConnections();
+
 
         try {
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);

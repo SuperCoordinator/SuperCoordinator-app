@@ -4,10 +4,11 @@ import communication.modbus;
 import failures.oldVersion.SFEE_failures;
 import failures.newVersion.SFEE_failures2;
 import failures.stochasticTime;
-import models.SFEE;
-import models.SFEI.SFEI;
-import models.SFEI.SFEI_conveyor;
-import models.SFEI.SFEI_machine;
+import models.base.SFEE;
+import models.base.SFEI;
+import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx_particular.SFEI_machine;
+import models.partsAspect;
 import models.sensor_actuator;
 import monitor.SFEE_monitor;
 import monitor.setupRun;
@@ -19,13 +20,6 @@ import java.util.concurrent.*;
 
 public class SFEE_controller {
 
-    public enum communicationOption {
-        MODBUS, OPC_UA
-    }
-
-    private final communicationOption com;
-
-    private final modbus mb;
 
     public enum operationMode {
         NORMAL,
@@ -33,8 +27,8 @@ public class SFEE_controller {
     }
 
     private final SFEE sfee;
+    private modbus mb;
     private final int temp;
-
     private SFEE_monitor sfeeMonitor;
 
     private operationMode opMode;
@@ -44,14 +38,18 @@ public class SFEE_controller {
     private final viewers.SFEE viewer;
     private final utils utility;
 
-    public SFEE_controller(SFEE sfee, communicationOption communicationOpt, modbus mb, int temp) {
+    public SFEE_controller(SFEE sfee, modbus mb, int temp) {
         this.sfee = sfee;
-        this.com = communicationOpt;
+
         this.mb = mb;
         this.temp = temp;
 
         this.viewer = new viewers.SFEE();
         this.utility = new utils();
+    }
+
+    public void setMb(modbus mb) {
+        this.mb = mb;
     }
 
     public modbus getMb() {
@@ -73,7 +71,7 @@ public class SFEE_controller {
             importIO(csv_path, 3);
 
             // Initialization of the modbus connection in case of not connected already
-            openCommunication(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]), sfee.getIo());
+//            openCommunication(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]), sfee.getIo());
 
             String mode = viewer.opMode();
             //String mode = "2";
@@ -140,10 +138,12 @@ public class SFEE_controller {
                         "s_entry_emitter");
                 addNewSFEI_machine(
                         "MC1",
+                        partsAspect.form.LID,
                         "s_lids_at_entry",
                         "s_lids_at_exit",
                         Instant.now(),
                         Instant.now(),
+                        "MC1_produce",
                         "MC1_opened",
                         "MC1_stop");
                 addNewSFEI_conveyor(
@@ -171,10 +171,12 @@ public class SFEE_controller {
                         "s_entry_emitter2");
                 addNewSFEI_machine(
                         "MC2",
+                        partsAspect.form.BASE,
                         "s_lids_at_entry2",
                         "s_lids_at_exit2",
                         Instant.now(),
                         Instant.now(),
+                        "MC2_produce",
                         "MC2_opened",
                         "MC2_stop");
                 addNewSFEI_conveyor(
@@ -192,8 +194,33 @@ public class SFEE_controller {
             // SFEIs do not need controllers (??)
 
             autoSetSFEE_InOut();
-            sfeeMonitor = new SFEE_monitor(sfee, mb.readDiscreteInputs());
+//            autoSetSFEE_function();
 
+            sfeeMonitor = new SFEE_monitor(sfee/*, mb.readDiscreteInputs()*/);
+
+//            String[] visionStr = viewer.associateVisionSensors();
+            String[] visionStr = {"y", "v_MC1_exit", "exit_conveyor"};
+            if (temp == 1) {
+                visionStr[0] = "y";
+                visionStr[1] = "v_MC2_exit";
+                visionStr[2] = "exit_conveyor2";
+            }
+
+            if (!visionStr[0].equals("no")) {
+                // search for SFEI
+                int sfei_id = -1;
+                for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
+                    if (entry.getValue().getName().equals(visionStr[2])) {
+                        sfei_id = entry.getKey();
+                        break;
+                    }
+                }
+                if (sfei_id == -1)
+                    throw new RuntimeException("SFEI with name '" + visionStr[2] + "' do not exist");
+                TreeMap<Integer, sensor_actuator> treeMap = new TreeMap<>();
+                treeMap.put(sfei_id, sfee.getIObyName(visionStr[1]));
+                sfeeMonitor.setVisionSensorLocation(treeMap);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -206,12 +233,14 @@ public class SFEE_controller {
     ************************************ */
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private void openCommunication(String ip, int port, int slaveID, TreeMap<Integer, sensor_actuator> io) {
+    public void openCommunication(/*String ip, int port, int slaveID,*/) {
         try {
             if (!mb.isConfigured()) {
-                if (com == communicationOption.MODBUS) {
-                    mb.openConnection(ip, port, slaveID, io);
+                if (sfee.getCom() == SFEE.communicationOption.MODBUS) {
+                    mb.openConnection(/*ip, port, slaveID,*/ sfee.getIo());
                     scheduler.scheduleAtFixedRate(mb, 0, 50, TimeUnit.MILLISECONDS);
+
+//                    sfeeMonitor.init_oldSensorsValues(mb.readDiscreteInputs());
                 }
             } else {
                 scheduler.close();
@@ -260,18 +289,25 @@ public class SFEE_controller {
         return newObj;
     }
 
-    public void addNewSFEI_machine(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String sDoor, String aStop) {
-        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(sDoor), sfee.getIObyName(aStop));
+    public void addNewSFEI_machine(String name, partsAspect.form partForm, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String produce, String sDoor, String aStop) {
+        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, partForm, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(produce), sfee.getIObyName(sDoor), sfee.getIObyName(aStop));
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
 
     }
 
-
-    // Change to PRIVATE in future
     private void autoSetSFEE_InOut() {
         this.sfee.setInSensor(sfee.getSFEIs().get(0).getInSensor());
         this.sfee.setOutSensor(sfee.getSFEIs().get(sfee.getSFEIs().size() - 1).getOutSensor());
     }
+
+/*    private void autoSetSFEE_function() {
+        for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
+            if (sfei.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
+                sfee.setSfeeFunction(SFEE.SFEE_function.PRODUCTION);
+            }
+
+        }
+    }*/
 
     /* First Run in order to get the minimum working stochasticTime for each element */
     public void launchSetup() {
@@ -339,7 +375,6 @@ public class SFEE_controller {
                         new String[]{sfeeTime[1], sfeeTime[2]},
                         failures_f);
             }
-
         }
     }
 
@@ -348,23 +383,23 @@ public class SFEE_controller {
 
         List<Object> discreteInputsState = new ArrayList<>(mb.readDiscreteInputs());
 //        System.out.println("Outputs before: " + Arrays.toString(actuatorsState.toArray()));
-        List<Object> inputRegsValue = new ArrayList<>(mb.readInputRegisters());
-        System.out.println(Arrays.toString(inputRegsValue.toArray()));
-        sfeeMonitor.loop(discreteInputsState);
 
+        List<Object> inputRegsValue = new ArrayList<>(mb.readInputRegisters());
+//        System.out.println(Arrays.toString(inputRegsValue.toArray()));
+        List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
+
+        sfeeMonitor.loop(discreteInputsState, inputRegsValue, actuatorsState);
 
         if (opMode.equals(operationMode.PROG_FAILURES)) {
 
             // The function mb.readCoils() is only to initialize the list elements with a given size
-            List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
+
 //            sfeeFailures.loop(sensorsState, actuatorsState);
             sfeeFailures2.loop(discreteInputsState, actuatorsState);
 //            System.out.println("Outputs after:  " + Arrays.toString(actuatorsState.toArray()));
-
             // The writeCoils() function will detect and execute MB instruction only if there are changes
-            mb.writeCoils(actuatorsState);
         }
-
+        mb.writeCoils(actuatorsState);
 
     }
 

@@ -1,10 +1,10 @@
 package monitor;
 
-import models.SFEE;
-import models.SFEI.SFEI;
-import models.SFEM;
-import models.part;
-import models.producedPart;
+import models.base.SFEE;
+import models.base.SFEI;
+import models.SFEx_particular.SFEM_production;
+import models.base.part;
+import models.part_prodTime;
 import viewers.graphs.histogram;
 import viewers.graphs.histogram.intPair;
 
@@ -15,7 +15,7 @@ import java.util.*;
 public class SFEM_monitor {
 
 
-    private final SFEM sfem;
+    private final SFEM_production sfem;
 
     private final TreeMap<Integer, Integer> productionTime_cnt;
 
@@ -23,7 +23,7 @@ public class SFEM_monitor {
 
     private final Instant init_t = Instant.now();
 
-    public SFEM_monitor(SFEM sfem) {
+    public SFEM_monitor(SFEM_production sfem) {
         this.sfem = sfem;
         this.productionTime_cnt = new TreeMap<>();
     }
@@ -54,7 +54,7 @@ public class SFEM_monitor {
                         while (iterator.hasNext()) {
                             part p = iterator.next();
                             if (p.isProduced()) {
-                                producedPart pp = new producedPart(p, calculateProductionTime(p));
+                                part_prodTime pp = new part_prodTime(p, calculateProductionTime(p));
                                 sfem.addPartToProductionHistory(pp);
                                 if (productionTime_cnt.containsKey(pp.production_time())) {
                                     int old_value = productionTime_cnt.get(pp.production_time());
@@ -84,8 +84,8 @@ public class SFEM_monitor {
     }
 
     private boolean printedStats = false;
-    private producedPart min_time = null;
-    private producedPart max_time = null;
+    private part_prodTime min_time = null;
+    private part_prodTime max_time = null;
     private boolean firstRun = true;
 
     private void printStats(List<Long> runtime) {
@@ -96,7 +96,7 @@ public class SFEM_monitor {
 
         long total_time = 0;
         if (sfem.getProductionHistory().size() > 0) {
-            for (producedPart pp : sfem.getProductionHistory()) {
+            for (part_prodTime pp : sfem.getProductionHistory()) {
                 if (firstRun) {
                     min_time = sfem.getProductionHistory().get(0);
                     max_time = sfem.getProductionHistory().get(0);
@@ -172,10 +172,10 @@ public class SFEM_monitor {
 
         TreeMap<Integer, Integer> lastNParts = new TreeMap<>();
 
-        ListIterator<producedPart> iterator = sfem.getProductionHistory().listIterator(sfem.getProductionHistory().size());
+        ListIterator<part_prodTime> iterator = sfem.getProductionHistory().listIterator(sfem.getProductionHistory().size());
         int cnt = n;
         while (iterator.hasPrevious() && cnt > 0) {
-            producedPart part = iterator.previous();
+            part_prodTime part = iterator.previous();
             if (cnt == n) {
                 lastNParts.put(part.production_time(), 1);
             } else if (lastNParts.containsKey(part.production_time())) {

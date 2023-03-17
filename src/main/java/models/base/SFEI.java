@@ -1,7 +1,6 @@
-package models.SFEI;
+package models.base;
 
 import failures.newVersion.failure_occurrence;
-import models.part;
 import models.sensor_actuator;
 import org.apache.commons.math3.util.Pair;
 

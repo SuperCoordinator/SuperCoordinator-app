@@ -1,6 +1,6 @@
 package failures.oldVersion;
 
-import models.SFEI.SFEI_machine;
+import models.SFEx_particular.SFEI_machine;
 
 import java.time.Duration;
 import java.time.Instant;

@@ -1,7 +1,6 @@
-package models;
+package models.base;
 
-import models.SFEI.SFEI;
-import communication.modbus;
+import models.sensor_actuator;
 
 import java.util.*;
 
@@ -11,8 +10,23 @@ public class SFEE {
         SIMULATION, REAL
     }
 
-    private final String name;
     private final SFEE_type SFEE_type;
+
+    public enum SFEE_function {
+        PRODUCTION,
+        MOVEMENT,
+        TRANSPORT
+    }
+
+    private SFEE_function sfeeFunction;
+
+    public enum communicationOption {
+        MODBUS, OPC_UA
+    }
+
+    private final communicationOption com;
+
+    private final String name;
 
     private sensor_actuator inSensor;
     private sensor_actuator outSensor;
@@ -20,22 +34,32 @@ public class SFEE {
 
     private final TreeMap<Integer, SFEI> SFEIs;
 
-
-    public SFEE(String name, SFEE.SFEE_type SFEE_type) {
+    public SFEE(String name, SFEE_type SFEE_type, communicationOption com) {
         this.name = name;
         this.SFEE_type = SFEE_type;
+        this.com = com;
         this.io = new TreeMap<>();
         this.SFEIs = new TreeMap<>();
+    }
+
+    public communicationOption getCom() {
+        return com;
     }
 
     public String getName() {
         return name;
     }
 
-
-
     public SFEE.SFEE_type getSFEE_type() {
         return SFEE_type;
+    }
+
+    public SFEE_function getSfeeFunction() {
+        return sfeeFunction;
+    }
+
+    public void setSfeeFunction(SFEE_function sfeeFunction) {
+        this.sfeeFunction = sfeeFunction;
     }
 
     public sensor_actuator getInSensor() {

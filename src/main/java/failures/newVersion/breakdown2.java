@@ -1,6 +1,6 @@
 package failures.newVersion;
 
-import models.SFEI.SFEI_conveyor;
+import models.SFEx_particular.SFEI_conveyor;
 
 import java.time.Duration;
 import java.time.Instant;

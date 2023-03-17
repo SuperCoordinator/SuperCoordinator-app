@@ -1,10 +1,6 @@
 package viewers;
 
-import models.sensor_actuator;
-
-import java.util.Arrays;
 import java.util.Scanner;
-import java.util.TreeMap;
 
 public class SFEM {
 
@@ -41,7 +37,7 @@ public class SFEM {
         return str;
     }
 
-    public String[] setupComunication(int opt) {
+    public String[] communicationParams(int opt) {
 
         String[] str = new String[3];
 

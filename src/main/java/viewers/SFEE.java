@@ -16,7 +16,6 @@ public class SFEE {
         this.in = new Scanner(System.in);
     }
 
-
     public String readIOpath() {
         String str;
         System.out.print("IO CSV file path: ");
@@ -133,6 +132,23 @@ public class SFEE {
             str[5] = in.nextLine();
 
         }
+        return str;
+    }
+
+    public String[] associateVisionSensors() {
+        String[] str = new String[]{"", "", ""};
+        System.out.print("Associate Vision Sensor in numerical configuration (y/n) ?");
+
+        str[0] = in.nextLine();
+        if (str[0].contains("y")) {
+            System.out.print("Vision sensor name: ");
+            str[1] = in.nextLine();
+            System.out.print("Placed on: ");
+            str[2] = in.nextLine();
+        } else {
+            str[0] = "no";
+        }
+
         return str;
     }
 

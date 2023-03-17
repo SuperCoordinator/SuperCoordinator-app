@@ -1,10 +1,10 @@
 package failures.newVersion;
 
 import failures.*;
-import models.SFEE;
-import models.SFEI.SFEI;
-import models.SFEI.SFEI_conveyor;
-import models.SFEI.SFEI_machine;
+import models.base.SFEE;
+import models.base.SFEI;
+import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx_particular.SFEI_machine;
 
 import java.util.*;
 

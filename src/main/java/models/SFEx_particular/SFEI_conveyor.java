@@ -1,5 +1,6 @@
-package models.SFEI;
+package models.SFEx_particular;
 
+import models.base.SFEI;
 import models.sensor_actuator;
 
 import java.time.Instant;

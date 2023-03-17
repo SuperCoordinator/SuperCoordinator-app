@@ -1,31 +1,24 @@
-package models;
+package models.SFEx_particular;
 
 //import monitor.stochasticTime.conveyor;
+
+import models.base.SFEE;
+import models.base.SFEM;
+import models.part_prodTime;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-public class SFEM {
-
-    private String name;
+public class SFEM_production extends SFEM {
 
     private final TreeMap<Integer, SFEE> SFEEs;
+    private final ArrayList<part_prodTime> productionHistory;
 
-    private final ArrayList<producedPart> productionHistory;
-
-    public SFEM(String name) {
-        this.name = name;
+    public SFEM_production(String name) {
+        super(name, SFEM_type.PRODUCTION);
         this.SFEEs = new TreeMap<>();
         this.productionHistory = new ArrayList<>();
 
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public TreeMap<Integer, SFEE> getSFEEs() {
@@ -41,11 +34,11 @@ public class SFEM {
         SFEEs.put(index, newSFEE);
     }
 
-    public void addPartToProductionHistory(producedPart producedPart) {
+    public void addPartToProductionHistory(part_prodTime producedPart) {
         productionHistory.add(productionHistory.size(), producedPart);
     }
 
-    public ArrayList<producedPart> getProductionHistory() {
+    public ArrayList<part_prodTime> getProductionHistory() {
         return productionHistory;
     }
 }
