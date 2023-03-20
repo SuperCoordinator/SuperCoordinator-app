@@ -1,7 +1,7 @@
 package controllers;
 
 import communication.modbus;
-import failures.oldVersion.SFEE_failures;
+//import failures.oldVersion.SFEE_failures;
 import failures.newVersion.SFEE_failures2;
 import failures.stochasticTime;
 import models.base.SFEE;
@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class SFEE_controller {
+public class cSFEE_production {
 
 
     public enum operationMode {
@@ -32,13 +32,13 @@ public class SFEE_controller {
     private SFEE_monitor sfeeMonitor;
 
     private operationMode opMode;
-    private SFEE_failures sfeeFailures;
+    //    private SFEE_failures sfeeFailures;
     private SFEE_failures2 sfeeFailures2;
 
     private final viewers.SFEE viewer;
     private final utils utility;
 
-    public SFEE_controller(SFEE sfee, modbus mb, int temp) {
+    public cSFEE_production(SFEE sfee, modbus mb, int temp) {
         this.sfee = sfee;
 
         this.mb = mb;
@@ -46,6 +46,10 @@ public class SFEE_controller {
 
         this.viewer = new viewers.SFEE();
         this.utility = new utils();
+    }
+
+    public String getSFEE_name() {
+        return sfee.getName();
     }
 
     public void setMb(modbus mb) {
@@ -62,8 +66,8 @@ public class SFEE_controller {
 
             //String csv_path = viewer.readIOpath();
 
-            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
-            importIO(csv_path, 1);
+/*            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
+            importIO(csv_path, 1);*/
 /*            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
             importIO(csv_path, 2);*/
 
@@ -72,6 +76,8 @@ public class SFEE_controller {
             importIO(csv_path, 3);
 */
 
+            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
+            importIO(csv_path, 4);
             // Initialization of the modbus connection in case of not connected already
 //            openCommunication(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]), sfee.getIo());
 
@@ -159,7 +165,7 @@ public class SFEE_controller {
                         "exit_emitter",
                         "s_exit_remover",
                         "s_exit_emitter");
-            } else if (temp == 1) {
+            } /*else if (temp == 1) {
                 addNewSFEI_conveyor(
                         "entry_conveyor2",
                         "s_emitter2",
@@ -192,22 +198,35 @@ public class SFEE_controller {
                         "exit_emitter2",
                         "s_exit_remover2",
                         "s_exit_emitter2");
+            }*/ else if (temp == 1) {
+                addNewSFEI_conveyor(
+                        "entry_conveyor2",
+                        "s_emitter2",
+                        "s_lids_at_entry2",
+                        Instant.now(),
+                        Instant.now(),
+                        "entry_conveyor2",
+                        "entry_remover2",
+                        "entry_emitter2",
+                        "s_entry_remover2",
+                        "s_entry_emitter2");
             }
             // SFEIs do not need controllers (??)
 
             autoSetSFEE_InOut();
 //            autoSetSFEE_function();
 
+            // Initialize SFEE_monitor
+
             sfeeMonitor = new SFEE_monitor(sfee/*, mb.readDiscreteInputs()*/);
 
-//            String[] visionStr = viewer.associateVisionSensors();
-            String[] visionStr = {"y", "v_MC1_exit", "exit_conveyor"};
-            if (temp == 1) {
+            String[] visionStr = viewer.associateVisionSensors();
+//            String[] visionStr = {"y", "v_MC1_exit", "exit_conveyor"};
+/*            if (temp == 1) {
                 visionStr[0] = "y";
                 visionStr[1] = "v_MC2_exit";
                 visionStr[2] = "exit_conveyor2";
-            }
-
+            }*/
             if (!visionStr[0].equals("no")) {
                 // search for SFEI
                 int sfei_id = -1;
@@ -223,6 +242,7 @@ public class SFEE_controller {
                 treeMap.put(sfei_id, sfee.getIObyName(visionStr[1]));
                 sfeeMonitor.setVisionSensorLocation(treeMap);
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -395,9 +415,13 @@ public class SFEE_controller {
         if (opMode.equals(operationMode.PROG_FAILURES)) {
 
             // The function mb.readCoils() is only to initialize the list elements with a given size
+            ArrayList<List<Object>> inputs = new ArrayList<>();
+            inputs.add(discreteInputsState);
 
+            ArrayList<List<Object>> outputs = new ArrayList<>();
+            outputs.add(actuatorsState);
 //            sfeeFailures.loop(sensorsState, actuatorsState);
-            sfeeFailures2.loop(discreteInputsState, actuatorsState);
+            sfeeFailures2.loop(inputs, outputs);
 //            System.out.println("Outputs after:  " + Arrays.toString(actuatorsState.toArray()));
             // The writeCoils() function will detect and execute MB instruction only if there are changes
         }

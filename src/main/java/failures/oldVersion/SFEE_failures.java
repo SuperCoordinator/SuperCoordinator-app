@@ -1,3 +1,4 @@
+/*
 package failures.oldVersion;
 
 import failures.stochasticTime;
@@ -84,9 +85,11 @@ public class SFEE_failures {
                                 produceMore.loop(sensorsState, actuatorsState);
                                 if (produceMore.isActive()) {
                                     state = SM.PRODUCE_MORE;
-                                } /*else {
+                                } */
+/*else {
                                     state = SM.STOCHASTIC;
-                                }*/
+                                }*//*
+
                             }
                         }
                     }
@@ -144,7 +147,7 @@ public class SFEE_failures {
 
                 stochasticTime stochasticTime = new stochasticTime(
                         sfee.getSFEIbyIndex(pickSFEI),
-                        sfee.getSFEIbyIndex(0).getPartsATM().first().getId(),
+                        sfee.getSFEIbyIndex(0).getPartsATM().first(),
                         stochasticType,
                         stochasticFormulas,
                         minSFEEminOperation_t);
@@ -223,3 +226,4 @@ public class SFEE_failures {
     }
 
 }
+*/

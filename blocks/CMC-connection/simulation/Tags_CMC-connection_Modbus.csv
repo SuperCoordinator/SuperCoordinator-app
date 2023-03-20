@@ -13,6 +13,10 @@ s_exit_remover,Input,Bool,Input 10
 s_lids_at_entry,Input,Bool,Input 11
 s_lids_at_exit,Input,Bool,Input 12
 s_remover,Input,Bool,Input 13
+s_emitter2,Input,Bool,Input 14
+s_entry_emitter2,Input,Bool,Input 15
+s_entry_remover2,Input,Bool,Input 16
+s_lids_at_entry2,Input,Bool,Input 17
 Emitter,Output,Bool,Coil 0
 entry_conveyor,Output,Bool,Coil 1
 entry_emitter,Output,Bool,Coil 2
@@ -28,8 +32,14 @@ MC1_produce,Output,Bool,Coil 11
 MC1_start,Output,Bool,Coil 12
 MC1_stop,Output,Bool,Coil 13
 Remover,Output,Bool,Coil 14
+Emitter2_emit,Output,Bool,Coil 15
+entry_conveyor2,Output,Bool,Coil 16
+entry_emitter2,Output,Bool,Coil 17
+entry_remover2,Output,Bool,Coil 18
 FACTORY I/O (Time Scale),Input,Real,Input Reg 0
 MC1_progress,Input,Int,Input Reg 1
 v_MC1_exit,Input,Int,Input Reg 2
 FACTORY I/O (Camera Position),Output,Int,Holding Reg 0
 MC1_counter,Output,Int,Holding Reg 1
+Emitter2_part,Output,Int,Holding Reg 2
+Emitter2_base,Output,Int,Holding Reg 3

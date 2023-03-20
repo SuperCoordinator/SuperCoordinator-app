@@ -14,7 +14,8 @@ public class SFEI {
 
     public enum SFEI_type {
         CONVEYOR,
-        MACHINE
+        MACHINE,
+        TRANSPORT
     }
 
     private final String name;
@@ -30,6 +31,8 @@ public class SFEI {
     private TreeMap<Integer, failure_occurrence> failuresHistory;
 
     private final ArrayList<Pair<Integer, Instant>> breakdownHistory;
+
+    private boolean forTransport = false;
 
     public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance) {
         this.name = name;
@@ -115,4 +118,11 @@ public class SFEI {
         breakdownHistory.add(event);
     }
 
+    public boolean isForTransport() {
+        return forTransport;
+    }
+
+    public void setForTransport(boolean forTransport) {
+        this.forTransport = forTransport;
+    }
 }

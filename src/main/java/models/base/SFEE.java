@@ -10,7 +10,7 @@ public class SFEE {
         SIMULATION, REAL
     }
 
-    private final SFEE_type SFEE_type;
+    private SFEE_type SFEE_type;
 
     public enum SFEE_function {
         PRODUCTION,
@@ -21,18 +21,18 @@ public class SFEE {
     private SFEE_function sfeeFunction;
 
     public enum communicationOption {
-        MODBUS, OPC_UA
+        MODBUS, OPC_UA, MIXED
     }
 
-    private final communicationOption com;
+    private communicationOption com;
 
-    private final String name;
+    private String name;
 
     private sensor_actuator inSensor;
     private sensor_actuator outSensor;
     private TreeMap<Integer, sensor_actuator> io;
 
-    private final TreeMap<Integer, SFEI> SFEIs;
+    private TreeMap<Integer, SFEI> SFEIs;
 
     public SFEE(String name, SFEE_type SFEE_type, SFEE_function sfeeFunction, communicationOption com) {
         this.name = name;
@@ -85,7 +85,7 @@ public class SFEE {
             for (Map.Entry<Integer, sensor_actuator> entry : io.entrySet()) {
                 if (entry.getValue().name().equalsIgnoreCase(name)) return entry.getValue();
             }
-            throw new Exception("IO with name" + name + " not found!");
+            throw new Exception("IO with name " + name + " not found!");
         } catch (Exception e) {
             e.printStackTrace();
         }

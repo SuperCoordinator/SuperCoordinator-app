@@ -81,9 +81,9 @@ public class SFEE_monitor {
                 setup_run = false;
             }
 
-
             monitorPartsMovements(sensorsState);
-            validateProducedParts(sensorsState, inputRegsValue);
+            if (visionSensorLocation != null)
+                validateProducedParts(sensorsState, inputRegsValue);
             printDBG();
 
         } catch (Exception e) {
@@ -195,12 +195,11 @@ public class SFEE_monitor {
     private void validateProducedParts(List<Object> sensorsState, List<Object> inputRegsValue) {
 
         for (Map.Entry<Integer, sensor_actuator> entry : visionSensorLocation.entrySet()) {
-
             if (sfee.getSFEIbyIndex(entry.getKey()).getSfeiType().equals(SFEI.SFEI_type.CONVEYOR)) {
 
                 SFEI_conveyor sfeiConveyor = (SFEI_conveyor) sfee.getSFEIbyIndex(entry.getKey());
                 // Verify if there is part in vision sensor range
-                int visionSensor_number = (int) sensorsState.get(entry.getValue().bit_offset());
+                int visionSensor_number = (int) inputRegsValue.get(entry.getValue().bit_offset());
 
                 if (visionSensor_number > 0) {
                     if (sfeiConveyor.getPartsATM().size() > 0) {
@@ -209,7 +208,7 @@ public class SFEE_monitor {
                         if (!lastPart.getExpectation().equals(reality)) {
                             lastPart.setDefect();
                         }
-
+                        lastPart.setReality(reality);
                     }
                 }
             } else {

@@ -23,7 +23,9 @@ public class modbus implements Runnable {
     private int port;
     private int slaveID;
 
-    public modbus(){}
+    public modbus() {
+    }
+
     public modbus(String ip, int port, int slaveID) {
         this.ip = ip;
         this.port = port;
@@ -262,9 +264,12 @@ public class modbus implements Runnable {
     public void writeRegisters(List<Object> registers) {
 
         for (int i = 0; i < holdingRegisters.length(); i++) {
-            holdingRegisters.getAndSet(i, (Integer) registers.get(i));
+            long old = holdingRegisters.getAndSet(i, (Integer) registers.get(i));
+            if (old != (Long) registers.get(i)) {
+                hRegUpdated.getAndSet(true);
+            }
         }
-        hRegUpdated.getAndSet(true);
+
     }
 
     // For now, only used for Start and Stop F_IO

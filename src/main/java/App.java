@@ -1,5 +1,7 @@
-import controllers.SFEM_production_controller;
+import controllers.cSFEM_production;
+import controllers.cSFEM_transport;
 import models.SFEx_particular.SFEM_production;
+import models.SFEx_particular.SFEM_transport;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -10,21 +12,31 @@ public class App {
 
     public static void main(String[] args) {
 
-        ArrayList<SFEM_production> SFEMs = new ArrayList<>();
-        SFEM_production newSFEM = new SFEM_production("SFEM_test");
+        SFEM_production newSFEM = new SFEM_production("SFEM_production test");
 
-        SFEM_production_controller sfemController = new SFEM_production_controller(newSFEM);
+        cSFEM_production sfemController = new cSFEM_production(newSFEM);
         sfemController.init_SFEEs();
         sfemController.init_SFEE_controllers();
 //        sfemController.firstRun(false);
 //        sfemController.setupFailureMode();
 
+        SFEM_transport newSFEM_transp = new SFEM_transport("SFEM_transport test");
+        cSFEM_transport sfemTransportController = new cSFEM_transport(newSFEM_transp);
+        sfemTransportController.init_SFEE_transport();
+        sfemTransportController.init_SFEE_transport_controller(
+                sfemController.searchMBbySFEE(newSFEM.getSFEEs().get(0).getName()),
+                sfemController.searchMBbySFEE(newSFEM.getSFEEs().get(1).getName()),
+                newSFEM.getSFEEs().get(0),
+                newSFEM.getSFEEs().get(1));
+
+
         sfemController.openConnections();
 
 
         try {
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
             scheduler.scheduleAtFixedRate(sfemController, 0, 100, TimeUnit.MILLISECONDS);
+            scheduler.scheduleAtFixedRate(sfemTransportController, 0, 100, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             e.printStackTrace();
         }

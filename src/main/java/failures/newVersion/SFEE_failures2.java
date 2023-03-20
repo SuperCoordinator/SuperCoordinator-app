@@ -5,6 +5,7 @@ import models.base.SFEE;
 import models.base.SFEI;
 import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
+import viewers.SFEE_transport;
 
 import java.util.*;
 
@@ -60,25 +61,25 @@ public class SFEE_failures2 {
 
     private final produce_more2 produceMore2;
 
-    public void loop(List<Object> sensorsState, List<Object> actuatorsState) {
+    public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
 
         try {
             // Evaluate of the transitions
             switch (state) {
                 case STOCHASTIC -> {
-                    breakdownRepair2.loop(sensorsState, actuatorsState);
+                    breakdownRepair2.loop(sensorsState.get(0), actuatorsState.get(0));
                     if (breakdownRepair2.isActive()) {
                         state = SM.BREAKDOWN_WITH_REPAIR;
                     } else {
-                        breakdown2.loop(sensorsState, actuatorsState);
+                        breakdown2.loop(sensorsState.get(0), actuatorsState.get(0));
                         if (breakdown2.isActive()) {
                             state = SM.BREAKDOWN;
                         } else {
-                            produceFaulty2.loop(sensorsState, actuatorsState);
+                            produceFaulty2.loop(sensorsState.get(0), actuatorsState.get(0));
                             if (produceFaulty2.isActive()) {
                                 state = SM.PRODUCE_FAULTY;
                             } else {
-                                produceMore2.loop(sensorsState, actuatorsState);
+                                produceMore2.loop(sensorsState.get(0), actuatorsState.get(0));
                                 if (produceMore2.isActive()) {
                                     state = SM.PRODUCE_MORE;
                                 } /*else {
@@ -112,10 +113,10 @@ public class SFEE_failures2 {
 
             // Execute tasks
             switch (state) {
-                case BREAKDOWN_WITH_REPAIR -> breakdownRepair2.loop(sensorsState, actuatorsState);
-                case BREAKDOWN -> breakdown2.loop(sensorsState, actuatorsState);
-                case PRODUCE_FAULTY -> produceFaulty2.loop(sensorsState, actuatorsState);
-                case PRODUCE_MORE -> produceMore2.loop(sensorsState, actuatorsState);
+                case BREAKDOWN_WITH_REPAIR -> breakdownRepair2.loop(sensorsState.get(0), actuatorsState.get(0));
+                case BREAKDOWN -> breakdown2.loop(sensorsState.get(0), actuatorsState.get(0));
+                case PRODUCE_FAULTY -> produceFaulty2.loop(sensorsState.get(0), actuatorsState.get(0));
+                case PRODUCE_MORE -> produceMore2.loop(sensorsState.get(0), actuatorsState.get(0));
                 case STOCHASTIC -> stochasticTimeMode(sensorsState, actuatorsState);
             }
 
@@ -126,29 +127,32 @@ public class SFEE_failures2 {
 
     }
 
-    private void stochasticTimeMode(List<Object> sensorsState, List<Object> actuatorsState) {
+    private void stochasticTimeMode(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
         // Depends on the piece at the emitter of SFEE
         boolean newPiece = checkNewPiece();
         if (newPiece) {
             int pickSFEI = pickSFEI(false);
 //                int pickSFEI = 0;
 
-            // The part is in the initial SFEI, so it is needed to select the partID and
+            // The part is in the initial SFEI, so it is needed to select the part and
             // associate with the correct SFEI to manipulate the time
             if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
-
-                int minSFEEminOperation_t = calculateSFEEMinOperationTime();
+                int minSFEEminOperation_t = 0;
+                if (sfee.getSfeeFunction().equals(SFEE.SFEE_function.PRODUCTION)) {
+                    minSFEEminOperation_t = calculateSFEEMinOperationTime();
+                }
 
                 stochasticTime stochasticTime = new stochasticTime(
                         sfee.getSFEIbyIndex(pickSFEI),
-                        sfee.getSFEIbyIndex(0).getPartsATM().first().getId(),
+                        sfee.getSFEIbyIndex(0).getPartsATM().first(),
                         stochasticType,
                         stochasticFormulas,
                         minSFEEminOperation_t);
                 stochasticTimeTasks.add(stochasticTime);
-
             }
+
         }
+
 
         // Runs the tasks
         for (stochasticTime object : stochasticTimeTasks) {

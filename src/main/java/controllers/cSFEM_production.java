@@ -12,16 +12,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class SFEM_production_controller implements Runnable {
+public class cSFEM_production implements Runnable {
 
     private final SFEM_production sfem;
 
     private SFEM_monitor sfemMonitor;
 
-    ArrayList<SFEE_controller> sfeeControllers;
+    ArrayList<cSFEE_production> sfeeControllers;
     private final viewers.SFEM viewer;
 
-    public SFEM_production_controller(SFEM_production sfem) {
+    public cSFEM_production(SFEM_production sfem) {
         this.sfem = sfem;
 
         this.sfeeControllers = new ArrayList<>();
@@ -34,7 +34,7 @@ public class SFEM_production_controller implements Runnable {
         try {
             // # of SFEE to be added
             //String input = viewer.nSFEE();
-            String input = "1";
+            String input = "2";
             for (int i = 0; i < Integer.parseInt(input); i++) {
 
                 //String[] inputs = viewer.SFEE_params(i);
@@ -63,7 +63,7 @@ public class SFEM_production_controller implements Runnable {
             String[] comConfig = viewer.communicationParams(0);
 
             modbus mb = new modbus(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]));
-            SFEE_controller sfeeController = new SFEE_controller(
+            cSFEE_production sfeeController = new cSFEE_production(
                     sfee.getValue(),
                     mb,
                     i);
@@ -87,12 +87,12 @@ public class SFEM_production_controller implements Runnable {
         System.out.println(" SFEE (" + 0 + ") mb:" + sfeeControllers.get(0).getMb());
         // For the rest, first check if there are common connections
         for (int i = 1; i < sfeeControllers.size(); i++) {
-            SFEE_controller to_define = sfeeControllers.get(i);
+            cSFEE_production to_define = sfeeControllers.get(i);
             System.out.println(" SFEE (" + i + ") mb:" + to_define.getMb());
             modbus found_mb = null;
 
             for (int j = 0; j < sfeeControllers.size(); j++) {
-                SFEE_controller temp = sfeeControllers.get(j);
+                cSFEE_production temp = sfeeControllers.get(j);
                 if (j == i)
                     continue;
                 if (!to_define.getMb().isConfigured() && temp.getMb().isConfigured()) {
@@ -117,7 +117,7 @@ public class SFEM_production_controller implements Runnable {
     private modbus searchForCommonConnections(String[] comParams) {
         modbus mb = null;
 
-        for (SFEE_controller sfeeController : sfeeControllers) {
+        for (cSFEE_production sfeeController : sfeeControllers) {
             if (sfeeController.getMb().getIp().equals(comParams[0]))
                 if (sfeeController.getMb().getPort() == Integer.parseInt(comParams[1])) {
                     mb = sfeeController.getMb();
@@ -131,14 +131,14 @@ public class SFEM_production_controller implements Runnable {
 
     public void firstRun(boolean run, int itr) {
         if (run)
-            for (SFEE_controller sfeeController : sfeeControllers) {
+            for (cSFEE_production sfeeController : sfeeControllers) {
                 sfeeController.launchSetup();
             }
         else {
-
-            sfem.getSFEEbyIndex(itr).getSFEIbyIndex(0).setMinOperationTime(9);
-            sfem.getSFEEbyIndex(itr).getSFEIbyIndex(1).setMinOperationTime(33);
-            sfem.getSFEEbyIndex(itr).getSFEIbyIndex(2).setMinOperationTime(8);
+            int[] array = new int[]{9,33,8};
+            for (int i = 0; i < sfem.getSFEEbyIndex(itr).getSFEIs().size(); i++) {
+                sfem.getSFEEbyIndex(itr).getSFEIbyIndex(i).setMinOperationTime(array[i]);
+            }
 
 /*            sfem.getSFEEbyIndex(1).getSFEIbyIndex(0).setMinOperationTime(9);
             sfem.getSFEEbyIndex(1).getSFEIbyIndex(1).setMinOperationTime(33);
@@ -149,9 +149,22 @@ public class SFEM_production_controller implements Runnable {
 
     public void setupFailureMode() {
 
-        for (SFEE_controller sfeeController : sfeeControllers) {
+        for (cSFEE_production sfeeController : sfeeControllers) {
             sfeeController.initFailures();
         }
+    }
+
+    public modbus searchMBbySFEE(String sfeeName) {
+        modbus mb = null;
+
+        for (cSFEE_production sfeeProduction : sfeeControllers) {
+            if (sfeeProduction.getSFEE_name().equals(sfeeName)) {
+                mb = sfeeProduction.getMb();
+                break;
+            }
+        }
+        return mb;
+
     }
 
     private boolean firstExe = true;
@@ -165,7 +178,7 @@ public class SFEM_production_controller implements Runnable {
             Scanner in = new Scanner(System.in);
             in.nextLine();
 
-            for (SFEE_controller sfeeController : sfeeControllers) {
+            for (cSFEE_production sfeeController : sfeeControllers) {
                 sfeeController.getMb().reOpenConnection();
             }
 
@@ -174,7 +187,7 @@ public class SFEM_production_controller implements Runnable {
             firstExe = false;
         }
 
-        for (SFEE_controller sfeeController : sfeeControllers) {
+        for (cSFEE_production sfeeController : sfeeControllers) {
             sfeeController.loop();
         }
 

@@ -62,7 +62,8 @@ public class SFEM_monitor {
                                 } else {
                                     productionTime_cnt.put(pp.production_time(), 1);
                                 }
-                                iterator.remove();
+                                if (!lastSFEI_of_SFEE.isForTransport())
+                                    iterator.remove();
                             }
                         }
                     }
