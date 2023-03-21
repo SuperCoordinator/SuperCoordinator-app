@@ -1,6 +1,7 @@
 package communication;
 
 import models.sensor_actuator;
+import net.wimpi.modbus.procimg.SimpleRegister;
 import utils.utils;
 import net.wimpi.modbus.facade.ModbusTCPMaster;
 import net.wimpi.modbus.procimg.InputRegister;
@@ -40,7 +41,7 @@ public class modbus implements Runnable {
     private AtomicIntegerArray discreteInputs;
     private AtomicIntegerArray inputRegisters;
     private final AtomicBoolean hRegUpdated = new AtomicBoolean(false);
-    private AtomicLongArray holdingRegisters;
+    private AtomicIntegerArray holdingRegisters;
 
     private final utils util = new utils();
     private boolean configured = false;
@@ -102,7 +103,7 @@ public class modbus implements Runnable {
         if (nIOperAddrType[2] > 0)
             inputRegisters = new AtomicIntegerArray(nIOperAddrType[2]);
         if (nIOperAddrType[3] > 0)
-            holdingRegisters = new AtomicLongArray(nIOperAddrType[3]);
+            holdingRegisters = new AtomicIntegerArray(nIOperAddrType[3]);
 
     }
 
@@ -182,11 +183,13 @@ public class modbus implements Runnable {
 
             if (hRegUpdated.get()) {
                 Register[] registers = new Register[holdingRegisters.length()];
+//                Register reg  = new SimpleRegister()
                 for (int i = 0; i < registers.length; i++) {
-                    registers[i].setValue((int) holdingRegisters.get(i));
+                    registers[i] = new SimpleRegister(holdingRegisters.get(i));
                 }
                 con.writeMultipleRegisters(0, registers);
                 hRegUpdated.set(false);
+                writeLoop++;
             }
             runtime.add(Duration.between(start_t, Instant.now()).toMillis());
 //            System.out.println("MB execution time (ms) " + Duration.between(start_t, Instant.now()).toMillis());
@@ -252,22 +255,34 @@ public class modbus implements Runnable {
     }
 
     public void writeCoils(List<Object> coilsList) {
-
-        for (int i = 0; i < coils.length(); i++) {
-            int old = coils.getAndSet(i, (Integer) coilsList.get(i));
-            if (old != (Integer) coilsList.get(i))
-                coilsUpdated.getAndSet(true);
+        try {
+            for (int i = 0; i < coils.length(); i++) {
+                if ((Integer) coilsList.get(i) == -1) {
+                    continue;
+                }
+                int old = coils.getAndSet(i, (Integer) coilsList.get(i));
+                if (old != (Integer) coilsList.get(i))
+                    coilsUpdated.getAndSet(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
 
     public void writeRegisters(List<Object> registers) {
-
-        for (int i = 0; i < holdingRegisters.length(); i++) {
-            long old = holdingRegisters.getAndSet(i, (Integer) registers.get(i));
-            if (old != (Long) registers.get(i)) {
-                hRegUpdated.getAndSet(true);
+        try {
+            for (int i = 0; i < holdingRegisters.length(); i++) {
+                if ((Integer) registers.get(i) == -1) {
+                    continue;
+                }
+                int old = holdingRegisters.getAndSet(i, (Integer) registers.get(i));
+                if (old != (Integer) registers.get(i)) {
+                    hRegUpdated.getAndSet(true);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

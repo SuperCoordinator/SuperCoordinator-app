@@ -14,9 +14,7 @@ import org.apache.commons.math3.util.Pair;
 import viewers.SFEE_transport;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 public class cSFEE_transport {
 
@@ -48,20 +46,25 @@ public class cSFEE_transport {
         // SFEI list of parts
         inSFEI.setForTransport(true);
 
+        SFEI outSFEI = outSFEE.getSFEIbyIndex(0);
+        // This flag says that the entry SFEI of this SFEE should not create a new part object
+        // because will receive parts from previous SFEis
+        outSFEI.setFromTransport(true);
+
         // I/O Setting
         TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
 
         // The inSens is the sensor place in the remover (actuator) of last SFEE (SFEI to be more precise)
         String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEE.getOutSensor().name());
-        io.put(0,inSFEE.getOutSensor());
-        io.put(1,inSFEE.getIObyName(in_SensAct[0]));
+        io.put(0, inSFEE.getOutSensor());
+        io.put(1, inSFEE.getIObyName(in_SensAct[0]));
 
         // The outSens is the sensor place on the controller-defined emitter of next SFEE (SFEI to be more precise)
         String[] out_SensAct = viewer.associateSensor2Actuator(3, outSFEE.getInSensor().name());
-        io.put(2,outSFEE.getInSensor());
-        io.put(3,outSFEE.getIObyName(out_SensAct[0]));
-        io.put(4,outSFEE.getIObyName(out_SensAct[1]));
-        io.put(5,outSFEE.getIObyName(out_SensAct[2]));
+        io.put(2, outSFEE.getInSensor());
+        io.put(3, outSFEE.getIObyName(out_SensAct[0]));
+        io.put(4, outSFEE.getIObyName(out_SensAct[1]));
+        io.put(5, outSFEE.getIObyName(out_SensAct[2]));
 
         sfee.setIo(io);
 
@@ -78,13 +81,18 @@ public class cSFEE_transport {
                 sfee.getIObyName(out_SensAct[1]),
                 sfee.getIObyName(out_SensAct[2]));
 
-
+        sfeiTransport.setForTransport(false);
         // ADD SFEI to SFEE
         sfee.getSFEIs().put(0, sfeiTransport);
-
+        autoSetSFEE_InOut();
         // Initialize SFEE_transport_module
-        sfeeMonitor = new SFEE_transport_monitor(sfee);
+        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEE.getSFEIbyIndex(inSFEE.getSFEIs().size() - 1), outSFEE.getSFEIbyIndex(0));
 
+    }
+
+    private void autoSetSFEE_InOut() {
+        this.sfee.setInSensor(sfee.getSFEIs().get(0).getInSensor());
+        this.sfee.setOutSensor(sfee.getSFEIs().get(sfee.getSFEIs().size() - 1).getOutSensor());
     }
 
     public void initOperationMode() {
@@ -111,38 +119,46 @@ public class cSFEE_transport {
     public void loop() {
         // Monitor -> Move parts between inSFEI -> buffer -> outSFEI
         // based on the state of FAILURES, Monitor moves
-
-        List<Object> discreteInputsState_inMB = new ArrayList<>(inMB.readDiscreteInputs());
+        try {
+            List<Object> discreteInputsState_inMB = new ArrayList<>(inMB.readDiscreteInputs());
 //        List<Object> inputRegsValue = new ArrayList<>(inMB.readInputRegisters());
 
 //        System.out.println(Arrays.toString(inputRegsValue.toArray()));
-        List<Object> coilsState_inMB = new ArrayList<>(inMB.readCoils());
+            List<Object> coilsState_inMB = new ArrayList<>(inMB.readCoils());
+            coilsState_inMB = new ArrayList<>(Collections.nCopies(coilsState_inMB.size(), -1));
 //        List<Object> holdRegsValues = new ArrayList<>(inMB.readHoldingRegisters());
 
-        List<Object> discreteInputsState_outMB = new ArrayList<>(outMB.readDiscreteInputs());
+            List<Object> discreteInputsState_outMB = new ArrayList<>(outMB.readDiscreteInputs());
 //        List<Object> inputRegsValue = new ArrayList<>(inMB.readInputRegisters());
 
 //        System.out.println(Arrays.toString(inputRegsValue.toArray()));
-        List<Object> coilsState_outMB = new ArrayList<>(outMB.readCoils());
-        List<Object> holdRegsValues_outMB = new ArrayList<>(outMB.readHoldingRegisters());
+            List<Object> coilsState_outMB = new ArrayList<>(outMB.readCoils());
+            coilsState_outMB = new ArrayList<>(Collections.nCopies(coilsState_outMB.size(), -1));
+            List<Object> holdRegsValues_outMB = new ArrayList<>(outMB.readHoldingRegisters());
+            holdRegsValues_outMB = new ArrayList<>(Collections.nCopies(holdRegsValues_outMB.size(), -1));
 
 
-        ArrayList<List<Object>> inputs = new ArrayList<>();
-        inputs.add(discreteInputsState_inMB);
-        inputs.add(discreteInputsState_outMB);
+            ArrayList<List<Object>> inputs = new ArrayList<>();
+            inputs.add(discreteInputsState_inMB);
+            inputs.add(discreteInputsState_outMB);
 
-        ArrayList<List<Object>> outputs = new ArrayList<>();
-        outputs.add(coilsState_inMB);
-        outputs.add(coilsState_outMB);
-        outputs.add(holdRegsValues_outMB);
+            ArrayList<List<Object>> outputs = new ArrayList<>();
+            outputs.add(coilsState_inMB);
+            outputs.add(coilsState_outMB);
+            outputs.add(holdRegsValues_outMB);
 
-        sfeeFailures.loop(inputs, outputs);
+            sfeeMonitor.loop(inputs);
+
+            sfeeFailures.loop(inputs, outputs);
 
 
-        inMB.writeCoils(coilsState_inMB);
+            inMB.writeCoils(coilsState_inMB);
 
-        outMB.writeCoils(coilsState_outMB);
-        outMB.writeRegisters(holdRegsValues_outMB);
+            outMB.writeCoils(coilsState_outMB);
+            outMB.writeRegisters(holdRegsValues_outMB);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

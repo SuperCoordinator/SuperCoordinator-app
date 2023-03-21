@@ -118,6 +118,10 @@ public class stochasticTime {
         return smMach.equals(SM_mach.END);
     }
 
+    public boolean isTransportFinished() {
+        return smTrans.equals(SM_trans.END);
+    }
+
     public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
 
         if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
@@ -251,8 +255,10 @@ public class stochasticTime {
         SFEI sfei;
         if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
             sfei = sfeiConveyor;
-        } else {
+        } else if (sfeiType.equals(SFEI.SFEI_type.MACHINE)) {
             sfei = sfeiMachine;
+        } else {
+            sfei = sfeiTransport;
         }
 
         double m = utility.getCustomCalc().calcExpression(mean,
@@ -321,13 +327,13 @@ public class stochasticTime {
                     // NO BASE -> testing if 0 works....
                     holdRegs_inMB.set(sfeiTransport.getaEmitterBase().bit_offset(), 0);
                     // +5 to ignore boxes [1;4] boxes, as well as 14
-                    holdRegs_inMB.set(sfeiTransport.getaEmitterPart().bit_offset(), getNumberbyPartAspect(part.getReality()) + 4);
+                    holdRegs_inMB.set(sfeiTransport.getaEmitterPart().bit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
 
                     coilsState_outMB.set(sfeiTransport.getaEmitter().bit_offset(), 1);
                     isEmitterON = true;
                 }
-                sensor = (int) discreteInputs_outMB.get(sfeiConveyor.getsEmitter().bit_offset()) == 1;
-                if (sfeiConveyor.getPartsATM().last().getId() == part.getId() && utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+                sensor = (int) discreteInputs_outMB.get(sfeiTransport.getOutSensor().bit_offset()) == 1;
+                if (sfeiTransport.getPartsATM().last().getId() == part.getId() && utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                     coilsState_outMB.set(sfeiTransport.getaEmitter().bit_offset(), 0);
                     smConv = SM_conv.END;
                 }
@@ -340,7 +346,7 @@ public class stochasticTime {
 
     private int getNumberbyPartAspect(partsAspect aspect) {
 
-        int num = 0;
+        int num;
 
         if (aspect.form().equals(partsAspect.form.RAW)) {
             num = 0;

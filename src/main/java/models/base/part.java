@@ -66,8 +66,8 @@ public class part {
         return produced;
     }
 
-    public void setProduced() {
-        this.produced = true;
+    public void setProduced(boolean produced) {
+        this.produced = produced;
     }
 
     public boolean isDefect() {

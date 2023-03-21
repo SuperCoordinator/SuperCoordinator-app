@@ -20,6 +20,9 @@ public class App {
 //        sfemController.firstRun(false);
 //        sfemController.setupFailureMode();
 
+
+        sfemController.openConnections();
+
         SFEM_transport newSFEM_transp = new SFEM_transport("SFEM_transport test");
         cSFEM_transport sfemTransportController = new cSFEM_transport(newSFEM_transp);
         sfemTransportController.init_SFEE_transport();
@@ -30,7 +33,7 @@ public class App {
                 newSFEM.getSFEEs().get(1));
 
 
-        sfemController.openConnections();
+
 
 
         try {

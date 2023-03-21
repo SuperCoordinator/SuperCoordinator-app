@@ -3,7 +3,7 @@ package controllers;
 import communication.modbus;
 import models.base.SFEE;
 import models.SFEx_particular.SFEM_production;
-import monitor.SFEM_monitor;
+import monitor.base.SFEM_monitor;
 
 import java.time.Duration;
 import java.time.Instant;

@@ -115,17 +115,25 @@ public class SFEE_monitor {
                     } else
                         id = sfee.getSFEIbyIndex(0).getnPiecesMoved();
 
+                    if (!sfei.getValue().isFromTransport()) {
+                        part p = new part(id, new partsAspect(partsAspect.material.BLUE, default_partForm));
+                        // This operation of concat is faster than + operation
+                        String itemName = sfei.getValue().getName();
+                        itemName = itemName.concat("-");
+                        itemName = itemName.concat(sfee.getInSensor().name());
 
-                    part p = new part(id, new partsAspect(partsAspect.material.BLUE, default_partForm));
+                        p.addTimestamp(itemName);
+                        sfee.getSFEIbyIndex(0).addNewPartATM(p);
+                        pieceCnt++;
+                    } else {
+                        part p = sfee.getSFEIbyIndex(0).getPartsATM().last();
+                        String itemName = sfei.getValue().getName();
+                        itemName = itemName.concat("-");
+                        itemName = itemName.concat(sfee.getInSensor().name());
 
-                    // This operation of concat is faster than + operation
-                    String itemName = sfei.getValue().getName();
-                    itemName = itemName.concat("-");
-                    itemName = itemName.concat(sfee.getInSensor().name());
+                        p.addTimestamp(itemName);
+                    }
 
-                    p.addTimestamp(itemName);
-                    sfee.getSFEIbyIndex(0).addNewPartATM(p);
-                    pieceCnt++;
                 }
             }
 
@@ -164,7 +172,7 @@ public class SFEE_monitor {
                 boolean sfee_outSensor = (int) sensorsState.get(sfee.getOutSensor().bit_offset()) == 1;
                 if (utility.getLogicalOperator().RE_detector(sfee_outSensor, SFEIs_old_outSensors[sfei.getKey()])) {
                     if (sfei.getValue().getPartsATM().size() > 0) {
-                        sfei.getValue().getPartsATM().last().setProduced();
+                        sfei.getValue().getPartsATM().last().setProduced(true);
                     }
                 }
             }

@@ -12,12 +12,12 @@ import java.util.TreeMap;
 public class SFEM_production extends SFEM {
 
     private final TreeMap<Integer, SFEE> SFEEs;
-    private final ArrayList<part_prodTime> productionHistory;
+    private final TreeMap<Integer, part_prodTime> productionHistory;
 
     public SFEM_production(String name) {
         super(name, SFEM_type.PRODUCTION);
         this.SFEEs = new TreeMap<>();
-        this.productionHistory = new ArrayList<>();
+        this.productionHistory = new TreeMap<>();
 
     }
 
@@ -35,10 +35,10 @@ public class SFEM_production extends SFEM {
     }
 
     public void addPartToProductionHistory(part_prodTime producedPart) {
-        productionHistory.add(productionHistory.size(), producedPart);
+        productionHistory.put(producedPart.part().getId(), producedPart);
     }
 
-    public ArrayList<part_prodTime> getProductionHistory() {
+    public TreeMap<Integer, part_prodTime> getProductionHistory() {
         return productionHistory;
     }
 }

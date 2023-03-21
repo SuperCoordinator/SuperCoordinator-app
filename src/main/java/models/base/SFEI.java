@@ -33,6 +33,7 @@ public class SFEI {
     private final ArrayList<Pair<Integer, Instant>> breakdownHistory;
 
     private boolean forTransport = false;
+    private boolean fromTransport = false;
 
     public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance) {
         this.name = name;
@@ -124,5 +125,13 @@ public class SFEI {
 
     public void setForTransport(boolean forTransport) {
         this.forTransport = forTransport;
+    }
+
+    public boolean isFromTransport() {
+        return fromTransport;
+    }
+
+    public void setFromTransport(boolean fromTransport) {
+        this.fromTransport = fromTransport;
     }
 }

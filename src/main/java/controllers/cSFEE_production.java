@@ -409,6 +409,7 @@ public class cSFEE_production {
         List<Object> inputRegsValue = new ArrayList<>(mb.readInputRegisters());
 //        System.out.println(Arrays.toString(inputRegsValue.toArray()));
         List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
+        actuatorsState = new ArrayList<>(Collections.nCopies(actuatorsState.size(), -1));
 
         sfeeMonitor.loop(discreteInputsState, inputRegsValue, actuatorsState);
 

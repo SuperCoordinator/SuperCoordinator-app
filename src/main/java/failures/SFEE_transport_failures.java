@@ -31,8 +31,8 @@ public class SFEE_transport_failures {
         // Depends on the piece at the emitter of SFEE
         boolean newPiece = checkNewPiece();
         if (newPiece) {
-            int pickSFEI = pickSFEI(false);
-//                int pickSFEI = 0;
+//            int pickSFEI = pickSFEI(false);
+            int pickSFEI = 0;
 
             // The part is in the initial SFEI, so it is needed to select the part and
             // associate with the correct SFEI to manipulate the time
@@ -55,7 +55,7 @@ public class SFEE_transport_failures {
         }
 
         // Delete the completed tasks
-        stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isMachineFinished());
+        stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isMachineFinished() || object.isTransportFinished());
 
     }
 
@@ -72,43 +72,6 @@ public class SFEE_transport_failures {
             return true;
         }
         return false;
-    }
-
-    private final Random random = new Random();
-
-    private int pickSFEI(boolean isMachineValid) {
-
-        random.setSeed(3587214);
-
-        OptionalInt optionalInt;
-        do {
-            optionalInt = random.ints(0, sfee.getSFEIs().size()).findAny();
-        }
-        while (optionalInt.isEmpty());
-
-        int sfei_id = optionalInt.getAsInt();
-        if (!sfee.getSFEIbyIndex(sfei_id).getSfeiType().equals(SFEI.SFEI_type.MACHINE))
-            return sfei_id;
-        if (sfee.getSFEIbyIndex(sfei_id).getSfeiType().equals(SFEI.SFEI_type.MACHINE) && isMachineValid) {
-            return sfei_id;
-        }
-        return pickSFEI(isMachineValid);
-
-    }
-
-    private int pickSFEIMachine() {
-        OptionalInt optionalInt;
-        do {
-            optionalInt = random.ints(0, sfee.getSFEIs().size()).findAny();
-        }
-        while (optionalInt.isEmpty());
-
-        int sfei_id = optionalInt.getAsInt();
-        if (sfee.getSFEIbyIndex(sfei_id).getSfeiType().equals(SFEI.SFEI_type.MACHINE))
-            return sfei_id;
-        else
-            return pickSFEIMachine();
-
     }
 
 }

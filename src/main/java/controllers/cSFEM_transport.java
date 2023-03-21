@@ -3,7 +3,6 @@ package controllers;
 import communication.modbus;
 import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
-import viewers.SFEE_transport;
 
 public class cSFEM_transport implements Runnable {
 
