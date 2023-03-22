@@ -10,7 +10,7 @@ public class SFEE {
         SIMULATION, REAL
     }
 
-    private SFEE_type SFEE_type;
+    private final SFEE_type SFEE_type;
 
     public enum SFEE_function {
         PRODUCTION,
@@ -18,7 +18,7 @@ public class SFEE {
         TRANSPORT
     }
 
-    private SFEE_function sfeeFunction;
+    private final SFEE_function sfeeFunction;
 
     public enum communicationOption {
         MODBUS, OPC_UA, MIXED
@@ -57,10 +57,6 @@ public class SFEE {
 
     public SFEE_function getSfeeFunction() {
         return sfeeFunction;
-    }
-
-    public void setSfeeFunction(SFEE_function sfeeFunction) {
-        this.sfeeFunction = sfeeFunction;
     }
 
     public sensor_actuator getInSensor() {

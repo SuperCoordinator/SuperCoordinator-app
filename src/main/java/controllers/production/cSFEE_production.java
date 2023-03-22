@@ -10,7 +10,7 @@ import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
 import models.partsAspect;
 import models.sensor_actuator;
-import monitor.SFEE_production_monitor;
+import monitor.production.SFEE_production_monitor;
 import monitor.setupRun;
 import utils.utils;
 
@@ -324,14 +324,6 @@ public class cSFEE_production {
         this.sfee.setOutSensor(sfee.getSFEIs().get(sfee.getSFEIs().size() - 1).getOutSensor());
     }
 
-/*    private void autoSetSFEE_function() {
-        for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
-            if (sfei.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
-                sfee.setSfeeFunction(SFEE.SFEE_function.PRODUCTION);
-            }
-
-        }
-    }*/
 
     /* First Run in order to get the minimum working stochasticTime for each element */
     public void launchSetup() {
@@ -406,10 +398,10 @@ public class cSFEE_production {
     public void loop() {
 
         List<Object> discreteInputsState = new ArrayList<>(mb.readDiscreteInputs());
-//        System.out.println("Outputs before: " + Arrays.toString(actuatorsState.toArray()));
+
 
         List<Object> inputRegsValue = new ArrayList<>(mb.readInputRegisters());
-//        System.out.println(Arrays.toString(inputRegsValue.toArray()));
+
         List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
         actuatorsState = new ArrayList<>(Collections.nCopies(actuatorsState.size(), -1));
 
@@ -423,10 +415,8 @@ public class cSFEE_production {
 
             ArrayList<List<Object>> outputs = new ArrayList<>();
             outputs.add(actuatorsState);
-//            sfeeFailures.loop(sensorsState, actuatorsState);
+
             sfeeFailures2.loop(inputs, outputs);
-//            System.out.println("Outputs after:  " + Arrays.toString(actuatorsState.toArray()));
-            // The writeCoils() function will detect and execute MB instruction only if there are changes
         }
         mb.writeCoils(actuatorsState);
 

@@ -1,4 +1,4 @@
-package monitor;
+package monitor.transport;
 
 import models.base.SFEE;
 import models.base.SFEI;
@@ -74,7 +74,7 @@ public class SFEE_transport_monitor {
 
                 if (currPart != null) {
                     // It means that previously a part was detected but not had the isWaitTransport flag TRUE
-                    if (currPart.isWaitTransport()) {
+                    if (currPart.isWaitTransport() && currPart.isProduced()) {
                         System.out.println("IS FK waitingTransport");
 
                         part p = previousSFEI.getPartsATM().pollFirst();
@@ -103,7 +103,7 @@ public class SFEE_transport_monitor {
                     System.out.println("Detected the fk RE");
                     if (previousSFEI.getPartsATM().size() > 0) {
                         System.out.println("FK size > 0");
-                        if (previousSFEI.getPartsATM().first().isWaitTransport()) {
+                        if (previousSFEI.getPartsATM().first().isWaitTransport() && previousSFEI.getPartsATM().first().isProduced()) {
                             part p = previousSFEI.getPartsATM().pollFirst();
                             if (p == null)
                                 System.out.println("PART IS FK NULL");

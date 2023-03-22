@@ -3,7 +3,7 @@ package controllers.production;
 import communication.modbus;
 import models.base.SFEE;
 import models.SFEx_particular.SFEM_production;
-import monitor.base.SFEM_production_monitor;
+import monitor.production.SFEM_production_monitor;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -114,21 +114,6 @@ public class cSFEM_production implements Runnable {
 
     }
 
-    private modbus searchForCommonConnections(String[] comParams) {
-        modbus mb = null;
-
-        for (cSFEE_production sfeeController : sfeeControllers) {
-            if (sfeeController.getMb().getIp().equals(comParams[0]))
-                if (sfeeController.getMb().getPort() == Integer.parseInt(comParams[1])) {
-                    mb = sfeeController.getMb();
-                    System.out.println("MB found! " + mb);
-                    break;
-                }
-        }
-
-        return mb;
-    }
-
     public void firstRun(boolean run, int itr) {
         if (run)
             for (cSFEE_production sfeeController : sfeeControllers) {
@@ -145,13 +130,6 @@ public class cSFEM_production implements Runnable {
             sfem.getSFEEbyIndex(1).getSFEIbyIndex(2).setMinOperationTime(8);*/
         }
 
-    }
-
-    public void setupFailureMode() {
-
-        for (cSFEE_production sfeeController : sfeeControllers) {
-            sfeeController.initFailures();
-        }
     }
 
     public modbus searchMBbySFEE(String sfeeName) {
@@ -192,11 +170,11 @@ public class cSFEM_production implements Runnable {
         }
 
 
-//        Instant sfemMonitor_t = Instant.now();
         sfemMonitor.loop(runtime);
-//        System.out.println("SFEM_production Monitor time (ms) " + Duration.between(sfemMonitor_t, Instant.now()).toMillis());
+
+
         runtime.add(Duration.between(start_t, Instant.now()).toMillis());
-        //System.out.println("Cycle duration (ms): " + Duration.between(start_t, Instant.now()).toMillis());
+
     }
 
 }

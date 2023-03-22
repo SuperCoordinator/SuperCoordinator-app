@@ -7,7 +7,7 @@ import models.SFEx_particular.SFEI_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
-import monitor.SFEE_transport_monitor;
+import monitor.transport.SFEE_transport_monitor;
 import viewers.SFEE_transport;
 
 import java.time.Instant;
@@ -35,16 +35,6 @@ public class cSFEE_transport {
     }
 
     public void cSFEE_transport_init(SFEE inSFEE, SFEE outSFEE) {
-
-        // Save SFEI's -> access parts list
-        SFEI inSFEI = inSFEE.getSFEIbyIndex(inSFEE.getSFEIs().size() - 1);
-        // Set the transportation flag in the last SFEI of the in SFEE
-        // In that way, the SFEM monitor will not remove the part from the
-        // SFEI list of parts
-
-        SFEI outSFEI = outSFEE.getSFEIbyIndex(0);
-        // This flag says that the entry SFEI of this SFEE should not create a new part object
-        // because will receive parts from previous SFEis
 
         // I/O Setting
         TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
@@ -142,6 +132,7 @@ public class cSFEE_transport {
             outputs.add(coilsState_outMB);
             outputs.add(holdRegsValues_outMB);
 
+
             sfeeMonitor.loop(inputs);
 
             sfeeFailures.loop(inputs, outputs);
@@ -157,6 +148,5 @@ public class cSFEE_transport {
         }
 
     }
-
 
 }

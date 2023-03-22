@@ -12,8 +12,7 @@ public class SFEE_transport_failures {
         END
     }
 
-    private SM state;
-    private SM old_state;
+    private SM state, old_state;
     private final SFEE sfee;
     private stochasticTime stochasticTimeTask;
     private final stochasticTime.timeOptions stochasticType;

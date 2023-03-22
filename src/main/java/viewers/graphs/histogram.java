@@ -13,11 +13,12 @@ public class histogram {
 
     }
 
+    private final String windowTitle;
     private final String[] seriesNames;
     private final List<CategoryChart> chartList;
 
-    public histogram(List<intPair> data, String... seriesName) {
-
+    public histogram(String title, List<intPair> data, String... seriesName) {
+        this.windowTitle = title;
         this.seriesNames = new String[data.size()];
         System.arraycopy(seriesName, 0, seriesNames, 0, data.size());
 
@@ -39,6 +40,7 @@ public class histogram {
 
         }
         sw = new SwingWrapper<CategoryChart>(chartList);
+        sw.setTitle(windowTitle);
         sw.displayChartMatrix();
 
     }

@@ -3,8 +3,7 @@ package controllers.transport;
 import communication.modbus;
 import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
-import monitor.SFEE_transport_monitor;
-import monitor.base.SFEM_transport_monitor;
+import monitor.transport.SFEM_transport_monitor;
 
 public class cSFEM_transport implements Runnable {
 
@@ -62,6 +61,7 @@ public class cSFEM_transport implements Runnable {
 
     @Override
     public void run() {
+
         sfeeTransportController.loop();
 
         sfemTransportMonitor.loop();

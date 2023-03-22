@@ -1,4 +1,4 @@
-package monitor;
+package monitor.production;
 
 import models.base.SFEE;
 import models.base.SFEI;

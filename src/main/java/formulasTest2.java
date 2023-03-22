@@ -24,7 +24,7 @@ public class formulasTest2 {
         list.add(coisePair);
         list.add(coisePair);
 
-        histogram graphs = new histogram(list, "All Gaussian Distr", "All Gaussian Distr");
+        histogram graphs = new histogram("Something",list, "All Gaussian Distr", "All Gaussian Distr");
         graphs.createWindow(list);
 
 

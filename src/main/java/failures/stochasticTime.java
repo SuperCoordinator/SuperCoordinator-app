@@ -43,7 +43,6 @@ public class stochasticTime {
 
     private SM_conv smConv;
     private SM_mach smMach;
-
     private SM_trans smTrans;
 
     public enum timeOptions {
@@ -53,7 +52,8 @@ public class stochasticTime {
 
     private final timeOptions timeType;
 
-    // IN case of STOCHASTIC
+    // timeOptions  == GAUSSIAN -> [ mean, std_dev ]
+    //                 LINEAR   -> mean
     private String mean;
     private String std_dev;
 
@@ -68,7 +68,7 @@ public class stochasticTime {
     private final utils utility;
 
     public stochasticTime(SFEI sfei, part part, timeOptions timeType, String[] formulas, int minSFEEOperationTime) {
-        super();
+
         if (sfei.getSfeiType().equals(SFEI.SFEI_type.CONVEYOR)) {
             this.sfeiConveyor = (SFEI_conveyor) sfei;
             this.sfeiMachine = null;
