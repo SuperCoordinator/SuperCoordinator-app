@@ -3,27 +3,43 @@ package models.base;
 import models.partsAspect;
 import org.apache.commons.math3.util.Pair;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class part extends TreeSet<part> {
-    public enum materialType {
-        BLUE,
-        GREEN,
-        METAL
+public class part implements Externalizable {
+
+    public static final long serialVersionUID = 1234L;
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(id);
+        out.writeObject(expectation);
+        out.writeObject(itemTimestamps);
+        out.writeBoolean(defect);
+        out.writeBoolean(waitTransport);
+        out.writeBoolean(produced);
+
     }
 
-    public enum targetType {
-        RAW,
-        LID,
-        BASE
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.id = in.readInt();
+        this.expectation = (partsAspect) in.readObject();
+
+        this.itemTimestamps = (TreeMap<String, Instant>) in.readObject();
+        this.defect = in.readBoolean();
+        this.waitTransport = in.readBoolean();
+        this.produced = in.readBoolean();
     }
 
 
-    private final int id;
-    private final partsAspect expectation;
-    private final TreeMap<String, Instant> itemTimestamps;
+    private int id;
+    private partsAspect expectation;
+    private TreeMap<String, Instant> itemTimestamps;
 
     private partsAspect reality;
 
@@ -31,11 +47,13 @@ public class part extends TreeSet<part> {
     private boolean waitTransport;
     private boolean produced;
 
+    public part() {
+    }
     public part(int id, partsAspect expectedPart) {
         this.id = id;
         this.expectation = expectedPart;
 
-        itemTimestamps = new TreeMap<>();
+        this.itemTimestamps = new TreeMap<>();
         this.defect = false;
         this.waitTransport = false;
         this.produced = false;
