@@ -1,36 +1,80 @@
 package failures;
 
-import failures.newVersion.breakdown2;
-import failures.newVersion.breakdown_repair2;
-import failures.newVersion.produce_faulty2;
-import failures.newVersion.produce_more2;
-import models.SFEx_particular.SFEI_conveyor;
-import models.SFEx_particular.SFEI_machine;
 import models.base.SFEE;
-import models.base.SFEI;
 
 import java.util.*;
 
 public class SFEE_transport_failures {
 
+    private enum SM {
+        INIT,
+        PROCESS_STOCHASTIC,
+        END
+    }
+
+    private SM state;
+    private SM old_state;
     private final SFEE sfee;
-    private final LinkedList<stochasticTime> stochasticTimeTasks;
+    private stochasticTime stochasticTimeTask;
     private final stochasticTime.timeOptions stochasticType;
     private final String[] stochasticFormulas;
 
 
     public SFEE_transport_failures(SFEE sfee, stochasticTime.timeOptions stochasticType, String[] stochasticTime_f) {
         this.sfee = sfee;
-        this.stochasticTimeTasks = new LinkedList<>();
         this.stochasticType = stochasticType;
         this.stochasticFormulas = stochasticTime_f;
-
+        this.state = SM.INIT;
+        this.old_state = state;
     }
 
     public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
+
+        switch (state) {
+            case INIT -> {
+                if (checkNewPiece())
+                    state = SM.PROCESS_STOCHASTIC;
+            }
+            case PROCESS_STOCHASTIC -> {
+                if (stochasticTimeTask.isTransportFinished())
+                    state = SM.END;
+            }
+            case END -> {
+                state = SM.INIT;
+            }
+        }
+        switch (state) {
+            case INIT -> {
+
+            }
+            case PROCESS_STOCHASTIC -> {
+                if (old_state != state) {
+                    System.out.println("SFEE_transp_failures part " + sfee.getSFEIbyIndex(0).getPartsATM().first());
+                    stochasticTimeTask = new stochasticTime(
+                            sfee.getSFEIbyIndex(0),
+                            sfee.getSFEIbyIndex(0).getPartsATM().first(),
+                            stochasticType,
+                            stochasticFormulas,
+                            0);
+                }
+
+                stochasticTimeTask.loop(sensorsState, actuatorsState);
+            }
+            case END -> {
+                stochasticTimeTask = null;
+            }
+        }
+
+        if (old_state != state)
+            System.out.println(state);
+
+        old_state = state;
+
+
         // Depends on the piece at the emitter of SFEE
-        boolean newPiece = checkNewPiece();
+      /*  boolean newPiece = checkNewPiece();
         if (newPiece) {
+            System.out.println("New Piece to transport");
 //            int pickSFEI = pickSFEI(false);
             int pickSFEI = 0;
 
@@ -44,19 +88,19 @@ public class SFEE_transport_failures {
                         stochasticType,
                         stochasticFormulas,
                         0);
-                stochasticTimeTasks.add(stochasticTime);
+                stochasticTimeTask.add(stochasticTime);
             }
 
         }
 
         // Runs the tasks
-        for (stochasticTime object : stochasticTimeTasks) {
+        for (stochasticTime object : stochasticTimeTask) {
             object.loop(sensorsState, actuatorsState);
         }
 
         // Delete the completed tasks
-        stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isMachineFinished() || object.isTransportFinished());
-
+        stochasticTimeTask.removeIf(object -> object.isConveyorFinished() || object.isMachineFinished() || object.isTransportFinished());
+*/
     }
 
     private int oldPartID = -1;

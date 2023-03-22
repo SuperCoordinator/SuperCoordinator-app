@@ -1,12 +1,15 @@
-package controllers;
+package controllers.transport;
 
 import communication.modbus;
 import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
+import monitor.SFEE_transport_monitor;
+import monitor.base.SFEM_transport_monitor;
 
 public class cSFEM_transport implements Runnable {
 
     private final SFEM_transport sfem;
+    private SFEM_transport_monitor sfemTransportMonitor;
 
     private cSFEE_transport sfeeTransportController;
 
@@ -41,7 +44,7 @@ public class cSFEM_transport implements Runnable {
             e.printStackTrace();
         }
         // Here initialization of SFEM_transport_monitor in case it will be needed !
-
+        this.sfemTransportMonitor = new SFEM_transport_monitor(sfem);
 
     }
 
@@ -60,6 +63,8 @@ public class cSFEM_transport implements Runnable {
     @Override
     public void run() {
         sfeeTransportController.loop();
+
+        sfemTransportMonitor.loop();
     }
 
 }

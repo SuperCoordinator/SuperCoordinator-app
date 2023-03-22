@@ -32,10 +32,11 @@ public class SFEI {
 
     private final ArrayList<Pair<Integer, Instant>> breakdownHistory;
 
-    private boolean forTransport = false;
-    private boolean fromTransport = false;
+    private final boolean line_start;
+    private final boolean line_end;
 
-    public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance) {
+    public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
+                boolean line_start, boolean line_end) {
         this.name = name;
         this.sfeiType = sfeiType;
         this.inSensor = inSensor;
@@ -49,6 +50,10 @@ public class SFEI {
         this.failuresHistory = new TreeMap<>();
 
         this.breakdownHistory = new ArrayList<>();
+
+        this.line_start = line_start;
+        this.line_end = line_end;
+
     }
 
     public String getName() {
@@ -119,19 +124,12 @@ public class SFEI {
         breakdownHistory.add(event);
     }
 
-    public boolean isForTransport() {
-        return forTransport;
+    public boolean isLine_start() {
+        return line_start;
     }
 
-    public void setForTransport(boolean forTransport) {
-        this.forTransport = forTransport;
+    public boolean isLine_end() {
+        return line_end;
     }
 
-    public boolean isFromTransport() {
-        return fromTransport;
-    }
-
-    public void setFromTransport(boolean fromTransport) {
-        this.fromTransport = fromTransport;
-    }
 }

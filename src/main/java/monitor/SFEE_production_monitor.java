@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 
-public class SFEE_monitor {
+public class SFEE_production_monitor {
 
     private final SFEE sfee;
     private final utils utility;
@@ -25,7 +25,7 @@ public class SFEE_monitor {
 
     private TreeMap<Integer, sensor_actuator> visionSensorLocation;
 
-    public SFEE_monitor(SFEE sfee) {
+    public SFEE_production_monitor(SFEE sfee) {
         this.sfee = sfee;
         this.utility = new utils();
         this.SFEIs_old_inSensors = new boolean[sfee.getSFEIs().size()];
@@ -115,7 +115,7 @@ public class SFEE_monitor {
                     } else
                         id = sfee.getSFEIbyIndex(0).getnPiecesMoved();
 
-                    if (!sfei.getValue().isFromTransport()) {
+                    if (sfei.getValue().isLine_start()) {
                         part p = new part(id, new partsAspect(partsAspect.material.BLUE, default_partForm));
                         // This operation of concat is faster than + operation
                         String itemName = sfei.getValue().getName();
@@ -126,12 +126,15 @@ public class SFEE_monitor {
                         sfee.getSFEIbyIndex(0).addNewPartATM(p);
                         pieceCnt++;
                     } else {
-                        part p = sfee.getSFEIbyIndex(0).getPartsATM().last();
-                        String itemName = sfei.getValue().getName();
-                        itemName = itemName.concat("-");
-                        itemName = itemName.concat(sfee.getInSensor().name());
+                        // Is not the production line start, so wait for the transport bring the part
+                        if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
+                            part p = sfee.getSFEIbyIndex(0).getPartsATM().last();
+                            String itemName = sfei.getValue().getName();
+                            itemName = itemName.concat("-");
+                            itemName = itemName.concat(sfee.getInSensor().name());
 
-                        p.addTimestamp(itemName);
+                            p.addTimestamp(itemName);
+                        }
                     }
 
                 }
@@ -171,7 +174,16 @@ public class SFEE_monitor {
             if (sfei.getKey() == sfee.getSFEIs().size() - 1) {
                 boolean sfee_outSensor = (int) sensorsState.get(sfee.getOutSensor().bit_offset()) == 1;
                 if (utility.getLogicalOperator().RE_detector(sfee_outSensor, SFEIs_old_outSensors[sfei.getKey()])) {
+
                     if (sfei.getValue().getPartsATM().size() > 0) {
+                        if (sfei.getValue().isLine_end()) {
+                            sfei.getValue().getPartsATM().last().setWaitTransport(false);
+                        } else {
+                            sfei.getValue().getPartsATM().last().setWaitTransport(true);
+                        }
+                        // In both cases set produced TRUE
+                        // In that way the SFEM_monitor will put the part in their statistic
+                        // But as is not the end_line the transport will be done
                         sfei.getValue().getPartsATM().last().setProduced(true);
                     }
                 }

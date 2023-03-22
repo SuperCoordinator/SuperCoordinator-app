@@ -1,7 +1,6 @@
-package failures.newVersion;
+package failures.newVersion.formulas;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class gaussFormula extends formula {
 

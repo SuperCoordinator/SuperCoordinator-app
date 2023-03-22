@@ -1,16 +1,13 @@
-package controllers;
+package controllers.transport;
 
 import communication.modbus;
 import failures.SFEE_transport_failures;
-import failures.newVersion.SFEE_failures2;
 import failures.stochasticTime;
 import models.SFEx_particular.SFEI_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
-import monitor.SFEE_monitor;
 import monitor.SFEE_transport_monitor;
-import org.apache.commons.math3.util.Pair;
 import viewers.SFEE_transport;
 
 import java.time.Instant;
@@ -44,12 +41,10 @@ public class cSFEE_transport {
         // Set the transportation flag in the last SFEI of the in SFEE
         // In that way, the SFEM monitor will not remove the part from the
         // SFEI list of parts
-        inSFEI.setForTransport(true);
 
         SFEI outSFEI = outSFEE.getSFEIbyIndex(0);
         // This flag says that the entry SFEI of this SFEE should not create a new part object
         // because will receive parts from previous SFEis
-        outSFEI.setFromTransport(true);
 
         // I/O Setting
         TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
@@ -81,7 +76,7 @@ public class cSFEE_transport {
                 sfee.getIObyName(out_SensAct[1]),
                 sfee.getIObyName(out_SensAct[2]));
 
-        sfeiTransport.setForTransport(false);
+
         // ADD SFEI to SFEE
         sfee.getSFEIs().put(0, sfeiTransport);
         autoSetSFEE_InOut();

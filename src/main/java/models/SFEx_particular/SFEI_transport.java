@@ -1,6 +1,7 @@
 package models.SFEx_particular;
 
 import models.base.SFEI;
+import models.base.part;
 import models.sensor_actuator;
 
 import java.time.Instant;
@@ -16,7 +17,7 @@ public class SFEI_transport extends SFEI {
     public SFEI_transport(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
                           Instant dayOfBirth, Instant dayOfLastMaintenance, sensor_actuator aRemover,
                           sensor_actuator aEmitter, sensor_actuator aEmitterpart, sensor_actuator aEmitterBase) {
-        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance);
+        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, false, false);
         this.aRemover = aRemover;
         this.aEmitter = aEmitter;
         this.aEmitterPart = aEmitterpart;
@@ -38,4 +39,5 @@ public class SFEI_transport extends SFEI {
     public sensor_actuator getaEmitterBase() {
         return aEmitterBase;
     }
+
 }

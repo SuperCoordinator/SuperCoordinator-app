@@ -1,9 +1,9 @@
-package controllers;
+package controllers.production;
 
 import communication.modbus;
 import models.base.SFEE;
 import models.SFEx_particular.SFEM_production;
-import monitor.base.SFEM_monitor;
+import monitor.base.SFEM_production_monitor;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -16,7 +16,7 @@ public class cSFEM_production implements Runnable {
 
     private final SFEM_production sfem;
 
-    private SFEM_monitor sfemMonitor;
+    private SFEM_production_monitor sfemMonitor;
 
     ArrayList<cSFEE_production> sfeeControllers;
     private final viewers.SFEM viewer;
@@ -53,7 +53,7 @@ public class cSFEM_production implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sfemMonitor = new SFEM_monitor(sfem);
+        sfemMonitor = new SFEM_production_monitor(sfem);
     }
 
     public void init_SFEE_controllers() {
@@ -135,7 +135,7 @@ public class cSFEM_production implements Runnable {
                 sfeeController.launchSetup();
             }
         else {
-            int[] array = new int[]{9,33,8};
+            int[] array = new int[]{9, 33, 8};
             for (int i = 0; i < sfem.getSFEEbyIndex(itr).getSFEIs().size(); i++) {
                 sfem.getSFEEbyIndex(itr).getSFEIbyIndex(i).setMinOperationTime(array[i]);
             }

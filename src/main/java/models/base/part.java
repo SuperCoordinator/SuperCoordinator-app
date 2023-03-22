@@ -5,8 +5,9 @@ import org.apache.commons.math3.util.Pair;
 
 import java.time.Instant;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
-public class part {
+public class part extends TreeSet<part> {
     public enum materialType {
         BLUE,
         GREEN,
@@ -27,6 +28,7 @@ public class part {
     private partsAspect reality;
 
     private boolean defect;
+    private boolean waitTransport;
     private boolean produced;
 
     public part(int id, partsAspect expectedPart) {
@@ -35,6 +37,7 @@ public class part {
 
         itemTimestamps = new TreeMap<>();
         this.defect = false;
+        this.waitTransport = false;
         this.produced = false;
     }
 
@@ -62,12 +65,12 @@ public class part {
         return reality;
     }
 
-    public boolean isProduced() {
-        return produced;
+    public boolean isWaitTransport() {
+        return waitTransport;
     }
 
-    public void setProduced(boolean produced) {
-        this.produced = produced;
+    public void setWaitTransport(boolean waitTransport) {
+        this.waitTransport = waitTransport;
     }
 
     public boolean isDefect() {
@@ -76,5 +79,13 @@ public class part {
 
     public void setDefect() {
         this.defect = true;
+    }
+
+    public boolean isProduced() {
+        return produced;
+    }
+
+    public void setProduced(boolean produced) {
+        this.produced = produced;
     }
 }

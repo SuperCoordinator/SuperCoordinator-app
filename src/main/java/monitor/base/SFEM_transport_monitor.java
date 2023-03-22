@@ -1,8 +1,9 @@
 package monitor.base;
 
+import models.SFEx_particular.SFEM_production;
+import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
-import models.SFEx_particular.SFEM_production;
 import models.base.part;
 import models.part_prodTime;
 import viewers.graphs.histogram;
@@ -12,10 +13,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-public class SFEM_monitor {
+public class SFEM_transport_monitor {
 
 
-    private final SFEM_production sfem;
+    private final SFEM_transport sfem;
 
     private final TreeMap<Integer, Integer> productionTime_cnt;
 
@@ -23,7 +24,7 @@ public class SFEM_monitor {
 
     private final Instant init_t = Instant.now();
 
-    public SFEM_monitor(SFEM_production sfem) {
+    public SFEM_transport_monitor(SFEM_transport sfem) {
         this.sfem = sfem;
         this.productionTime_cnt = new TreeMap<>();
     }
@@ -42,31 +43,31 @@ public class SFEM_monitor {
 
     // Avaliador de peças defeituosas baseada no tipo e no tempo de processamento
 
-    public void loop(List<Long> runtime) {
+    public void loop() {
         try {
             if (Duration.between(init_t, Instant.now()).toSeconds() % 5 == 0) {
                 if (!printedStats) {
                     // will check the parts from the SFEE and save them into history
-                    for (Map.Entry<Integer, SFEE> entry : sfem.getSFEEs().entrySet()) {
-                        SFEI lastSFEI_of_SFEE = entry.getValue().getSFEIbyIndex(entry.getValue().getSFEIs().size() - 1);
-                        Iterator<part> iterator = lastSFEI_of_SFEE.getPartsATM().iterator();
-                        while (iterator.hasNext()) {
-                            part p = iterator.next();
-                            if (p.isProduced()) {
-                                part_prodTime pp = new part_prodTime(p, calculateProductionTime(p));
-                                sfem.addPartToProductionHistory(pp);
-                                if (productionTime_cnt.containsKey(pp.production_time())) {
-                                    int old_value = productionTime_cnt.get(pp.production_time());
-                                    productionTime_cnt.replace(pp.production_time(), old_value, old_value + 1);
-                                } else {
-                                    productionTime_cnt.put(pp.production_time(), 1);
-                                }
-                                if (!lastSFEI_of_SFEE.isForTransport())
-                                    iterator.remove();
+
+                    SFEI lastSFEI_of_SFEE = sfem.getSfeeTransport().getSFEIbyIndex(0);
+                    Iterator<part> iterator = lastSFEI_of_SFEE.getPartsATM().iterator();
+                    while (iterator.hasNext()) {
+                        part p = iterator.next();
+                        if (!p.isProduced() && !p.isWaitTransport()) {
+                            part_prodTime pp = new part_prodTime(p, calculateProductionTime(p));
+                            sfem.addPartToProductionHistory(pp);
+                            if (productionTime_cnt.containsKey(pp.production_time())) {
+                                int old_value = productionTime_cnt.get(pp.production_time());
+                                productionTime_cnt.replace(pp.production_time(), old_value, old_value + 1);
+                            } else {
+                                productionTime_cnt.put(pp.production_time(), 1);
                             }
+
+                            iterator.remove();
                         }
                     }
-                    printStats(runtime);
+
+/*                    printStats(runtime);*/
                     printedStats = true;
 
                     if (!isGraphsInited)
@@ -138,14 +139,12 @@ public class SFEM_monitor {
 
     private int calculateProductionTime(part p) {
 
-        String firstSFEI_name = sfem.getSFEEbyIndex(0).getSFEIbyIndex(0).getName();
+        String sfeiName = sfem.getSfeeTransport().getSFEIbyIndex(0).getName();
         // Who is the last SFEI of this SFEM
-        SFEE lastSFEE = sfem.getSFEEbyIndex(sfem.getSFEEs().size() - 1);
-        String lastSFEI_name = lastSFEE.getSFEIbyIndex(lastSFEE.getSFEIs().size() - 1).getName();
         // Calculate the time between those SFEIs
         TreeMap<String, Instant> subTree = new TreeMap<>();
         for (Map.Entry<String, Instant> entry : p.getTimestamps().entrySet()) {
-            if (entry.getKey().contains(firstSFEI_name) || entry.getKey().contains(lastSFEI_name)) {
+            if (entry.getKey().contains(sfeiName)) {
                 subTree.put(entry.getKey(), entry.getValue());
             }
         }

@@ -68,7 +68,7 @@ public class stochasticTime {
     private final utils utility;
 
     public stochasticTime(SFEI sfei, part part, timeOptions timeType, String[] formulas, int minSFEEOperationTime) {
-
+        super();
         if (sfei.getSfeiType().equals(SFEI.SFEI_type.CONVEYOR)) {
             this.sfeiConveyor = (SFEI_conveyor) sfei;
             this.sfeiMachine = null;
@@ -291,14 +291,16 @@ public class stochasticTime {
         return (int) Math.round(total_Time);
     }
 
-    private void transportBetweenSFEis(List<Object> discreteInputs_inMB, List<Object> coils_inMB, List<Object> discreteInputs_outMB, List<Object> coilsState_outMB, List<Object> holdRegs_inMB) {
+    private SM_trans old_state = smTrans;
+
+    private void transportBetweenSFEis(List<Object> discreteInputs_inMB, List<Object> coils_inMB, List<Object> discreteInputs_outMB, List<Object> coilsState_outMB, List<Object> holdRegs_outMB) {
         boolean sensor;
-        switch (smConv) {
+        switch (smTrans) {
             case INIT -> {
                 sensor = (int) discreteInputs_inMB.get(sfeiTransport.getInSensor().bit_offset()) == 1;
                 if (sfeiTransport.getPartsATM().size() > 0) {
-                    if (sfeiTransport.getPartsATM().first().getId() == part.getId() && utility.getLogicalOperator().RE_detector(sensor, old_sRemover)) {
-                        smConv = SM_conv.REMOVING;
+                    if (sfeiTransport.getPartsATM().first().getId() == part.getId() /*&& utility.getLogicalOperator().RE_detector(sensor, old_sRemover)*/) {
+                        smTrans = SM_trans.REMOVING;
                     }
                 }
                 old_sRemover = sensor;
@@ -313,21 +315,21 @@ public class stochasticTime {
                 if (utility.getLogicalOperator().FE_detector(sensor, old_sRemover)) {
                     coils_inMB.set(sfeiTransport.getaRemover().bit_offset(), 0);
                     isRemoverON = false;
-                    smConv = SM_conv.WAITING;
+                    smTrans = SM_trans.WAITING;
                 }
                 old_sRemover = sensor;
             }
             case WAITING -> {
                 if (Duration.between(initial_t, Instant.now()).toSeconds() >= delay) {
-                    smConv = SM_conv.EMITTING;
+                    smTrans = SM_trans.EMITTING;
                 }
             }
             case EMITTING -> {
                 if (!isEmitterON) {
                     // NO BASE -> testing if 0 works....
-                    holdRegs_inMB.set(sfeiTransport.getaEmitterBase().bit_offset(), 0);
+                    holdRegs_outMB.set(sfeiTransport.getaEmitterBase().bit_offset(), 0);
                     // +5 to ignore boxes [1;4] boxes, as well as 14
-                    holdRegs_inMB.set(sfeiTransport.getaEmitterPart().bit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
+                    holdRegs_outMB.set(sfeiTransport.getaEmitterPart().bit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
 
                     coilsState_outMB.set(sfeiTransport.getaEmitter().bit_offset(), 1);
                     isEmitterON = true;
@@ -335,13 +337,18 @@ public class stochasticTime {
                 sensor = (int) discreteInputs_outMB.get(sfeiTransport.getOutSensor().bit_offset()) == 1;
                 if (sfeiTransport.getPartsATM().last().getId() == part.getId() && utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                     coilsState_outMB.set(sfeiTransport.getaEmitter().bit_offset(), 0);
-                    smConv = SM_conv.END;
+                    smTrans = SM_trans.END;
                 }
                 old_sEmitter = sensor;
             }
             default -> {
             }
         }
+        if (old_state != smTrans)
+            System.out.println(smTrans);
+
+        old_state = smTrans;
+
     }
 
     private int getNumberbyPartAspect(partsAspect aspect) {

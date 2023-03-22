@@ -1,4 +1,4 @@
-package controllers;
+package controllers.production;
 
 import communication.modbus;
 //import failures.oldVersion.SFEE_failures;
@@ -10,7 +10,7 @@ import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
 import models.partsAspect;
 import models.sensor_actuator;
-import monitor.SFEE_monitor;
+import monitor.SFEE_production_monitor;
 import monitor.setupRun;
 import utils.utils;
 
@@ -29,7 +29,7 @@ public class cSFEE_production {
     private final SFEE sfee;
     private modbus mb;
     private final int temp;
-    private SFEE_monitor sfeeMonitor;
+    private SFEE_production_monitor sfeeMonitor;
 
     private operationMode opMode;
     //    private SFEE_failures sfeeFailures;
@@ -143,7 +143,9 @@ public class cSFEE_production {
                         "entry_remover",
                         "entry_emitter",
                         "s_entry_remover",
-                        "s_entry_emitter");
+                        "s_entry_emitter",
+                        true,
+                        false);
                 addNewSFEI_machine(
                         "MC1",
                         partsAspect.form.LID,
@@ -153,7 +155,7 @@ public class cSFEE_production {
                         Instant.now(),
                         "MC1_produce",
                         "MC1_opened",
-                        "MC1_stop");
+                        "MC1_stop", false, false);
                 addNewSFEI_conveyor(
                         "exit_conveyor",
                         "s_lids_at_exit",
@@ -164,7 +166,7 @@ public class cSFEE_production {
                         "exit_remover",
                         "exit_emitter",
                         "s_exit_remover",
-                        "s_exit_emitter");
+                        "s_exit_emitter", false, false);
             } /*else if (temp == 1) {
                 addNewSFEI_conveyor(
                         "entry_conveyor2",
@@ -209,16 +211,16 @@ public class cSFEE_production {
                         "entry_remover2",
                         "entry_emitter2",
                         "s_entry_remover2",
-                        "s_entry_emitter2");
+                        "s_entry_emitter2", false, true);
             }
             // SFEIs do not need controllers (??)
 
             autoSetSFEE_InOut();
 //            autoSetSFEE_function();
 
-            // Initialize SFEE_monitor
+            // Initialize SFEE_production_monitor
 
-            sfeeMonitor = new SFEE_monitor(sfee/*, mb.readDiscreteInputs()*/);
+            sfeeMonitor = new SFEE_production_monitor(sfee/*, mb.readDiscreteInputs()*/);
 
             String[] visionStr = viewer.associateVisionSensors();
 //            String[] visionStr = {"y", "v_MC1_exit", "exit_conveyor"};
@@ -293,26 +295,26 @@ public class cSFEE_production {
     /* ***********************************
                     SFEI
     ************************************ */
-    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor, String aRemover, String aEmitter, String sRemover, String sEmitter) {
+    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor, String aRemover, String aEmitter, String sRemover, String sEmitter, boolean is_line_start, boolean is_line_end) {
 
         sensor_actuator[] vector = new sensor_actuator[4];
         vector[0] = sfee.getIObyName(aRemover);
         vector[1] = sfee.getIObyName(aEmitter);
         vector[2] = sfee.getIObyName(sRemover);
         vector[3] = sfee.getIObyName(sEmitter);
-        SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(conveyorMotor), vector);
+        SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, is_line_start, is_line_end, sfee.getIObyName(conveyorMotor), vector);
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
 
     }
 
-    public SFEI_conveyor addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor) {
-        SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(conveyorMotor));
+    public SFEI_conveyor addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor, boolean is_line_start, boolean is_line_end) {
+        SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, is_line_start, is_line_end, sfee.getIObyName(conveyorMotor));
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
         return newObj;
     }
 
-    public void addNewSFEI_machine(String name, partsAspect.form partForm, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String produce, String sDoor, String aStop) {
-        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, partForm, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, sfee.getIObyName(produce), sfee.getIObyName(sDoor), sfee.getIObyName(aStop));
+    public void addNewSFEI_machine(String name, partsAspect.form partForm, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String produce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
+        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, partForm, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, is_line_start, is_line_end, sfee.getIObyName(produce), sfee.getIObyName(sDoor), sfee.getIObyName(aStop));
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
 
     }
