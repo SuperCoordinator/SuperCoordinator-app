@@ -151,6 +151,7 @@ public class cSFEE_transport {
 
             outMB.writeCoils(coilsState_outMB);
             outMB.writeRegisters(holdRegsValues_outMB);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

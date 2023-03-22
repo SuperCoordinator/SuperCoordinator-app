@@ -48,12 +48,13 @@ public class SFEM_transport_monitor {
             if (Duration.between(init_t, Instant.now()).toSeconds() % 5 == 0) {
                 if (!printedStats) {
                     // will check the parts from the SFEE and save them into history
-
                     SFEI lastSFEI_of_SFEE = sfem.getSfeeTransport().getSFEIbyIndex(0);
                     Iterator<part> iterator = lastSFEI_of_SFEE.getPartsATM().iterator();
                     while (iterator.hasNext()) {
                         part p = iterator.next();
                         if (!p.isProduced() && !p.isWaitTransport()) {
+                            System.out.println("*********** SFEM transport monitor *********");
+                            System.out.println("part ID: " + p.getId() + " exp: " + p.getExpectation() + " real: " + p.getReality());
                             part_prodTime pp = new part_prodTime(p, calculateProductionTime(p));
                             sfem.addPartToProductionHistory(pp);
                             if (productionTime_cnt.containsKey(pp.production_time())) {
@@ -62,12 +63,11 @@ public class SFEM_transport_monitor {
                             } else {
                                 productionTime_cnt.put(pp.production_time(), 1);
                             }
-
                             iterator.remove();
                         }
                     }
 
-/*                    printStats(runtime);*/
+                    printStats();
                     printedStats = true;
 
                     if (!isGraphsInited)
@@ -89,11 +89,9 @@ public class SFEM_transport_monitor {
     private part_prodTime max_time = null;
     private boolean firstRun = true;
 
-    private void printStats(List<Long> runtime) {
+    private void printStats() {
 
         // One statistic (production mean-stochasticTime, max-stochasticTime and min-stochasticTime)
-        System.out.println("Number of running Threads: " + Thread.activeCount());
-        System.out.println("Cycle duration (ms): " + calculateRuntime(runtime));
 
         long total_time = 0;
         if (sfem.getProductionHistory().size() > 0) {

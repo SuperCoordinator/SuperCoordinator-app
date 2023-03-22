@@ -186,6 +186,10 @@ public class SFEE_production_monitor {
                         // But as is not the end_line the transport will be done
                         sfei.getValue().getPartsATM().last().setProduced(true);
                     }
+                    if (sfei.getValue().getName().equals("entry_conveyor2")) {
+                        part p = sfei.getValue().getPartsATM().last();
+                        System.out.println("part ID: " + p.getId() + " exp: " + p.getExpectation() + " real: " + p.getReality());
+                    }
                 }
             }
 
@@ -273,9 +277,9 @@ public class SFEE_production_monitor {
                     System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPiecesMoved() + " parts");
                     for (part p : sfei.getValue().getPartsATM()) {
                         System.out.println("  part ID:" + p.getId());
-                       /* p.getTimestamps().forEach((key, value) -> {
+                        p.getTimestamps().forEach((key, value) -> {
                             System.out.println("  -> " + key + " " + value.toString());
-                        });*/
+                        });
                     }
                     System.out.println();
                 }

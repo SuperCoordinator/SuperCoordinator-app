@@ -335,7 +335,15 @@ public class stochasticTime {
                     isEmitterON = true;
                 }
                 sensor = (int) discreteInputs_outMB.get(sfeiTransport.getOutSensor().bit_offset()) == 1;
-                if (sfeiTransport.getPartsATM().last().getId() == part.getId() && utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+/*                if (sfeiTransport.getPartsATM().size() > 0) {
+                    if (sfeiTransport.getPartsATM().last().getId() == part.getId() && utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+                        coilsState_outMB.set(sfeiTransport.getaEmitter().bit_offset(), 0);
+                        smTrans = SM_trans.END;
+                    }
+                } else*/
+                if (/*sfeiTransport.getPartsATM().size() == 0 &&*/ utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+                    // The part was removed in this cycle by the SFEM_monitor, by the SFEI outSensor Activation
+                    // To prove it, the execution of the following is done because the FE_detector
                     coilsState_outMB.set(sfeiTransport.getaEmitter().bit_offset(), 0);
                     smTrans = SM_trans.END;
                 }
