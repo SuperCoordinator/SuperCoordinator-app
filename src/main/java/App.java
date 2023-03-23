@@ -44,6 +44,7 @@ public class App {
 
     public static void main(String[] args) {
 
+
         App app = new App();
 
         SFEM_production newSFEM = new SFEM_production("SFEM_production test");
@@ -55,12 +56,15 @@ public class App {
         sfemController.init_SFEEs();
         sfemController.init_SFEE_controllers();
 
-        sfemController.openConnections();
 
-        SFEM_transport newSFEM_transp = new SFEM_transport("SFEM_transport test");
+        sfem1Controller.openConnections();
+        sfem2Controller.openConnections();
+
+        SFEM_transport newSFEM_transp = new SFEM_transport("SFEM_transport");
         cSFEM_transport sfemTransportController = new cSFEM_transport(newSFEM_transp);
         sfemTransportController.init_SFEE_transport();
         sfemTransportController.init_SFEE_transport_controller(
+
                 sfemController.searchMBbySFEE(newSFEM.getSFEEs().get(0).getName()),
                 sfemController.searchMBbySFEE(newSFEM.getSFEEs().get(1).getName()),
                 newSFEM.getSFEEs().get(0),
@@ -68,9 +72,11 @@ public class App {
 
         // Do the serialization here, before runtime
 
+
         try {
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-            scheduler.scheduleAtFixedRate(sfemController, 0, 100, TimeUnit.MILLISECONDS);
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
+            scheduler.scheduleAtFixedRate(sfem1Controller, 0, 100, TimeUnit.MILLISECONDS);
+            scheduler.scheduleAtFixedRate(sfem2Controller, 0, 100, TimeUnit.MILLISECONDS);
             scheduler.scheduleAtFixedRate(sfemTransportController, 0, 100, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             e.printStackTrace();

@@ -19,11 +19,11 @@ public class SFEM_transport {
         System.out.println("1 - Simulation");
         System.out.println("2 - Real");
         str[1] = in.nextLine();
-        System.out.println("Connect to input SFEI via?");
+        System.out.println("Connect to input SFEI 1 via?");
         System.out.println("1 - Modbus");
         System.out.println("2 - OPC UA");
         str[2] = in.nextLine();
-        System.out.println("Connect to output SFEI via?");
+        System.out.println("Connect to output SFEI 2 via?");
         System.out.println("1 - Modbus");
         System.out.println("2 - OPC UA");
         str[3] = in.nextLine();
