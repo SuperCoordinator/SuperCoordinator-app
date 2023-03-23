@@ -14,12 +14,35 @@ import monitor.production.SFEE_production_monitor;
 import monitor.setupRun;
 import utils.utils;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class cSFEE_production {
+public class cSFEE_production implements Externalizable {
 
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sfee);
+        out.writeObject(mb);
+
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.sfee = sfee;
+
+        this.mb = mb;
+        this.temp = temp;
+
+        this.viewer = new viewers.SFEE();
+        this.utility = new utils();
+    }
 
     public enum operationMode {
         NORMAL,
@@ -37,7 +60,13 @@ public class cSFEE_production {
     private final viewers.SFEE viewer;
     private final utils utility;
 
+
     public cSFEE_production(SFEE sfee, modbus mb) {
+
+    public cSFEE_production() {
+    }
+
+
         this.sfee = sfee;
 
         this.mb = mb;

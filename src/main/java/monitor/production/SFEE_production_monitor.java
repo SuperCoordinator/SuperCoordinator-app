@@ -209,7 +209,7 @@ public class SFEE_production_monitor {
 
                 if (default_partForm.equals(partsAspect.form.LID)) {
                     actuatorsState.set(sfei.getaProduce().bit_offset(), 1);
-                } else if (default_partForm.equals(part.targetType.BASE)) {
+                } else if (default_partForm.equals(partsAspect.form.BASE)) {
                     actuatorsState.set(sfei.getaProduce().bit_offset(), 0);
                 }
             }

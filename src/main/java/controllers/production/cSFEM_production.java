@@ -5,6 +5,10 @@ import models.base.SFEE;
 import models.SFEx_particular.SFEM_production;
 import monitor.production.SFEM_production_monitor;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -12,14 +16,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class cSFEM_production implements Runnable {
+public class cSFEM_production implements Runnable, Externalizable {
 
-    private final SFEM_production sfem;
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sfem);
+        out.writeObject(sfemMonitor);
+        out.writeObject(sfeeControllers);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.sfem = (SFEM_production) in.readObject();
+        this.sfemMonitor = (SFEM_production_monitor) in.readObject();
+        this.sfeeControllers = (ArrayList<cSFEE_production>) in.readObject();
+
+        this.viewer = new viewers.SFEM();
+    }
+
+    private SFEM_production sfem;
 
     private SFEM_production_monitor sfemMonitor;
 
     ArrayList<cSFEE_production> sfeeControllers;
-    private final viewers.SFEM viewer;
+    private viewers.SFEM viewer;
+
+    public cSFEM_production() {
+    }
 
     public cSFEM_production(SFEM_production sfem) {
         this.sfem = sfem;
@@ -173,5 +198,6 @@ public class cSFEM_production implements Runnable {
         runtime.add(Duration.between(start_t, Instant.now()).toMillis());
 
     }
+
 
 }

@@ -1,32 +1,53 @@
 package monitor.base;
 
-import models.SFEx_particular.SFEM_transport;
-import models.base.SFEE;
+
 import models.base.SFEM;
-import models.base.part;
 import models.part_prodTime;
 import viewers.graphs.histogram;
 
-import java.time.Duration;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 
-public abstract class SFEM_monitor {
+public class SFEM_monitor implements Externalizable {
+    public static final long serialVersionUID = 1234L;
 
-    private final SFEM sfem;
-    private final TreeMap<Integer, Integer> productionTime_cnt;
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sfem);
+        out.writeObject(productionTime_cnt);
+        out.writeObject(init_t);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.sfem = (SFEM) in.readObject();
+        this.productionTime_cnt = (TreeMap<Integer, Integer>) in.readObject();
+        this.isGraphsInited = false;
+        this.init_t = (Instant) in.readObject();
+    }
+
+    private SFEM sfem;
+    private TreeMap<Integer, Integer> productionTime_cnt;
 
     private histogram graphs;
-    private boolean isGraphsInited = false;
-    private final Instant init_t = Instant.now();
+    private boolean isGraphsInited;
+    private Instant init_t;
+
+    public SFEM_monitor() {
+    }
 
     public SFEM_monitor(SFEM sfem) {
         this.sfem = sfem;
         this.productionTime_cnt = new TreeMap<>();
+        this.isGraphsInited = false;
+        this.init_t = Instant.now();
     }
 
     public SFEM getSfem() {
-
         return sfem;
     }
 
@@ -40,6 +61,10 @@ public abstract class SFEM_monitor {
 
     public boolean isGraphsInited() {
         return isGraphsInited;
+    }
+
+    public void setGraphsInited(boolean graphsInited) {
+        isGraphsInited = graphsInited;
     }
 
     public Instant getInit_t() {
@@ -168,4 +193,6 @@ public abstract class SFEM_monitor {
 
         return new histogram.intPair(lastNParts.keySet().toArray(new Integer[0]), lastNParts.values().toArray(new Integer[0]));
     }
+
+
 }
