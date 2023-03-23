@@ -10,13 +10,20 @@ import monitor.base.SFEM_monitor;
 import viewers.graphs.histogram;
 import viewers.graphs.histogram.intPair;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-public class SFEM_production_monitor extends SFEM_monitor {
+public class SFEM_production_monitor extends SFEM_monitor implements Externalizable {
 
 
+    public SFEM_production_monitor() {
+        super();
+    }
     public SFEM_production_monitor(SFEM sfem) {
         super(sfem);
     }
