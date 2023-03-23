@@ -17,11 +17,14 @@ blocks/CMC/control/*
 blocks/CMC2/control/*
 !blocks/CMC2/control/*.project
 
+blocks/CMC-connection/control/*
+!blocks/CMC-connection/control/*.project
+
 blocks/CMC2-connection/control/*
 !blocks/CMC2-connection/control/*.project
 
-blocks/CMC-connection/control/*
-!blocks/CMC-connection/control/*.project
+blocks/CMC2-con_individual/control/*
+!blocks/CMC-con_individual/control/*.project
 
 .idea/*
 *.iml

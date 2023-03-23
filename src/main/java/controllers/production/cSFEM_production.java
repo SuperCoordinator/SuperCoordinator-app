@@ -29,13 +29,13 @@ public class cSFEM_production implements Runnable {
 
     }
 
-    public void init_SFEEs() {
+    public void init_SFEEs(int input) {
 
         try {
             // # of SFEE to be added
             //String input = viewer.nSFEE();
-            String input = "2";
-            for (int i = 0; i < Integer.parseInt(input); i++) {
+//            String input = String.valueOf(n);
+            for (int i = 0; i < input; i++) {
 
                 //String[] inputs = viewer.SFEE_params(i);
                 String[] inputs = {"sfee" + (i + 1), "1", "1"};
@@ -56,18 +56,15 @@ public class cSFEM_production implements Runnable {
         sfemMonitor = new SFEM_production_monitor(sfem);
     }
 
-    public void init_SFEE_controllers() {
+    public void init_SFEE_controllers(int scene) {
         int i = 0;
         for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
             /* QUESTAO DO SLAVE ID*/
             String[] comConfig = viewer.communicationParams(0);
 
             modbus mb = new modbus(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]));
-            cSFEE_production sfeeController = new cSFEE_production(
-                    sfee.getValue(),
-                    mb,
-                    i);
-            sfeeController.init(comConfig);
+            cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
+            sfeeController.init(scene);
 
             firstRun(false, i);
 

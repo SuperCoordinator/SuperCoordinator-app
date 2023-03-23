@@ -24,7 +24,7 @@ public class cSFEM_transport implements Runnable {
     public void init_SFEE_transport() {
 
         try {
-            //String[] input = viewer.init_SFEE_transport();
+//            String[] input = viewer.init_SFEE_transport();
             String[] input = new String[]{"SFEE_Connection_test", "1", "1", "1"};
             SFEE.communicationOption com = null;
             if (!input[2].equals(input[3])) {

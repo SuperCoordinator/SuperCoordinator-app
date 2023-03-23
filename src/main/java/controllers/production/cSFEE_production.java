@@ -28,7 +28,6 @@ public class cSFEE_production {
 
     private final SFEE sfee;
     private modbus mb;
-    private final int temp;
     private SFEE_production_monitor sfeeMonitor;
 
     private operationMode opMode;
@@ -38,11 +37,10 @@ public class cSFEE_production {
     private final viewers.SFEE viewer;
     private final utils utility;
 
-    public cSFEE_production(SFEE sfee, modbus mb, int temp) {
+    public cSFEE_production(SFEE sfee, modbus mb) {
         this.sfee = sfee;
 
         this.mb = mb;
-        this.temp = temp;
 
         this.viewer = new viewers.SFEE();
         this.utility = new utils();
@@ -60,26 +58,32 @@ public class cSFEE_production {
         return mb;
     }
 
-    public void init(String[] comConfig) {
+    public void init(int scene) {
         try {
 
+            switch (scene) {
+                case 1 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
+                    importIO(csv_path, scene);
+                }
+                case 2 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
+                    importIO(csv_path, scene);
+                }
+                case 3 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2-con_individual\\simulation\\Tags_CMC1-connection_Modbus.csv";
+                    importIO(csv_path, scene);
+                }
+                case 4 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2-con_individual\\simulation\\Tags_CMC2-connection_Modbus.csv";
+                    importIO(csv_path, scene);
+                }
+                default -> {
+                    String csv_path = viewer.readIOpath();
+                    importIO(csv_path, 0);
+                }
+            }
 
-            //String csv_path = viewer.readIOpath();
-
-/*            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
-            importIO(csv_path, 1);*/
-/*            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
-            importIO(csv_path, 2);*/
-
-/*
-            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
-            importIO(csv_path, 3);
-*/
-
-            String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
-            importIO(csv_path, 4);
-            // Initialization of the modbus connection in case of not connected already
-//            openCommunication(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]), sfee.getIo());
 
             String mode = viewer.opMode();
             //String mode = "2";
@@ -89,50 +93,8 @@ public class cSFEE_production {
                 opMode = operationMode.PROG_FAILURES;
             }
 
-            // # of SFEI to be added
-            /*
-            String input = viewer.nSFEI();
-            for (int i = 0; i < Integer.parseInt(input); i++) {
-                // 1 - Conveyor, 2 - Machine
-                int sfeiType = Integer.parseInt(viewer.SFEI_type());
-                String[] inputs = viewer.SFEI_params(i, sfeiType);
-                if (sfeiType == 1) {
-                    if (sfee.getSFEE_type().equals(SFEE.SFEE_type.SIMULATION)) {
 
-                        SFEI_conveyor sfeiConveyor = addNewSFEI_conveyor(
-                                inputs[0],
-                                inputs[1],
-                                inputs[2],
-                                Instant.parse(inputs[3]),
-                                Instant.parse(inputs[4]),
-                                inputs[5],
-                                inputs[6],
-                                inputs[7],
-                                inputs[8]);
-
-                    } else {
-                       SFEI_conveyor sfeiConveyor = addNewSFEI_conveyor(
-                                inputs[0],
-                                inputs[1],
-                                inputs[2],
-                                Instant.parse(inputs[3]),
-                                Instant.parse(inputs[4]),
-                                inputs[5]);
-                    }
-                } else if (sfeiType == 2) {
-                    SFEI_machine sfeiMachine = addNewSFEI_machine(
-                            inputs[0],
-                            inputs[1],
-                            inputs[2],
-                            Instant.parse(inputs[3]),
-                            Instant.parse(inputs[4]),
-                            inputs[5]);
-                }
-
-            }
-            */
-
-            if (temp == 0) {
+            if (scene == 3) {
                 addNewSFEI_conveyor(
                         "entry_conveyor",
                         "s_emitter",
@@ -155,7 +117,9 @@ public class cSFEE_production {
                         Instant.now(),
                         "MC1_produce",
                         "MC1_opened",
-                        "MC1_stop", false, false);
+                        "MC1_stop",
+                        false,
+                        false);
                 addNewSFEI_conveyor(
                         "exit_conveyor",
                         "s_lids_at_exit",
@@ -166,54 +130,51 @@ public class cSFEE_production {
                         "exit_remover",
                         "exit_emitter",
                         "s_exit_remover",
-                        "s_exit_emitter", false, false);
-            } /*else if (temp == 1) {
-                addNewSFEI_conveyor(
-                        "entry_conveyor2",
-                        "s_emitter2",
-                        "s_lids_at_entry2",
-                        Instant.now(),
-                        Instant.now(),
-                        "entry_conveyor2",
-                        "entry_remover2",
-                        "entry_emitter2",
-                        "s_entry_remover2",
-                        "s_entry_emitter2");
-                addNewSFEI_machine(
-                        "MC2",
-                        partsAspect.form.BASE,
-                        "s_lids_at_entry2",
-                        "s_lids_at_exit2",
-                        Instant.now(),
-                        Instant.now(),
-                        "MC2_produce",
-                        "MC2_opened",
-                        "MC2_stop");
-                addNewSFEI_conveyor(
-                        "exit_conveyor2",
-                        "s_lids_at_exit2",
-                        "s_remover2",
-                        Instant.now(),
-                        Instant.now(),
-                        "exit_conveyor2",
-                        "exit_remover2",
-                        "exit_emitter2",
-                        "s_exit_remover2",
-                        "s_exit_emitter2");
-            }*/ else if (temp == 1) {
-                addNewSFEI_conveyor(
-                        "entry_conveyor2",
-                        "s_emitter2",
-                        "s_lids_at_entry2",
-                        Instant.now(),
-                        Instant.now(),
-                        "entry_conveyor2",
-                        "entry_remover2",
-                        "entry_emitter2",
-                        "s_entry_remover2",
-                        "s_entry_emitter2", false, true);
+                        "s_exit_emitter",
+                        false,
+                        false);
             }
-            // SFEIs do not need controllers (??)
+            if (scene == 4) {
+                addNewSFEI_conveyor(
+                        "entry_conveyor",
+                        "s_emitter",
+                        "s_lids_at_entry",
+                        Instant.now(),
+                        Instant.now(),
+                        "entry_conveyor",
+                        "entry_remover",
+                        "entry_emitter",
+                        "s_entry_remover",
+                        "s_entry_emitter",
+                        false,
+                        false);
+                addNewSFEI_machine(
+                        "MC1",
+                        partsAspect.form.LID,
+                        "s_lids_at_entry",
+                        "s_lids_at_exit",
+                        Instant.now(),
+                        Instant.now(),
+                        "MC1_produce",
+                        "MC1_opened",
+                        "MC1_stop",
+                        false,
+                        false);
+                addNewSFEI_conveyor(
+                        "exit_conveyor",
+                        "s_lids_at_exit",
+                        "s_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        "exit_conveyor",
+                        "exit_remover",
+                        "exit_emitter",
+                        "s_exit_remover",
+                        "s_exit_emitter",
+                        false,
+                        true);
+            }
+
 
             autoSetSFEE_InOut();
 //            autoSetSFEE_function();
@@ -246,10 +207,58 @@ public class cSFEE_production {
             }
 
 
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void addSFEIS_manually() {
+        String input = viewer.nSFEI();
+        for (int i = 0; i < Integer.parseInt(input); i++) {
+            // 1 - Conveyor, 2 - Machine
+            int sfeiType = Integer.parseInt(viewer.SFEI_type());
+            String[] inputs = viewer.SFEI_params(i, sfeiType, viewer.isSFEI_simulated());
+            if (sfeiType == 1) {
+                if (sfee.getSFEE_type().equals(SFEE.SFEE_type.SIMULATION)) {
+
+                    addNewSFEI_conveyor(
+                            inputs[0],
+                            inputs[1],
+                            inputs[2],
+                            Instant.parse(inputs[3]),
+                            Instant.parse(inputs[4]),
+                            inputs[5],
+                            inputs[6],
+                            inputs[7],
+                            inputs[8],
+                            inputs[9],
+                            inputs[10].contains("y"),
+                            inputs[11].contains("y"));
+
+                } else {
+                    addNewSFEI_conveyor(
+                            inputs[0],
+                            inputs[1],
+                            inputs[2],
+                            Instant.parse(inputs[3]),
+                            Instant.parse(inputs[4]),
+                            inputs[5],
+                            inputs[6].contains("y"),
+                            inputs[7].contains("y"));
+                }
+            } else if (sfeiType == 2) {
+/*                addNewSFEI_machine(
+                        inputs[0],
+                        inputs[1],
+                        inputs[2],
+                        Instant.parse(inputs[3]),
+                        Instant.parse(inputs[4]),
+                        inputs[5]);*/
+            }
+
+        }
     }
 
     /* ***********************************

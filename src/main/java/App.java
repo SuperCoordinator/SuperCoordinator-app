@@ -11,33 +11,38 @@ public class App {
 
     public static void main(String[] args) {
 
-        SFEM_production newSFEM = new SFEM_production("SFEM_production test");
+        SFEM_production SFEM1 = new SFEM_production("SFEM_production1");
 
-        cSFEM_production sfemController = new cSFEM_production(newSFEM);
-        sfemController.init_SFEEs();
-        sfemController.init_SFEE_controllers();
+        cSFEM_production sfem1Controller = new cSFEM_production(SFEM1);
+        sfem1Controller.init_SFEEs(1);
+        sfem1Controller.init_SFEE_controllers(3);
+
+        SFEM_production SFEM2 = new SFEM_production("SFEM_production2");
+
+        cSFEM_production sfem2Controller = new cSFEM_production(SFEM2);
+        sfem2Controller.init_SFEEs(1);
+        sfem2Controller.init_SFEE_controllers(4);
 //        sfemController.firstRun(false);
 //        sfemController.setupFailureMode();
 
 
-        sfemController.openConnections();
+        sfem1Controller.openConnections();
+        sfem2Controller.openConnections();
 
-        SFEM_transport newSFEM_transp = new SFEM_transport("SFEM_transport test");
+        SFEM_transport newSFEM_transp = new SFEM_transport("SFEM_transport");
         cSFEM_transport sfemTransportController = new cSFEM_transport(newSFEM_transp);
         sfemTransportController.init_SFEE_transport();
         sfemTransportController.init_SFEE_transport_controller(
-                sfemController.searchMBbySFEE(newSFEM.getSFEEs().get(0).getName()),
-                sfemController.searchMBbySFEE(newSFEM.getSFEEs().get(1).getName()),
-                newSFEM.getSFEEs().get(0),
-                newSFEM.getSFEEs().get(1));
-
-
-
+                sfem1Controller.searchMBbySFEE(SFEM1.getSFEEs().get(0).getName()),
+                sfem2Controller.searchMBbySFEE(SFEM2.getSFEEs().get(0).getName()),
+                SFEM1.getSFEEs().get(SFEM1.getSFEEs().size() - 1),
+                SFEM2.getSFEEs().get(0));
 
 
         try {
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-            scheduler.scheduleAtFixedRate(sfemController, 0, 100, TimeUnit.MILLISECONDS);
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
+            scheduler.scheduleAtFixedRate(sfem1Controller, 0, 100, TimeUnit.MILLISECONDS);
+            scheduler.scheduleAtFixedRate(sfem2Controller, 0, 100, TimeUnit.MILLISECONDS);
             scheduler.scheduleAtFixedRate(sfemTransportController, 0, 100, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             e.printStackTrace();
