@@ -46,10 +46,10 @@ public class App {
 
         App app = new App();
 
-/*        SFEM_production newSFEM = new SFEM_production("SFEM_production test");
-        app.serialize(newSFEM);*/
+        SFEM_production newSFEM = new SFEM_production("SFEM_production test");
+        app.serialize(newSFEM);
 
-        SFEM_production newSFEM = app.deserialize();
+//        SFEM_production newSFEM = app.deserialize();
 
         cSFEM_production sfemController = new cSFEM_production(newSFEM);
         sfemController.init_SFEEs();
@@ -66,6 +66,7 @@ public class App {
                 newSFEM.getSFEEs().get(0),
                 newSFEM.getSFEEs().get(1));
 
+        // Do the serialization here, before runtime
 
         try {
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
