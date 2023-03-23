@@ -5,11 +5,36 @@ import models.base.SFEE;
 import models.base.SFEI;
 import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
-import viewers.SFEE_transport;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.*;
 
-public class SFEE_failures2 {
+public class SFEE_failures2 implements Externalizable {
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sfee);
+        out.writeObject(stochasticType);
+        out.writeObject(stochasticFormulas);
+        out.writeObject(failuresFormulas);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.sfee = (SFEE) in.readObject();
+        this.stochasticType = (stochasticTime.timeOptions) in.readObject();
+        this.stochasticFormulas = (String[]) in.readObject();
+        this.failuresFormulas = (ArrayList<String[]>) in.readObject();
+
+        this.state = SM.STOCHASTIC;
+        this.stochasticTimeTasks = new LinkedList<>();
+        init_();
+
+    }
 
     private enum SM {
         STOCHASTIC,
@@ -21,45 +46,57 @@ public class SFEE_failures2 {
 
     private SM state;
 
-    private final SFEE sfee;
-    private final LinkedList<stochasticTime> stochasticTimeTasks;
-    private final stochasticTime.timeOptions stochasticType;
-    private final String[] stochasticFormulas;
+    private SFEE sfee;
+    private LinkedList<stochasticTime> stochasticTimeTasks;
+    private stochasticTime.timeOptions stochasticType;
+    private String[] stochasticFormulas;
+    private ArrayList<String[]> failuresFormulas;
 
+    private breakdown_repair2 breakdownRepair2;
+    private breakdown2 breakdown2;
+    private produce_faulty2 produceFaulty2;
+    private produce_more2 produceMore2;
+
+    private int oldPartID = -1;
+    private final Random random = new Random();
+
+    public SFEE_failures2() {
+    }
 
     public SFEE_failures2(SFEE sfee, stochasticTime.timeOptions stochasticType, String[] stochasticTime_f, ArrayList<String[]> failures_f) {
         this.sfee = sfee;
-        this.stochasticTimeTasks = new LinkedList<>();
         this.stochasticType = stochasticType;
         this.stochasticFormulas = stochasticTime_f;
+        this.failuresFormulas = failures_f;
+        this.stochasticTimeTasks = new LinkedList<>();
+
         this.state = SM.STOCHASTIC;
 
+        init_();
+    }
+
+    private void init_() {
         int sfeiConveyor_idx_failures = /*pickSFEI(false)*/ 2;
         int sfeiMachine_idx_failures = pickSFEIMachine();
 
+        random.setSeed(3587214);
         this.breakdownRepair2 = new breakdown_repair2(
-                failures_f.get(0),
+                failuresFormulas.get(0),
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
-                failures_f.get(1));
+                failuresFormulas.get(1));
 
         this.breakdown2 = new breakdown2(
-                failures_f.get(2),
+                failuresFormulas.get(2),
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
 
         this.produceFaulty2 = new produce_faulty2(
-                failures_f.get(3),
+                failuresFormulas.get(3),
                 (SFEI_machine) sfee.getSFEIbyIndex(sfeiMachine_idx_failures));
 
         this.produceMore2 = new produce_more2(
-                failures_f.get(4),
+                failuresFormulas.get(4),
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
     }
-
-    private final breakdown_repair2 breakdownRepair2;
-    private final breakdown2 breakdown2;
-    private final produce_faulty2 produceFaulty2;
-
-    private final produce_more2 produceMore2;
 
     public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
 
@@ -138,7 +175,7 @@ public class SFEE_failures2 {
             // associate with the correct SFEI to manipulate the time
             if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
                 int minSFEEminOperation_t = 0;
-                if (sfee.getSfeeFunction().equals(SFEE.SFEE_function.PRODUCTION)) {
+                if (sfee.getSFEE_function().equals(SFEE.SFEE_function.PRODUCTION)) {
                     minSFEEminOperation_t = calculateSFEEMinOperationTime();
                 }
 
@@ -173,7 +210,6 @@ public class SFEE_failures2 {
         return Math.round(total_t);
     }
 
-    private int oldPartID = -1;
 
     private boolean checkNewPiece() {
         int currID = oldPartID;
@@ -188,12 +224,8 @@ public class SFEE_failures2 {
         return false;
     }
 
-    private final Random random = new Random();
-
 
     private int pickSFEI(boolean isMachineValid) {
-
-        random.setSeed(3587214);
 
         OptionalInt optionalInt;
         do {

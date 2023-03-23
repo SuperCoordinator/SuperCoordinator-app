@@ -2,15 +2,42 @@ package models.base;
 
 import models.sensor_actuator;
 
+import java.io.*;
 import java.util.*;
 
-public class SFEE {
+public class SFEE implements Externalizable {
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(name);
+        out.writeObject(SFEE_type);
+        out.writeObject(SFEE_function);
+        out.writeObject(com);
+        out.writeObject(io);
+        out.writeObject(inSensor);
+        out.writeObject(outSensor);
+        out.writeObject(SFEIs);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.name = (String) in.readObject();
+        this.SFEE_type = (SFEE_type) in.readObject();
+        this.SFEE_function = (SFEE_function) in.readObject();
+        this.com = (communicationOption) in.readObject();
+        this.io = (TreeMap<Integer, sensor_actuator>) in.readObject();
+        this.inSensor = (sensor_actuator) in.readObject();
+        this.outSensor = (sensor_actuator) in.readObject();
+        this.SFEIs = (TreeMap<Integer, SFEI>) in.readObject();
+
+    }
 
     public enum SFEE_type {
         SIMULATION, REAL
     }
 
-    private final SFEE_type SFEE_type;
+    private SFEE_type SFEE_type;
 
     public enum SFEE_function {
         PRODUCTION,
@@ -18,7 +45,7 @@ public class SFEE {
         TRANSPORT
     }
 
-    private final SFEE_function sfeeFunction;
+    private SFEE_function SFEE_function;
 
     public enum communicationOption {
         MODBUS, OPC_UA, MIXED
@@ -34,13 +61,16 @@ public class SFEE {
 
     private TreeMap<Integer, SFEI> SFEIs;
 
+    public SFEE() {
+    }
+
     public SFEE(String name, SFEE_type SFEE_type, SFEE_function sfeeFunction, communicationOption com) {
         this.name = name;
         this.SFEE_type = SFEE_type;
-        this.sfeeFunction = sfeeFunction;
+        this.SFEE_function = sfeeFunction;
         this.com = com;
-        this.io = new TreeMap<>();
-        this.SFEIs = new TreeMap<>();
+        this.io = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
+        this.SFEIs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
     }
 
     public communicationOption getCom() {
@@ -55,8 +85,8 @@ public class SFEE {
         return SFEE_type;
     }
 
-    public SFEE_function getSfeeFunction() {
-        return sfeeFunction;
+    public SFEE_function getSFEE_function() {
+        return SFEE_function;
     }
 
     public sensor_actuator getInSensor() {
@@ -87,7 +117,6 @@ public class SFEE {
         }
         return null;
     }
-
 
     public TreeMap<Integer, SFEI> getSFEIs() {
         return SFEIs;

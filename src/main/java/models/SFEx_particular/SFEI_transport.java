@@ -14,6 +14,8 @@ public class SFEI_transport extends SFEI {
     private sensor_actuator aEmitterPart;
     private sensor_actuator aEmitterBase;
 
+    public SFEI_transport() {
+    }
     public SFEI_transport(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
                           Instant dayOfBirth, Instant dayOfLastMaintenance, sensor_actuator aRemover,
                           sensor_actuator aEmitter, sensor_actuator aEmitterpart, sensor_actuator aEmitterBase) {

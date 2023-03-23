@@ -20,6 +20,15 @@ import java.util.*;
 
 public class SFEM_production_monitor extends SFEM_monitor implements Externalizable {
 
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+    }
 
     public SFEM_production_monitor() {
         super();

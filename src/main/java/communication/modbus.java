@@ -1,5 +1,7 @@
 package communication;
 
+import models.base.SFEE;
+import models.base.SFEI;
 import models.sensor_actuator;
 import net.wimpi.modbus.procimg.SimpleRegister;
 import utils.utils;
@@ -9,6 +11,10 @@ import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.util.BitVector;
 
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -17,7 +23,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLongArray;
 
-public class modbus implements Runnable {
+public class modbus implements Runnable, Externalizable {
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(ip);
+        out.writeInt(port);
+        out.writeInt(slaveID);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.ip = (String) in.readObject();
+        this.port = in.readInt();
+        this.slaveID = in.readInt();
+    }
 
     private ModbusTCPMaster con;
     private String ip;
@@ -55,11 +76,8 @@ public class modbus implements Runnable {
         }
     }
 
-    public void openConnection(/*String ip, int port, int slaveID,*/ TreeMap<Integer, sensor_actuator> io) {
-/*
-        this.ip = ip;
-        this.port = port;
-        this.slaveID = slaveID;*/
+    public void openConnection(TreeMap<Integer, sensor_actuator> io) {
+
         this.io = new TreeMap<>(io);
         this.configured = true;
         connect();

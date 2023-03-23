@@ -15,14 +15,15 @@ public class SFEM implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(sfemType);
         out.writeObject(name);
-        out.writeObject(productionHistory);
+
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.sfemType = (SFEM_type) in.readObject();
-        this.name = in.readLine();
-        this.productionHistory = (TreeMap<Integer, part_prodTime>) in.readObject();
+        this.name = (String) in.readObject();
+
+        this.productionHistory = new TreeMap<>();
     }
 
     public enum SFEM_type {

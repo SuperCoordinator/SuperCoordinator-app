@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class cSFEM_production implements Runnable, Externalizable {
+public class cSFEM_production implements Externalizable, Runnable {
 
     public static final long serialVersionUID = 1234L;
 
@@ -40,7 +40,7 @@ public class cSFEM_production implements Runnable, Externalizable {
 
     private SFEM_production_monitor sfemMonitor;
 
-    ArrayList<cSFEE_production> sfeeControllers;
+    private ArrayList<cSFEE_production> sfeeControllers;
     private viewers.SFEM viewer;
 
     public cSFEM_production() {
@@ -52,6 +52,10 @@ public class cSFEM_production implements Runnable, Externalizable {
         this.sfeeControllers = new ArrayList<>();
         this.viewer = new viewers.SFEM();
 
+    }
+
+    public SFEM_production getSfem() {
+        return sfem;
     }
 
     public void init_SFEEs(int input) {
@@ -89,7 +93,7 @@ public class cSFEM_production implements Runnable, Externalizable {
 
             modbus mb = new modbus(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]));
             cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
-            sfeeController.init(scene);
+            sfeeController.init(i == 0 ? scene : 10);
 
             firstRun(false, i);
 

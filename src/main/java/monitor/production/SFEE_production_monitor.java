@@ -9,6 +9,10 @@ import models.partsAspect;
 import models.sensor_actuator;
 import utils.utils;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -16,17 +20,45 @@ import java.util.Map;
 import java.util.TreeMap;
 
 
-public class SFEE_production_monitor {
+public class SFEE_production_monitor implements Externalizable {
 
-    private final SFEE sfee;
-    private final utils utility;
-    private final boolean[] SFEIs_old_inSensors;
-    private final boolean[] SFEIs_old_outSensors;
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sfee);
+        out.writeObject(visionSensorLocation);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.sfee = (SFEE) in.readObject();
+        this.visionSensorLocation = (TreeMap<Integer, sensor_actuator>) in.readObject();
+
+        this.utility = new utils();
+        this.SFEIs_old_inSensors = new boolean[sfee.getSFEIs().size()];
+        this.SFEIs_old_outSensors = new boolean[sfee.getSFEIs().size()];
+
+        extractPartsType();
+    }
+
+    private SFEE sfee;
+    private utils utility;
+    private boolean[] SFEIs_old_inSensors;
+    private boolean[] SFEIs_old_outSensors;
 
     private TreeMap<Integer, sensor_actuator> visionSensorLocation;
 
+    private partsAspect.form default_partForm;
+    private boolean setup_run = true;
+    private boolean printedDBG = false;
+
+    public SFEE_production_monitor() {
+    }
+
     public SFEE_production_monitor(SFEE sfee) {
         this.sfee = sfee;
+
         this.utility = new utils();
         this.SFEIs_old_inSensors = new boolean[sfee.getSFEIs().size()];
         this.SFEIs_old_outSensors = new boolean[sfee.getSFEIs().size()];
@@ -52,14 +84,12 @@ public class SFEE_production_monitor {
         }
     }
 
-    private partsAspect.form default_partForm;
-
     private void extractPartsType() {
         // GET SFEI_MACHINE for get the type of part to be produced
         // default -> LID
         default_partForm = partsAspect.form.LID;
 
-        if (sfee.getSfeeFunction().equals(SFEE.SFEE_function.PRODUCTION)) {
+        if (sfee.getSFEE_function().equals(SFEE.SFEE_function.PRODUCTION)) {
             for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet())
                 if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
                     SFEI_machine temp = (SFEI_machine) sfeiEntry.getValue();
@@ -68,10 +98,6 @@ public class SFEE_production_monitor {
                 }
         }
     }
-
-    private int pieceCnt = 0;
-
-    private boolean setup_run = true;
 
     public void loop(List<Object> sensorsState, List<Object> inputRegsValue, List<Object> actuatorsState) {
         try {
@@ -90,7 +116,6 @@ public class SFEE_production_monitor {
             e.printStackTrace();
         }
     }
-
 
     private void monitorPartsMovements(List<Object> sensorsState) {
         for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
@@ -124,7 +149,6 @@ public class SFEE_production_monitor {
 
                         p.addTimestamp(itemName);
                         sfee.getSFEIbyIndex(0).addNewPartATM(p);
-                        pieceCnt++;
                     } else {
                         // Is not the production line start, so wait for the transport bring the part
                         if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
@@ -267,8 +291,6 @@ public class SFEE_production_monitor {
         return new partsAspect(mat, f);
 
     }
-
-    private boolean printedDBG = false;
 
     private void printDBG() {
         if (Duration.between(sfee.getSFEIbyIndex(0).getDayOfBirth(), Instant.now()).toSeconds() % 5 == 0) {
