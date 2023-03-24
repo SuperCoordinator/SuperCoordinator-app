@@ -74,15 +74,17 @@ public class cSFEM_transport implements Runnable, Externalizable {
     }
 
     public void initSFEETransportController(modbus inMB, modbus outMB, SFEE inSFEE, SFEE outSFEE) {
+        try {
+            // Create new SFEE_tranport controller instance
+            sfeeTransportController = new cSFEE_transport(sfem.getSfeeTransport());
 
-        // Create new SFEE_tranport controller instance
-        sfeeTransportController = new cSFEE_transport(sfem.getSfeeTransport());
+            // init that instance
+            sfeeTransportController.cSFEE_transport_init(inSFEE, outSFEE, inMB, outMB);
 
-        // init that instance
-        sfeeTransportController.cSFEE_transport_init(inSFEE, outSFEE, inMB, outMB);
-
-        sfeeTransportController.initOperationMode();
-
+            sfeeTransportController.initOperationMode();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Pair<String, String> getPrevNextSFEE_names() {
@@ -93,13 +95,16 @@ public class cSFEM_transport implements Runnable, Externalizable {
         sfeeTransportController.cSFEE_transport_setup(inSFEE, outSFEE, inMB, outMB);
     }
 
-
     @Override
     public void run() {
+        try {
 
-        sfeeTransportController.loop();
+            sfeeTransportController.loop();
+            sfemTransportMonitor.loop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        sfemTransportMonitor.loop();
     }
 
 

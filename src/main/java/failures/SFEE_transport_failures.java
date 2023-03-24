@@ -92,8 +92,8 @@ public class SFEE_transport_failures implements Externalizable {
             }
         }
 
-        if (old_state != state)
-            System.out.println(state);
+/*        if (old_state != state)
+            System.out.println(state);*/
 
         old_state = state;
 

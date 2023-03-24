@@ -86,56 +86,63 @@ public class cSFEM_production implements Externalizable, Runnable {
     }
 
     public void init_SFEE_controllers(int scene) {
-        int i = 0;
-        for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
-            /* QUESTAO DO SLAVE ID*/
-            String[] comConfig = viewer.communicationParams(0);
+        try {
+            int i = 0;
+            for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
+                /* QUESTAO DO SLAVE ID*/
+                String[] comConfig = viewer.communicationParams(0);
 
-            modbus mb = new modbus(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]));
-            cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
-            sfeeController.init(i == 0 ? scene : 10);
+                modbus mb = new modbus(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]));
+                cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
+                sfeeController.init(i == 0 ? scene : 10);
 
-            firstRun(false, i);
+                firstRun(false, i);
 
-            sfeeController.initFailures();
+                sfeeController.initFailures();
 
-            sfeeControllers.add(sfeeController);
-            i++;
+                sfeeControllers.add(sfeeController);
+                i++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
     }
 
     public void openConnections() {
+        try {
+            // Open the first connection
+            sfeeControllers.get(0).openCommunication();
+            System.out.println(" SFEE (" + 0 + ") mb:" + sfeeControllers.get(0).getMb());
+            // For the rest, first check if there are common connections
+            for (int i = 1; i < sfeeControllers.size(); i++) {
+                cSFEE_production to_define = sfeeControllers.get(i);
+                System.out.println(" SFEE (" + i + ") mb:" + to_define.getMb());
+                modbus found_mb = null;
 
-        // Open the first connection
-        sfeeControllers.get(0).openCommunication();
-        System.out.println(" SFEE (" + 0 + ") mb:" + sfeeControllers.get(0).getMb());
-        // For the rest, first check if there are common connections
-        for (int i = 1; i < sfeeControllers.size(); i++) {
-            cSFEE_production to_define = sfeeControllers.get(i);
-            System.out.println(" SFEE (" + i + ") mb:" + to_define.getMb());
-            modbus found_mb = null;
+                for (int j = 0; j < sfeeControllers.size(); j++) {
+                    cSFEE_production temp = sfeeControllers.get(j);
+                    if (j == i)
+                        continue;
+                    if (!to_define.getMb().isConfigured() && temp.getMb().isConfigured()) {
+                        if (to_define.getMb().getIp().equals(temp.getMb().getIp()))
+                            if (to_define.getMb().getPort() == temp.getMb().getPort()) {
+                                found_mb = temp.getMb();
+                                System.out.println(" FOUND for SFEE (" + j + ") mb:" + temp.getMb());
+                                break;
+                            }
+                    }
+                }
 
-            for (int j = 0; j < sfeeControllers.size(); j++) {
-                cSFEE_production temp = sfeeControllers.get(j);
-                if (j == i)
-                    continue;
-                if (!to_define.getMb().isConfigured() && temp.getMb().isConfigured()) {
-                    if (to_define.getMb().getIp().equals(temp.getMb().getIp()))
-                        if (to_define.getMb().getPort() == temp.getMb().getPort()) {
-                            found_mb = temp.getMb();
-                            System.out.println(" FOUND for SFEE (" + j + ") mb:" + temp.getMb());
-                            break;
-                        }
+                if (found_mb != null) {
+                    to_define.setMb(found_mb);
+                } else {
+                    to_define.openCommunication();
                 }
             }
-
-            if (found_mb != null) {
-                to_define.setMb(found_mb);
-            } else {
-                to_define.openCommunication();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -159,48 +166,55 @@ public class cSFEM_production implements Externalizable, Runnable {
     }
 
     public modbus searchMBbySFEE(String sfeeName) {
-        modbus mb = null;
-
-        for (cSFEE_production sfeeProduction : sfeeControllers) {
-            if (sfeeProduction.getSFEE_name().equals(sfeeName)) {
-                mb = sfeeProduction.getMb();
-                break;
+        try {
+            modbus mb = null;
+            for (cSFEE_production sfeeProduction : sfeeControllers) {
+                if (sfeeProduction.getSFEE_name().equals(sfeeName)) {
+                    mb = sfeeProduction.getMb();
+                    break;
+                }
             }
+            if (mb == null)
+                throw new RuntimeException("Not found MB connection for SFEE " + sfeeName);
+            return mb;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return mb;
 
+        return null;
     }
 
     private boolean firstExe = true;
-    private final List<Long> runtime = new ArrayList<>();
 
-    @Override
-    public void run() {
-        Instant start_t = Instant.now();
+    public void startSimulation() {
+
         if (firstExe) {
-            System.out.print("Press ENTER to start simulation");
-            Scanner in = new Scanner(System.in);
-            in.nextLine();
 
             for (cSFEE_production sfeeController : sfeeControllers) {
                 sfeeController.getMb().reOpenConnection();
             }
 
-            // Launch simulation
-            sfeeControllers.get(0).launchSimulation();
             firstExe = false;
         }
+        sfeeControllers.get(0).launchSimulation();
+    }
 
-        for (cSFEE_production sfeeController : sfeeControllers) {
-            sfeeController.loop();
+    private final List<Long> runtime = new ArrayList<>();
+
+    @Override
+    public void run() {
+        try {
+            Instant start_t = Instant.now();
+
+            for (cSFEE_production sfeeController : sfeeControllers) {
+                sfeeController.loop();
+            }
+            sfemMonitor.loop(runtime);
+
+            runtime.add(Duration.between(start_t, Instant.now()).toMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-        sfemMonitor.loop(runtime);
-
-
-        runtime.add(Duration.between(start_t, Instant.now()).toMillis());
-
     }
 
 

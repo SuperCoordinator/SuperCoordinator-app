@@ -8,6 +8,7 @@ import models.base.part;
 import models.partsAspect;
 import models.sensor_actuator;
 import utils.utils;
+import viewers.SFEE_transport;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -112,17 +113,12 @@ public class SFEE_transport_monitor implements Externalizable {
                 if (currPart != null) {
                     // It means that previously a part was detected but not had the isWaitTransport flag TRUE
                     if (currPart.isWaitTransport() && currPart.isProduced()) {
-                        System.out.println("IS FK waitingTransport");
 
                         part p = previousSFEI.getPartsATM().pollFirst();
                         if (p == null)
-                            System.out.println("PART IS FK NULL");
-                        else
-//                                    assert p != null;
-                            System.out.println("part from previousSFEI " + p.getId() + " exp: " + p.getExpectation() + " real: " + p.getReality());
+                            throw new RuntimeException(SFEE_transport_monitor.class + " part is NULL!");
 
                         // setWaitTransport(FALSE), but the produced is TRUE
-                        assert p != null;
                         p.setWaitTransport(false);
                         // This operation of concat is faster than + operation
                         String itemName = sfee.getName();
@@ -137,19 +133,12 @@ public class SFEE_transport_monitor implements Externalizable {
 
 //                boolean sfee_inSensor = (int) sensorsState.get(sfee.getInSensor().bit_offset()) == 1;
                 } else if (utility.getLogicalOperator().RE_detector(b_inSensor, SFEI_old_inSensors)) {
-                    System.out.println("Detected the fk RE");
                     if (previousSFEI.getPartsATM().size() > 0) {
-                        System.out.println("FK size > 0");
                         if (previousSFEI.getPartsATM().first().isWaitTransport() && previousSFEI.getPartsATM().first().isProduced()) {
                             part p = previousSFEI.getPartsATM().pollFirst();
                             if (p == null)
-                                System.out.println("PART IS FK NULL");
-                            else
-//                                    assert p != null;
-                                System.out.println("part from previousSFEI " + p.getId() + " exp: " + p.getExpectation() + " real: " + p.getReality());
+                                throw new RuntimeException(SFEE_transport_monitor.class + " part is NULL!");
 
-                            // setWaitTransport(FALSE), but the produced is TRUE
-                            assert p != null;
                             p.setWaitTransport(false);
                             // This operation of concat is faster than + operation
                             String itemName = sfee.getName();
@@ -159,7 +148,6 @@ public class SFEE_transport_monitor implements Externalizable {
                             p.addTimestamp(itemName);
                             sfei.getValue().addNewPartATM(p);
                         } else {
-                            System.out.println("IS NOT WAITING TRANSPORT, FK");
                             currPart = previousSFEI.getPartsATM().first();
                         }
                     }
@@ -188,19 +176,14 @@ public class SFEE_transport_monitor implements Externalizable {
                 boolean sfee_outSensor = (int) sensorsState.get(1).get(sfee.getOutSensor().bit_offset()) == 1;
                 if (utility.getLogicalOperator().RE_detector(sfee_outSensor, SFEI_old_outSensors)) {
                     if (sfei.getValue().getPartsATM().size() > 0) {
+                        part p = sfei.getValue().getPartsATM().first();
                         // setProduced(FALSE)
                         // before, setWaitTransport(FALSE)
                         // So the SFEM_transport will be triggered and remove the part from the SFEI partsATM
-                        part p = sfei.getValue().getPartsATM().first();
                         p.setProduced(false);
                         nextSFEI.getPartsATM().add(p);
-                    } /*else if (sfei.getValue().getPartsATM().size() > 1) {
-                            // É suposto fazer isto no monitor deste SFEM de transporte
-                            sfei.getValue().getPartsATM().pollFirst();
-                            nextSFEI.getPartsATM().add(sfei.getValue().getPartsATM().first());
-                        }*/
+                    }
                 }
-
 
                 // Only update in the end in order to all functions see the values at the read moment
                 SFEI_old_inSensors = b_inSensor;

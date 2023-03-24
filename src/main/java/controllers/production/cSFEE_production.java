@@ -89,7 +89,7 @@ public class cSFEE_production implements Externalizable {
         try {
 
             switch (scene) {
-                case 1,10 -> {
+                case 1, 10 -> {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
                     importIO(csv_path, scene);
                 }
@@ -161,7 +161,7 @@ public class cSFEE_production implements Externalizable {
                         false,
                         false);
             }
-            if(scene == 10){
+            if (scene == 10) {
                 addNewSFEI_conveyor(
                         "entry2_conveyor",
                         "s_emitter2",
@@ -448,30 +448,31 @@ public class cSFEE_production implements Externalizable {
 
 
     public void loop() {
+        try {
 
-        List<Object> discreteInputsState = new ArrayList<>(mb.readDiscreteInputs());
+            List<Object> discreteInputsState = new ArrayList<>(mb.readDiscreteInputs());
+            List<Object> inputRegsValue = new ArrayList<>(mb.readInputRegisters());
 
+            List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
+            actuatorsState = new ArrayList<>(Collections.nCopies(actuatorsState.size(), -1));
 
-        List<Object> inputRegsValue = new ArrayList<>(mb.readInputRegisters());
+            sfeeMonitor.loop(discreteInputsState, inputRegsValue, actuatorsState);
 
-        List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
-        actuatorsState = new ArrayList<>(Collections.nCopies(actuatorsState.size(), -1));
+            if (opMode.equals(operationMode.PROG_FAILURES)) {
 
-        sfeeMonitor.loop(discreteInputsState, inputRegsValue, actuatorsState);
+                // The function mb.readCoils() is only to initialize the list elements with a given size
+                ArrayList<List<Object>> inputs = new ArrayList<>();
+                inputs.add(discreteInputsState);
 
-        if (opMode.equals(operationMode.PROG_FAILURES)) {
+                ArrayList<List<Object>> outputs = new ArrayList<>();
+                outputs.add(actuatorsState);
 
-            // The function mb.readCoils() is only to initialize the list elements with a given size
-            ArrayList<List<Object>> inputs = new ArrayList<>();
-            inputs.add(discreteInputsState);
-
-            ArrayList<List<Object>> outputs = new ArrayList<>();
-            outputs.add(actuatorsState);
-
-            sfeeFailures2.loop(inputs, outputs);
+                sfeeFailures2.loop(inputs, outputs);
+            }
+            mb.writeCoils(actuatorsState);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mb.writeCoils(actuatorsState);
-
     }
 
     public void launchSimulation() {

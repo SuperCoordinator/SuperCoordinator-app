@@ -33,6 +33,7 @@ public class SFEM_production_monitor extends SFEM_monitor implements Externaliza
     public SFEM_production_monitor() {
         super();
     }
+
     public SFEM_production_monitor(SFEM sfem) {
         super(sfem);
     }
