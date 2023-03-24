@@ -89,20 +89,16 @@ public class cSFEE_production implements Externalizable {
         try {
 
             switch (scene) {
-                case 1, 10 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
-                    importIO(csv_path, scene);
-                }
-                case 2 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2\\simulation\\Tags_2CMC_Modbus.csv";
+                case 1,10 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC_connection\\simulation\\Tags_CMC-connection_Modbus.csv";
                     importIO(csv_path, scene);
                 }
                 case 3 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2-con_individual\\simulation\\Tags_CMC1-connection_Modbus.csv";
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC1-connection_Modbus.csv";
                     importIO(csv_path, scene);
                 }
                 case 4 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2-con_individual\\simulation\\Tags_CMC2-connection_Modbus.csv";
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC2-connection_Modbus.csv";
                     importIO(csv_path, scene);
                 }
                 default -> {
@@ -309,14 +305,13 @@ public class cSFEE_production implements Externalizable {
     ************************************ */
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public void openCommunication(/*String ip, int port, int slaveID,*/) {
+    public void openCommunication() {
         try {
             if (!mb.isConfigured()) {
                 if (sfee.getCom() == SFEE.communicationOption.MODBUS) {
                     mb.openConnection(/*ip, port, slaveID,*/ sfee.getIo());
                     scheduler.scheduleAtFixedRate(mb, 0, 50, TimeUnit.MILLISECONDS);
 
-//                    sfeeMonitor.init_oldSensorsValues(mb.readDiscreteInputs());
                 }
             } else {
                 scheduler.close();

@@ -13,13 +13,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.System.exit;
-
 
 public class App {
+    enum scenes {
+        CMC_connection,
+        CMC2_con_individual
+    }
 
-    private final String prod_filePath = "C:\\Users\\danie\\Desktop\\SFEM_production.ser";
-    private final String transp_filePath = "C:\\Users\\danie\\Desktop\\SFEM_transport.ser";
+    public final scenes scene = scenes.CMC2_con_individual;
+    private final String prod_filePath = "blocks/" + scene + "/saves/SFEM_production.ser";
+    private final String trans_filePath = "blocks/" + scene + "/saves/SFEM_transport.ser";
     private ArrayList<cSFEM_production> C_Production = new ArrayList<>();
     private ArrayList<cSFEM_transport> C_Transport = new ArrayList<>();
 
@@ -58,7 +61,7 @@ public class App {
 
         try {
             // serialize object's state
-            FileOutputStream fos = new FileOutputStream(transp_filePath);
+            FileOutputStream fos = new FileOutputStream(trans_filePath);
             ObjectOutputStream outputStream = new ObjectOutputStream(fos);
             outputStream.writeObject(C_Transport);
             outputStream.close();
@@ -84,7 +87,7 @@ public class App {
     private void deserialize_trans() {
 
         try {
-            FileInputStream fis = new FileInputStream(transp_filePath);
+            FileInputStream fis = new FileInputStream(trans_filePath);
             ObjectInputStream inputStream = new ObjectInputStream(fis);
             C_Transport = new ArrayList<>((ArrayList<cSFEM_transport>) inputStream.readObject());
             inputStream.close();
@@ -126,19 +129,33 @@ public class App {
 /*            System.out.println("How many Production SFEModules ?");
             String str = in.nextLine();
             int nModules = Integer.parseInt(str);*/
+                int nModules = 1, nSFEE = 1;
 
-                int nModules = 1;
+                if (app.scene.equals(scenes.CMC_connection)) {
+                    nModules = 1;
+                    nSFEE = 2;
+                } else if (app.scene.equals(scenes.CMC2_con_individual)) {
+                    nModules = 2;
+                    nSFEE = 1;
+                }
+
                 for (int i = 0; i < nModules; i++) {
                     SFEM_production sfemProduction = new SFEM_production("SFEM_Prod#" + i);
 
                     cSFEM_production sfemController = new cSFEM_production(sfemProduction);
-                    sfemController.init_SFEEs(2);
-                    sfemController.init_SFEE_controllers(1);
+                    sfemController.init_SFEEs(nSFEE);
+                    sfemController.init_SFEE_controllers(app.scene.ordinal(), i);
 
                     app.getC_Production().add(i, sfemController);
                 }
                 // Serialize Production_Controllers
                 app.serialize_prod();
+
+                // Open communications
+                for (cSFEM_production production : app.getC_Production()) {
+                    production.openConnections();
+
+                }
 
                 /* TRANSPORT MODULES*/
 /*            System.out.println("How many Transport SFEModules ?");

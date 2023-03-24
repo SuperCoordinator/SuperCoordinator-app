@@ -58,16 +58,16 @@ public class cSFEM_production implements Externalizable, Runnable {
         return sfem;
     }
 
-    public void init_SFEEs(int input) {
+    public void init_SFEEs(int nSFEEs) {
 
         try {
             // # of SFEE to be added
             //String input = viewer.nSFEE();
 //            String input = String.valueOf(n);
-            for (int i = 0; i < input; i++) {
+            for (int i = 0; i < nSFEEs; i++) {
 
-                //String[] inputs = viewer.SFEE_params(i);
-                String[] inputs = {"sfee" + (i + 1), "1", "1"};
+                String[] inputs = viewer.SFEE_params(i);
+//                String[] inputs = {"sfee" + (i + 1), "1", "1"};
 
                 SFEE sfee = new SFEE(
                         inputs[0],
@@ -85,7 +85,7 @@ public class cSFEM_production implements Externalizable, Runnable {
         sfemMonitor = new SFEM_production_monitor(sfem);
     }
 
-    public void init_SFEE_controllers(int scene) {
+    public void init_SFEE_controllers(int scene, int SFEM_idx) {
         try {
             int i = 0;
             for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
@@ -94,7 +94,15 @@ public class cSFEM_production implements Externalizable, Runnable {
 
                 modbus mb = new modbus(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]));
                 cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
-                sfeeController.init(i == 0 ? scene : 10);
+
+                if (scene == 0)
+                    sfeeController.init(i == 0 ? scene : 10);
+                else if (scene == 1) {
+                    if (SFEM_idx == 0)
+                        sfeeController.init(3);
+                    else
+                        sfeeController.init(4);
+                }
 
                 firstRun(false, i);
 
