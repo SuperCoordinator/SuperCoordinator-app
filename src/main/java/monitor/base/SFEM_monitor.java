@@ -18,14 +18,14 @@ public class SFEM_monitor implements Externalizable {
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(sfem);
-        out.writeObject(init_t);
+
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.sfem = (SFEM) in.readObject();
-        this.init_t = (Instant) in.readObject();
 
+        this.init_t = Instant.now();
         this.productionTime_cnt = new TreeMap<>();
         this.isGraphsInited = false;
 

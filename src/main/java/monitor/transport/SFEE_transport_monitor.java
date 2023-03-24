@@ -1,5 +1,7 @@
 package monitor.transport;
 
+import failures.SFEE_transport_failures;
+import failures.stochasticTime;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;
@@ -7,27 +9,60 @@ import models.partsAspect;
 import models.sensor_actuator;
 import utils.utils;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SFEE_transport_monitor {
+public class SFEE_transport_monitor implements Externalizable {
+
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sfee);
+ /*       out.writeObject(previousSFEI);
+        out.writeObject(nextSFEI);*/
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.sfee = (SFEE) in.readObject();
+/*        this.previousSFEI = (SFEI) in.readObject();
+        this.nextSFEI = (SFEI) in.readObject();*/
+
+        this.utility = new utils();
+        this.SFEI_old_inSensors = false;
+        this.SFEI_old_outSensors = false;
+
+    }
 
     private SFEE sfee;
     private SFEI previousSFEI;
     private SFEI nextSFEI;
-    private final utils utility;
+    private utils utility;
     private boolean SFEI_old_inSensors;
     private boolean SFEI_old_outSensors;
+
+    private boolean setup_run = true;
+    private part currPart = null;
+
+    public SFEE_transport_monitor() {
+    }
 
     public SFEE_transport_monitor(SFEE sfee, SFEI previousSFEI, SFEI nextSFEI) {
         this.sfee = sfee;
         this.previousSFEI = previousSFEI;
         this.nextSFEI = nextSFEI;
+
         this.utility = new utils();
         this.SFEI_old_inSensors = false;
         this.SFEI_old_outSensors = false;
     }
+
 
     private void init_oldSensorsValues(ArrayList<List<Object>> sensorsState) {
 
@@ -41,8 +76,10 @@ public class SFEE_transport_monitor {
 
     }
 
-    private boolean setup_run = true;
-    private part currPart = null;
+    public void setupPrevNextSFEI(SFEI previousSFEI, SFEI nextSFEI) {
+        this.previousSFEI = previousSFEI;
+        this.nextSFEI = nextSFEI;
+    }
 
     public void loop(ArrayList<List<Object>> sensorsState) {
 

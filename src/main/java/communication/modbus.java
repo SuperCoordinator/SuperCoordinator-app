@@ -232,7 +232,18 @@ public class modbus implements Runnable, Externalizable {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        } /*finally {
+            configured = false;
+            do {
+                openConnection(io);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            } while (!configured);
+
+        }*/
 
     }
 

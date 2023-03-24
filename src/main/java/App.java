@@ -2,25 +2,51 @@ import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import models.SFEx_particular.SFEM_production;
 import models.SFEx_particular.SFEM_transport;
+import models.base.SFEE;
+import org.apache.commons.math3.util.Pair;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.System.exit;
+
 
 public class App {
 
-    private final String filePath = "C:\\Users\\danie\\Desktop\\SFEM_production.ser";
+    private final String prod_filePath = "C:\\Users\\danie\\Desktop\\SFEM_production.ser";
+    private final String transp_filePath = "C:\\Users\\danie\\Desktop\\SFEM_transport.ser";
+    private ArrayList<cSFEM_production> C_Production = new ArrayList<>();
+    private ArrayList<cSFEM_transport> C_Transport = new ArrayList<>();
 
-    public void serialize(cSFEM_production obj) {
+    public ArrayList<cSFEM_production> getC_Production() {
+        return C_Production;
+    }
+
+    public void setC_Production(ArrayList<cSFEM_production> c_Production) {
+        C_Production = c_Production;
+    }
+
+    public ArrayList<cSFEM_transport> getC_Transport() {
+        return C_Transport;
+    }
+
+    public void setC_Transport(ArrayList<cSFEM_transport> c_Transport) {
+        C_Transport = c_Transport;
+    }
+
+
+    private void serialize_prod() {
 
         try {
             // serialize object's state
-            FileOutputStream fos = new FileOutputStream(filePath);
+            FileOutputStream fos = new FileOutputStream(prod_filePath);
             ObjectOutputStream outputStream = new ObjectOutputStream(fos);
-            outputStream.writeObject(obj);
+            outputStream.writeObject(C_Production);
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -28,24 +54,168 @@ public class App {
 
     }
 
-    public cSFEM_production deserialize() {
+    private void serialize_trans() {
 
-        cSFEM_production obj = null;
         try {
-            FileInputStream fis = new FileInputStream(filePath);
+            // serialize object's state
+            FileOutputStream fos = new FileOutputStream(transp_filePath);
+            ObjectOutputStream outputStream = new ObjectOutputStream(fos);
+            outputStream.writeObject(C_Transport);
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void deserialize_prod() {
+
+        try {
+            FileInputStream fis = new FileInputStream(prod_filePath);
             ObjectInputStream inputStream = new ObjectInputStream(fis);
-            obj = (cSFEM_production) inputStream.readObject();
+            C_Production = new ArrayList<>((ArrayList<cSFEM_production>) inputStream.readObject());
             inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return obj;
+
+    }
+
+    private void deserialize_trans() {
+
+        try {
+            FileInputStream fis = new FileInputStream(transp_filePath);
+            ObjectInputStream inputStream = new ObjectInputStream(fis);
+            C_Transport = new ArrayList<>((ArrayList<cSFEM_transport>) inputStream.readObject());
+            inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private Pair<SFEE, cSFEM_production> searchSFEEbyName(String name) {
+        Pair<SFEE, cSFEM_production> sfee = null;
+        for (cSFEM_production sfemController : C_Production) {
+            for (Map.Entry<Integer, SFEE> currentSFEE : sfemController.getSfem().getSFEEs().entrySet()) {
+                if (currentSFEE.getValue().getName().equals(name)) {
+                    sfee = new Pair<>(currentSFEE.getValue(), sfemController);
+                    break;
+                }
+            }
+        }
+        if (sfee == null)
+            throw new RuntimeException("SFEE not found");
+
+        return sfee;
     }
 
     public static void main(String[] args) {
 
+        Scanner in = new Scanner(System.in);
 
         App app = new App();
+
+        boolean newConfig = false;
+
+        if (newConfig) {
+            // Create new configuration files
+            /* PRODUCTION MODULES*/
+/*            System.out.println("How many Production SFEModules ?");
+            String str = in.nextLine();
+            int nModules = Integer.parseInt(str);*/
+
+            int nModules = 1;
+            for (int i = 0; i < nModules; i++) {
+                SFEM_production sfemProduction = new SFEM_production("SFEM_Prod#" + i);
+
+                cSFEM_production sfemController = new cSFEM_production(sfemProduction);
+                sfemController.init_SFEEs(2);
+                sfemController.init_SFEE_controllers(1);
+
+                app.getC_Production().add(sfemController);
+            }
+            // Serialize Production_Controllers
+            app.serialize_prod();
+
+            /* TRANSPORT MODULES*/
+/*            System.out.println("How many Transport SFEModules ?");
+            String str = in.nextLine();
+            int nModules = Integer.parseInt(str);*/
+            nModules = 1;
+            for (int i = 0; i < nModules; i++) {
+
+                SFEM_transport sfemTransport = new SFEM_transport("SFEM_Trans#" + i);
+                cSFEM_transport sfemController = new cSFEM_transport(sfemTransport);
+                sfemController.init_SFEE_transport();
+
+                System.out.println(sfemTransport.getName() + " input SFEE? ");
+                Pair<SFEE, cSFEM_production> inSFEE = app.searchSFEEbyName(in.nextLine());
+                System.out.println(sfemTransport.getName() + " output SFEE? ");
+                Pair<SFEE, cSFEM_production> outSFEE = app.searchSFEEbyName(in.nextLine());
+
+                sfemController.initSFEETransportController(
+                        inSFEE.getSecond().searchMBbySFEE(inSFEE.getFirst().getName()),
+                        outSFEE.getSecond().searchMBbySFEE(outSFEE.getFirst().getName()),
+                        inSFEE.getFirst(),
+                        outSFEE.getFirst());
+
+                app.getC_Transport().add(sfemController);
+            }
+
+            app.serialize_trans();
+
+        } else {
+            // Load existing configuration files
+            // Deserialize Production Controllers
+            app.deserialize_prod();
+
+            // Open communications
+            for (cSFEM_production production : app.getC_Production()) {
+                production.openConnections();
+
+            }
+
+            // Deserialize Transport Controllers
+            app.deserialize_trans();
+
+            // Set up the connections between SFEEs
+            for (cSFEM_transport transport : app.getC_Transport()) {
+                Pair<String, String> names = transport.getPrevNextSFEE_names();
+
+                Pair<SFEE, cSFEM_production> inSFEE = app.searchSFEEbyName(names.getFirst());
+                Pair<SFEE, cSFEM_production> outSFEE = app.searchSFEEbyName(names.getSecond());
+
+                transport.setupSFEETransportController(
+                        inSFEE.getSecond().searchMBbySFEE(inSFEE.getFirst().getName()),
+                        outSFEE.getSecond().searchMBbySFEE(outSFEE.getFirst().getName()),
+                        inSFEE.getFirst(),
+                        outSFEE.getFirst());
+
+            }
+        }
+
+        // Function for start all simulation by the correct order !!
+//        exit(0);
+
+        try {
+            int poolsize = app.getC_Transport().size() + app.getC_Production().size();
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(poolsize);
+
+            for (cSFEM_production production : app.getC_Production()) {
+                scheduler.scheduleAtFixedRate(production, 0, 100, TimeUnit.MILLISECONDS);
+            }
+
+            for (cSFEM_transport transport : app.getC_Transport()) {
+                scheduler.scheduleAtFixedRate(transport, 0, 100, TimeUnit.MILLISECONDS);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
 
 /*        SFEM_production newSFEM = new SFEM_production("SFEM_production test");
 
@@ -53,33 +223,43 @@ public class App {
         sfem1Controller.init_SFEEs(2);
         sfem1Controller.init_SFEE_controllers(1);
 
-        app.serialize(sfem1Controller);*/
+        app.serialize_prod(sfem1Controller);*/
 
-        cSFEM_production sfem1Controller = app.deserialize();
-
-
-        sfem1Controller.openConnections();
+/*        cSFEM_production sfem1Controller = app.deserialize_prod();
         SFEM_production newSFEM = sfem1Controller.getSfem();
+        sfem1Controller.openConnections();*/
 
-        SFEM_transport newSFEM_transp = new SFEM_transport("SFEM_transport");
+ /*      SFEM_transport newSFEM_transp = new SFEM_transport("SFEM_transport");
         cSFEM_transport sfemTransportController = new cSFEM_transport(newSFEM_transp);
         sfemTransportController.init_SFEE_transport();
-        sfemTransportController.init_SFEE_transport_controller(
+        sfemTransportController.initSFEETransportController(
                 sfem1Controller.searchMBbySFEE(newSFEM.getSFEEs().get(0).getName()),
                 sfem1Controller.searchMBbySFEE(newSFEM.getSFEEs().get(1).getName()),
                 newSFEM.getSFEEs().get(0),
                 newSFEM.getSFEEs().get(1));
+        app.serialize_trans(sfemTransportController);*/
 
         // Do the serialization here, before runtime
+/*
+        cSFEM_transport sfemTransportController = app.deserialize_trans();
+        sfemTransportController.setupSFEETransportController(
+                sfem1Controller.searchMBbySFEE(newSFEM.getSFEEs().get(0).getName()),
+                sfem1Controller.searchMBbySFEE(newSFEM.getSFEEs().get(1).getName()),
+                newSFEM.getSFEEs().get(0),
+                newSFEM.getSFEEs().get(1));
+*/
 
+//        exit(0);
 
-        try {
+/*        try {
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
             scheduler.scheduleAtFixedRate(sfem1Controller, 0, 100, TimeUnit.MILLISECONDS);
             scheduler.scheduleAtFixedRate(sfemTransportController, 0, 100, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
+
+
 }

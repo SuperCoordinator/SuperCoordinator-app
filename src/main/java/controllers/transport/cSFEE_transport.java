@@ -8,33 +8,72 @@ import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
 import monitor.transport.SFEE_transport_monitor;
+import org.apache.commons.math3.util.Pair;
 import viewers.SFEE_transport;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 
-public class cSFEE_transport {
+public class cSFEE_transport implements Externalizable {
+
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sfee);
+        out.writeObject(sfeeMonitor);
+        out.writeObject(sfeeFailures);
+
+        out.writeObject(prevSFEE_name);
+        out.writeObject(nextSFEE_name);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.sfee = (SFEE) in.readObject();
+        this.sfeeMonitor = (SFEE_transport_monitor) in.readObject();
+        this.sfeeFailures = (SFEE_transport_failures) in.readObject();
+
+
+        this.prevSFEE_name = (String) in.readObject();
+        this.nextSFEE_name = (String) in.readObject();
+        this.viewer = new SFEE_transport();
+    }
 
     // SFEM_transport based on 1-1 connections between SFEE's
-    private final SFEE sfee;
+    private SFEE sfee;
     private SFEE_transport_monitor sfeeMonitor;
 
     private SFEE_transport_failures sfeeFailures;
 
-    private final modbus inMB;
-    private final modbus outMB;
+    private modbus inMB;
+    private modbus outMB;
+    private String prevSFEE_name;
+    private String nextSFEE_name;
 
     private SFEE_transport viewer;
 
-    public cSFEE_transport(SFEE sfee, modbus inMB, modbus outMB) {
+    public cSFEE_transport() {
+    }
+
+    public cSFEE_transport(SFEE sfee) {
         this.sfee = sfee;
-        this.inMB = inMB;
-        this.outMB = outMB;
 
         this.viewer = new SFEE_transport();
     }
 
-    public void cSFEE_transport_init(SFEE inSFEE, SFEE outSFEE) {
+
+    public void cSFEE_transport_init(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB) {
+
+        this.inMB = inMB;
+        this.outMB = outMB;
+
+        this.prevSFEE_name = inSFEE.getName();
+        this.nextSFEE_name = outSFEE.getName();
 
         // I/O Setting
         TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
@@ -72,6 +111,17 @@ public class cSFEE_transport {
         autoSetSFEE_InOut();
         // Initialize SFEE_transport_module
         sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEE.getSFEIbyIndex(inSFEE.getSFEIs().size() - 1), outSFEE.getSFEIbyIndex(0));
+
+    }
+
+    public Pair<String, String> prevNextSFEE() {
+        return new Pair<>(prevSFEE_name, nextSFEE_name);
+    }
+
+    public void cSFEE_transport_setup(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB) {
+        this.inMB = inMB;
+        this.outMB = outMB;
+        sfeeMonitor.setupPrevNextSFEI(inSFEE.getSFEIbyIndex(inSFEE.getSFEIs().size() - 1), outSFEE.getSFEIbyIndex(0));
 
     }
 
