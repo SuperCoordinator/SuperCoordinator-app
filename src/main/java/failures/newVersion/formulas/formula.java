@@ -1,4 +1,4 @@
-package failures.newVersion;
+package failures.newVersion.formulas;
 
 import java.util.Random;
 

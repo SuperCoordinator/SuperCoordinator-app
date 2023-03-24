@@ -1,8 +1,5 @@
-import models.producedPart;
-import utils.customCalculator;
 import viewers.graphs.histogram;
 
-import javax.swing.*;
 import java.util.*;
 
 public class formulasTest2 {
@@ -27,7 +24,7 @@ public class formulasTest2 {
         list.add(coisePair);
         list.add(coisePair);
 
-        histogram graphs = new histogram(list, "All Gaussian Distr", "All Gaussian Distr");
+        histogram graphs = new histogram("Something",list, "All Gaussian Distr", "All Gaussian Distr");
         graphs.createWindow(list);
 
 
@@ -37,7 +34,7 @@ public class formulasTest2 {
 
         TreeMap<Integer, Integer> lastNParts = new TreeMap<>();
 
-        //ListIterator<producedPart> iterator = sfem.getProductionHistory().listIterator(sfem.getProductionHistory().size());
+        //ListIterator<part_prodTime> iterator = sfem.getProductionHistory().listIterator(sfem.getProductionHistory().size());
 
 
         for (int i = 0; i < discreteGaussDistr.length; i++) {

@@ -1,5 +1,9 @@
 package failures.newVersion;
 
+import failures.newVersion.formulas.gaussFormula;
+import failures.newVersion.formulas.linearFormula;
+import failures.newVersion.formulas.probFormula;
+
 public class condition_variable {
 
     private validation validation;

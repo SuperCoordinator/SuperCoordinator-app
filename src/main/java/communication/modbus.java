@@ -1,6 +1,9 @@
 package communication;
 
+import models.base.SFEE;
+import models.base.SFEI;
 import models.sensor_actuator;
+import net.wimpi.modbus.procimg.SimpleRegister;
 import utils.utils;
 import net.wimpi.modbus.facade.ModbusTCPMaster;
 import net.wimpi.modbus.procimg.InputRegister;
@@ -8,6 +11,10 @@ import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.util.BitVector;
 
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -16,12 +23,36 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLongArray;
 
-public class modbus implements Runnable {
+public class modbus implements Runnable, Externalizable {
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(ip);
+        out.writeInt(port);
+        out.writeInt(slaveID);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.ip = (String) in.readObject();
+        this.port = in.readInt();
+        this.slaveID = in.readInt();
+    }
 
     private ModbusTCPMaster con;
     private String ip;
     private int port;
     private int slaveID;
+
+    public modbus() {
+    }
+
+    public modbus(String ip, int port, int slaveID) {
+        this.ip = ip;
+        this.port = port;
+        this.slaveID = slaveID;
+    }
 
     private TreeMap<Integer, sensor_actuator> io;
     private boolean[] inputs_invLogic;
@@ -31,7 +62,7 @@ public class modbus implements Runnable {
     private AtomicIntegerArray discreteInputs;
     private AtomicIntegerArray inputRegisters;
     private final AtomicBoolean hRegUpdated = new AtomicBoolean(false);
-    private AtomicLongArray holdingRegisters;
+    private AtomicIntegerArray holdingRegisters;
 
     private final utils util = new utils();
     private boolean configured = false;
@@ -45,11 +76,8 @@ public class modbus implements Runnable {
         }
     }
 
-    public void openConnection(String ip, int port, int slaveID, TreeMap<Integer, sensor_actuator> io) {
+    public void openConnection(TreeMap<Integer, sensor_actuator> io) {
 
-        this.ip = ip;
-        this.port = port;
-        this.slaveID = slaveID;
         this.io = new TreeMap<>(io);
         this.configured = true;
         connect();
@@ -93,7 +121,7 @@ public class modbus implements Runnable {
         if (nIOperAddrType[2] > 0)
             inputRegisters = new AtomicIntegerArray(nIOperAddrType[2]);
         if (nIOperAddrType[3] > 0)
-            holdingRegisters = new AtomicLongArray(nIOperAddrType[3]);
+            holdingRegisters = new AtomicIntegerArray(nIOperAddrType[3]);
 
     }
 
@@ -146,13 +174,13 @@ public class modbus implements Runnable {
                     discreteInputs.getAndSet(i, inputs_invLogic[i] == bitVector.getBit(i) ? 0 : 1);
                 }
             }
-/*            if (inputRegisters.length() > 0) {
+            if (inputRegisters.length() > 0) {
                 InputRegister[] registers = con.readInputRegisters(0, inputRegisters.length());
                 for (int i = 0; i < registers.length; i++) {
-                    inputRegisters.getAndSet(i, registers[i].getMean());
+                    inputRegisters.getAndSet(i, registers[i].getValue());
                 }
             }
-            if (holdingRegisters.length() > 0) {
+/*              if (holdingRegisters.length() > 0) {
                 Register[] registers = con.readMultipleRegisters(0, holdingRegisters.length());
                 for (int i = 0; i < registers.length; i++) {
                     holdingRegisters.getAndSet(i, registers[i].getMean());
@@ -173,11 +201,13 @@ public class modbus implements Runnable {
 
             if (hRegUpdated.get()) {
                 Register[] registers = new Register[holdingRegisters.length()];
+//                Register reg  = new SimpleRegister()
                 for (int i = 0; i < registers.length; i++) {
-                    registers[i].setValue((int) holdingRegisters.get(i));
+                    registers[i] = new SimpleRegister(holdingRegisters.get(i));
                 }
                 con.writeMultipleRegisters(0, registers);
                 hRegUpdated.set(false);
+                writeLoop++;
             }
             runtime.add(Duration.between(start_t, Instant.now()).toMillis());
 //            System.out.println("MB execution time (ms) " + Duration.between(start_t, Instant.now()).toMillis());
@@ -202,7 +232,18 @@ public class modbus implements Runnable {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        } /*finally {
+            configured = false;
+            do {
+                openConnection(io);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            } while (!configured);
+
+        }*/
 
     }
 
@@ -243,21 +284,36 @@ public class modbus implements Runnable {
     }
 
     public void writeCoils(List<Object> coilsList) {
-
-        for (int i = 0; i < coils.length(); i++) {
-            int old = coils.getAndSet(i, (Integer) coilsList.get(i));
-            if (old != (Integer) coilsList.get(i))
-                coilsUpdated.getAndSet(true);
+        try {
+            for (int i = 0; i < coils.length(); i++) {
+                if ((Integer) coilsList.get(i) == -1) {
+                    continue;
+                }
+                int old = coils.getAndSet(i, (Integer) coilsList.get(i));
+                if (old != (Integer) coilsList.get(i))
+                    coilsUpdated.getAndSet(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
 
     public void writeRegisters(List<Object> registers) {
-
-        for (int i = 0; i < holdingRegisters.length(); i++) {
-            holdingRegisters.getAndSet(i, (Integer) registers.get(i));
+        try {
+            for (int i = 0; i < holdingRegisters.length(); i++) {
+                if ((Integer) registers.get(i) == -1) {
+                    continue;
+                }
+                int old = holdingRegisters.getAndSet(i, (Integer) registers.get(i));
+                if (old != (Integer) registers.get(i)) {
+                    hRegUpdated.getAndSet(true);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        hRegUpdated.getAndSet(true);
+
     }
 
     // For now, only used for Start and Stop F_IO

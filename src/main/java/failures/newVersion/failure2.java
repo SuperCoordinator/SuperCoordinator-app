@@ -1,13 +1,11 @@
 package failures.newVersion;
 
-import models.SFEI.SFEI;
+import models.base.SFEI;
 import utils.utils;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Random;
 
 public class failure2 {
 

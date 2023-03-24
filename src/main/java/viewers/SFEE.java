@@ -16,7 +16,6 @@ public class SFEE {
         this.in = new Scanner(System.in);
     }
 
-
     public String readIOpath() {
         String str;
         System.out.print("IO CSV file path: ");
@@ -61,39 +60,20 @@ public class SFEE {
         return str;
     }
 
+    public boolean isSFEI_simulated() {
+        String str;
+        System.out.println("The SFEI is simulated (y(n)?");
+        do {
+            str = in.nextLine();
+        } while (!str.contains("y") && !str.contains("n"));
+
+        return str.contains("y");
+    }
+
     public String[] SFEI_params(int num, int type, boolean isSimulation) {
         String[] str = new String[0];
         if (type == 1 && isSimulation) {
-            str = new String[9];
-
-            System.out.print("SFEI " + num + " name? ");
-            str[0] = in.nextLine();
-
-            System.out.print("inSensor: ");
-            str[1] = in.nextLine();
-
-            System.out.print("outSensor: ");
-            str[2] = in.nextLine();
-
-            // day of birth
-            str[3] = Instant.now().toString();
-            // day of last maintenance
-            str[4] = Instant.now().toString();
-
-            System.out.print("Remover actuator: ");
-            str[5] = in.nextLine();
-
-            System.out.print("Emitter actuator: ");
-            str[6] = in.nextLine();
-
-            System.out.print("Remover sensor: ");
-            str[7] = in.nextLine();
-
-            System.out.print("Emitter sensor: ");
-            str[8] = in.nextLine();
-
-        } else if (type == 1) {
-            str = new String[6];
+            str = new String[12];
 
             System.out.print("SFEI " + num + " name? ");
             str[0] = in.nextLine();
@@ -111,6 +91,50 @@ public class SFEE {
 
             System.out.print("Conveyor actuator: ");
             str[5] = in.nextLine();
+
+            System.out.print("Remover actuator: ");
+            str[6] = in.nextLine();
+
+            System.out.print("Emitter actuator: ");
+            str[7] = in.nextLine();
+
+            System.out.print("Remover sensor: ");
+            str[8] = in.nextLine();
+
+            System.out.print("Emitter sensor: ");
+            str[9] = in.nextLine();
+
+            System.out.print("Is start of line (y/n)?");
+            str[10] = in.nextLine();
+
+            System.out.print("Is end of line (y/n)?");
+            str[11] = in.nextLine();
+
+        } else if (type == 1) {
+            str = new String[8];
+
+            System.out.print("SFEI " + num + " name? ");
+            str[0] = in.nextLine();
+
+            System.out.print("inSensor: ");
+            str[1] = in.nextLine();
+
+            System.out.print("outSensor: ");
+            str[2] = in.nextLine();
+
+            // day of birth
+            str[3] = Instant.now().toString();
+            // day of last maintenance
+            str[4] = Instant.now().toString();
+
+            System.out.print("Conveyor actuator: ");
+            str[5] = in.nextLine();
+
+            System.out.print("Is start of line (y/n)?");
+            str[6] = in.nextLine();
+
+            System.out.print("Is end of line (y/n)?");
+            str[7] = in.nextLine();
 
         } else if (type == 2) {
             str = new String[6];
@@ -133,6 +157,23 @@ public class SFEE {
             str[5] = in.nextLine();
 
         }
+        return str;
+    }
+
+    public String[] associateVisionSensors() {
+        String[] str = new String[]{"", "", ""};
+        System.out.print("Associate Vision Sensor in numerical configuration (y/n) ?");
+
+        str[0] = in.nextLine();
+        if (str[0].contains("y")) {
+            System.out.print("Vision sensor name: ");
+            str[1] = in.nextLine();
+            System.out.print("Placed on: ");
+            str[2] = in.nextLine();
+        } else {
+            str[0] = "no";
+        }
+
         return str;
     }
 

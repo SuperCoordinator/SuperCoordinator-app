@@ -1,6 +1,6 @@
 package failures.newVersion;
 
-import models.SFEI.SFEI_conveyor;
+import models.SFEx_particular.SFEI_conveyor;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,7 +23,7 @@ public class breakdown_repair2 extends failures_conditions {
     public breakdown_repair2(String[] formulas, SFEI_conveyor sfeiConveyor, String[] recovery_formula) {
         super(formulas, type.BREAKDOWN_WITH_REPAIR);
         this.sfeiConveyor = sfeiConveyor;
-        this.recoveryConditions = new condition_variable(recovery_formula[0], validation.method.TIME);
+        this.recoveryConditions = recovery_formula[0].contains("no") ? null : new condition_variable(recovery_formula[0], validation.method.TIME);
 
         this.state = SM.WORKING;
         this.old_state = state;
@@ -73,11 +73,11 @@ public class breakdown_repair2 extends failures_conditions {
                         (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
                     state = SM.REPAIRED;
                 }*/
-
-                if (recoveryConditions.evalFormula(
-                        (int) Duration.between(newOccurrence.getStart_t(), Instant.now()).toMinutes())) {
-                    state = SM.REPAIRED;
-                }
+                if (recoveryConditions != null)
+                    if (recoveryConditions.evalFormula(
+                            (int) Duration.between(newOccurrence.getStart_t(), Instant.now()).toMinutes())) {
+                        state = SM.REPAIRED;
+                    }
             }
             case REPAIRED -> {
                 // WAIT until the condition is not verified again

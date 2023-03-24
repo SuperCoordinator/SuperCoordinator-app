@@ -1,7 +1,8 @@
 package failures.oldVersion;
 
-import models.SFEI.SFEI_conveyor;
-import models.part;
+import models.SFEx_particular.SFEI_conveyor;
+import models.base.part;
+import models.partsAspect;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -73,7 +74,7 @@ public class produce_more extends failure {
                     } else
                         id = sfeiConveyor.getnPiecesMoved();
 
-                    part p = new part(id, "Blue lid");
+                    part p = new part(id, new partsAspect(partsAspect.material.BLUE, partsAspect.form.RAW));
 
                     // This operation of concat is faster than + operation
                     String itemName = sfeiConveyor.getName();

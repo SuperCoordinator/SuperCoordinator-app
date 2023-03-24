@@ -1,5 +1,9 @@
 package failures.newVersion;
 
+import failures.newVersion.formulas.gaussFormula;
+import failures.newVersion.formulas.linearFormula;
+import failures.newVersion.formulas.probFormula;
+
 import java.time.Duration;
 import java.time.Instant;
 
@@ -20,9 +24,9 @@ public class validation {
 
     private final formulaType formulaPrefix;
 
-    private final gaussFormula gaussFormula;
-    private final linearFormula linearFormula;
-    private final probFormula probFormula;
+    private final failures.newVersion.formulas.gaussFormula gaussFormula;
+    private final failures.newVersion.formulas.linearFormula linearFormula;
+    private final failures.newVersion.formulas.probFormula probFormula;
 
 
     public validation(gaussFormula gaussFormula, method validationMethod) {
