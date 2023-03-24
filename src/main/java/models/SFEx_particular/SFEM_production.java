@@ -7,11 +7,9 @@ import models.base.SFEI;
 import models.base.SFEM;
 import models.part_prodTime;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.TreeMap;
 
 public class SFEM_production extends SFEM implements Externalizable {
@@ -20,25 +18,27 @@ public class SFEM_production extends SFEM implements Externalizable {
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
         out.writeObject(SFEEs);
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
         this.SFEEs = (TreeMap<Integer, SFEE>) in.readObject();
-
     }
 
     private TreeMap<Integer, SFEE> SFEEs;
 
-    public SFEM_production(String name) {
-        super(name, SFEM_type.PRODUCTION);
-        this.SFEEs = new TreeMap<>();
-    }
-
     public SFEM_production() {
         super();
     }
+
+    public SFEM_production(String name) {
+        super(name, SFEM_type.PRODUCTION);
+        this.SFEEs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
+    }
+
 
     public TreeMap<Integer, SFEE> getSFEEs() {
         return SFEEs;

@@ -4,16 +4,42 @@ import communication.modbus;
 import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
 import monitor.transport.SFEM_transport_monitor;
+import org.apache.commons.math3.util.Pair;
 
-public class cSFEM_transport implements Runnable {
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
-    private final SFEM_transport sfem;
+public class cSFEM_transport implements Runnable, Externalizable {
+
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sfem);
+        out.writeObject(sfemTransportMonitor);
+        out.writeObject(sfeeTransportController);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.sfem = (SFEM_transport) in.readObject();
+        this.sfemTransportMonitor = (SFEM_transport_monitor) in.readObject();
+        this.sfeeTransportController = (cSFEE_transport) in.readObject();
+
+        this.viewer = new viewers.SFEM_transport();
+    }
+
+    private SFEM_transport sfem;
     private SFEM_transport_monitor sfemTransportMonitor;
 
     private cSFEE_transport sfeeTransportController;
 
-    private final viewers.SFEM_transport viewer;
+    private viewers.SFEM_transport viewer;
 
+    public cSFEM_transport() {
+    }
 
     public cSFEM_transport(SFEM_transport sfemTransport) {
         this.sfem = sfemTransport;
@@ -47,24 +73,39 @@ public class cSFEM_transport implements Runnable {
 
     }
 
-    public void init_SFEE_transport_controller(modbus inMB, modbus outMB, SFEE inSFEE, SFEE outSFEE) {
+    public void initSFEETransportController(modbus inMB, modbus outMB, SFEE inSFEE, SFEE outSFEE) {
+        try {
+            // Create new SFEE_tranport controller instance
+            sfeeTransportController = new cSFEE_transport(sfem.getSfeeTransport());
 
-        // Create new SFEE_tranport controller instance
-        sfeeTransportController = new cSFEE_transport(sfem.getSfeeTransport(), inMB, outMB);
+            // init that instance
+            sfeeTransportController.cSFEE_transport_init(inSFEE, outSFEE, inMB, outMB);
 
-        // init that instance
-        sfeeTransportController.cSFEE_transport_init(inSFEE, outSFEE);
+            sfeeTransportController.initOperationMode();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        sfeeTransportController.initOperationMode();
+    public Pair<String, String> getPrevNextSFEE_names() {
+        return sfeeTransportController.prevNextSFEE();
+    }
 
+    public void setupSFEETransportController(modbus inMB, modbus outMB, SFEE inSFEE, SFEE outSFEE) {
+        sfeeTransportController.cSFEE_transport_setup(inSFEE, outSFEE, inMB, outMB);
     }
 
     @Override
     public void run() {
+        try {
 
-        sfeeTransportController.loop();
+            sfeeTransportController.loop();
+            sfemTransportMonitor.loop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        sfemTransportMonitor.loop();
     }
+
 
 }

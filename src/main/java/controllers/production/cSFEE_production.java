@@ -30,15 +30,18 @@ public class cSFEE_production implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(sfee);
         out.writeObject(mb);
-
+        out.writeObject(opMode);
+        out.writeObject(sfeeMonitor);
+        out.writeObject(sfeeFailures2);
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfee = sfee;
-
-        this.mb = mb;
-        this.temp = temp;
+        this.sfee = (SFEE) in.readObject();
+        this.mb = (modbus) in.readObject();
+        this.opMode = (operationMode) in.readObject();
+        this.sfeeMonitor = (SFEE_production_monitor) in.readObject();
+        this.sfeeFailures2 = (SFEE_failures2) in.readObject();
 
         this.viewer = new viewers.SFEE();
         this.utility = new utils();
@@ -49,26 +52,21 @@ public class cSFEE_production implements Externalizable {
         PROG_FAILURES
     }
 
-    private final SFEE sfee;
+    private SFEE sfee;
     private modbus mb;
     private SFEE_production_monitor sfeeMonitor;
 
     private operationMode opMode;
-    //    private SFEE_failures sfeeFailures;
     private SFEE_failures2 sfeeFailures2;
 
-    private final viewers.SFEE viewer;
-    private final utils utility;
-
-
-    public cSFEE_production(SFEE sfee, modbus mb) {
+    private viewers.SFEE viewer;
+    private utils utility;
 
     public cSFEE_production() {
     }
 
-
+    public cSFEE_production(SFEE sfee, modbus mb) {
         this.sfee = sfee;
-
         this.mb = mb;
 
         this.viewer = new viewers.SFEE();
@@ -91,7 +89,7 @@ public class cSFEE_production implements Externalizable {
         try {
 
             switch (scene) {
-                case 1 -> {
+                case 1, 10 -> {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC-connection\\simulation\\Tags_CMC-connection_Modbus.csv";
                     importIO(csv_path, scene);
                 }
@@ -123,7 +121,7 @@ public class cSFEE_production implements Externalizable {
             }
 
 
-            if (scene == 3) {
+            if (scene == 3 || scene == 1) {
                 addNewSFEI_conveyor(
                         "entry_conveyor",
                         "s_emitter",
@@ -163,6 +161,22 @@ public class cSFEE_production implements Externalizable {
                         false,
                         false);
             }
+            if (scene == 10) {
+                addNewSFEI_conveyor(
+                        "entry2_conveyor",
+                        "s_emitter2",
+                        "s_lids_at_entry2",
+                        Instant.now(),
+                        Instant.now(),
+                        "entry_conveyor2",
+                        "entry_remover2",
+                        "entry_emitter2",
+                        "s_entry_remover2",
+                        "s_entry_emitter2",
+                        false,
+                        true);
+            }
+
             if (scene == 4) {
                 addNewSFEI_conveyor(
                         "entry_conveyor",
@@ -434,30 +448,31 @@ public class cSFEE_production implements Externalizable {
 
 
     public void loop() {
+        try {
 
-        List<Object> discreteInputsState = new ArrayList<>(mb.readDiscreteInputs());
+            List<Object> discreteInputsState = new ArrayList<>(mb.readDiscreteInputs());
+            List<Object> inputRegsValue = new ArrayList<>(mb.readInputRegisters());
 
+            List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
+            actuatorsState = new ArrayList<>(Collections.nCopies(actuatorsState.size(), -1));
 
-        List<Object> inputRegsValue = new ArrayList<>(mb.readInputRegisters());
+            sfeeMonitor.loop(discreteInputsState, inputRegsValue, actuatorsState);
 
-        List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
-        actuatorsState = new ArrayList<>(Collections.nCopies(actuatorsState.size(), -1));
+            if (opMode.equals(operationMode.PROG_FAILURES)) {
 
-        sfeeMonitor.loop(discreteInputsState, inputRegsValue, actuatorsState);
+                // The function mb.readCoils() is only to initialize the list elements with a given size
+                ArrayList<List<Object>> inputs = new ArrayList<>();
+                inputs.add(discreteInputsState);
 
-        if (opMode.equals(operationMode.PROG_FAILURES)) {
+                ArrayList<List<Object>> outputs = new ArrayList<>();
+                outputs.add(actuatorsState);
 
-            // The function mb.readCoils() is only to initialize the list elements with a given size
-            ArrayList<List<Object>> inputs = new ArrayList<>();
-            inputs.add(discreteInputsState);
-
-            ArrayList<List<Object>> outputs = new ArrayList<>();
-            outputs.add(actuatorsState);
-
-            sfeeFailures2.loop(inputs, outputs);
+                sfeeFailures2.loop(inputs, outputs);
+            }
+            mb.writeCoils(actuatorsState);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mb.writeCoils(actuatorsState);
-
     }
 
     public void launchSimulation() {

@@ -10,6 +10,7 @@ import models.part_prodTime;
 import monitor.base.SFEM_monitor;
 
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -17,7 +18,23 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-public class SFEM_transport_monitor extends SFEM_monitor {
+public class SFEM_transport_monitor extends SFEM_monitor implements Externalizable {
+
+    public static final long serialVersionUID = 1234L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+    }
+
+    public SFEM_transport_monitor() {
+        super();
+    }
 
     public SFEM_transport_monitor(SFEM sfem) {
         super(sfem);
@@ -91,13 +108,4 @@ public class SFEM_transport_monitor extends SFEM_monitor {
 
     }
 
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-
-    }
 }

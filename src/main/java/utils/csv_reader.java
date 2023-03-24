@@ -53,10 +53,7 @@ public class csv_reader {
 
             //String input = "6,7,8,9,10,12,13";
             String input = "12";
-            if (scene == 1)
-                input = input.concat(",17,18,19,20,21,23,24");
-            else if (scene == 2)
-                input = "6,7,8,9,10,12,13,17,18,19,20,21,23,24";
+
 
             System.out.println(input);
             for (String str : input.split(",")) {
