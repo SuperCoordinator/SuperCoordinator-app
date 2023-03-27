@@ -28,3 +28,4 @@ blocks/CMC2-con_individual/control/*
 
 .idea/*
 *.iml
+out/*
