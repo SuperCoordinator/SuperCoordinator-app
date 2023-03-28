@@ -1,4 +1,4 @@
-package viewers.controllers;
+package viewers.controllers.SFEE;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,20 +8,27 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import models.sensor_actuator;
+import viewers.controllers.C_SFEM_layout;
+import viewers.mediators.CM_SFEE;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
-public class C_SFEE {
+public class C_SFEE2 extends CM_SFEE implements Initializable {
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        CM_SFEE.getInstance().registerC_SFEE_body_properties(new C_SFEE_properties());
+        CM_SFEE.getInstance().registerC_SFEE_body_communication(new C_SFEE_communication());
+        CM_SFEE.getInstance().registerC_SFEE_body_failure(new C_SFEE_failure());
+        CM_SFEE.getInstance().registerC_SFEE_body_finish(new C_SFEE_finish());
+    }
 
     private enum Panes {
         PROPERTIES,
@@ -34,27 +41,7 @@ public class C_SFEE {
     private Panes activePane;
 
     @FXML
-    private ToggleButton importCSV;
-    @FXML
-    private ToggleButton manually;
-
-    @FXML
-    private TableView<sensor_actuator> inputsTable;
-
-    @FXML
-    private TableView<sensor_actuator> outputsTable;
-
-    @FXML
-    private Pane paneFailuresMode;
-
-    @FXML
-    private Pane SFEE_body_properties;
-    @FXML
-    private AnchorPane SFEE_body_communication;
-    @FXML
-    private Pane SFEE_body_failure;
-    @FXML
-    private Pane SFEE_body_finish;
+    private AnchorPane SFEE_body;
     @FXML
     private ToggleButton toggleProperties;
     @FXML
@@ -71,6 +58,10 @@ public class C_SFEE {
     @FXML
     private Button next;
 
+    public C_SFEE2() {
+        super();
+    }
+
     @FXML
     public void buttonPressed(ActionEvent event) {
 
@@ -81,7 +72,6 @@ public class C_SFEE {
                 case "Properties" -> {
                     activePane = Panes.PROPERTIES;
                     next.setVisible(true);
-
                 }
                 case "Communication" -> {
                     activePane = Panes.COMMUNICATION;
@@ -92,13 +82,12 @@ public class C_SFEE {
                 case "Finish" -> {
                     activePane = Panes.FINISH;
                 }
-
-                case "Failures" -> {
+/*                case "Failures" -> {
                     paneFailuresMode.setVisible(true);
                 }
                 case "Normal" -> {
                     paneFailuresMode.setVisible(false);
-                }
+                }*/
             }
 
             setPane();
@@ -113,9 +102,11 @@ public class C_SFEE {
     @FXML
     void goBack(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SFEM_layout.fxml"));
+//            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SFEM_layout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEM_layout.fxml"));
+            loader.setController(new C_SFEM_layout(""));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(loader.load()));
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,9 +142,28 @@ public class C_SFEE {
     }
 
     private void setPane() {
-        SFEE_body_properties.setVisible(activePane.equals(Panes.PROPERTIES));
+/*        SFEE_body_properties.setVisible(activePane.equals(Panes.PROPERTIES));
         SFEE_body_communication.setVisible(activePane.equals(Panes.COMMUNICATION));
         SFEE_body_failure.setVisible(activePane.equals(Panes.FAILURE));
-        SFEE_body_finish.setVisible(activePane.equals(Panes.FINISH));
+        SFEE_body_finish.setVisible(activePane.equals(Panes.FINISH));*/
+        String name = String.valueOf(activePane);
+        name = name.toLowerCase();
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEE_" + name + ".fxml"));
+            switch (activePane) {
+                case PROPERTIES -> loader.setController(CM_SFEE.getInstance().getProperties());
+                case COMMUNICATION -> loader.setController(CM_SFEE.getInstance().getCommunication());
+                case FAILURE -> loader.setController(CM_SFEE.getInstance().getFailure());
+                case FINISH -> loader.setController(CM_SFEE.getInstance().getFinish());
+            }
+            Pane pane = loader.load();
+            SFEE_body.getChildren().setAll(pane);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

@@ -4,6 +4,7 @@ import models.SFEx_particular.SFEM_production;
 import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
 import org.apache.commons.math3.util.Pair;
+import utils.serializer;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -15,110 +16,13 @@ import java.util.concurrent.TimeUnit;
 
 
 public class App {
-    enum scenes {
-        CMC_connection,
-        CMC2_con_individual
-    }
 
-    public final scenes scene = scenes.CMC2_con_individual;
-    private final String prod_filePath = "blocks/" + scene + "/saves/SFEM_production.ser";
-    private final String trans_filePath = "blocks/" + scene + "/saves/SFEM_transport.ser";
-    private ArrayList<cSFEM_production> C_Production = new ArrayList<>();
-    private ArrayList<cSFEM_transport> C_Transport = new ArrayList<>();
-
-    public ArrayList<cSFEM_production> getC_Production() {
-        return C_Production;
-    }
-
-    public void setC_Production(ArrayList<cSFEM_production> c_Production) {
-        C_Production = c_Production;
-    }
-
-    public ArrayList<cSFEM_transport> getC_Transport() {
-        return C_Transport;
-    }
-
-    public void setC_Transport(ArrayList<cSFEM_transport> c_Transport) {
-        C_Transport = c_Transport;
-    }
-
-
-    private void serialize_prod() {
-
-        try {
-            // serialize object's state
-            FileOutputStream fos = new FileOutputStream(prod_filePath);
-            ObjectOutputStream outputStream = new ObjectOutputStream(fos);
-            outputStream.writeObject(C_Production);
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void serialize_trans() {
-
-        try {
-            // serialize object's state
-            FileOutputStream fos = new FileOutputStream(trans_filePath);
-            ObjectOutputStream outputStream = new ObjectOutputStream(fos);
-            outputStream.writeObject(C_Transport);
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void deserialize_prod() {
-
-        try {
-            FileInputStream fis = new FileInputStream(prod_filePath);
-            ObjectInputStream inputStream = new ObjectInputStream(fis);
-            C_Production = new ArrayList<>((ArrayList<cSFEM_production>) inputStream.readObject());
-            inputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void deserialize_trans() {
-
-        try {
-            FileInputStream fis = new FileInputStream(trans_filePath);
-            ObjectInputStream inputStream = new ObjectInputStream(fis);
-            C_Transport = new ArrayList<>((ArrayList<cSFEM_transport>) inputStream.readObject());
-            inputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-    private Pair<SFEE, cSFEM_production> searchSFEEbyName(String name) {
-        Pair<SFEE, cSFEM_production> sfee = null;
-        for (cSFEM_production sfemController : C_Production) {
-            for (Map.Entry<Integer, SFEE> currentSFEE : sfemController.getSfem().getSFEEs().entrySet()) {
-                if (currentSFEE.getValue().getName().equals(name)) {
-                    sfee = new Pair<>(currentSFEE.getValue(), sfemController);
-                    break;
-                }
-            }
-        }
-        if (sfee == null)
-            throw new RuntimeException("SFEE not found");
-
-        return sfee;
-    }
 
     public static void main(String[] args) {
 
         Scanner in = new Scanner(System.in);
 
-        App app = new App();
+        serializer app = new serializer();
 
         boolean newConfig = false;
 
@@ -131,10 +35,10 @@ public class App {
             int nModules = Integer.parseInt(str);*/
                 int nModules = 1, nSFEE = 1;
 
-                if (app.scene.equals(scenes.CMC_connection)) {
+                if (app.scene.equals(serializer.scenes.CMC_connection)) {
                     nModules = 1;
                     nSFEE = 2;
-                } else if (app.scene.equals(scenes.CMC2_con_individual)) {
+                } else if (app.scene.equals(serializer.scenes.CMC2_con_individual)) {
                     nModules = 2;
                     nSFEE = 1;
                 }

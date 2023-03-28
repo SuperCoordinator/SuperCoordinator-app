@@ -38,7 +38,13 @@ public class C_SFEM_layout implements Initializable {
         dummy.add("SFEM1");
         dummy.add("SFEM2");
         listSFEMs.getItems().addAll(dummy);
+        sfem_name.setText(layout_name);
 
+    }
+    private final String layout_name;
+
+    public C_SFEM_layout(String layout_name) {
+        this.layout_name = layout_name;
     }
 
     @FXML
@@ -86,7 +92,8 @@ public class C_SFEM_layout implements Initializable {
     @FXML
     void newSFEE(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SFEE.fxml"));
+//            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SFEE.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SFEE_2.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
