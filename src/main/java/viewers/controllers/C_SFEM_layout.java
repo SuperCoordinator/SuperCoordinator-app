@@ -26,11 +26,11 @@ public class C_SFEM_layout implements Initializable {
     private TextField sfem_name;
     @FXML
     private Button submit_name_btn;
-
     @FXML
     private ListView<String> listSFEMs;
 
-    private ArrayList<String> dummy = new ArrayList<>();
+
+    private final ArrayList<String> dummy = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -38,6 +38,7 @@ public class C_SFEM_layout implements Initializable {
         dummy.add("SFEM1");
         dummy.add("SFEM2");
         listSFEMs.getItems().addAll(dummy);
+
     }
 
     @FXML
@@ -82,5 +83,15 @@ public class C_SFEM_layout implements Initializable {
         }
     }
 
-
+    @FXML
+    void newSFEE(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SFEE.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

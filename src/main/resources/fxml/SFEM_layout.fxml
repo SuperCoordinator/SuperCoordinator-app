@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
@@ -57,8 +58,13 @@
          <children>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="titles" text="Modules" textAlignment="CENTER" wrappingWidth="219.138671875" />
             <Pane prefHeight="47.0" prefWidth="229.0" />
-            <ListView fx:id="listSFEMs" fixedCellSize="50.0" prefHeight="353.0" prefWidth="229.0" styleClass="listview" />
+            <ListView fx:id="listSFEMs" fixedCellSize="50.0" prefHeight="353.0" prefWidth="229.0">
+               <styleClass>
+                  <String fx:value="listview" />
+                  <String fx:value="transparent" />
+               </styleClass></ListView>
          </children>
       </VBox>
+      <Button fx:id="btn_newSFEM1" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="333.0" layoutY="686.0" mnemonicParsing="false" onAction="#newSFEE" prefHeight="45.0" prefWidth="123.0" styleClass="button_default" text="add SFEE" textFill="WHITE" />
    </children>
 </AnchorPane>
