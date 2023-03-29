@@ -9,7 +9,10 @@ import models.partsAspect;
 import models.sensor_actuator;
 import utils.utils;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -20,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class SFEE_production_monitor implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -41,12 +45,13 @@ public class SFEE_production_monitor implements Externalizable {
 
 //        extractPartsType();
     }
-
+//    @XmlElement
     private SFEE sfee;
     private utils utility = new utils();
     private boolean[] SFEIs_old_inSensors;
     private boolean[] SFEIs_old_outSensors;
 
+    @XmlElement
     private TreeMap<Integer, sensor_actuator> visionSensorLocation;
 
     private partsAspect.form default_partForm;
@@ -61,15 +66,19 @@ public class SFEE_production_monitor implements Externalizable {
 //        extractPartsType();
     }
 
-    @XmlElement(name = "SFEE")
-    private SFEE getSfee() {
-        return sfee;
+    public void setSfee(SFEE sfee) {
+        this.sfee = sfee;
     }
 
-    @XmlElement(name = "vision_sensor_location")
-    private TreeMap<Integer, sensor_actuator> getVisionSensorLocation() {
-        return visionSensorLocation;
-    }
+    //    @XmlElement(name = "SFEE")
+//    private SFEE getSfee() {
+//        return sfee;
+//    }
+//
+//    @XmlElement(name = "vision_sensor_location")
+//    private TreeMap<Integer, sensor_actuator> getVisionSensorLocation() {
+//        return visionSensorLocation;
+//    }
 
     public void setVisionSensorLocation(TreeMap<Integer, sensor_actuator> visionSensorLocation) {
         this.visionSensorLocation = visionSensorLocation;

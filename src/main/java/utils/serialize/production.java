@@ -2,6 +2,8 @@ package utils.serialize;
 
 import controllers.production.cSFEM_production;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
@@ -10,7 +12,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 
-@XmlRootElement(name = "ProductionControllers")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class production implements Externalizable {
 
     @Override
@@ -32,7 +35,7 @@ public class production implements Externalizable {
         C_Production = c_Production;
     }
 
-    @XmlElement(name = "C_Production")
+    @XmlElement
     public ArrayList<cSFEM_production> getC_Production() {
         return C_Production;
     }

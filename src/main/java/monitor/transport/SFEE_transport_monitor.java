@@ -6,6 +6,8 @@ import models.base.part;
 import models.sensor_actuator;
 import utils.utils;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
@@ -16,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@XmlRootElement(name = "SFEE_trans_monitor")
+//@XmlRootElement
+//@XmlAccessorType(XmlAccessType.NONE)
 public class SFEE_transport_monitor implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -36,6 +39,7 @@ public class SFEE_transport_monitor implements Externalizable {
 
     }
 
+//    @XmlElement
     private SFEE sfee;
     private SFEI previousSFEI;
     private SFEI nextSFEI;
@@ -57,10 +61,10 @@ public class SFEE_transport_monitor implements Externalizable {
 
     }
 
-    @XmlElement(name = "SFEE")
-    private SFEE getSfee() {
-        return sfee;
-    }
+//    @XmlElement(name = "SFEE")
+//    private SFEE getSfee() {
+//        return sfee;
+//    }
 
     private void init_oldSensorsValues(ArrayList<List<Object>> sensorsState) {
 
@@ -147,7 +151,8 @@ public class SFEE_transport_monitor implements Externalizable {
                         } else {
                             currPart = previousSFEI.getPartsATM().first();
                         }
-                    }
+                    }else
+                        throw new RuntimeException(previousSFEI.getName() + " RE out_sensor but partsATM size is 0");
 
                 }
 

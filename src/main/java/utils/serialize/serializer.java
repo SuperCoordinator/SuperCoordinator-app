@@ -21,7 +21,7 @@ public class serializer {
         CMC2_con_individual
     }
 
-    public final scenes scene = scenes.CMC2_con_individual;
+    public final scenes scene = scenes.CMC_connection;
     private final String prod_filePath = "blocks/" + scene + "/saves/tests/SFEM_production";
     private final String trans_filePath = "blocks/" + scene + "/saves/tests/SFEM_transport";
 

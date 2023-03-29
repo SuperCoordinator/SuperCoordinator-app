@@ -1,14 +1,16 @@
 package models.base;
 
+import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx_particular.SFEI_machine;
+import models.SFEx_particular.SFEI_transport;
 import models.sensor_actuator;
 
 import javax.xml.bind.annotation.*;
 import java.io.*;
 import java.util.*;
 
-@XmlRootElement(name = "SFEE")
-//@XmlAccessorType(XmlAccessType.FIELD)
-//@XmlType(propOrder = {"name","communication","function","type","input_sensor","output_sensor","inputs_outputs"})
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class SFEE implements Externalizable {
     public static final long serialVersionUID = 1234L;
 
@@ -41,6 +43,7 @@ public class SFEE implements Externalizable {
         SIMULATION, REAL
     }
 
+    @XmlAttribute
     private SFEE_type SFEE_type;
 
     public enum SFEE_function {
@@ -49,20 +52,24 @@ public class SFEE implements Externalizable {
         TRANSPORT
     }
 
+    @XmlAttribute
     private SFEE_function SFEE_function;
 
     public enum communicationOption {
         MODBUS, OPC_UA, MIXED
     }
 
+    @XmlAttribute
     private communicationOption com;
-
+    @XmlAttribute
     private String name;
-
+    @XmlElement
     private sensor_actuator inSensor;
+    @XmlElement
     private sensor_actuator outSensor;
+    @XmlElement
     private TreeMap<Integer, sensor_actuator> io;
-
+    @XmlElement
     private TreeMap<Integer, SFEI> SFEIs;
 
     public SFEE() {
@@ -77,37 +84,37 @@ public class SFEE implements Externalizable {
         this.SFEIs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
     }
 
-    @XmlAttribute(name = "name")
+    //    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
 
-    @XmlAttribute(name = "type")
+    //    @XmlAttribute(name = "type")
     public SFEE.SFEE_type getSFEE_type() {
         return SFEE_type;
     }
 
-    @XmlAttribute(name = "function")
+    //    @XmlAttribute(name = "function")
     public SFEE_function getSFEE_function() {
         return SFEE_function;
     }
 
-    @XmlAttribute(name = "communication")
+    //    @XmlAttribute(name = "communication")
     public communicationOption getCom() {
         return com;
     }
 
-    @XmlElement(name = "inputs_outputs")
+    //    @XmlElement(name = "inputs_outputs")
     public TreeMap<Integer, sensor_actuator> getIo() {
         return io;
     }
 
-    @XmlElement(name = "input_sensor")
+    //    @XmlElement(name = "input_sensor")
     public sensor_actuator getInSensor() {
         return inSensor;
     }
 
-    @XmlElement(name = "output_sensor")
+    //    @XmlElement(name = "output_sensor")
     public sensor_actuator getOutSensor() {
         return outSensor;
     }
@@ -129,7 +136,7 @@ public class SFEE implements Externalizable {
         return null;
     }
 
-    @XmlElement(name = "SFEIs")
+    //    @XmlElement(name = "SFEIs")
     public TreeMap<Integer, SFEI> getSFEIs() {
         return SFEIs;
     }

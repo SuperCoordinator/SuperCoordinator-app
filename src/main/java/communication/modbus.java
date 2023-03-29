@@ -9,8 +9,7 @@ import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.util.BitVector;
 
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -21,7 +20,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
-@XmlRootElement(name = "MB_param")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class modbus implements Runnable, Externalizable {
     public static final long serialVersionUID = 1234L;
 
@@ -40,8 +40,11 @@ public class modbus implements Runnable, Externalizable {
     }
 
     private ModbusTCPMaster con;
+    @XmlAttribute
     private String ip;
+    @XmlAttribute
     private int port;
+    @XmlAttribute
     private int slaveID;
 
     public modbus() {
@@ -89,17 +92,17 @@ public class modbus implements Runnable, Externalizable {
         connect();
     }
 
-    @XmlAttribute
+
     public String getIp() {
         return ip;
     }
 
-    @XmlAttribute
+
     public int getPort() {
         return port;
     }
 
-    @XmlAttribute
+
     public int getSlaveID() {
         return slaveID;
     }

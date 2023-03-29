@@ -1,6 +1,9 @@
 package models.base;
 
 import failures.newVersion.failure_occurrence;
+import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx_particular.SFEI_machine;
+import models.SFEx_particular.SFEI_transport;
 import models.sensor_actuator;
 import org.apache.commons.math3.util.Pair;
 import utils.InstantAdapter;
@@ -17,8 +20,9 @@ import java.util.Comparator;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-//@XmlRootElement(name = "SFEI")
-//@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlSeeAlso({SFEI_conveyor.class, SFEI_machine.class, SFEI_transport.class})
 //@XmlType(propOrder = {"name", "type", "min_operation_time", "manufacturing_date", "last_maintenance", "isLine_start", "isLine_end", "input_sensor", "output_sensor"})
 public class SFEI implements Externalizable {
 
@@ -65,22 +69,32 @@ public class SFEI implements Externalizable {
         MACHINE,
         TRANSPORT
     }
-
+    @XmlAttribute
     private String name;
+    @XmlAttribute
     private SFEI_type sfeiType;
+    @XmlElement
     private sensor_actuator inSensor;
+    @XmlElement
     private sensor_actuator outSensor;
+    @XmlAttribute
     private long minOperationTime;
     private TreeSet<part> partsATM = new TreeSet<>(partsOrder.INSTANCE);
     private int nPiecesMoved = 0;
+
+    @XmlAttribute(name = "manufacturing_date", required = true)
+    @XmlJavaTypeAdapter(InstantAdapter.class)
     private Instant dayOfBirth;
+    @XmlAttribute(name = "last_maintenance", required = true)
+    @XmlJavaTypeAdapter(InstantAdapter.class)
     private Instant dayOfLastMaintenance;
 
     private TreeMap<Integer, failure_occurrence> failuresHistory = new TreeMap<>();
 
     private ArrayList<Pair<Integer, Instant>> breakdownHistory = new ArrayList<>();
-
+    @XmlAttribute
     private boolean line_start;
+    @XmlAttribute
     private boolean line_end;
 
     public SFEI() {
@@ -113,27 +127,27 @@ public class SFEI implements Externalizable {
         }
     }
 
-    @XmlAttribute(name = "name")
+//    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
 
-    @XmlAttribute(name = "type")
+//    @XmlAttribute(name = "type")
     public SFEI_type getSfeiType() {
         return sfeiType;
     }
 
-    @XmlElement(name = "input_sensor")
+//    @XmlElement(name = "input_sensor")
     public sensor_actuator getInSensor() {
         return inSensor;
     }
 
-    @XmlElement(name = "output_sensor")
+//    @XmlElement(name = "output_sensor")
     public sensor_actuator getOutSensor() {
         return outSensor;
     }
 
-    @XmlAttribute(name = "min_operation_time")
+//    @XmlAttribute(name = "min_operation_time")
     public long getMinOperationTime() {
         return minOperationTime;
     }
@@ -142,7 +156,7 @@ public class SFEI implements Externalizable {
         this.minOperationTime = minOperationTime;
     }
 
-    @XmlTransient
+//    @XmlTransient
     public synchronized TreeSet<part> getPartsATM() {
         return partsATM;
     }
@@ -151,7 +165,7 @@ public class SFEI implements Externalizable {
         this.partsATM.add(partATM);
     }
 
-    @XmlTransient
+//    @XmlTransient
     public int getnPiecesMoved() {
         return nPiecesMoved;
     }
@@ -160,14 +174,14 @@ public class SFEI implements Externalizable {
         this.nPiecesMoved = nPiecesMoved;
     }
 
-    @XmlAttribute(name = "manufacturing_date", required = true)
-    @XmlJavaTypeAdapter(InstantAdapter.class)
+//    @XmlAttribute(name = "manufacturing_date", required = true)
+//    @XmlJavaTypeAdapter(InstantAdapter.class)
     public Instant getDayOfBirth() {
         return dayOfBirth;
     }
 
-    @XmlAttribute(name = "last_maintenance", required = true)
-    @XmlJavaTypeAdapter(InstantAdapter.class)
+//    @XmlAttribute(name = "last_maintenance", required = true)
+//    @XmlJavaTypeAdapter(InstantAdapter.class)
     public Instant getDayOfLastMaintenance() {
         return dayOfLastMaintenance;
     }
@@ -192,12 +206,12 @@ public class SFEI implements Externalizable {
         breakdownHistory.add(event);
     }
 
-    @XmlAttribute(name = "isLine_start")
+//    @XmlAttribute(name = "isLine_start")
     public boolean isLine_start() {
         return line_start;
     }
 
-    @XmlAttribute(name = "isLine_end")
+//    @XmlAttribute(name = "isLine_end")
     public boolean isLine_end() {
         return line_end;
     }

@@ -1,174 +1,212 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <TransportControllers>
     <transport_controller>
-        <SFEE_controller next_SFEI="sfee2" previous_SFEI="sfee1">
-            <SFEE_failures stochastic_type="LINEAR">
-                <SFEE communication="MODBUS" name="SFEE_Connection_test" function="TRANSPORT" type="SIMULATION">
-                    <input_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
-                    <io>
-                        <entry>
-                            <key>0</key>
-                            <value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
-                        </entry>
-                        <entry>
-                            <key>1</key>
-                            <value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
-                        </entry>
-                        <entry>
-                            <key>2</key>
-                            <value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
-                        </entry>
-                        <entry>
-                            <key>3</key>
-                            <value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter_emit" register="0" type="OUTPUT"/>
-                        </entry>
-                        <entry>
-                            <key>4</key>
-                            <value address_type="HOLDING_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="Emitter_part" register="0" type="OUTPUT"/>
-                        </entry>
-                        <entry>
-                            <key>5</key>
-                            <value address_type="HOLDING_REGISTER" bit_offset="3" data_type="INT" inverse_logic="false" name="Emitter_base" register="0" type="OUTPUT"/>
-                        </entry>
-                    </io>
-                    <output_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
-                    <SFEIs>
-                        <entry>
-                            <key>0</key>
-                            <value manufacturing_date="2023-03-29T15:34:37.227842600Z" last_maintenance="2023-03-29T15:34:37.227842600Z" isLine_end="false" isLine_start="false" min_operation_time="0" name="sfei_transport" type="TRANSPORT">
-<input_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
-<output_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
-                            </value>
-                        </entry>
-                    </SFEIs>
-                </SFEE>
-                <stochastic_formulas>10 </stochastic_formulas>
-            </SFEE_failures>
-            <SFEE_monitor>
-                <SFEE communication="MODBUS" name="SFEE_Connection_test" function="TRANSPORT" type="SIMULATION">
-                    <input_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
-                    <io>
-                        <entry>
-                            <key>0</key>
-                            <value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
-                        </entry>
-                        <entry>
-                            <key>1</key>
-                            <value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
-                        </entry>
-                        <entry>
-                            <key>2</key>
-                            <value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
-                        </entry>
-                        <entry>
-                            <key>3</key>
-                            <value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter_emit" register="0" type="OUTPUT"/>
-                        </entry>
-                        <entry>
-                            <key>4</key>
-                            <value address_type="HOLDING_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="Emitter_part" register="0" type="OUTPUT"/>
-                        </entry>
-                        <entry>
-                            <key>5</key>
-                            <value address_type="HOLDING_REGISTER" bit_offset="3" data_type="INT" inverse_logic="false" name="Emitter_base" register="0" type="OUTPUT"/>
-                        </entry>
-                    </io>
-                    <output_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
-                    <SFEIs>
-                        <entry>
-                            <key>0</key>
-                            <value manufacturing_date="2023-03-29T15:34:37.227842600Z" last_maintenance="2023-03-29T15:34:37.227842600Z" isLine_end="false" isLine_start="false" min_operation_time="0" name="sfei_transport" type="TRANSPORT">
-<input_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
-<output_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
-                            </value>
-                        </entry>
-                    </SFEIs>
-                </SFEE>
-            </SFEE_monitor>
-        </SFEE_controller>
-        <SFEM name="SFEM_Trans#0" type="TRANSPORT">
-            <SFEE_transport communication="MODBUS" name="SFEE_Connection_test" function="TRANSPORT" type="SIMULATION">
-                <input_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+        <sfem sfemType="TRANSPORT" name="SFEM_Trans#0">
+            <sfeeTransport sfeeType="SIMULATION" sfeeFunction="TRANSPORT" com="MODBUS" name="SFEE_Connection_test">
+                <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                <outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
                 <io>
                     <entry>
                         <key>0</key>
-                        <value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                        <value name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
                     </entry>
                     <entry>
                         <key>1</key>
-                        <value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
+                        <value name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
                     </entry>
                     <entry>
                         <key>2</key>
-                        <value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                        <value name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
                     </entry>
                     <entry>
                         <key>3</key>
-                        <value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter_emit" register="0" type="OUTPUT"/>
+                        <value name="Emitter_emit" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
                     </entry>
                     <entry>
                         <key>4</key>
-                        <value address_type="HOLDING_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="Emitter_part" register="0" type="OUTPUT"/>
+                        <value name="Emitter_part" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
                     </entry>
                     <entry>
                         <key>5</key>
-                        <value address_type="HOLDING_REGISTER" bit_offset="3" data_type="INT" inverse_logic="false" name="Emitter_base" register="0" type="OUTPUT"/>
+                        <value name="Emitter_base" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
                     </entry>
                 </io>
-                <output_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
                 <SFEIs>
                     <entry>
                         <key>0</key>
-                        <value manufacturing_date="2023-03-29T15:34:37.227842600Z" last_maintenance="2023-03-29T15:34:37.227842600Z" isLine_end="false" isLine_start="false" min_operation_time="0" name="sfei_transport" type="TRANSPORT">
-                            <input_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
-                            <output_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                        <value name="sfei_transport" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-03-29T16:53:53.969014800Z" last_maintenance="2023-03-29T16:53:53.969014800Z" lineStart="false" lineEnd="false">
+                            <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                            <outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
                         </value>
                     </entry>
                 </SFEIs>
-            </SFEE_transport>
-        </SFEM>
-        <SFEM_monitor>
-            <SFEM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfemTransport" name="SFEM_Trans#0" type="TRANSPORT">
-                <SFEE_transport communication="MODBUS" name="SFEE_Connection_test" function="TRANSPORT" type="SIMULATION">
-                    <input_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+            </sfeeTransport>
+        </sfem>
+        <sfemTransportMonitor>
+            <sfem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfemTransport" sfemType="TRANSPORT" name="SFEM_Trans#0">
+                <sfeeTransport sfeeType="SIMULATION" sfeeFunction="TRANSPORT" com="MODBUS" name="SFEE_Connection_test">
+                    <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                    <outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
                     <io>
                         <entry>
                             <key>0</key>
-                            <value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                            <value name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
                         </entry>
                         <entry>
                             <key>1</key>
-                            <value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
+                            <value name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
                         </entry>
                         <entry>
                             <key>2</key>
-                            <value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                            <value name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
                         </entry>
                         <entry>
                             <key>3</key>
-                            <value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter_emit" register="0" type="OUTPUT"/>
+                            <value name="Emitter_emit" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
                         </entry>
                         <entry>
                             <key>4</key>
-                            <value address_type="HOLDING_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="Emitter_part" register="0" type="OUTPUT"/>
+                            <value name="Emitter_part" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
                         </entry>
                         <entry>
                             <key>5</key>
-                            <value address_type="HOLDING_REGISTER" bit_offset="3" data_type="INT" inverse_logic="false" name="Emitter_base" register="0" type="OUTPUT"/>
+                            <value name="Emitter_base" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
                         </entry>
                     </io>
-                    <output_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
                     <SFEIs>
                         <entry>
                             <key>0</key>
-                            <value manufacturing_date="2023-03-29T15:34:37.227842600Z" last_maintenance="2023-03-29T15:34:37.227842600Z" isLine_end="false" isLine_start="false" min_operation_time="0" name="sfei_transport" type="TRANSPORT">
-<input_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
-<output_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                            <value name="sfei_transport" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-03-29T16:53:53.969014800Z" last_maintenance="2023-03-29T16:53:53.969014800Z" lineStart="false" lineEnd="false">
+<inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+<outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
                             </value>
                         </entry>
                     </SFEIs>
-                </SFEE_transport>
-            </SFEM>
-        </SFEM_monitor>
+                </sfeeTransport>
+            </sfem>
+        </sfemTransportMonitor>
+        <sfeeTransportController prevSFEEName="sfee1" nextSFEEName="sfee2">
+            <sfee sfeeType="SIMULATION" sfeeFunction="TRANSPORT" com="MODBUS" name="SFEE_Connection_test">
+                <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                <outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                <io>
+                    <entry>
+                        <key>0</key>
+                        <value name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                    </entry>
+                    <entry>
+                        <key>1</key>
+                        <value name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
+                    </entry>
+                    <entry>
+                        <key>2</key>
+                        <value name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                    </entry>
+                    <entry>
+                        <key>3</key>
+                        <value name="Emitter_emit" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
+                    </entry>
+                    <entry>
+                        <key>4</key>
+                        <value name="Emitter_part" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
+                    </entry>
+                    <entry>
+                        <key>5</key>
+                        <value name="Emitter_base" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
+                    </entry>
+                </io>
+                <SFEIs>
+                    <entry>
+                        <key>0</key>
+                        <value name="sfei_transport" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-03-29T16:53:53.969014800Z" last_maintenance="2023-03-29T16:53:53.969014800Z" lineStart="false" lineEnd="false">
+                            <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                            <outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                        </value>
+                    </entry>
+                </SFEIs>
+            </sfee>
+            <sfeeMonitor>
+                <sfee sfeeType="SIMULATION" sfeeFunction="TRANSPORT" com="MODBUS" name="SFEE_Connection_test">
+                    <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                    <outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                    <io>
+                        <entry>
+                            <key>0</key>
+                            <value name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                        </entry>
+                        <entry>
+                            <key>1</key>
+                            <value name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
+                        </entry>
+                        <entry>
+                            <key>2</key>
+                            <value name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                        </entry>
+                        <entry>
+                            <key>3</key>
+                            <value name="Emitter_emit" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
+                        </entry>
+                        <entry>
+                            <key>4</key>
+                            <value name="Emitter_part" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
+                        </entry>
+                        <entry>
+                            <key>5</key>
+                            <value name="Emitter_base" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
+                        </entry>
+                    </io>
+                    <SFEIs>
+                        <entry>
+                            <key>0</key>
+                            <value name="sfei_transport" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-03-29T16:53:53.969014800Z" last_maintenance="2023-03-29T16:53:53.969014800Z" lineStart="false" lineEnd="false">
+<inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+<outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                            </value>
+                        </entry>
+                    </SFEIs>
+                </sfee>
+            </sfeeMonitor>
+            <sfeeFailures stochasticType="LINEAR">
+                <sfee sfeeType="SIMULATION" sfeeFunction="TRANSPORT" com="MODBUS" name="SFEE_Connection_test">
+                    <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                    <outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                    <io>
+                        <entry>
+                            <key>0</key>
+                            <value name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                        </entry>
+                        <entry>
+                            <key>1</key>
+                            <value name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
+                        </entry>
+                        <entry>
+                            <key>2</key>
+                            <value name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                        </entry>
+                        <entry>
+                            <key>3</key>
+                            <value name="Emitter_emit" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
+                        </entry>
+                        <entry>
+                            <key>4</key>
+                            <value name="Emitter_part" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
+                        </entry>
+                        <entry>
+                            <key>5</key>
+                            <value name="Emitter_base" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
+                        </entry>
+                    </io>
+                    <SFEIs>
+                        <entry>
+                            <key>0</key>
+                            <value name="sfei_transport" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-03-29T16:53:53.969014800Z" last_maintenance="2023-03-29T16:53:53.969014800Z" lineStart="false" lineEnd="false">
+<inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+<outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                            </value>
+                        </entry>
+                    </SFEIs>
+                </sfee>
+            </sfeeFailures>
+        </sfeeTransportController>
     </transport_controller>
 </TransportControllers>

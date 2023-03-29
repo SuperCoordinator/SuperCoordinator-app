@@ -17,7 +17,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 //@XmlRootElement(name = "SFEM_trans_monitor")
-@XmlRootElement(name = "SFEM_monitor")
+//@XmlRootElement
 public class SFEM_transport_monitor extends SFEM_monitor implements Externalizable {
 
     public static final long serialVersionUID = 1234L;

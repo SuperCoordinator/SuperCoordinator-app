@@ -57,7 +57,7 @@ public class App {
 
                 // Open communications
                 for (cSFEM_production production : app.getProduction().getC_Production()) {
-//                    production.openConnections();
+                    production.openConnections();
 
                 }
 
@@ -97,15 +97,22 @@ public class App {
 //                app.deserialize_prod();
                 app.loadXML_prod();
                 // Open communications
+                for (cSFEM_production production : app.getProduction().getC_Production()) {
+                    production.init_after_XML_loading();
+                }
 
                 for (cSFEM_production production : app.getProduction().getC_Production()) {
-//                    production.openConnections();
+                    production.openConnections();
 
                 }
 
                 // Deserialize Transport Controllers
 //                app.deserialize_trans();
                 app.loadXML_trans();
+                // Initialize the monitors and controllers with the SFEE objects
+                for (cSFEM_transport transport : app.getTransport().getC_Transport()) {
+                    transport.init_after_XML_load();
+                }
 
                 // Set up the connections between SFEEs
                 for (cSFEM_transport transport : app.getTransport().getC_Transport()) {

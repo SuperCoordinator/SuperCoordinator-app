@@ -5,6 +5,8 @@ import models.base.part;
 import models.partsAspect;
 import models.sensor_actuator;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
@@ -14,7 +16,8 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 
 //@XmlRootElement(name = "SFEI_transport")
-@XmlRootElement(name = "SFEI")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class SFEI_transport extends SFEI implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -38,10 +41,13 @@ public class SFEI_transport extends SFEI implements Externalizable {
         this.aEmitterBase = (sensor_actuator) in.readObject();
 
     }
-
+    @XmlElement
     private sensor_actuator aRemover;
+    @XmlElement
     private sensor_actuator aEmitter;
+    @XmlElement
     private sensor_actuator aEmitterPart;
+    @XmlElement
     private sensor_actuator aEmitterBase;
 
     public SFEI_transport() {
@@ -57,22 +63,22 @@ public class SFEI_transport extends SFEI implements Externalizable {
         this.aEmitterBase = aEmitterBase;
     }
 
-    @XmlElement(name = "remover_actuator")
+//    @XmlElement(name = "remover_actuator")
     public sensor_actuator getaRemover() {
         return aRemover;
     }
 
-    @XmlElement(name = "emitter_actuator")
+//    @XmlElement(name = "emitter_actuator")
     public sensor_actuator getaEmitter() {
         return aEmitter;
     }
 
-    @XmlElement(name = "emitter_part_actuator")
+//    @XmlElement(name = "emitter_part_actuator")
     public sensor_actuator getaEmitterPart() {
         return aEmitterPart;
     }
 
-    @XmlElement(name = "emitter_base_actuator")
+//    @XmlElement(name = "emitter_base_actuator")
     public sensor_actuator getaEmitterBase() {
         return aEmitterBase;
     }

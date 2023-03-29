@@ -6,16 +6,15 @@ import models.base.SFEI;
 import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.*;
 
-@XmlRootElement(name = "SFEE_Failures")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class SFEE_failures2 implements Externalizable {
     public static final long serialVersionUID = 1234L;
 
@@ -47,12 +46,14 @@ public class SFEE_failures2 implements Externalizable {
     }
 
     private SM state;
-
+//    @XmlElement
     private SFEE sfee;
     private LinkedList<stochasticTime> stochasticTimeTasks = new LinkedList<>();
-    ;
+    @XmlElement
     private stochasticTime.timeOptions stochasticType;
+    @XmlElement
     private String[] stochasticFormulas;
+    @XmlElement
     private ArrayList<String[]> failuresFormulas;
 
     private breakdown_repair2 breakdownRepair2;
@@ -75,6 +76,10 @@ public class SFEE_failures2 implements Externalizable {
 //        init_();
     }
 
+    public void setSfee(SFEE sfee) {
+        this.sfee = sfee;
+    }
+    /*
     @XmlElement(name = "SFEE")
     private SFEE getSfee() {
         return sfee;
@@ -94,6 +99,7 @@ public class SFEE_failures2 implements Externalizable {
     private ArrayList<String[]> getFailuresFormulas() {
         return failuresFormulas;
     }
+*/
 
     private void init_() {
         int sfeiConveyor_idx_failures = /*pickSFEI(false)*/ 2;

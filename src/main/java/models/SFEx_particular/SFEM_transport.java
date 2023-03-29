@@ -5,6 +5,8 @@ import models.base.SFEI;
 import models.base.SFEM;
 import models.part_prodTime;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
@@ -14,7 +16,8 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.TreeMap;
 //@XmlRootElement(name = "SFEM_transport")
-@XmlRootElement(name = "SFEM")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class SFEM_transport extends SFEM implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -31,7 +34,7 @@ public class SFEM_transport extends SFEM implements Externalizable {
         this.sfeeTransport = (SFEE) in.readObject();
     }
 
-
+    @XmlElement
     private SFEE sfeeTransport;
 
     public SFEM_transport() {
@@ -40,7 +43,7 @@ public class SFEM_transport extends SFEM implements Externalizable {
     public SFEM_transport(String name) {
         super(name, SFEM_type.TRANSPORT);
     }
-    @XmlElement(name = "SFEE_transport")
+//    @XmlElement(name = "SFEE_transport")
     public SFEE getSfeeTransport() {
         return sfeeTransport;
     }

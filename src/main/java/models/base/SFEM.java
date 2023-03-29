@@ -1,17 +1,19 @@
 package models.base;
 
+import models.SFEx_particular.SFEM_production;
+import models.SFEx_particular.SFEM_transport;
 import models.part_prodTime;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.TreeMap;
 
-//@XmlRootElement(name = "SFEM")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+//@XmlSeeAlso({SFEM_production.class, SFEM_transport.class})
 public class SFEM implements Externalizable {
     public static final long serialVersionUID = 1234L;
 
@@ -33,8 +35,9 @@ public class SFEM implements Externalizable {
         PRODUCTION,
         TRANSPORT
     }
-
+    @XmlAttribute
     private SFEM_type sfemType;
+    @XmlAttribute
     private String name;
     private TreeMap<Integer, part_prodTime> productionHistory = new TreeMap<>();
 
@@ -46,12 +49,12 @@ public class SFEM implements Externalizable {
         this.name = name;
     }
 
-    @XmlAttribute(name = "name")
+//    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
 
-    @XmlAttribute(name = "type")
+//    @XmlAttribute(name = "type")
     public SFEM_type getSfemType() {
         return sfemType;
     }
@@ -60,7 +63,7 @@ public class SFEM implements Externalizable {
         productionHistory.put(producedPart.part().getId(), producedPart);
     }
 
-    @XmlTransient
+//    @XmlTransient
     public TreeMap<Integer, part_prodTime> getProductionHistory() {
         return productionHistory;
     }

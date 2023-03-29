@@ -8,6 +8,8 @@ import models.base.part;
 import models.part_prodTime;
 import monitor.base.SFEM_monitor;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -17,7 +19,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 //@XmlRootElement(name = "SFEM_prod_monitor")
-@XmlRootElement(name = "SFEM_monitor")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class SFEM_production_monitor extends SFEM_monitor implements Externalizable {
 
     @Override

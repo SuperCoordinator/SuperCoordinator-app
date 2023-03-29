@@ -5,15 +5,15 @@ import models.base.SFEE;
 import monitor.transport.SFEE_transport_monitor;
 import viewers.SFEE_transport;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.*;
-@XmlRootElement(name = "SFEE_trans_failures")
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class SFEE_transport_failures implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -39,9 +39,13 @@ public class SFEE_transport_failures implements Externalizable {
     }
 
     private SM state, old_state;
+//    @XmlElement
     private SFEE sfee;
+
     private stochasticTime stochasticTimeTask;
+    @XmlAttribute
     private stochasticTime.timeOptions stochasticType;
+    @XmlElement
     private String[] stochasticFormulas;
 
     public SFEE_transport_failures() {
@@ -53,7 +57,7 @@ public class SFEE_transport_failures implements Externalizable {
         this.stochasticFormulas = stochasticTime_f;
     }
 
-    @XmlElement(name = "SFEE")
+/*    @XmlElement(name = "SFEE")
     private SFEE getSfee(){
         return sfee;
     }
@@ -64,6 +68,10 @@ public class SFEE_transport_failures implements Externalizable {
     @XmlElement(name = "stochastic_formulas")
     private String[] getStochasticFormulas() {
         return stochasticFormulas;
+    }*/
+
+    public void setSfee(SFEE sfee) {
+        this.sfee = sfee;
     }
 
     private boolean first_exe = true;

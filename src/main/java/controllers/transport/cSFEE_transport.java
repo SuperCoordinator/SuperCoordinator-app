@@ -11,9 +11,7 @@ import monitor.transport.SFEE_transport_monitor;
 import org.apache.commons.math3.util.Pair;
 import viewers.SFEE_transport;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -21,7 +19,8 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 
-@XmlRootElement(name = "SFEE_trans_controller")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class cSFEE_transport implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -48,14 +47,18 @@ public class cSFEE_transport implements Externalizable {
     }
 
     // SFEM_transport based on 1-1 connections between SFEE's
+//    @XmlElement
     private SFEE sfee;
+    @XmlElement
     private SFEE_transport_monitor sfeeMonitor;
-
+    @XmlElement
     private SFEE_transport_failures sfeeFailures;
 
     private modbus inMB;
     private modbus outMB;
+    @XmlAttribute
     private String prevSFEE_name;
+    @XmlAttribute
     private String nextSFEE_name;
 
     private SFEE_transport viewer = new SFEE_transport();
@@ -67,7 +70,11 @@ public class cSFEE_transport implements Externalizable {
         this.sfee = sfee;
     }
 
-    @XmlElement(name = "SFEE_monitor")
+    public void setSfee(SFEE sfee) {
+        this.sfee = sfee;
+    }
+
+    /*    @XmlElement(name = "SFEE_monitor")
     private SFEE_transport_monitor getSfeeMonitor() {
         return sfeeMonitor;
     }
@@ -85,7 +92,7 @@ public class cSFEE_transport implements Externalizable {
     @XmlAttribute(name = "next_SFEI")
     private String getNextSFEE_name() {
         return nextSFEE_name;
-    }
+    }*/
 
 
     public void cSFEE_transport_init(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB) {
@@ -142,7 +149,8 @@ public class cSFEE_transport implements Externalizable {
     public void cSFEE_transport_setup(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB) {
         this.inMB = inMB;
         this.outMB = outMB;
-        sfeeMonitor.setupPrevNextSFEI(inSFEE.getSFEIbyIndex(inSFEE.getSFEIs().size() - 1), outSFEE.getSFEIbyIndex(0));
+        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEE.getSFEIbyIndex(inSFEE.getSFEIs().size() - 1), outSFEE.getSFEIbyIndex(0));
+        sfeeFailures.setSfee(sfee);
 
     }
 

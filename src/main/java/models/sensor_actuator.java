@@ -1,5 +1,7 @@
 package models;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
@@ -7,7 +9,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-@XmlRootElement(name = "sensor_actuator")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public final class sensor_actuator implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -63,13 +66,19 @@ public final class sensor_actuator implements Externalizable {
          */
         HOLDING_REGISTER
     }
-
+    @XmlAttribute
     private String name;
+    @XmlAttribute
     private Type type;
+    @XmlAttribute
     private boolean invLogic;
+    @XmlAttribute
     private DataType dataType;
+    @XmlAttribute
     private AddressType addressType;
+    @XmlAttribute
     private int register;
+    @XmlAttribute
     private int bit_offset;
 
     public sensor_actuator() {
@@ -91,37 +100,37 @@ public final class sensor_actuator implements Externalizable {
         return new sensor_actuator(getName(), getType(), invLogic, getDataType(), getAddressType(), getRegister(), getBit_offset());
     }
 
-    @XmlAttribute(name = "name")
+//    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
 
-    @XmlAttribute(name = "type")
+//    @XmlAttribute(name = "type")
     public Type getType() {
         return type;
     }
 
-    @XmlAttribute(name = "data_type")
+//    @XmlAttribute(name = "data_type")
     public DataType getDataType() {
         return dataType;
     }
 
-    @XmlAttribute(name = "address_type")
+//    @XmlAttribute(name = "address_type")
     public AddressType getAddressType() {
         return addressType;
     }
 
-    @XmlAttribute(name = "inverse_logic")
+//    @XmlAttribute(name = "inverse_logic")
     public boolean getInvLogic() {
         return invLogic;
     }
 
-    @XmlAttribute(name = "register")
+//    @XmlAttribute(name = "register")
     public int getRegister() {
         return register;
     }
 
-    @XmlAttribute(name = "bit_offset")
+//    @XmlAttribute(name = "bit_offset")
     public int getBit_offset() {
         return bit_offset;
     }

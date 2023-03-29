@@ -3,6 +3,8 @@ package utils.serialize;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
@@ -11,7 +13,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 
-@XmlRootElement(name = "TransportControllers")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class transport implements Externalizable {
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -32,7 +35,7 @@ public class transport implements Externalizable {
         C_Transport = c_Transport;
     }
 
-    @XmlElement(name = "transport_controller")
+    @XmlElement
     public ArrayList<cSFEM_transport> getC_Transport() {
         return C_Transport;
     }
