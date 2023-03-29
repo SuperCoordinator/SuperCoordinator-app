@@ -2,9 +2,13 @@ package models.base;
 
 import models.sensor_actuator;
 
+import javax.xml.bind.annotation.*;
 import java.io.*;
 import java.util.*;
 
+@XmlRootElement(name = "SFEE")
+//@XmlAccessorType(XmlAccessType.FIELD)
+//@XmlType(propOrder = {"name","communication","function","type","input_sensor","output_sensor","inputs_outputs"})
 public class SFEE implements Externalizable {
     public static final long serialVersionUID = 1234L;
 
@@ -73,32 +77,39 @@ public class SFEE implements Externalizable {
         this.SFEIs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
     }
 
-    public communicationOption getCom() {
-        return com;
-    }
-
+    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
 
+    @XmlAttribute(name = "type")
     public SFEE.SFEE_type getSFEE_type() {
         return SFEE_type;
     }
 
+    @XmlAttribute(name = "function")
     public SFEE_function getSFEE_function() {
         return SFEE_function;
     }
 
+    @XmlAttribute(name = "communication")
+    public communicationOption getCom() {
+        return com;
+    }
+
+    @XmlElement(name = "inputs_outputs")
+    public TreeMap<Integer, sensor_actuator> getIo() {
+        return io;
+    }
+
+    @XmlElement(name = "input_sensor")
     public sensor_actuator getInSensor() {
         return inSensor;
     }
 
+    @XmlElement(name = "output_sensor")
     public sensor_actuator getOutSensor() {
         return outSensor;
-    }
-
-    public TreeMap<Integer, sensor_actuator> getIo() {
-        return io;
     }
 
     public void setIo(TreeMap<Integer, sensor_actuator> io) {
@@ -109,7 +120,7 @@ public class SFEE implements Externalizable {
 
         try {
             for (Map.Entry<Integer, sensor_actuator> entry : io.entrySet()) {
-                if (entry.getValue().name().equalsIgnoreCase(name)) return entry.getValue();
+                if (entry.getValue().getName().equalsIgnoreCase(name)) return entry.getValue();
             }
             throw new Exception("IO with name " + name + " not found!");
         } catch (Exception e) {
@@ -118,6 +129,7 @@ public class SFEE implements Externalizable {
         return null;
     }
 
+    @XmlElement(name = "SFEIs")
     public TreeMap<Integer, SFEI> getSFEIs() {
         return SFEIs;
     }

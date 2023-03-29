@@ -75,7 +75,7 @@ public class produce_more2 extends failures_conditions {
                 state = SM.WAITING;
             }
             case WAITING -> {
-                boolean sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().bit_offset()) == 1;
+                boolean sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().getBit_offset()) == 1;
                 if (getUtility().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                     int id = 0;
                     if (sfeiConveyor.getPartsATM().size() > 0) {
@@ -90,7 +90,7 @@ public class produce_more2 extends failures_conditions {
                     // This operation of concat is faster than + operation
                     String itemName = sfeiConveyor.getName();
                     itemName = itemName.concat("-");
-                    itemName = itemName.concat(sfeiConveyor.getInSensor().name());
+                    itemName = itemName.concat(sfeiConveyor.getInSensor().getName());
 
                     p.addTimestamp(itemName);
                     sfeiConveyor.addNewPartATM(p);
@@ -115,7 +115,7 @@ public class produce_more2 extends failures_conditions {
             }
             case TURN_ON -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmitter().bit_offset(), 1);
+                    actuatorsState.set(sfeiConveyor.getaEmitter().getBit_offset(), 1);
 
                     failure_occurrence.activationVariable actVar = null;
                     if (wasActivated_by_N()) {
@@ -136,7 +136,7 @@ public class produce_more2 extends failures_conditions {
             }
             case TURN_OFF -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmitter().bit_offset(), 0);
+                    actuatorsState.set(sfeiConveyor.getaEmitter().getBit_offset(), 0);
 
                     Instant t = Instant.now();
                     newOccurrence.setEnd_t(t);

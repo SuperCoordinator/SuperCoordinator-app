@@ -4,12 +4,17 @@ import models.base.SFEI;
 import models.partsAspect;
 import models.sensor_actuator;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.time.Instant;
 
+//@XmlRootElement(name = "SFEI_machine")
+@XmlRootElement(name = "SFEI")
 public class SFEI_machine extends SFEI implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -51,19 +56,25 @@ public class SFEI_machine extends SFEI implements Externalizable {
         this.aStop = aStop;
     }
 
+    @XmlAttribute(name = "part_form")
     public partsAspect.form getPartForm() {
         return partForm;
     }
 
+    @XmlElement(name = "produce_actuator")
+    public sensor_actuator getaProduce() {
+        return aProduce;
+    }
+
+    @XmlElement(name = "door_sensor")
     public sensor_actuator getsDoor() {
         return sDoor;
     }
 
+    @XmlElement(name = "stop_actuator")
     public sensor_actuator getaStop() {
         return aStop;
     }
 
-    public sensor_actuator getaProduce() {
-        return aProduce;
-    }
+
 }

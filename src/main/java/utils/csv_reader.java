@@ -42,7 +42,7 @@ public class csv_reader {
             }
             System.out.println("*** All imported IOs ***");
             for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
-                System.out.println("   " + entry.getKey() + " - " + entry.getValue().name());
+                System.out.println("   " + entry.getKey() + " - " + entry.getValue().getName());
             }
 /*            System.out.println("From the IO which are in inverse logic?");
 

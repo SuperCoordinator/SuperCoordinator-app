@@ -1,0 +1,1407 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ProductionControllers>
+    <C_Production>
+        <SFEE_production_controllers operation_mode="NORMAL">
+            <mb ip="127.0.0.1" port="35502" slaveID="1"/>
+            <SFEE communication="MODBUS" name="sfee1" function="PRODUCTION" type="SIMULATION">
+                <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                <io>
+                    <entry>
+                        <key>0</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="0" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Paused)" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>1</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="1" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>2</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="2" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Running)" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>3</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="3" data_type="BOOL" inverse_logic="false" name="MC1_has_error" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>4</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="4" data_type="BOOL" inverse_logic="false" name="MC1_busy" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>5</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="5" data_type="BOOL" inverse_logic="false" name="MC1_opened" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>6</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>7</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="7" data_type="BOOL" inverse_logic="false" name="s_entry_emitter" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>8</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="8" data_type="BOOL" inverse_logic="false" name="s_entry_remover" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>9</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="9" data_type="BOOL" inverse_logic="false" name="s_exit_emitter" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>10</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="10" data_type="BOOL" inverse_logic="false" name="s_exit_remover" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>11</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>12</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>13</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>14</key>
+                        <value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>15</key>
+                        <value address_type="COIL" bit_offset="1" data_type="BOOL" inverse_logic="false" name="entry_conveyor" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>16</key>
+                        <value address_type="COIL" bit_offset="2" data_type="BOOL" inverse_logic="false" name="entry_emitter" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>17</key>
+                        <value address_type="COIL" bit_offset="3" data_type="BOOL" inverse_logic="false" name="entry_remover" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>18</key>
+                        <value address_type="COIL" bit_offset="4" data_type="BOOL" inverse_logic="false" name="exit_conveyor" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>19</key>
+                        <value address_type="COIL" bit_offset="5" data_type="BOOL" inverse_logic="false" name="exit_emitter" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>20</key>
+                        <value address_type="COIL" bit_offset="6" data_type="BOOL" inverse_logic="false" name="exit_remover" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>21</key>
+                        <value address_type="COIL" bit_offset="7" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Pause)" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>22</key>
+                        <value address_type="COIL" bit_offset="8" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>23</key>
+                        <value address_type="COIL" bit_offset="9" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Run)" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>24</key>
+                        <value address_type="COIL" bit_offset="10" data_type="BOOL" inverse_logic="false" name="MC1_reset" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>25</key>
+                        <value address_type="COIL" bit_offset="11" data_type="BOOL" inverse_logic="false" name="MC1_produce" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>26</key>
+                        <value address_type="COIL" bit_offset="12" data_type="BOOL" inverse_logic="false" name="MC1_start" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>27</key>
+                        <value address_type="COIL" bit_offset="13" data_type="BOOL" inverse_logic="false" name="MC1_stop" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>28</key>
+                        <value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>29</key>
+                        <value address_type="INPUT_REGISTER" bit_offset="0" data_type="REAL" inverse_logic="false" name="FACTORY I/O (Time Scale)" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>30</key>
+                        <value address_type="INPUT_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_progress" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>31</key>
+                        <value address_type="INPUT_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="v_MC1_exit" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>32</key>
+                        <value address_type="HOLDING_REGISTER" bit_offset="0" data_type="INT" inverse_logic="false" name="FACTORY I/O (Camera Position)" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>33</key>
+                        <value address_type="HOLDING_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_counter" register="0" type="OUTPUT"/>
+                    </entry>
+                </io>
+                <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                <SFEIs>
+                    <entry>
+                        <key>0</key>
+                        <value manufacturing_date="2023-03-29T15:34:04.503598800Z" last_maintenance="2023-03-29T15:34:04.503598800Z" isLine_end="false" isLine_start="true" min_operation_time="9" name="entry_conveyor" type="CONVEYOR">
+                            <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                            <output_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>1</key>
+                        <value manufacturing_date="2023-03-29T15:34:04.520394400Z" last_maintenance="2023-03-29T15:34:04.520394400Z" isLine_end="false" isLine_start="false" min_operation_time="33" name="MC1" type="MACHINE">
+                            <input_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                            <output_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>2</key>
+                        <value manufacturing_date="2023-03-29T15:34:04.522932100Z" last_maintenance="2023-03-29T15:34:04.522932100Z" isLine_end="false" isLine_start="false" min_operation_time="8" name="exit_conveyor" type="CONVEYOR">
+                            <input_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                            <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                        </value>
+                    </entry>
+                </SFEIs>
+            </SFEE>
+            <sfeeMonitor>
+                <SFEE communication="MODBUS" name="sfee1" function="PRODUCTION" type="SIMULATION">
+                    <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                    <io>
+                        <entry>
+                            <key>0</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="0" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Paused)" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>1</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="1" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>2</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="2" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Running)" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>3</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="3" data_type="BOOL" inverse_logic="false" name="MC1_has_error" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>4</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="4" data_type="BOOL" inverse_logic="false" name="MC1_busy" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>5</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="5" data_type="BOOL" inverse_logic="false" name="MC1_opened" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>6</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>7</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="7" data_type="BOOL" inverse_logic="false" name="s_entry_emitter" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>8</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="8" data_type="BOOL" inverse_logic="false" name="s_entry_remover" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>9</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="9" data_type="BOOL" inverse_logic="false" name="s_exit_emitter" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>10</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="10" data_type="BOOL" inverse_logic="false" name="s_exit_remover" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>11</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>12</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>13</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>14</key>
+                            <value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>15</key>
+                            <value address_type="COIL" bit_offset="1" data_type="BOOL" inverse_logic="false" name="entry_conveyor" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>16</key>
+                            <value address_type="COIL" bit_offset="2" data_type="BOOL" inverse_logic="false" name="entry_emitter" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>17</key>
+                            <value address_type="COIL" bit_offset="3" data_type="BOOL" inverse_logic="false" name="entry_remover" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>18</key>
+                            <value address_type="COIL" bit_offset="4" data_type="BOOL" inverse_logic="false" name="exit_conveyor" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>19</key>
+                            <value address_type="COIL" bit_offset="5" data_type="BOOL" inverse_logic="false" name="exit_emitter" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>20</key>
+                            <value address_type="COIL" bit_offset="6" data_type="BOOL" inverse_logic="false" name="exit_remover" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>21</key>
+                            <value address_type="COIL" bit_offset="7" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Pause)" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>22</key>
+                            <value address_type="COIL" bit_offset="8" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>23</key>
+                            <value address_type="COIL" bit_offset="9" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Run)" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>24</key>
+                            <value address_type="COIL" bit_offset="10" data_type="BOOL" inverse_logic="false" name="MC1_reset" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>25</key>
+                            <value address_type="COIL" bit_offset="11" data_type="BOOL" inverse_logic="false" name="MC1_produce" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>26</key>
+                            <value address_type="COIL" bit_offset="12" data_type="BOOL" inverse_logic="false" name="MC1_start" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>27</key>
+                            <value address_type="COIL" bit_offset="13" data_type="BOOL" inverse_logic="false" name="MC1_stop" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>28</key>
+                            <value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>29</key>
+                            <value address_type="INPUT_REGISTER" bit_offset="0" data_type="REAL" inverse_logic="false" name="FACTORY I/O (Time Scale)" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>30</key>
+                            <value address_type="INPUT_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_progress" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>31</key>
+                            <value address_type="INPUT_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="v_MC1_exit" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>32</key>
+                            <value address_type="HOLDING_REGISTER" bit_offset="0" data_type="INT" inverse_logic="false" name="FACTORY I/O (Camera Position)" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>33</key>
+                            <value address_type="HOLDING_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_counter" register="0" type="OUTPUT"/>
+                        </entry>
+                    </io>
+                    <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                    <SFEIs>
+                        <entry>
+                            <key>0</key>
+                            <value manufacturing_date="2023-03-29T15:34:04.503598800Z" last_maintenance="2023-03-29T15:34:04.503598800Z" isLine_end="false" isLine_start="true" min_operation_time="9" name="entry_conveyor" type="CONVEYOR">
+<input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+<output_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>1</key>
+                            <value manufacturing_date="2023-03-29T15:34:04.520394400Z" last_maintenance="2023-03-29T15:34:04.520394400Z" isLine_end="false" isLine_start="false" min_operation_time="33" name="MC1" type="MACHINE">
+<input_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+<output_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>2</key>
+                            <value manufacturing_date="2023-03-29T15:34:04.522932100Z" last_maintenance="2023-03-29T15:34:04.522932100Z" isLine_end="false" isLine_start="false" min_operation_time="8" name="exit_conveyor" type="CONVEYOR">
+<input_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+<output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                            </value>
+                        </entry>
+                    </SFEIs>
+                </SFEE>
+                <visionSensorLocation>
+                    <entry>
+                        <key>2</key>
+                        <value address_type="INPUT_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="v_MC1_exit" register="0" type="INPUT"/>
+                    </entry>
+                </visionSensorLocation>
+            </sfeeMonitor>
+        </SFEE_production_controllers>
+        <SFEM name="SFEM_Prod#0" type="PRODUCTION">
+            <SFEEs>
+                <entry>
+                    <key>0</key>
+                    <value communication="MODBUS" name="sfee1" function="PRODUCTION" type="SIMULATION">
+                        <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                        <io>
+                            <entry>
+<key>0</key>
+<value address_type="DISCRETE_INPUT" bit_offset="0" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Paused)" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>1</key>
+<value address_type="DISCRETE_INPUT" bit_offset="1" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>2</key>
+<value address_type="DISCRETE_INPUT" bit_offset="2" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Running)" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>3</key>
+<value address_type="DISCRETE_INPUT" bit_offset="3" data_type="BOOL" inverse_logic="false" name="MC1_has_error" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>4</key>
+<value address_type="DISCRETE_INPUT" bit_offset="4" data_type="BOOL" inverse_logic="false" name="MC1_busy" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>5</key>
+<value address_type="DISCRETE_INPUT" bit_offset="5" data_type="BOOL" inverse_logic="false" name="MC1_opened" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>6</key>
+<value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>7</key>
+<value address_type="DISCRETE_INPUT" bit_offset="7" data_type="BOOL" inverse_logic="false" name="s_entry_emitter" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>8</key>
+<value address_type="DISCRETE_INPUT" bit_offset="8" data_type="BOOL" inverse_logic="false" name="s_entry_remover" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>9</key>
+<value address_type="DISCRETE_INPUT" bit_offset="9" data_type="BOOL" inverse_logic="false" name="s_exit_emitter" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>10</key>
+<value address_type="DISCRETE_INPUT" bit_offset="10" data_type="BOOL" inverse_logic="false" name="s_exit_remover" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>11</key>
+<value address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>12</key>
+<value address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>13</key>
+<value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>14</key>
+<value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>15</key>
+<value address_type="COIL" bit_offset="1" data_type="BOOL" inverse_logic="false" name="entry_conveyor" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>16</key>
+<value address_type="COIL" bit_offset="2" data_type="BOOL" inverse_logic="false" name="entry_emitter" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>17</key>
+<value address_type="COIL" bit_offset="3" data_type="BOOL" inverse_logic="false" name="entry_remover" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>18</key>
+<value address_type="COIL" bit_offset="4" data_type="BOOL" inverse_logic="false" name="exit_conveyor" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>19</key>
+<value address_type="COIL" bit_offset="5" data_type="BOOL" inverse_logic="false" name="exit_emitter" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>20</key>
+<value address_type="COIL" bit_offset="6" data_type="BOOL" inverse_logic="false" name="exit_remover" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>21</key>
+<value address_type="COIL" bit_offset="7" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Pause)" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>22</key>
+<value address_type="COIL" bit_offset="8" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>23</key>
+<value address_type="COIL" bit_offset="9" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Run)" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>24</key>
+<value address_type="COIL" bit_offset="10" data_type="BOOL" inverse_logic="false" name="MC1_reset" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>25</key>
+<value address_type="COIL" bit_offset="11" data_type="BOOL" inverse_logic="false" name="MC1_produce" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>26</key>
+<value address_type="COIL" bit_offset="12" data_type="BOOL" inverse_logic="false" name="MC1_start" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>27</key>
+<value address_type="COIL" bit_offset="13" data_type="BOOL" inverse_logic="false" name="MC1_stop" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>28</key>
+<value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>29</key>
+<value address_type="INPUT_REGISTER" bit_offset="0" data_type="REAL" inverse_logic="false" name="FACTORY I/O (Time Scale)" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>30</key>
+<value address_type="INPUT_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_progress" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>31</key>
+<value address_type="INPUT_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="v_MC1_exit" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>32</key>
+<value address_type="HOLDING_REGISTER" bit_offset="0" data_type="INT" inverse_logic="false" name="FACTORY I/O (Camera Position)" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>33</key>
+<value address_type="HOLDING_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_counter" register="0" type="OUTPUT"/>
+                            </entry>
+                        </io>
+                        <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                        <SFEIs>
+                            <entry>
+<key>0</key>
+<value manufacturing_date="2023-03-29T15:34:04.503598800Z" last_maintenance="2023-03-29T15:34:04.503598800Z" isLine_end="false" isLine_start="true" min_operation_time="9" name="entry_conveyor" type="CONVEYOR">
+    <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+    <output_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+</value>
+                            </entry>
+                            <entry>
+<key>1</key>
+<value manufacturing_date="2023-03-29T15:34:04.520394400Z" last_maintenance="2023-03-29T15:34:04.520394400Z" isLine_end="false" isLine_start="false" min_operation_time="33" name="MC1" type="MACHINE">
+    <input_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+    <output_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+</value>
+                            </entry>
+                            <entry>
+<key>2</key>
+<value manufacturing_date="2023-03-29T15:34:04.522932100Z" last_maintenance="2023-03-29T15:34:04.522932100Z" isLine_end="false" isLine_start="false" min_operation_time="8" name="exit_conveyor" type="CONVEYOR">
+    <input_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+    <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+</value>
+                            </entry>
+                        </SFEIs>
+                    </value>
+                </entry>
+            </SFEEs>
+        </SFEM>
+        <SFEM_monitor>
+            <SFEM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfemProduction" name="SFEM_Prod#0" type="PRODUCTION">
+                <SFEEs>
+                    <entry>
+                        <key>0</key>
+                        <value communication="MODBUS" name="sfee1" function="PRODUCTION" type="SIMULATION">
+                            <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                            <io>
+<entry>
+    <key>0</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="0" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Paused)" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>1</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="1" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>2</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="2" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Running)" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>3</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="3" data_type="BOOL" inverse_logic="false" name="MC1_has_error" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>4</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="4" data_type="BOOL" inverse_logic="false" name="MC1_busy" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>5</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="5" data_type="BOOL" inverse_logic="false" name="MC1_opened" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>6</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>7</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="7" data_type="BOOL" inverse_logic="false" name="s_entry_emitter" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>8</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="8" data_type="BOOL" inverse_logic="false" name="s_entry_remover" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>9</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="9" data_type="BOOL" inverse_logic="false" name="s_exit_emitter" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>10</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="10" data_type="BOOL" inverse_logic="false" name="s_exit_remover" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>11</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>12</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>13</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>14</key>
+    <value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>15</key>
+    <value address_type="COIL" bit_offset="1" data_type="BOOL" inverse_logic="false" name="entry_conveyor" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>16</key>
+    <value address_type="COIL" bit_offset="2" data_type="BOOL" inverse_logic="false" name="entry_emitter" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>17</key>
+    <value address_type="COIL" bit_offset="3" data_type="BOOL" inverse_logic="false" name="entry_remover" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>18</key>
+    <value address_type="COIL" bit_offset="4" data_type="BOOL" inverse_logic="false" name="exit_conveyor" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>19</key>
+    <value address_type="COIL" bit_offset="5" data_type="BOOL" inverse_logic="false" name="exit_emitter" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>20</key>
+    <value address_type="COIL" bit_offset="6" data_type="BOOL" inverse_logic="false" name="exit_remover" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>21</key>
+    <value address_type="COIL" bit_offset="7" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Pause)" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>22</key>
+    <value address_type="COIL" bit_offset="8" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>23</key>
+    <value address_type="COIL" bit_offset="9" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Run)" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>24</key>
+    <value address_type="COIL" bit_offset="10" data_type="BOOL" inverse_logic="false" name="MC1_reset" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>25</key>
+    <value address_type="COIL" bit_offset="11" data_type="BOOL" inverse_logic="false" name="MC1_produce" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>26</key>
+    <value address_type="COIL" bit_offset="12" data_type="BOOL" inverse_logic="false" name="MC1_start" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>27</key>
+    <value address_type="COIL" bit_offset="13" data_type="BOOL" inverse_logic="false" name="MC1_stop" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>28</key>
+    <value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>29</key>
+    <value address_type="INPUT_REGISTER" bit_offset="0" data_type="REAL" inverse_logic="false" name="FACTORY I/O (Time Scale)" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>30</key>
+    <value address_type="INPUT_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_progress" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>31</key>
+    <value address_type="INPUT_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="v_MC1_exit" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>32</key>
+    <value address_type="HOLDING_REGISTER" bit_offset="0" data_type="INT" inverse_logic="false" name="FACTORY I/O (Camera Position)" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>33</key>
+    <value address_type="HOLDING_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_counter" register="0" type="OUTPUT"/>
+</entry>
+                            </io>
+                            <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                            <SFEIs>
+<entry>
+    <key>0</key>
+    <value manufacturing_date="2023-03-29T15:34:04.503598800Z" last_maintenance="2023-03-29T15:34:04.503598800Z" isLine_end="false" isLine_start="true" min_operation_time="9" name="entry_conveyor" type="CONVEYOR">
+        <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+        <output_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+    </value>
+</entry>
+<entry>
+    <key>1</key>
+    <value manufacturing_date="2023-03-29T15:34:04.520394400Z" last_maintenance="2023-03-29T15:34:04.520394400Z" isLine_end="false" isLine_start="false" min_operation_time="33" name="MC1" type="MACHINE">
+        <input_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+        <output_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+    </value>
+</entry>
+<entry>
+    <key>2</key>
+    <value manufacturing_date="2023-03-29T15:34:04.522932100Z" last_maintenance="2023-03-29T15:34:04.522932100Z" isLine_end="false" isLine_start="false" min_operation_time="8" name="exit_conveyor" type="CONVEYOR">
+        <input_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+        <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+    </value>
+</entry>
+                            </SFEIs>
+                        </value>
+                    </entry>
+                </SFEEs>
+            </SFEM>
+        </SFEM_monitor>
+    </C_Production>
+    <C_Production>
+        <SFEE_production_controllers operation_mode="NORMAL">
+            <mb ip="127.0.0.1" port="35502" slaveID="2"/>
+            <SFEE communication="MODBUS" name="sfee2" function="PRODUCTION" type="SIMULATION">
+                <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                <io>
+                    <entry>
+                        <key>0</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="0" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Paused)" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>1</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="1" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>2</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="2" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Running)" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>3</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="3" data_type="BOOL" inverse_logic="false" name="MC1_has_error" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>4</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="4" data_type="BOOL" inverse_logic="false" name="MC1_busy" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>5</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="5" data_type="BOOL" inverse_logic="false" name="MC1_opened" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>6</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>7</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="7" data_type="BOOL" inverse_logic="false" name="s_entry_emitter" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>8</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="8" data_type="BOOL" inverse_logic="false" name="s_entry_remover" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>9</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="9" data_type="BOOL" inverse_logic="false" name="s_exit_emitter" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>10</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="10" data_type="BOOL" inverse_logic="false" name="s_exit_remover" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>11</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>12</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>13</key>
+                        <value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>14</key>
+                        <value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter_emit" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>15</key>
+                        <value address_type="COIL" bit_offset="1" data_type="BOOL" inverse_logic="false" name="entry_conveyor" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>16</key>
+                        <value address_type="COIL" bit_offset="2" data_type="BOOL" inverse_logic="false" name="entry_emitter" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>17</key>
+                        <value address_type="COIL" bit_offset="3" data_type="BOOL" inverse_logic="false" name="entry_remover" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>18</key>
+                        <value address_type="COIL" bit_offset="4" data_type="BOOL" inverse_logic="false" name="exit_conveyor" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>19</key>
+                        <value address_type="COIL" bit_offset="5" data_type="BOOL" inverse_logic="false" name="exit_emitter" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>20</key>
+                        <value address_type="COIL" bit_offset="6" data_type="BOOL" inverse_logic="false" name="exit_remover" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>21</key>
+                        <value address_type="COIL" bit_offset="7" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Pause)" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>22</key>
+                        <value address_type="COIL" bit_offset="8" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>23</key>
+                        <value address_type="COIL" bit_offset="9" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Run)" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>24</key>
+                        <value address_type="COIL" bit_offset="10" data_type="BOOL" inverse_logic="false" name="MC1_reset" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>25</key>
+                        <value address_type="COIL" bit_offset="11" data_type="BOOL" inverse_logic="false" name="MC1_produce" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>26</key>
+                        <value address_type="COIL" bit_offset="12" data_type="BOOL" inverse_logic="false" name="MC1_start" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>27</key>
+                        <value address_type="COIL" bit_offset="13" data_type="BOOL" inverse_logic="false" name="MC1_stop" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>28</key>
+                        <value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>29</key>
+                        <value address_type="INPUT_REGISTER" bit_offset="0" data_type="REAL" inverse_logic="false" name="FACTORY I/O (Time Scale)" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>30</key>
+                        <value address_type="INPUT_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_progress" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>31</key>
+                        <value address_type="INPUT_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="v_MC1_exit" register="0" type="INPUT"/>
+                    </entry>
+                    <entry>
+                        <key>32</key>
+                        <value address_type="HOLDING_REGISTER" bit_offset="0" data_type="INT" inverse_logic="false" name="FACTORY I/O (Camera Position)" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>33</key>
+                        <value address_type="HOLDING_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_counter" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>34</key>
+                        <value address_type="HOLDING_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="Emitter_part" register="0" type="OUTPUT"/>
+                    </entry>
+                    <entry>
+                        <key>35</key>
+                        <value address_type="HOLDING_REGISTER" bit_offset="3" data_type="INT" inverse_logic="false" name="Emitter_base" register="0" type="OUTPUT"/>
+                    </entry>
+                </io>
+                <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                <SFEIs>
+                    <entry>
+                        <key>0</key>
+                        <value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="false" isLine_start="false" min_operation_time="9" name="entry_conveyor" type="CONVEYOR">
+                            <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                            <output_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>1</key>
+                        <value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="false" isLine_start="false" min_operation_time="33" name="MC1" type="MACHINE">
+                            <input_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                            <output_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>2</key>
+                        <value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="true" isLine_start="false" min_operation_time="8" name="exit_conveyor" type="CONVEYOR">
+                            <input_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                            <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                        </value>
+                    </entry>
+                </SFEIs>
+            </SFEE>
+            <sfeeMonitor>
+                <SFEE communication="MODBUS" name="sfee2" function="PRODUCTION" type="SIMULATION">
+                    <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                    <io>
+                        <entry>
+                            <key>0</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="0" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Paused)" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>1</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="1" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>2</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="2" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Running)" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>3</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="3" data_type="BOOL" inverse_logic="false" name="MC1_has_error" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>4</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="4" data_type="BOOL" inverse_logic="false" name="MC1_busy" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>5</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="5" data_type="BOOL" inverse_logic="false" name="MC1_opened" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>6</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>7</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="7" data_type="BOOL" inverse_logic="false" name="s_entry_emitter" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>8</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="8" data_type="BOOL" inverse_logic="false" name="s_entry_remover" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>9</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="9" data_type="BOOL" inverse_logic="false" name="s_exit_emitter" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>10</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="10" data_type="BOOL" inverse_logic="false" name="s_exit_remover" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>11</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>12</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>13</key>
+                            <value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>14</key>
+                            <value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter_emit" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>15</key>
+                            <value address_type="COIL" bit_offset="1" data_type="BOOL" inverse_logic="false" name="entry_conveyor" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>16</key>
+                            <value address_type="COIL" bit_offset="2" data_type="BOOL" inverse_logic="false" name="entry_emitter" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>17</key>
+                            <value address_type="COIL" bit_offset="3" data_type="BOOL" inverse_logic="false" name="entry_remover" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>18</key>
+                            <value address_type="COIL" bit_offset="4" data_type="BOOL" inverse_logic="false" name="exit_conveyor" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>19</key>
+                            <value address_type="COIL" bit_offset="5" data_type="BOOL" inverse_logic="false" name="exit_emitter" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>20</key>
+                            <value address_type="COIL" bit_offset="6" data_type="BOOL" inverse_logic="false" name="exit_remover" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>21</key>
+                            <value address_type="COIL" bit_offset="7" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Pause)" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>22</key>
+                            <value address_type="COIL" bit_offset="8" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>23</key>
+                            <value address_type="COIL" bit_offset="9" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Run)" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>24</key>
+                            <value address_type="COIL" bit_offset="10" data_type="BOOL" inverse_logic="false" name="MC1_reset" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>25</key>
+                            <value address_type="COIL" bit_offset="11" data_type="BOOL" inverse_logic="false" name="MC1_produce" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>26</key>
+                            <value address_type="COIL" bit_offset="12" data_type="BOOL" inverse_logic="false" name="MC1_start" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>27</key>
+                            <value address_type="COIL" bit_offset="13" data_type="BOOL" inverse_logic="false" name="MC1_stop" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>28</key>
+                            <value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>29</key>
+                            <value address_type="INPUT_REGISTER" bit_offset="0" data_type="REAL" inverse_logic="false" name="FACTORY I/O (Time Scale)" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>30</key>
+                            <value address_type="INPUT_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_progress" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>31</key>
+                            <value address_type="INPUT_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="v_MC1_exit" register="0" type="INPUT"/>
+                        </entry>
+                        <entry>
+                            <key>32</key>
+                            <value address_type="HOLDING_REGISTER" bit_offset="0" data_type="INT" inverse_logic="false" name="FACTORY I/O (Camera Position)" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>33</key>
+                            <value address_type="HOLDING_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_counter" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>34</key>
+                            <value address_type="HOLDING_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="Emitter_part" register="0" type="OUTPUT"/>
+                        </entry>
+                        <entry>
+                            <key>35</key>
+                            <value address_type="HOLDING_REGISTER" bit_offset="3" data_type="INT" inverse_logic="false" name="Emitter_base" register="0" type="OUTPUT"/>
+                        </entry>
+                    </io>
+                    <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                    <SFEIs>
+                        <entry>
+                            <key>0</key>
+                            <value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="false" isLine_start="false" min_operation_time="9" name="entry_conveyor" type="CONVEYOR">
+<input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+<output_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>1</key>
+                            <value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="false" isLine_start="false" min_operation_time="33" name="MC1" type="MACHINE">
+<input_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+<output_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                            </value>
+                        </entry>
+                        <entry>
+                            <key>2</key>
+                            <value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="true" isLine_start="false" min_operation_time="8" name="exit_conveyor" type="CONVEYOR">
+<input_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+<output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                            </value>
+                        </entry>
+                    </SFEIs>
+                </SFEE>
+            </sfeeMonitor>
+        </SFEE_production_controllers>
+        <SFEM name="SFEM_Prod#1" type="PRODUCTION">
+            <SFEEs>
+                <entry>
+                    <key>0</key>
+                    <value communication="MODBUS" name="sfee2" function="PRODUCTION" type="SIMULATION">
+                        <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                        <io>
+                            <entry>
+<key>0</key>
+<value address_type="DISCRETE_INPUT" bit_offset="0" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Paused)" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>1</key>
+<value address_type="DISCRETE_INPUT" bit_offset="1" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>2</key>
+<value address_type="DISCRETE_INPUT" bit_offset="2" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Running)" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>3</key>
+<value address_type="DISCRETE_INPUT" bit_offset="3" data_type="BOOL" inverse_logic="false" name="MC1_has_error" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>4</key>
+<value address_type="DISCRETE_INPUT" bit_offset="4" data_type="BOOL" inverse_logic="false" name="MC1_busy" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>5</key>
+<value address_type="DISCRETE_INPUT" bit_offset="5" data_type="BOOL" inverse_logic="false" name="MC1_opened" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>6</key>
+<value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>7</key>
+<value address_type="DISCRETE_INPUT" bit_offset="7" data_type="BOOL" inverse_logic="false" name="s_entry_emitter" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>8</key>
+<value address_type="DISCRETE_INPUT" bit_offset="8" data_type="BOOL" inverse_logic="false" name="s_entry_remover" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>9</key>
+<value address_type="DISCRETE_INPUT" bit_offset="9" data_type="BOOL" inverse_logic="false" name="s_exit_emitter" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>10</key>
+<value address_type="DISCRETE_INPUT" bit_offset="10" data_type="BOOL" inverse_logic="false" name="s_exit_remover" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>11</key>
+<value address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>12</key>
+<value address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>13</key>
+<value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>14</key>
+<value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter_emit" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>15</key>
+<value address_type="COIL" bit_offset="1" data_type="BOOL" inverse_logic="false" name="entry_conveyor" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>16</key>
+<value address_type="COIL" bit_offset="2" data_type="BOOL" inverse_logic="false" name="entry_emitter" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>17</key>
+<value address_type="COIL" bit_offset="3" data_type="BOOL" inverse_logic="false" name="entry_remover" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>18</key>
+<value address_type="COIL" bit_offset="4" data_type="BOOL" inverse_logic="false" name="exit_conveyor" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>19</key>
+<value address_type="COIL" bit_offset="5" data_type="BOOL" inverse_logic="false" name="exit_emitter" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>20</key>
+<value address_type="COIL" bit_offset="6" data_type="BOOL" inverse_logic="false" name="exit_remover" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>21</key>
+<value address_type="COIL" bit_offset="7" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Pause)" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>22</key>
+<value address_type="COIL" bit_offset="8" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>23</key>
+<value address_type="COIL" bit_offset="9" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Run)" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>24</key>
+<value address_type="COIL" bit_offset="10" data_type="BOOL" inverse_logic="false" name="MC1_reset" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>25</key>
+<value address_type="COIL" bit_offset="11" data_type="BOOL" inverse_logic="false" name="MC1_produce" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>26</key>
+<value address_type="COIL" bit_offset="12" data_type="BOOL" inverse_logic="false" name="MC1_start" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>27</key>
+<value address_type="COIL" bit_offset="13" data_type="BOOL" inverse_logic="false" name="MC1_stop" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>28</key>
+<value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>29</key>
+<value address_type="INPUT_REGISTER" bit_offset="0" data_type="REAL" inverse_logic="false" name="FACTORY I/O (Time Scale)" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>30</key>
+<value address_type="INPUT_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_progress" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>31</key>
+<value address_type="INPUT_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="v_MC1_exit" register="0" type="INPUT"/>
+                            </entry>
+                            <entry>
+<key>32</key>
+<value address_type="HOLDING_REGISTER" bit_offset="0" data_type="INT" inverse_logic="false" name="FACTORY I/O (Camera Position)" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>33</key>
+<value address_type="HOLDING_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_counter" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>34</key>
+<value address_type="HOLDING_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="Emitter_part" register="0" type="OUTPUT"/>
+                            </entry>
+                            <entry>
+<key>35</key>
+<value address_type="HOLDING_REGISTER" bit_offset="3" data_type="INT" inverse_logic="false" name="Emitter_base" register="0" type="OUTPUT"/>
+                            </entry>
+                        </io>
+                        <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                        <SFEIs>
+                            <entry>
+<key>0</key>
+<value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="false" isLine_start="false" min_operation_time="9" name="entry_conveyor" type="CONVEYOR">
+    <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+    <output_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+</value>
+                            </entry>
+                            <entry>
+<key>1</key>
+<value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="false" isLine_start="false" min_operation_time="33" name="MC1" type="MACHINE">
+    <input_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+    <output_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+</value>
+                            </entry>
+                            <entry>
+<key>2</key>
+<value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="true" isLine_start="false" min_operation_time="8" name="exit_conveyor" type="CONVEYOR">
+    <input_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+    <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+</value>
+                            </entry>
+                        </SFEIs>
+                    </value>
+                </entry>
+            </SFEEs>
+        </SFEM>
+        <SFEM_monitor>
+            <SFEM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfemProduction" name="SFEM_Prod#1" type="PRODUCTION">
+                <SFEEs>
+                    <entry>
+                        <key>0</key>
+                        <value communication="MODBUS" name="sfee2" function="PRODUCTION" type="SIMULATION">
+                            <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+                            <io>
+<entry>
+    <key>0</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="0" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Paused)" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>1</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="1" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>2</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="2" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Running)" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>3</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="3" data_type="BOOL" inverse_logic="false" name="MC1_has_error" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>4</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="4" data_type="BOOL" inverse_logic="false" name="MC1_busy" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>5</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="5" data_type="BOOL" inverse_logic="false" name="MC1_opened" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>6</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>7</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="7" data_type="BOOL" inverse_logic="false" name="s_entry_emitter" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>8</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="8" data_type="BOOL" inverse_logic="false" name="s_entry_remover" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>9</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="9" data_type="BOOL" inverse_logic="false" name="s_exit_emitter" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>10</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="10" data_type="BOOL" inverse_logic="false" name="s_exit_remover" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>11</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>12</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>13</key>
+    <value address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>14</key>
+    <value address_type="COIL" bit_offset="0" data_type="BOOL" inverse_logic="false" name="Emitter_emit" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>15</key>
+    <value address_type="COIL" bit_offset="1" data_type="BOOL" inverse_logic="false" name="entry_conveyor" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>16</key>
+    <value address_type="COIL" bit_offset="2" data_type="BOOL" inverse_logic="false" name="entry_emitter" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>17</key>
+    <value address_type="COIL" bit_offset="3" data_type="BOOL" inverse_logic="false" name="entry_remover" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>18</key>
+    <value address_type="COIL" bit_offset="4" data_type="BOOL" inverse_logic="false" name="exit_conveyor" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>19</key>
+    <value address_type="COIL" bit_offset="5" data_type="BOOL" inverse_logic="false" name="exit_emitter" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>20</key>
+    <value address_type="COIL" bit_offset="6" data_type="BOOL" inverse_logic="false" name="exit_remover" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>21</key>
+    <value address_type="COIL" bit_offset="7" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Pause)" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>22</key>
+    <value address_type="COIL" bit_offset="8" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Reset)" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>23</key>
+    <value address_type="COIL" bit_offset="9" data_type="BOOL" inverse_logic="false" name="FACTORY I/O (Run)" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>24</key>
+    <value address_type="COIL" bit_offset="10" data_type="BOOL" inverse_logic="false" name="MC1_reset" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>25</key>
+    <value address_type="COIL" bit_offset="11" data_type="BOOL" inverse_logic="false" name="MC1_produce" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>26</key>
+    <value address_type="COIL" bit_offset="12" data_type="BOOL" inverse_logic="false" name="MC1_start" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>27</key>
+    <value address_type="COIL" bit_offset="13" data_type="BOOL" inverse_logic="false" name="MC1_stop" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>28</key>
+    <value address_type="COIL" bit_offset="14" data_type="BOOL" inverse_logic="false" name="Remover" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>29</key>
+    <value address_type="INPUT_REGISTER" bit_offset="0" data_type="REAL" inverse_logic="false" name="FACTORY I/O (Time Scale)" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>30</key>
+    <value address_type="INPUT_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_progress" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>31</key>
+    <value address_type="INPUT_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="v_MC1_exit" register="0" type="INPUT"/>
+</entry>
+<entry>
+    <key>32</key>
+    <value address_type="HOLDING_REGISTER" bit_offset="0" data_type="INT" inverse_logic="false" name="FACTORY I/O (Camera Position)" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>33</key>
+    <value address_type="HOLDING_REGISTER" bit_offset="1" data_type="INT" inverse_logic="false" name="MC1_counter" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>34</key>
+    <value address_type="HOLDING_REGISTER" bit_offset="2" data_type="INT" inverse_logic="false" name="Emitter_part" register="0" type="OUTPUT"/>
+</entry>
+<entry>
+    <key>35</key>
+    <value address_type="HOLDING_REGISTER" bit_offset="3" data_type="INT" inverse_logic="false" name="Emitter_base" register="0" type="OUTPUT"/>
+</entry>
+                            </io>
+                            <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+                            <SFEIs>
+<entry>
+    <key>0</key>
+    <value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="false" isLine_start="false" min_operation_time="9" name="entry_conveyor" type="CONVEYOR">
+        <input_sensor address_type="DISCRETE_INPUT" bit_offset="6" data_type="BOOL" inverse_logic="false" name="s_emitter" register="0" type="INPUT"/>
+        <output_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+    </value>
+</entry>
+<entry>
+    <key>1</key>
+    <value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="false" isLine_start="false" min_operation_time="33" name="MC1" type="MACHINE">
+        <input_sensor address_type="DISCRETE_INPUT" bit_offset="11" data_type="BOOL" inverse_logic="false" name="s_lids_at_entry" register="0" type="INPUT"/>
+        <output_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+    </value>
+</entry>
+<entry>
+    <key>2</key>
+    <value manufacturing_date="2023-03-29T15:34:21.871224100Z" last_maintenance="2023-03-29T15:34:21.871224100Z" isLine_end="true" isLine_start="false" min_operation_time="8" name="exit_conveyor" type="CONVEYOR">
+        <input_sensor address_type="DISCRETE_INPUT" bit_offset="12" data_type="BOOL" inverse_logic="true" name="s_lids_at_exit" register="0" type="INPUT"/>
+        <output_sensor address_type="DISCRETE_INPUT" bit_offset="13" data_type="BOOL" inverse_logic="false" name="s_remover" register="0" type="INPUT"/>
+    </value>
+</entry>
+                            </SFEIs>
+                        </value>
+                    </entry>
+                </SFEEs>
+            </SFEM>
+        </SFEM_monitor>
+    </C_Production>
+</ProductionControllers>

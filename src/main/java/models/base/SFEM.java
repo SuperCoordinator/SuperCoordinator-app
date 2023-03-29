@@ -2,12 +2,16 @@ package models.base;
 
 import models.part_prodTime;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.TreeMap;
 
+//@XmlRootElement(name = "SFEM")
 public class SFEM implements Externalizable {
     public static final long serialVersionUID = 1234L;
 
@@ -23,7 +27,6 @@ public class SFEM implements Externalizable {
         this.sfemType = (SFEM_type) in.readObject();
         this.name = (String) in.readObject();
 
-        this.productionHistory = new TreeMap<>();
     }
 
     public enum SFEM_type {
@@ -33,7 +36,7 @@ public class SFEM implements Externalizable {
 
     private SFEM_type sfemType;
     private String name;
-    private TreeMap<Integer, part_prodTime> productionHistory;
+    private TreeMap<Integer, part_prodTime> productionHistory = new TreeMap<>();
 
     public SFEM() {
     }
@@ -41,21 +44,23 @@ public class SFEM implements Externalizable {
     public SFEM(String name, SFEM_type sfemType) {
         this.sfemType = sfemType;
         this.name = name;
-        this.productionHistory = new TreeMap<>();
     }
 
-    public SFEM_type getSfemType() {
-        return sfemType;
-    }
-
+    @XmlAttribute(name = "name")
     public String getName() {
         return name;
+    }
+
+    @XmlAttribute(name = "type")
+    public SFEM_type getSfemType() {
+        return sfemType;
     }
 
     public void addPartToProductionHistory(part_prodTime producedPart) {
         productionHistory.put(producedPart.part().getId(), producedPart);
     }
 
+    @XmlTransient
     public TreeMap<Integer, part_prodTime> getProductionHistory() {
         return productionHistory;
     }

@@ -5,6 +5,7 @@ import models.base.SFEE;
 import models.SFEx_particular.SFEM_production;
 import monitor.production.SFEM_production_monitor;
 
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -16,12 +17,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+@XmlRootElement(name = "SFEM_prod_controller")
+//@XmlAccessorType(XmlAccessType.FIELD)
+//@XmlType(propOrder = {"SFEM", "SFEM_monitor"})
 public class cSFEM_production implements Externalizable, Runnable {
 
     public static final long serialVersionUID = 1234L;
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
+
         out.writeObject(sfem);
         out.writeObject(sfemMonitor);
         out.writeObject(sfeeControllers);
@@ -32,8 +37,6 @@ public class cSFEM_production implements Externalizable, Runnable {
         this.sfem = (SFEM_production) in.readObject();
         this.sfemMonitor = (SFEM_production_monitor) in.readObject();
         this.sfeeControllers = (ArrayList<cSFEE_production>) in.readObject();
-
-        this.viewer = new viewers.SFEM();
     }
 
     private SFEM_production sfem;
@@ -41,7 +44,7 @@ public class cSFEM_production implements Externalizable, Runnable {
     private SFEM_production_monitor sfemMonitor;
 
     private ArrayList<cSFEE_production> sfeeControllers;
-    private viewers.SFEM viewer;
+    private viewers.SFEM viewer = new viewers.SFEM();
 
     public cSFEM_production() {
     }
@@ -50,12 +53,21 @@ public class cSFEM_production implements Externalizable, Runnable {
         this.sfem = sfem;
 
         this.sfeeControllers = new ArrayList<>();
-        this.viewer = new viewers.SFEM();
-
     }
 
+    @XmlElement(name = "SFEM")
     public SFEM_production getSfem() {
         return sfem;
+    }
+
+    @XmlElement(name = "SFEM_monitor")
+    private SFEM_production_monitor getSfemMonitor() {
+        return sfemMonitor;
+    }
+
+    @XmlElement(name = "SFEE_production_controllers")
+    private ArrayList<cSFEE_production> getSfeeControllers() {
+        return sfeeControllers;
     }
 
     public void init_SFEEs(int nSFEEs) {

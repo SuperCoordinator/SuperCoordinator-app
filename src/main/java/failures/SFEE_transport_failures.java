@@ -5,12 +5,15 @@ import models.base.SFEE;
 import monitor.transport.SFEE_transport_monitor;
 import viewers.SFEE_transport;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.*;
-
+@XmlRootElement(name = "SFEE_trans_failures")
 public class SFEE_transport_failures implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -27,9 +30,6 @@ public class SFEE_transport_failures implements Externalizable {
         this.sfee = (SFEE) in.readObject();
         this.stochasticType = (stochasticTime.timeOptions) in.readObject();
         this.stochasticFormulas = (String[]) in.readObject();
-
-        this.state = SM.INIT;
-        this.old_state = state;
     }
 
     private enum SM {
@@ -51,12 +51,29 @@ public class SFEE_transport_failures implements Externalizable {
         this.sfee = sfee;
         this.stochasticType = stochasticType;
         this.stochasticFormulas = stochasticTime_f;
-
-        this.state = SM.INIT;
-        this.old_state = state;
     }
 
+    @XmlElement(name = "SFEE")
+    private SFEE getSfee(){
+        return sfee;
+    }
+    @XmlAttribute(name = "stochastic_type")
+    private stochasticTime.timeOptions getStochasticType(){
+        return stochasticType;
+    }
+    @XmlElement(name = "stochastic_formulas")
+    private String[] getStochasticFormulas() {
+        return stochasticFormulas;
+    }
+
+    private boolean first_exe = true;
+
     public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
+        if (first_exe) {
+            this.state = SM.INIT;
+            this.old_state = state;
+            first_exe = false;
+        }
 
         switch (state) {
             case INIT -> {

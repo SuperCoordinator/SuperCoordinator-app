@@ -3,7 +3,10 @@ package models.base;
 import failures.newVersion.failure_occurrence;
 import models.sensor_actuator;
 import org.apache.commons.math3.util.Pair;
+import utils.InstantAdapter;
 
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -14,6 +17,9 @@ import java.util.Comparator;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+//@XmlRootElement(name = "SFEI")
+//@XmlAccessorType(XmlAccessType.FIELD)
+//@XmlType(propOrder = {"name", "type", "min_operation_time", "manufacturing_date", "last_maintenance", "isLine_start", "isLine_end", "input_sensor", "output_sensor"})
 public class SFEI implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -25,8 +31,8 @@ public class SFEI implements Externalizable {
         out.writeObject(inSensor);
         out.writeObject(outSensor);
         out.writeLong(minOperationTime);
-        out.writeObject(partsATM);
-        out.writeInt(nPiecesMoved);
+/*        out.writeObject(partsATM);
+        out.writeInt(nPiecesMoved);*/
         out.writeObject(dayOfBirth);
         out.writeObject(dayOfLastMaintenance);
         out.writeBoolean(line_start);
@@ -41,15 +47,16 @@ public class SFEI implements Externalizable {
         this.outSensor = (sensor_actuator) in.readObject();
         this.minOperationTime = in.readLong();
 
-        this.partsATM = (TreeSet<part>) in.readObject();
-        this.nPiecesMoved = in.readInt();
+//        this.partsATM = (TreeSet<part>) in.readObject();
+//        this.nPiecesMoved = in.readInt();
         this.dayOfBirth = (Instant) in.readObject();
         this.dayOfLastMaintenance = (Instant) in.readObject();
         this.line_start = in.readBoolean();
         this.line_end = in.readBoolean();
 
+/*        this.partsATM = new TreeSet<>(partsOrder.INSTANCE);
         this.failuresHistory = new TreeMap<>();
-        this.breakdownHistory = new ArrayList<>();
+        this.breakdownHistory = new ArrayList<>();*/
 
     }
 
@@ -64,14 +71,14 @@ public class SFEI implements Externalizable {
     private sensor_actuator inSensor;
     private sensor_actuator outSensor;
     private long minOperationTime;
-    private TreeSet<part> partsATM;
-    private int nPiecesMoved;
+    private TreeSet<part> partsATM = new TreeSet<>(partsOrder.INSTANCE);
+    private int nPiecesMoved = 0;
     private Instant dayOfBirth;
     private Instant dayOfLastMaintenance;
 
-    private TreeMap<Integer, failure_occurrence> failuresHistory;
+    private TreeMap<Integer, failure_occurrence> failuresHistory = new TreeMap<>();
 
-    private ArrayList<Pair<Integer, Instant>> breakdownHistory;
+    private ArrayList<Pair<Integer, Instant>> breakdownHistory = new ArrayList<>();
 
     private boolean line_start;
     private boolean line_end;
@@ -88,12 +95,10 @@ public class SFEI implements Externalizable {
         this.dayOfBirth = dayOfBirth;
         this.dayOfLastMaintenance = dayOfLastMaintenance;
 
-        this.nPiecesMoved = 0;
+/*        this.nPiecesMoved = 0;
         this.partsATM = new TreeSet<>(partsOrder.INSTANCE);
-
         this.failuresHistory = new TreeMap<>();
-
-        this.breakdownHistory = new ArrayList<>();
+        this.breakdownHistory = new ArrayList<>();*/
 
         this.line_start = line_start;
         this.line_end = line_end;
@@ -108,22 +113,27 @@ public class SFEI implements Externalizable {
         }
     }
 
+    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
 
+    @XmlAttribute(name = "type")
     public SFEI_type getSfeiType() {
         return sfeiType;
     }
 
+    @XmlElement(name = "input_sensor")
     public sensor_actuator getInSensor() {
         return inSensor;
     }
 
+    @XmlElement(name = "output_sensor")
     public sensor_actuator getOutSensor() {
         return outSensor;
     }
 
+    @XmlAttribute(name = "min_operation_time")
     public long getMinOperationTime() {
         return minOperationTime;
     }
@@ -132,6 +142,7 @@ public class SFEI implements Externalizable {
         this.minOperationTime = minOperationTime;
     }
 
+    @XmlTransient
     public synchronized TreeSet<part> getPartsATM() {
         return partsATM;
     }
@@ -140,6 +151,7 @@ public class SFEI implements Externalizable {
         this.partsATM.add(partATM);
     }
 
+    @XmlTransient
     public int getnPiecesMoved() {
         return nPiecesMoved;
     }
@@ -148,10 +160,14 @@ public class SFEI implements Externalizable {
         this.nPiecesMoved = nPiecesMoved;
     }
 
+    @XmlAttribute(name = "manufacturing_date", required = true)
+    @XmlJavaTypeAdapter(InstantAdapter.class)
     public Instant getDayOfBirth() {
         return dayOfBirth;
     }
 
+    @XmlAttribute(name = "last_maintenance", required = true)
+    @XmlJavaTypeAdapter(InstantAdapter.class)
     public Instant getDayOfLastMaintenance() {
         return dayOfLastMaintenance;
     }
@@ -176,10 +192,12 @@ public class SFEI implements Externalizable {
         breakdownHistory.add(event);
     }
 
+    @XmlAttribute(name = "isLine_start")
     public boolean isLine_start() {
         return line_start;
     }
 
+    @XmlAttribute(name = "isLine_end")
     public boolean isLine_end() {
         return line_end;
     }

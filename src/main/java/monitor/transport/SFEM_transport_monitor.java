@@ -1,8 +1,6 @@
 package monitor.transport;
 
-import models.SFEx_particular.SFEM_production;
 import models.SFEx_particular.SFEM_transport;
-import models.base.SFEE;
 import models.base.SFEI;
 import models.base.SFEM;
 import models.base.part;
@@ -10,6 +8,7 @@ import models.part_prodTime;
 import monitor.base.SFEM_monitor;
 
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -17,7 +16,8 @@ import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-
+//@XmlRootElement(name = "SFEM_trans_monitor")
+@XmlRootElement(name = "SFEM_monitor")
 public class SFEM_transport_monitor extends SFEM_monitor implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -87,9 +87,9 @@ public class SFEM_transport_monitor extends SFEM_monitor implements Externalizab
 
         // search for inOut sensor of SFEM : in from SFEE(0) / out from SFEE(size-1) ;
 
-        String inSFEM_sensor = sfem.getSfeeTransport().getInSensor().name();
+        String inSFEM_sensor = sfem.getSfeeTransport().getInSensor().getName();
 
-        String outSFEM_sensor = sfem.getSfeeTransport().getOutSensor().name();
+        String outSFEM_sensor = sfem.getSfeeTransport().getOutSensor().getName();
 
         // Calculate the time between those SFEIs
         TreeMap<String, Instant> subTree = new TreeMap<>();

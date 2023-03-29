@@ -1,7 +1,5 @@
 package communication;
 
-import models.base.SFEE;
-import models.base.SFEI;
 import models.sensor_actuator;
 import net.wimpi.modbus.procimg.SimpleRegister;
 import utils.utils;
@@ -11,6 +9,8 @@ import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.util.BitVector;
 
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -19,10 +19,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
-import java.util.concurrent.atomic.AtomicLongArray;
 
+@XmlRootElement(name = "MB_param")
 public class modbus implements Runnable, Externalizable {
     public static final long serialVersionUID = 1234L;
 
@@ -90,14 +89,17 @@ public class modbus implements Runnable, Externalizable {
         connect();
     }
 
+    @XmlAttribute
     public String getIp() {
         return ip;
     }
 
+    @XmlAttribute
     public int getPort() {
         return port;
     }
 
+    @XmlAttribute
     public int getSlaveID() {
         return slaveID;
     }
@@ -127,21 +129,21 @@ public class modbus implements Runnable, Externalizable {
 
     private void detectInverseLogicIO() {
         ArrayList<sensor_actuator> inputs = new ArrayList<>(util.getSearch().getSensorsOrActuators(io, true).values());
-        inputs.removeIf(sensorActuator -> !sensorActuator.addressType().equals(sensor_actuator.AddressType.DISCRETE_INPUT));
+        inputs.removeIf(sensorActuator -> !sensorActuator.getAddressType().equals(sensor_actuator.AddressType.DISCRETE_INPUT));
 
         if (inputs.size() > 0) {
             inputs_invLogic = new boolean[inputs.size()];
             for (int i = 0; i < inputs.size(); i++) {
-                inputs_invLogic[i] = inputs.get(i).invLogic();
+                inputs_invLogic[i] = inputs.get(i).getInvLogic();
             }
         }
         ArrayList<sensor_actuator> outputs = new ArrayList<>(util.getSearch().getSensorsOrActuators(io, false).values());
-        outputs.removeIf(sensorActuator -> !sensorActuator.addressType().equals(sensor_actuator.AddressType.COIL));
+        outputs.removeIf(sensorActuator -> !sensorActuator.getAddressType().equals(sensor_actuator.AddressType.COIL));
 
         if (outputs.size() > 0) {
             outputs_invLogic = new boolean[outputs.size()];
             for (int i = 0; i < outputs.size(); i++) {
-                outputs_invLogic[i] = outputs.get(i).invLogic();
+                outputs_invLogic[i] = outputs.get(i).getInvLogic();
             }
         }
 

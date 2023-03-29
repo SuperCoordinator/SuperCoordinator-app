@@ -6,11 +6,15 @@ import models.base.SFEE;
 import monitor.transport.SFEM_transport_monitor;
 import org.apache.commons.math3.util.Pair;
 
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+@XmlRootElement(name = "SFEM_trans_controller")
+//@XmlAccessorType(XmlAccessType.FIELD)
+//@XmlType(propOrder = {"SFEM", "SFEM_monitor"})
 public class cSFEM_transport implements Runnable, Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -28,7 +32,6 @@ public class cSFEM_transport implements Runnable, Externalizable {
         this.sfemTransportMonitor = (SFEM_transport_monitor) in.readObject();
         this.sfeeTransportController = (cSFEE_transport) in.readObject();
 
-        this.viewer = new viewers.SFEM_transport();
     }
 
     private SFEM_transport sfem;
@@ -36,15 +39,28 @@ public class cSFEM_transport implements Runnable, Externalizable {
 
     private cSFEE_transport sfeeTransportController;
 
-    private viewers.SFEM_transport viewer;
+    private viewers.SFEM_transport viewer = new viewers.SFEM_transport();
 
     public cSFEM_transport() {
     }
 
     public cSFEM_transport(SFEM_transport sfemTransport) {
         this.sfem = sfemTransport;
+    }
 
-        this.viewer = new viewers.SFEM_transport();
+    @XmlElement(name = "SFEM")
+    private SFEM_transport getSfem() {
+        return sfem;
+    }
+
+    @XmlElement(name = "SFEM_monitor")
+    private SFEM_transport_monitor getSfemTransportMonitor() {
+        return sfemTransportMonitor;
+    }
+
+    @XmlElement(name = "SFEE_controller")
+    private cSFEE_transport getSfeeTransportController() {
+        return sfeeTransportController;
     }
 
     public void init_SFEE_transport() {

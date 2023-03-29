@@ -3,6 +3,7 @@ package models.base;
 import models.partsAspect;
 import org.apache.commons.math3.util.Pair;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -10,10 +11,9 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.TreeMap;
 import java.util.TreeSet;
+public class part /*implements Externalizable*/ {
 
-public class part implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
+   /* public static final long serialVersionUID = 1234L;
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt(id);
@@ -34,7 +34,7 @@ public class part implements Externalizable {
         this.defect = in.readBoolean();
         this.waitTransport = in.readBoolean();
         this.produced = in.readBoolean();
-    }
+    }*/
 
 
     private int id;

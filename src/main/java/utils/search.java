@@ -1,9 +1,7 @@
 package utils;
 
 import models.sensor_actuator;
-import org.apache.commons.math3.util.Pair;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.util.*;
 
 public class search {
@@ -15,10 +13,10 @@ public class search {
             treeMap.forEach(
                     (obj_key, obj_val) -> {
                         if (is_sensor) {
-                            if (obj_val.type().equals(sensor_actuator.Type.INPUT))
+                            if (obj_val.getType().equals(sensor_actuator.Type.INPUT))
                                 rTreeMap.put(obj_key, obj_val);
                         } else {
-                            if (obj_val.type().equals(sensor_actuator.Type.OUTPUT))
+                            if (obj_val.getType().equals(sensor_actuator.Type.OUTPUT))
                                 rTreeMap.put(obj_key, obj_val);
                         }
                     });
@@ -36,13 +34,13 @@ public class search {
         boolean first = true;
         try {
             for (sensor_actuator sa : treeMap.values()) {
-                if (sa.type() == sensor_actuator.Type.INPUT) {
+                if (sa.getType() == sensor_actuator.Type.INPUT) {
                     if (first) {
                         largestOff = sa;
                         first = false;
                         continue;
                     }
-                    if (largestOff.bit_offset() < sa.bit_offset())
+                    if (largestOff.getBit_offset() < sa.getBit_offset())
                         largestOff = sa;
                 }
             }
@@ -57,13 +55,13 @@ public class search {
         boolean first = true;
         try {
             for (sensor_actuator sa : treeMap.values()) {
-                if (sa.type() == sensor_actuator.Type.OUTPUT) {
+                if (sa.getType() == sensor_actuator.Type.OUTPUT) {
                     if (first) {
                         largestOff = sa;
                         first = false;
                         continue;
                     }
-                    if (largestOff.bit_offset() < sa.bit_offset())
+                    if (largestOff.getBit_offset() < sa.getBit_offset())
                         largestOff = sa;
                 }
             }
@@ -79,7 +77,7 @@ public class search {
         int[] cnts = new int[]{0, 0, 0, 0};
 
         for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
-            switch (entry.getValue().addressType()) {
+            switch (entry.getValue().getAddressType()) {
                 case COIL -> cnts[0]++;
                 case DISCRETE_INPUT -> cnts[1]++;
                 case INPUT_REGISTER -> cnts[2]++;

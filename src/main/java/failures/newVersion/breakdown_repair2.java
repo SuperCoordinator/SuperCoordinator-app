@@ -100,7 +100,7 @@ public class breakdown_repair2 extends failures_conditions {
             case DISABLED -> {
                 if (state != old_state) {
                     // IF SFEI == conveyor !!
-                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().bit_offset(), 1);
+                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().getBit_offset(), 1);
 //                        sfeiConveyor.addBreakdown(new Pair<>(sfeiConveyor.getnPiecesMoved(), Instant.now()));
                     failure_occurrence.activationVariable actVar = null;
                     if (wasActivated_by_N()) {
@@ -121,7 +121,7 @@ public class breakdown_repair2 extends failures_conditions {
             }
             case REPAIRED -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().bit_offset(), 0);
+                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().getBit_offset(), 0);
 
                     Instant t = Instant.now();
                     newOccurrence.setEnd_t(t);

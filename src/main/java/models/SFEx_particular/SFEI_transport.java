@@ -5,15 +5,20 @@ import models.base.part;
 import models.partsAspect;
 import models.sensor_actuator;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.time.Instant;
 
+//@XmlRootElement(name = "SFEI_transport")
+@XmlRootElement(name = "SFEI")
 public class SFEI_transport extends SFEI implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
+
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
@@ -35,7 +40,6 @@ public class SFEI_transport extends SFEI implements Externalizable {
     }
 
     private sensor_actuator aRemover;
-
     private sensor_actuator aEmitter;
     private sensor_actuator aEmitterPart;
     private sensor_actuator aEmitterBase;
@@ -53,18 +57,22 @@ public class SFEI_transport extends SFEI implements Externalizable {
         this.aEmitterBase = aEmitterBase;
     }
 
+    @XmlElement(name = "remover_actuator")
     public sensor_actuator getaRemover() {
         return aRemover;
     }
 
+    @XmlElement(name = "emitter_actuator")
     public sensor_actuator getaEmitter() {
         return aEmitter;
     }
 
+    @XmlElement(name = "emitter_part_actuator")
     public sensor_actuator getaEmitterPart() {
         return aEmitterPart;
     }
 
+    @XmlElement(name = "emitter_base_actuator")
     public sensor_actuator getaEmitterBase() {
         return aEmitterBase;
     }

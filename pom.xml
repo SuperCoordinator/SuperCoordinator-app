@@ -99,6 +99,20 @@
             <version>3.6.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <!-- JAXB RI -->
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.4</version>
+        </dependency>
+
+
 
     </dependencies>
 

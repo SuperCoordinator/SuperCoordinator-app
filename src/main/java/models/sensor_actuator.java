@@ -1,13 +1,17 @@
 package models;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+@XmlRootElement(name = "sensor_actuator")
 public final class sensor_actuator implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
+
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(name);
@@ -84,34 +88,41 @@ public final class sensor_actuator implements Externalizable {
     }
 
     public sensor_actuator changeInvLogic(boolean invLogic) {
-        return new sensor_actuator(name(), type(), invLogic, dataType(), addressType(), register(), bit_offset());
+        return new sensor_actuator(getName(), getType(), invLogic, getDataType(), getAddressType(), getRegister(), getBit_offset());
     }
 
-    public String name() {
+    @XmlAttribute(name = "name")
+    public String getName() {
         return name;
     }
 
-    public Type type() {
+    @XmlAttribute(name = "type")
+    public Type getType() {
         return type;
     }
 
-    public boolean invLogic() {
-        return invLogic;
-    }
-
-    public DataType dataType() {
+    @XmlAttribute(name = "data_type")
+    public DataType getDataType() {
         return dataType;
     }
 
-    public AddressType addressType() {
+    @XmlAttribute(name = "address_type")
+    public AddressType getAddressType() {
         return addressType;
     }
 
-    public int register() {
+    @XmlAttribute(name = "inverse_logic")
+    public boolean getInvLogic() {
+        return invLogic;
+    }
+
+    @XmlAttribute(name = "register")
+    public int getRegister() {
         return register;
     }
 
-    public int bit_offset() {
+    @XmlAttribute(name = "bit_offset")
+    public int getBit_offset() {
         return bit_offset;
     }
 
