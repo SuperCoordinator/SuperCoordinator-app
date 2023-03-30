@@ -97,7 +97,7 @@ public class cSFEE_production implements Externalizable {
         return mb;
     }
 
-    private operationMode getOpMode() {
+/*    private operationMode getOpMode() {
         return opMode;
     }
 
@@ -107,7 +107,7 @@ public class cSFEE_production implements Externalizable {
 
     private SFEE_failures2 getSfeeFailures2() {
         return sfeeFailures2;
-    }
+    }*/
 
     public void init(int scene) {
         try {

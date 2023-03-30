@@ -46,7 +46,7 @@ public class SFEE_failures2 implements Externalizable {
     }
 
     private SM state;
-//    @XmlElement
+    //    @XmlElement
     private SFEE sfee;
     private LinkedList<stochasticTime> stochasticTimeTasks = new LinkedList<>();
     @XmlElement
@@ -152,9 +152,7 @@ public class SFEE_failures2 implements Externalizable {
                                 produceMore2.loop(sensorsState.get(0), actuatorsState.get(0));
                                 if (produceMore2.isActive()) {
                                     state = SM.PRODUCE_MORE;
-                                } /*else {
-                                    state = SM.STOCHASTIC;
-                                }*/
+                                } /*ELSE state = SM.STOCHASTIC; */
                             }
                         }
                     }

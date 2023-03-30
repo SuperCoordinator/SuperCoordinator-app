@@ -3,61 +3,44 @@
     <c_Transport>
         <sfem sfemType="TRANSPORT" name="SFEM_Trans#0">
             <sfeeTransport sfeeType="SIMULATION" sfeeFunction="TRANSPORT" com="MODBUS" name="SFEE_Connection_test">
-                <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT"
-                          register="0" bitOffset="13"/>
-                <outSensor name="s_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT"
-                           register="0" bitOffset="14"/>
+                <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                <outSensor name="s_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="14"/>
                 <io>
                     <entry>
                         <key>0</key>
-                        <value name="s_remover" type="INPUT" invLogic="false" dataType="BOOL"
-                               addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                        <value name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
                     </entry>
                     <entry>
                         <key>1</key>
-                        <value name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL"
-                               register="0" bitOffset="14"/>
+                        <value name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
                     </entry>
                     <entry>
                         <key>2</key>
-                        <value name="s_emitter2" type="INPUT" invLogic="false" dataType="BOOL"
-                               addressType="DISCRETE_INPUT" register="0" bitOffset="14"/>
+                        <value name="s_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="14"/>
                     </entry>
                     <entry>
                         <key>3</key>
-                        <value name="Emitter2_emit" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL"
-                               register="0" bitOffset="15"/>
+                        <value name="Emitter2_emit" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="15"/>
                     </entry>
                     <entry>
                         <key>4</key>
-                        <value name="Emitter2_part" type="OUTPUT" invLogic="false" dataType="INT"
-                               addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
+                        <value name="Emitter2_part" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
                     </entry>
                     <entry>
                         <key>5</key>
-                        <value name="Emitter2_base" type="OUTPUT" invLogic="false" dataType="INT"
-                               addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
+                        <value name="Emitter2_base" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
                     </entry>
                 </io>
                 <SFEIs>
                     <entry>
                         <key>0</key>
-                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport"
-                               name="sfei_transport" sfeiType="TRANSPORT" minOperationTime="0"
-                               manufacturing_date="2023-03-29T18:54:37.369233600Z"
-                               last_maintenance="2023-03-29T18:54:37.369233600Z" lineStart="false" lineEnd="false">
-                            <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL"
-                                      addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
-                            <outSensor name="s_emitter2" type="INPUT" invLogic="false" dataType="BOOL"
-                                       addressType="DISCRETE_INPUT" register="0" bitOffset="14"/>
-                            <aRemover name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL"
-                                      register="0" bitOffset="14"/>
-                            <aEmitter name="Emitter2_emit" type="OUTPUT" invLogic="false" dataType="BOOL"
-                                      addressType="COIL" register="0" bitOffset="15"/>
-                            <aEmitterPart name="Emitter2_part" type="OUTPUT" invLogic="false" dataType="INT"
-                                          addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
-                            <aEmitterBase name="Emitter2_base" type="OUTPUT" invLogic="false" dataType="INT"
-                                          addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
+                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="sfei_transport" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-03-30T09:03:25.949063800Z" last_maintenance="2023-03-30T09:03:25.949063800Z" lineStart="false" lineEnd="false">
+                            <inSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                            <outSensor name="s_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="14"/>
+                            <aRemover name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
+                            <aEmitter name="Emitter2_emit" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="15"/>
+                            <aEmitterPart name="Emitter2_part" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
+                            <aEmitterBase name="Emitter2_base" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
                         </value>
                     </entry>
                 </SFEIs>
@@ -65,8 +48,9 @@
         </sfem>
         <sfeeTransportController prevSFEEName="sfee1" nextSFEEName="sfee2">
             <sfeeMonitor/>
-            <sfeeFailures stochasticType="LINEAR">
-                <stochasticFormulas>10</stochasticFormulas>
+            <sfeeFailures stochasticType="GAUSSIAN">
+                <stochasticFormulas>10 </stochasticFormulas>
+                <stochasticFormulas>2 </stochasticFormulas>
             </sfeeFailures>
         </sfeeTransportController>
     </c_Transport>

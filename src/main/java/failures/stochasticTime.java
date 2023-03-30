@@ -315,6 +315,10 @@ public class stochasticTime {
                         coils_inMB.set(sfeiTransport.getaRemover().getBit_offset(), 1);
                         initial_t = Instant.now();
                         isRemoverON = true;
+                        // PREPARE THE NEXT EMITTER for correct type
+                        // +5 to ignore boxes [1;4] boxes, as well as 14
+                        holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
+
                     }
                     sensor = (int) discreteInputs_inMB.get(sfeiTransport.getInSensor().getBit_offset()) == 1;
                     if (utility.getLogicalOperator().FE_detector(sensor, old_sRemover)) {

@@ -2,7 +2,9 @@ package failures;
 
 import communication.modbus;
 import models.base.SFEE;
+import models.base.part;
 import monitor.transport.SFEE_transport_monitor;
+import org.apache.commons.lang3.SerializationUtils;
 import viewers.SFEE_transport;
 
 import javax.xml.bind.annotation.*;
@@ -39,7 +41,7 @@ public class SFEE_transport_failures implements Externalizable {
     }
 
     private SM state, old_state;
-//    @XmlElement
+    //    @XmlElement
     private SFEE sfee;
 
     private stochasticTime stochasticTimeTask;
@@ -102,8 +104,10 @@ public class SFEE_transport_failures implements Externalizable {
             }
             case PROCESS_STOCHASTIC -> {
                 if (old_state != state) {
+
                     stochasticTimeTask = new stochasticTime(
                             sfee.getSFEIbyIndex(0),
+                            /*new part(sfee.getSFEIbyIndex(0).getPartsATM().first()),*/
                             sfee.getSFEIbyIndex(0).getPartsATM().first(),
                             stochasticType,
                             stochasticFormulas,

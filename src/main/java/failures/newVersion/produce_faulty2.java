@@ -65,7 +65,9 @@ public class produce_faulty2 extends failures_conditions {
         switch (state) {
             case WORKING -> {
                 if (evalConditions(nParts, age, maintenance)) {
-                    state = SM.WAITING_PART_POSITIONING;
+                    // in this case the machine should have parts in buffer
+                    if (sfeiMachine.getPartsATM().size() > 0)
+                        state = SM.WAITING_PART_POSITIONING;
                 }
             }
             case WAITING_PART_POSITIONING -> {

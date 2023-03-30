@@ -11,6 +11,7 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 public class part /*implements Externalizable*/ {
 
    /* public static final long serialVersionUID = 1234L;
@@ -49,6 +50,7 @@ public class part /*implements Externalizable*/ {
 
     public part() {
     }
+
     public part(int id, partsAspect expectedPart) {
         this.id = id;
         this.expectation = expectedPart;
@@ -58,6 +60,16 @@ public class part /*implements Externalizable*/ {
         this.waitTransport = false;
         this.produced = false;
     }
+
+//    public part(part forCopy) {
+//        this.id = forCopy.getId();
+//        this.expectation = forCopy.getExpectation();
+//        this.itemTimestamps = forCopy.getTimestamps();
+//        this.reality = forCopy.getReality();
+//        this.defect = forCopy.isDefect();
+//        this.waitTransport = forCopy.isWaitTransport();
+//        this.produced = forCopy.isProduced();
+//    }
 
     public int getId() {
         return id;
