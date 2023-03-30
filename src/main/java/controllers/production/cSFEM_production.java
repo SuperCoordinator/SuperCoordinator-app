@@ -118,6 +118,14 @@ public class cSFEM_production implements Externalizable, Runnable {
                         sfeeController.init(3);
                     else
                         sfeeController.init(4);
+                } else if (scene == 2) {
+                    if (i == 0)
+                        sfeeController.init(5);
+                    else if (i == 1) {
+                        sfeeController.init(6);
+                    } else if (i == 2) {
+                        sfeeController.init(7);
+                    }
                 }
 
                 firstRun(false, i);

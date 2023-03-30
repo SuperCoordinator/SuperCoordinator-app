@@ -40,6 +40,9 @@ public class App {
                 } else if (app.scene.equals(serializer.scenes.CMC2_con_individual)) {
                     nModules = 2;
                     nSFEE = 1;
+                } else if (app.scene.equals(serializer.scenes.sorting_station)) {
+                    nModules = 1;
+                    nSFEE = 3;
                 }
 
                 for (int i = 0; i < nModules; i++) {
@@ -65,7 +68,11 @@ public class App {
 /*            System.out.println("How many Transport SFEModules ?");
             String str = in.nextLine();
             int nModules = Integer.parseInt(str);*/
-                nModules = 1;
+                if (app.scene.equals(serializer.scenes.sorting_station))
+                    nModules = 0;
+                else
+                    nModules = 1;
+
                 for (int i = 0; i < nModules; i++) {
 
                     SFEM_transport sfemTransport = new SFEM_transport("SFEM_Trans#" + i);
@@ -89,7 +96,7 @@ public class App {
                 app.serialize_trans();
                 app.saveXML_trans();
 
-                exit(0);
+//                exit(0);
 
             } else {
                 // Load existing configuration files

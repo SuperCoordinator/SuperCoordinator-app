@@ -124,6 +124,10 @@ public class cSFEE_production implements Externalizable {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC2-connection_Modbus.csv";
                     importIO(csv_path, scene);
                 }
+                case 5, 6, 7 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\simulation\\Tags_sorting_station_Modbus.csv";
+                    importIO(csv_path, scene);
+                }
                 default -> {
                     String csv_path = viewer.readIOpath();
                     importIO(csv_path, 0);
@@ -235,6 +239,51 @@ public class cSFEE_production implements Externalizable {
                         "s_exit_emitter",
                         false,
                         true);
+            }
+            if (scene == 5) {
+                addNewSFEI_conveyor(
+                        "metal_entry",
+                        "s_metal",
+                        "s_metal_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        "metal_conveyor",
+                        "",
+                        "",
+                        "",
+                        "",
+                        true,
+                        false);
+            }
+            if (scene == 6) {
+                addNewSFEI_conveyor(
+                        "green_entry",
+                        "s_green",
+                        "s_green_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        "green_conveyor",
+                        "",
+                        "",
+                        "",
+                        "",
+                        true,
+                        false);
+            }
+            if (scene == 7) {
+                addNewSFEI_conveyor(
+                        "blue_entry",
+                        "s_blue",
+                        "s_blue_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        "blue_conveyor",
+                        "",
+                        "",
+                        "",
+                        "",
+                        true,
+                        false);
             }
 
 

@@ -1,27 +1,24 @@
 package utils.serialize;
 
 import controllers.production.cSFEM_production;
-import controllers.transport.cSFEM_transport;
 import models.base.SFEE;
 import org.apache.commons.math3.util.Pair;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class serializer {
 
     public enum scenes {
         CMC_connection,
-        CMC2_con_individual
+        CMC2_con_individual,
+        sorting_station
     }
 
-    public final scenes scene = scenes.CMC_connection;
+    public final scenes scene = scenes.sorting_station;
     private final String prod_filePath = "blocks/" + scene + "/saves/tests/SFEM_production";
     private final String trans_filePath = "blocks/" + scene + "/saves/tests/SFEM_transport";
 
