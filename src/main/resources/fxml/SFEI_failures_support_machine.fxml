@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="170.0" prefWidth="690.0" styleClass="bkg" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" prefHeight="170.0" prefWidth="690.0" spacing="10.0">
+         <padding>
+            <Insets left="30.0" right="30.0" />
+         </padding>
+         <children>
+            <VBox alignment="CENTER" prefHeight="160.0" prefWidth="345.0">
+               <children>
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Product Type">
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </Text>
+                  <RadioButton mnemonicParsing="false" prefWidth="55.0" text="Base" textFill="WHITE">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="part_type" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton mnemonicParsing="false" prefWidth="55.0" text="Lid  " textFill="WHITE" toggleGroup="$part_type" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="160.0" prefWidth="345.0">
+               <children>
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Machine Door Sensor" />
+                  <ComboBox fx:id="sDoor" prefWidth="200.0" promptText="Door Sensor" styleClass="comboBox_default" />
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Stop Actuator">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Text>
+                  <ComboBox fx:id="aStop" prefWidth="200.0" promptText="Stop" styleClass="comboBox_default" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

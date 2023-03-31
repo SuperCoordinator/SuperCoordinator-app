@@ -10,8 +10,10 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.sensor_actuator;
+import utils.utils;
 
 import java.io.File;
+import java.util.TreeMap;
 
 public class C_SFEE_communication {
 
@@ -36,6 +38,11 @@ public class C_SFEE_communication {
     }
 
     private File file;
+    private TreeMap<Integer, sensor_actuator> io;
+
+    public TreeMap<Integer, sensor_actuator> getIo() {
+        return io;
+    }
 
     @FXML
     void importCSV(ActionEvent event) {
@@ -45,20 +52,22 @@ public class C_SFEE_communication {
         f_chooser.setTitle("Select File");
 
         // set initial File
-        f_chooser.setInitialDirectory(new File("c:\\"));
+        f_chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         file = f_chooser.showOpenDialog(stage);
         if (file != null)
             System.out.println(file.getPath());
 
+        utils utility = new utils();
+        io = utility.getReader().readModbusTags(file.getPath(), 0, false);
+        System.out.println(io.size());
     }
 
     @FXML
     void importManually(ActionEvent event) {
 
     }
-
 
 
 }

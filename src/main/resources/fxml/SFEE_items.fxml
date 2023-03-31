@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="655.0" prefWidth="1044.0" styleClass="bkg" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text fill="WHITE" layoutX="-20.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitles" text="SFEIs" textAlignment="CENTER" wrappingWidth="200.0" x="35.0" y="70.0" />
+      <TreeView fx:id="treeView_SFEIs" layoutX="15.0" layoutY="115.0" prefHeight="425.0" prefWidth="200.0" />
+      <Text fx:id="title" fill="WHITE" layoutX="238.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitles" wrappingWidth="556.0" />
+      <Pane fx:id="newSFEI_Pane" layoutX="238.0" layoutY="115.0" prefHeight="500.0" prefWidth="780.0" />
+      <HBox alignment="CENTER" layoutX="15.0" layoutY="549.0" prefHeight="40.0" prefWidth="200.0">
+         <children>
+            <Button fx:id="add_sfei" alignment="CENTER" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="40.0" prefWidth="40.0" textAlignment="CENTER">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/Plus_64px.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Pane prefHeight="40.0" prefWidth="21.0" />
+            <Button fx:id="edit_sfei" alignment="CENTER" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="40.0" prefWidth="40.0" textAlignment="CENTER">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/edit_64px.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Pane prefHeight="40.0" prefWidth="21.0" />
+            <Button fx:id="remove_sfei" alignment="CENTER" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="40.0" prefWidth="40.0" textAlignment="CENTER">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/minus_64px.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

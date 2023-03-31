@@ -34,9 +34,8 @@ public class C_SFEM_layout implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        dummy.add("SFEM0");
-        dummy.add("SFEM1");
-        dummy.add("SFEM2");
+        dummy.add("dummy0");
+        dummy.add("dummy1");
         listSFEMs.getItems().addAll(dummy);
         sfem_name.setText(layout_name);
 
@@ -82,7 +81,6 @@ public class C_SFEM_layout implements Initializable {
                 .immediate();
 
         if (validator.validate()) {
-
             dummy.add(sfem_name.getText());
             // ADD new SFEM
             listSFEMs.setItems(FXCollections.observableArrayList(dummy));

@@ -1,14 +1,12 @@
 package viewers.mediators;
 
-import viewers.controllers.SFEE.C_SFEE_communication;
-import viewers.controllers.SFEE.C_SFEE_failure;
-import viewers.controllers.SFEE.C_SFEE_finish;
-import viewers.controllers.SFEE.C_SFEE_properties;
+import viewers.controllers.SFEE.*;
 
 public class CM_SFEE implements IMC_SFEE {
 
     private C_SFEE_properties properties;
     private C_SFEE_communication communication;
+    private C_SFEE_items items;
     private C_SFEE_failure failure;
     private C_SFEE_finish finish;
 
@@ -23,6 +21,11 @@ public class CM_SFEE implements IMC_SFEE {
     }
 
     @Override
+    public void registerC_SFEE_body_items(C_SFEE_items controller) {
+        this.items = controller;
+    }
+
+    @Override
     public void registerC_SFEE_body_failure(C_SFEE_failure controller) {
         this.failure = controller;
     }
@@ -32,13 +35,16 @@ public class CM_SFEE implements IMC_SFEE {
         this.finish = controller;
     }
 
-
     public C_SFEE_properties getProperties() {
         return properties;
     }
 
     public C_SFEE_communication getCommunication() {
         return communication;
+    }
+
+    public C_SFEE_items getItems() {
+        return items;
     }
 
     public C_SFEE_failure getFailure() {
