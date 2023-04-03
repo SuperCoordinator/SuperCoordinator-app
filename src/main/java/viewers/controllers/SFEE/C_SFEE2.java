@@ -5,15 +5,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import net.synedra.validatorfx.Validator;
 import viewers.controllers.C_SFEM_layout;
 import viewers.mediators.CM_SFEE;
 
@@ -30,6 +30,11 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
         CM_SFEE.getInstance().registerC_SFEE_body_items(new C_SFEE_items());
         CM_SFEE.getInstance().registerC_SFEE_body_failure(new C_SFEE_failure());
         CM_SFEE.getInstance().registerC_SFEE_body_finish(new C_SFEE_finish());
+
+        toggleComunication.setDisable(true);
+        toggleItems.setDisable(true);
+        toggleFailure.setDisable(true);
+        toggleFinish.setDisable(true);
     }
 
     private enum Panes {
@@ -59,6 +64,10 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
     @FXML
     private ToggleGroup bar;
 
+    @FXML
+    private ImageView error_icon;
+    @FXML
+    private Tooltip errorMsg;
     @FXML
     private Button next;
 
@@ -126,31 +135,40 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
 
         switch (selected.getText()) {
             case "Properties" -> {
-                if (!CM_SFEE.getInstance().getProperties().validation_moveON()) {
-                    Validator validator = new Validator();
-                    validator
-                            .createCheck()
-                            .withMethod(c -> {
-                                c.error("All fields must be selected");
-                            })
-                            .decorates(next)
-                            .immediate();
-                } else {
-
+                if (CM_SFEE.getInstance().getProperties().validation_moveON()) {
                     activePane = Panes.COMMUNICATION;
+                    toggleComunication.setDisable(false);
                     toggleComunication.requestFocus();
                     bar.selectToggle(toggleComunication);
+                } else {
+                    error_icon.setVisible(true);
+                    errorMsg.setText(CM_SFEE.getInstance().getProperties().getErrorMsg());
+                    next.setTooltip(errorMsg);
                 }
             }
             case "Communication" -> {
-                activePane = Panes.ITEMS;
-                toggleItems.requestFocus();
-                bar.selectToggle(toggleItems);
+                if (CM_SFEE.getInstance().getCommunication().validation_moveON()) {
+                    activePane = Panes.ITEMS;
+                    toggleItems.setDisable(false);
+                    toggleItems.requestFocus();
+                    bar.selectToggle(toggleItems);
+                } else {
+                    error_icon.setVisible(true);
+                    errorMsg.setText(CM_SFEE.getInstance().getCommunication().getErrorMsg());
+                    next.setTooltip(errorMsg);
+                }
             }
             case "Items" -> {
-                activePane = Panes.FAILURE;
-                toggleFailure.requestFocus();
-                bar.selectToggle(toggleFailure);
+                if (CM_SFEE.getInstance().getItems().validation_moveON()) {
+                    activePane = Panes.FAILURE;
+                    toggleFailure.setDisable(true);
+                    toggleFailure.requestFocus();
+                    bar.selectToggle(toggleFailure);
+                } else {
+                    error_icon.setVisible(true);
+                    errorMsg.setText(CM_SFEE.getInstance().getItems().getErrorMsg());
+                    next.setTooltip(errorMsg);
+                }
             }
             case "Failure" -> {
                 activePane = Panes.FINISH;
@@ -174,7 +192,10 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEE_" + name + ".fxml"));
             switch (activePane) {
-                case PROPERTIES -> loader.setController(CM_SFEE.getInstance().getProperties());
+                case PROPERTIES -> {
+                    CM_SFEE.getInstance().getProperties().activatePreviousValues();
+                    loader.setController(CM_SFEE.getInstance().getProperties());
+                }
                 case COMMUNICATION -> {
                     loader.setController(CM_SFEE.getInstance().getCommunication());
                 }
@@ -191,6 +212,5 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

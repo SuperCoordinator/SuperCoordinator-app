@@ -69,6 +69,7 @@ public class SFEI implements Externalizable {
         MACHINE,
         TRANSPORT
     }
+
     @XmlAttribute
     private String name;
     @XmlAttribute
@@ -89,6 +90,8 @@ public class SFEI implements Externalizable {
     @XmlJavaTypeAdapter(InstantAdapter.class)
     private Instant dayOfLastMaintenance;
 
+    private boolean supportsFailures;
+
     private TreeMap<Integer, failure_occurrence> failuresHistory = new TreeMap<>();
 
     private ArrayList<Pair<Integer, Instant>> breakdownHistory = new ArrayList<>();
@@ -101,18 +104,14 @@ public class SFEI implements Externalizable {
     }
 
     public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
-                boolean line_start, boolean line_end) {
+                boolean supportsFailures, boolean line_start, boolean line_end) {
         this.name = name;
         this.sfeiType = sfeiType;
         this.inSensor = inSensor;
         this.outSensor = outSensor;
         this.dayOfBirth = dayOfBirth;
         this.dayOfLastMaintenance = dayOfLastMaintenance;
-
-/*        this.nPiecesMoved = 0;
-        this.partsATM = new TreeSet<>(partsOrder.INSTANCE);
-        this.failuresHistory = new TreeMap<>();
-        this.breakdownHistory = new ArrayList<>();*/
+        this.supportsFailures = supportsFailures;
 
         this.line_start = line_start;
         this.line_end = line_end;
@@ -127,27 +126,27 @@ public class SFEI implements Externalizable {
         }
     }
 
-//    @XmlAttribute(name = "name")
+    //    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
 
-//    @XmlAttribute(name = "type")
+    //    @XmlAttribute(name = "type")
     public SFEI_type getSfeiType() {
         return sfeiType;
     }
 
-//    @XmlElement(name = "input_sensor")
+    //    @XmlElement(name = "input_sensor")
     public sensor_actuator getInSensor() {
         return inSensor;
     }
 
-//    @XmlElement(name = "output_sensor")
+    //    @XmlElement(name = "output_sensor")
     public sensor_actuator getOutSensor() {
         return outSensor;
     }
 
-//    @XmlAttribute(name = "min_operation_time")
+    //    @XmlAttribute(name = "min_operation_time")
     public long getMinOperationTime() {
         return minOperationTime;
     }
@@ -156,7 +155,7 @@ public class SFEI implements Externalizable {
         this.minOperationTime = minOperationTime;
     }
 
-//    @XmlTransient
+    //    @XmlTransient
     public synchronized TreeSet<part> getPartsATM() {
         return partsATM;
     }
@@ -165,7 +164,7 @@ public class SFEI implements Externalizable {
         this.partsATM.add(partATM);
     }
 
-//    @XmlTransient
+    //    @XmlTransient
     public int getnPiecesMoved() {
         return nPiecesMoved;
     }
@@ -174,13 +173,13 @@ public class SFEI implements Externalizable {
         this.nPiecesMoved = nPiecesMoved;
     }
 
-//    @XmlAttribute(name = "manufacturing_date", required = true)
+    //    @XmlAttribute(name = "manufacturing_date", required = true)
 //    @XmlJavaTypeAdapter(InstantAdapter.class)
     public Instant getDayOfBirth() {
         return dayOfBirth;
     }
 
-//    @XmlAttribute(name = "last_maintenance", required = true)
+    //    @XmlAttribute(name = "last_maintenance", required = true)
 //    @XmlJavaTypeAdapter(InstantAdapter.class)
     public Instant getDayOfLastMaintenance() {
         return dayOfLastMaintenance;
@@ -206,12 +205,12 @@ public class SFEI implements Externalizable {
         breakdownHistory.add(event);
     }
 
-//    @XmlAttribute(name = "isLine_start")
+    //    @XmlAttribute(name = "isLine_start")
     public boolean isLine_start() {
         return line_start;
     }
 
-//    @XmlAttribute(name = "isLine_end")
+    //    @XmlAttribute(name = "isLine_end")
     public boolean isLine_end() {
         return line_end;
     }

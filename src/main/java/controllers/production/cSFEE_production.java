@@ -151,11 +151,13 @@ public class cSFEE_production implements Externalizable {
                         "s_lids_at_entry",
                         Instant.now(),
                         Instant.now(),
-                        "entry_conveyor",
+                        true,
+                        true,
                         "entry_remover",
                         "entry_emitter",
                         "s_entry_remover",
                         "s_entry_emitter",
+                        "entry_conveyor",
                         true,
                         false);
                 addNewSFEI_machine(
@@ -165,6 +167,7 @@ public class cSFEE_production implements Externalizable {
                         "s_lids_at_exit",
                         Instant.now(),
                         Instant.now(),
+                        true,
                         "MC1_produce",
                         "MC1_opened",
                         "MC1_stop",
@@ -176,11 +179,13 @@ public class cSFEE_production implements Externalizable {
                         "s_remover",
                         Instant.now(),
                         Instant.now(),
-                        "exit_conveyor",
+                        true,
+                        true,
                         "exit_remover",
                         "exit_emitter",
                         "s_exit_remover",
                         "s_exit_emitter",
+                        "exit_conveyor",
                         false,
                         false);
             }
@@ -191,11 +196,13 @@ public class cSFEE_production implements Externalizable {
                         "s_lids_at_entry2",
                         Instant.now(),
                         Instant.now(),
-                        "entry_conveyor2",
+                        true,
+                        true,
                         "entry_remover2",
                         "entry_emitter2",
                         "s_entry_remover2",
                         "s_entry_emitter2",
+                        "entry_conveyor2",
                         false,
                         true);
             }
@@ -207,11 +214,13 @@ public class cSFEE_production implements Externalizable {
                         "s_lids_at_entry",
                         Instant.now(),
                         Instant.now(),
-                        "entry_conveyor",
+                        true,
+                        true,
                         "entry_remover",
                         "entry_emitter",
                         "s_entry_remover",
                         "s_entry_emitter",
+                        "entry_conveyor",
                         false,
                         false);
                 addNewSFEI_machine(
@@ -221,6 +230,7 @@ public class cSFEE_production implements Externalizable {
                         "s_lids_at_exit",
                         Instant.now(),
                         Instant.now(),
+                        true,
                         "MC1_produce",
                         "MC1_opened",
                         "MC1_stop",
@@ -232,11 +242,13 @@ public class cSFEE_production implements Externalizable {
                         "s_remover",
                         Instant.now(),
                         Instant.now(),
-                        "exit_conveyor",
+                        true,
+                        true,
                         "exit_remover",
                         "exit_emitter",
                         "s_exit_remover",
                         "s_exit_emitter",
+                        "exit_conveyor",
                         false,
                         true);
             }
@@ -247,11 +259,13 @@ public class cSFEE_production implements Externalizable {
                         "s_metal_remover",
                         Instant.now(),
                         Instant.now(),
+                        true,
+                        false,
+                        "",
+                        "",
+                        "",
+                        "",
                         "metal_conveyor",
-                        "",
-                        "",
-                        "",
-                        "",
                         true,
                         false);
             }
@@ -262,11 +276,13 @@ public class cSFEE_production implements Externalizable {
                         "s_green_remover",
                         Instant.now(),
                         Instant.now(),
+                        true,
+                        true,
+                        "",
+                        "",
+                        "",
+                        "",
                         "green_conveyor",
-                        "",
-                        "",
-                        "",
-                        "",
                         true,
                         false);
             }
@@ -277,11 +293,13 @@ public class cSFEE_production implements Externalizable {
                         "s_blue_remover",
                         Instant.now(),
                         Instant.now(),
+                        true,
+                        true,
+                        "",
+                        "",
+                        "",
+                        "",
                         "blue_conveyor",
-                        "",
-                        "",
-                        "",
-                        "",
                         true,
                         false);
             }
@@ -334,6 +352,7 @@ public class cSFEE_production implements Externalizable {
             if (sfeiType == 1) {
                 if (sfee.getSFEE_type().equals(SFEE.SFEE_type.SIMULATION)) {
 
+/*
                     addNewSFEI_conveyor(
                             inputs[0],
                             inputs[1],
@@ -347,9 +366,10 @@ public class cSFEE_production implements Externalizable {
                             inputs[9],
                             inputs[10].contains("y"),
                             inputs[11].contains("y"));
+*/
 
                 } else {
-                    addNewSFEI_conveyor(
+/*                    addNewSFEI_conveyor(
                             inputs[0],
                             inputs[1],
                             inputs[2],
@@ -357,7 +377,7 @@ public class cSFEE_production implements Externalizable {
                             Instant.parse(inputs[4]),
                             inputs[5],
                             inputs[6].contains("y"),
-                            inputs[7].contains("y"));
+                            inputs[7].contains("y"));*/
                 }
             } else if (sfeiType == 2) {
 /*                addNewSFEI_machine(
@@ -414,26 +434,34 @@ public class cSFEE_production implements Externalizable {
     /* ***********************************
                     SFEI
     ************************************ */
-    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor, String aRemover, String aEmitter, String sRemover, String sEmitter, boolean is_line_start, boolean is_line_end) {
+    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportFailures, String aRemover, String aEmitter, String sRemover, String sEmitter, String aConveyorMotor, boolean is_line_start, boolean is_line_end) {
 
-        sensor_actuator[] vector = new sensor_actuator[4];
+        sensor_actuator[] vector = new sensor_actuator[5];
         vector[0] = sfee.getIObyName(aRemover);
         vector[1] = sfee.getIObyName(aEmitter);
         vector[2] = sfee.getIObyName(sRemover);
         vector[3] = sfee.getIObyName(sEmitter);
-        SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, is_line_start, is_line_end, sfee.getIObyName(conveyorMotor), vector);
+        vector[4] = sfee.getIObyName(aConveyorMotor);
+        SFEI_conveyor newObj = new SFEI_conveyor(
+                name,
+                SFEI.SFEI_type.CONVEYOR,
+                sfee.getIObyName(inSensor),
+                sfee.getIObyName(outSensor),
+                dayOfBirth, dayOfLastMaintenance,
+                isSimulation, supportFailures, is_line_start, is_line_end,
+                vector);
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
 
     }
 
-    public SFEI_conveyor addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor, boolean is_line_start, boolean is_line_end) {
+/*    public SFEI_conveyor addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor, boolean is_line_start, boolean is_line_end) {
         SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, is_line_start, is_line_end, sfee.getIObyName(conveyorMotor));
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
         return newObj;
-    }
+    }*/
 
-    public void addNewSFEI_machine(String name, partsAspect.form partForm, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String produce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
-        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, partForm, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, is_line_start, is_line_end, sfee.getIObyName(produce), sfee.getIObyName(sDoor), sfee.getIObyName(aStop));
+    public void addNewSFEI_machine(String name, partsAspect.form partForm, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean supportsFailures, String produce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
+        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, partForm, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, supportsFailures, is_line_start, is_line_end, sfee.getIObyName(produce), sfee.getIObyName(sDoor), sfee.getIObyName(aStop));
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
 
     }

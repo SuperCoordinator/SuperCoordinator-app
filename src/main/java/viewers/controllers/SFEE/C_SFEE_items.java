@@ -3,18 +3,24 @@ package viewers.controllers.SFEE;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.TreeView;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import models.sensor_actuator;
 import viewers.controllers.SFEI.C_SFEI;
+import viewers.controllers.SFEI.C_SFEI_conveyor;
+import viewers.mediators.CM_SFEE;
 
+import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.TreeMap;
 
-public class C_SFEE_items {
+public class C_SFEE_items implements Initializable {
 
     private C_SFEI sfeisController;
     private TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
@@ -37,7 +43,11 @@ public class C_SFEE_items {
     @FXML
     private Text title;
     @FXML
-    private TreeView<?> treeView_SFEIs;
+    private TreeView<String> treeView_SFEIs;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+    }
 
     @FXML
     void buttonPressed(ActionEvent event) {
@@ -90,5 +100,45 @@ public class C_SFEE_items {
             e.printStackTrace();
         }*/
     }
+
+    private String errorMsg;
+
+    public boolean validation_moveON() {
+
+        if (sfeisController.getSfeiConveyors().size() == 0 || sfeisController.getSfeiMachines().size() == 0) {
+            errorMsg = "Add SFEIs to the SFEE !";
+            return false;
+        }
+        return true;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    @FXML
+    public void updateTreeView(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        for (Node node : stage.getScene().getRoot().getChildrenUnmodifiable()) {
+            System.out.println(node.getId());
+            TextField title = (TextField) node.lookup("#SFEE_name");
+            if (title != null) {
+                System.out.println(title.getText());
+                TreeItem<String> rootItem = new TreeItem<>(title.getText());
+
+
+                System.out.println(getSfeisController().getSfeiConveyors().size());
+                for (C_SFEI_conveyor conveyor : getSfeisController().getSfeiConveyors()) {
+                    TreeItem<String> branchItem = new TreeItem<>(conveyor.getSfeiConveyor().getName());
+                    rootItem.getChildren().add(branchItem);
+                }
+                treeView_SFEIs.setRoot(rootItem);
+            }
+        }
+
+//        TreeItem<String> rootItem = new TreeItem<>(node.getAccessibleText());
+    }
+
 
 }

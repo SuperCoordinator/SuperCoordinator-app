@@ -9,12 +9,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx_particular.SFEI_machine;
 import models.base.SFEI;
 import models.sensor_actuator;
 import utils.utils;
+import viewers.mediators.CM_SFEE;
 import viewers.mediators.CM_SFEI;
 
 import java.net.URL;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.*;
 
 public class C_SFEI extends CM_SFEI implements Initializable {
@@ -36,12 +41,7 @@ public class C_SFEI extends CM_SFEI implements Initializable {
     }
 
     @FXML
-    private ToggleGroup end_item;
-    @FXML
-    private ToggleGroup failures_support;
-    @FXML
-    private ToggleGroup start_item;
-
+    private TextField sfeiName;
     @FXML
     private ComboBox<String> sfei_type;
     @FXML
@@ -56,6 +56,18 @@ public class C_SFEI extends CM_SFEI implements Initializable {
     @FXML
     private Pane failures_pane;
 
+    @FXML
+    private ToggleGroup simulation;
+
+    @FXML
+    private ToggleGroup failures_support;
+    @FXML
+    private ToggleGroup end_item;
+    @FXML
+    private ToggleGroup start_item;
+
+    private C_SFEI_conveyor cSfeiConveyor;
+    private C_SFEI_machine cSfeiMachine;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -71,9 +83,14 @@ public class C_SFEI extends CM_SFEI implements Initializable {
         values_str.clear();
         TreeMap<Integer, sensor_actuator> inputs = utility.getSearch().getSensorsOrActuators(io, true);
         for (Map.Entry<Integer, sensor_actuator> entry : inputs.entrySet())
-            values_str.add(entry.getValue().getBit_offset() + " - " + entry.getValue().getName());
+            values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());
         input_sensor.setItems(FXCollections.observableArrayList(values_str));
         output_sensor.setItems(FXCollections.observableArrayList(values_str));
+
+        // Initialize both, then only one will be added in the arrays
+        cSfeiConveyor = new C_SFEI_conveyor(io);
+        cSfeiMachine = new C_SFEI_machine(io);
+
     }
 
     @FXML
@@ -82,12 +99,9 @@ public class C_SFEI extends CM_SFEI implements Initializable {
 
         switch (temp.getId()) {
             case "sfei_type" -> {
-                System.out.println(temp.getId());
                 show_failure_support_pane(event);
             }
-            case "input_sensor" -> {
-                System.out.println(temp.getId());
-            }
+
         }
 
     }
@@ -103,33 +117,117 @@ public class C_SFEI extends CM_SFEI implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI_failures_support_" + type + ".fxml"));
 
                 if (type.equalsIgnoreCase("conveyor")) {
-                    System.out.println("ENTROU NO CONVEYOR COMO È SUPOSTO");
-                    C_SFEI_conveyor controller = new C_SFEI_conveyor(io);
-                    registerC_SFEI_conveyor(controller);
-                    loader.setController(controller);
+//                    registerC_SFEI_conveyor(cSfeiConveyor);
+                    loader.setController(cSfeiConveyor);
                 } else {
-                    C_SFEI_machine controller = new C_SFEI_machine(io);
-                    registerC_SFEI_machine(controller);
-                    loader.setController(controller);
+//                    registerC_SFEI_machine(cSfeiMachine);
+                    loader.setController(cSfeiMachine);
                 }
 
                 AnchorPane pane = loader.load();
                 failures_pane.getChildren().setAll(pane);
 
             } else {
-                AnchorPane pane = new AnchorPane();
-                failures_pane.getChildren().setAll(pane);
+                cleanFailuresPane();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private final utils utility = new utils();
+
     @FXML
-    void buttonPressed(ActionEvent event){
+    void buttonPressed(ActionEvent event) {
         Button temp = (Button) event.getSource();
-        if(temp.getId().equalsIgnoreCase("add")){
+        ToggleButton failures_btn = (ToggleButton) failures_support.getSelectedToggle();
+        // Assumed to be the add button temp.getText()
+        switch (sfei_type.getValue().toLowerCase()) {
             // Add new SFEI
+            case "conveyor" -> {
+                if (failures_btn.getText().equalsIgnoreCase("yes")) {
+                    SFEI_conveyor newObj = new SFEI_conveyor(
+                            sfeiName.getText(),
+                            SFEI.SFEI_type.CONVEYOR,
+                            utility.getSearch().getIObyName(input_sensor.getValue(), io),
+                            utility.getSearch().getIObyName(output_sensor.getValue(), io),
+                            Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+                            Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+                            CM_SFEE.getInstance().getProperties().getEnvironment().equalsIgnoreCase("simulation"),
+                            true,
+                            ((ToggleButton) start_item.getSelectedToggle()).getText().equals("yes"),
+                            ((ToggleButton) end_item.getSelectedToggle()).getText().equals("yes"),
+                            cSfeiConveyor.getSensAct());
+
+                    cSfeiConveyor.setSfeiConveyor(newObj);
+                    registerC_SFEI_conveyor(cSfeiConveyor);
+
+                } else {
+                    SFEI_conveyor newObj = new SFEI_conveyor(
+                            sfeiName.getText(),
+                            SFEI.SFEI_type.CONVEYOR,
+                            utility.getSearch().getIObyName(input_sensor.getValue(), io),
+                            utility.getSearch().getIObyName(output_sensor.getValue(), io),
+                            Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+                            Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+                            CM_SFEE.getInstance().getProperties().getEnvironment().equalsIgnoreCase("simulation"),
+                            false,
+                            ((ToggleButton) start_item.getSelectedToggle()).getText().equals("yes"),
+                            ((ToggleButton) end_item.getSelectedToggle()).getText().equals("yes"),
+                            new sensor_actuator[5]);
+
+                    cSfeiConveyor.setSfeiConveyor(newObj);
+                    registerC_SFEI_conveyor(cSfeiConveyor);
+                }
+            }
+            case "machine" -> {
+                if (failures_btn.getText().equalsIgnoreCase("yes")) {
+                    SFEI_machine newObj = new SFEI_machine(
+                            sfeiName.getText(),
+                            SFEI.SFEI_type.CONVEYOR,
+                            utility.getSearch().getIObyName(input_sensor.getValue(), io),
+                            utility.getSearch().getIObyName(output_sensor.getValue(), io),
+                            Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+                            Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+                            CM_SFEE.getInstance().getProperties().getEnvironment().equalsIgnoreCase("simulation"),
+                            true,
+                            ((ToggleButton) start_item.getSelectedToggle()).getText().equals("yes"),
+                            ((ToggleButton) end_item.getSelectedToggle()).getText().equals("yes"),
+                            cSfeiConveyor.getSensAct());
+
+                    cSfeiMachine.setSfeiMachine(newObj);
+                    registerC_SFEI_machine(cSfeiMachine);
+
+                } else {
+                    SFEI_conveyor newObj = new SFEI_conveyor(
+                            sfeiName.getText(),
+                            SFEI.SFEI_type.CONVEYOR,
+                            utility.getSearch().getIObyName(input_sensor.getValue(), io),
+                            utility.getSearch().getIObyName(output_sensor.getValue(), io),
+                            Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+                            Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+                            CM_SFEE.getInstance().getProperties().getEnvironment().equalsIgnoreCase("simulation"),
+                            false,
+                            ((ToggleButton) start_item.getSelectedToggle()).getText().equals("yes"),
+                            ((ToggleButton) end_item.getSelectedToggle()).getText().equals("yes"),
+                            new sensor_actuator[5]);
+
+                    cSfeiMachine.setSfeiMachine(newObj);
+                    registerC_SFEI_machine(cSfeiMachine);
+                }
+            }
         }
+
+        cleanFailuresPane();
+
+
     }
 
+    private void cleanFailuresPane() {
+        AnchorPane pane = new AnchorPane();
+        failures_pane.getChildren().setAll(pane);
+    }
 }
+
+
+

@@ -51,30 +51,32 @@ public class SFEI_machine extends SFEI implements Externalizable {
     }
 
     public SFEI_machine(String name, SFEI_type sfeiType, partsAspect.form partForm, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
-                        boolean line_start, boolean line_end, sensor_actuator aProduce, sensor_actuator sDoor, sensor_actuator aStop) {
-        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, line_start, line_end);
+                        boolean supportsFailures, boolean line_start, boolean line_end, sensor_actuator aProduce, sensor_actuator sDoor, sensor_actuator aStop) {
+        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, supportsFailures, line_start, line_end);
         this.partForm = partForm;
         this.aProduce = aProduce;
-        this.sDoor = sDoor;
-        this.aStop = aStop;
+        if (supportsFailures) {
+            this.sDoor = sDoor;
+            this.aStop = aStop;
+        }
     }
 
-//    @XmlAttribute(name = "part_form")
+    //    @XmlAttribute(name = "part_form")
     public partsAspect.form getPartForm() {
         return partForm;
     }
 
-//    @XmlElement(name = "produce_actuator")
+    //    @XmlElement(name = "produce_actuator")
     public sensor_actuator getaProduce() {
         return aProduce;
     }
 
-//    @XmlElement(name = "door_sensor")
+    //    @XmlElement(name = "door_sensor")
     public sensor_actuator getsDoor() {
         return sDoor;
     }
 
-//    @XmlElement(name = "stop_actuator")
+    //    @XmlElement(name = "stop_actuator")
     public sensor_actuator getaStop() {
         return aStop;
     }

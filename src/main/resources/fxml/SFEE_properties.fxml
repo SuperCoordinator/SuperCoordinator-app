@@ -19,13 +19,13 @@
               </Text>
               <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="950.0">
                   <children>
-                      <ToggleButton mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" styleClass="button_default" text="Simulation" textFill="#d9d9d9">
+                      <ToggleButton fx:id="sim_tb" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" styleClass="button_default" text="Simulation" textFill="#d9d9d9">
                           <toggleGroup>
                               <ToggleGroup fx:id="env" />
                           </toggleGroup>
                       </ToggleButton>
                       <Pane prefHeight="50.0" prefWidth="45.0" />
-                      <ToggleButton mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" styleClass="button_default" text="Real" textFill="#d9d9d9" toggleGroup="$env" />
+                      <ToggleButton fx:id="real_tb" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" styleClass="button_default" text="Real" textFill="#d9d9d9" toggleGroup="$env" />
                   </children>
                   <VBox.margin>
                       <Insets />
@@ -41,13 +41,13 @@
               </Text>
               <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="950.0">
                   <children>
-                      <ToggleButton mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" styleClass="button_default" text="Production" textFill="#d9d9d9">
+                      <ToggleButton fx:id="prod_tb" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" styleClass="button_default" text="Production" textFill="#d9d9d9">
                           <toggleGroup>
                               <ToggleGroup fx:id="func" />
                           </toggleGroup>
                       </ToggleButton>
                       <Pane prefHeight="50.0" prefWidth="45.0" />
-                      <ToggleButton mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" styleClass="button_default" text="Transport" textFill="#d9d9d9" toggleGroup="$func" />
+                      <ToggleButton fx:id="trans_tb" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" styleClass="button_default" text="Transport" textFill="#d9d9d9" toggleGroup="$func" />
                   </children>
                   <padding>
                       <Insets left="30.0" right="30.0" />

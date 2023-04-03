@@ -39,6 +39,7 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
         this.isSimulation = in.readBoolean();
 
     }
+
     @XmlElement
     private sensor_actuator aRemover;
     @XmlElement
@@ -57,6 +58,25 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
     }
 
     public SFEI_conveyor(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
+                         Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation,
+                         boolean supportsFailures, boolean line_start, boolean line_end, sensor_actuator[] sensorActuators) {
+        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, supportsFailures, line_start, line_end);
+
+        if (supportsFailures && isSimulation) {
+            this.aRemover = sensorActuators[0];
+            this.aEmitter = sensorActuators[1];
+            this.sRemover = sensorActuators[2];
+            this.sEmitter = sensorActuators[3];
+            this.aConveyorMotor = sensorActuators[4];
+            this.isSimulation = true;
+        } else if (supportsFailures) {
+            this.aConveyorMotor = sensorActuators[4];
+            this.isSimulation = false;
+        }
+
+    }
+
+/*    public SFEI_conveyor(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
                          Instant dayOfBirth, Instant dayOfLastMaintenance, boolean line_start, boolean line_end,
                          sensor_actuator aConveyorMotor, sensor_actuator[] sensorActuators) {
         super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, line_start, line_end);
@@ -74,34 +94,34 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
         super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, line_start, line_end);
         this.aConveyorMotor = aConveyorMotor;
         this.isSimulation = false;
-    }
+    }*/
 
-//    @XmlElement(name = "remover_actuator")
+    //    @XmlElement(name = "remover_actuator")
     public sensor_actuator getaRemover() {
         return aRemover;
     }
 
-//    @XmlElement(name = "emitter_actuator")
+    //    @XmlElement(name = "emitter_actuator")
     public sensor_actuator getaEmitter() {
         return aEmitter;
     }
 
-//    @XmlElement(name = "remover_sensor")
+    //    @XmlElement(name = "remover_sensor")
     public sensor_actuator getsRemover() {
         return sRemover;
     }
 
-//    @XmlElement(name = "emitter_sensor")
+    //    @XmlElement(name = "emitter_sensor")
     public sensor_actuator getsEmitter() {
         return sEmitter;
     }
 
-//    @XmlElement(name = "conveyor_motor")
+    //    @XmlElement(name = "conveyor_motor")
     public sensor_actuator getaConveyorMotor() {
         return aConveyorMotor;
     }
 
-//    @XmlAttribute(name = "is_simulation")
+    //    @XmlAttribute(name = "is_simulation")
     public boolean isSimulation() {
         return isSimulation;
     }

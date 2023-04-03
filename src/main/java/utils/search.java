@@ -86,4 +86,18 @@ public class search {
         }
         return cnts;
     }
+
+    public sensor_actuator getIObyName(String name, TreeMap<Integer, sensor_actuator> io) {
+
+        try {
+            for (Map.Entry<Integer, sensor_actuator> entry : io.entrySet()) {
+                if (entry.getValue().getName().equalsIgnoreCase(name))
+                    return entry.getValue();
+            }
+            throw new Exception("IO with name " + name + " not found!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

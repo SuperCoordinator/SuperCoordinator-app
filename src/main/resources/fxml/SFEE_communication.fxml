@@ -83,12 +83,13 @@
                               <Insets left="30.0" top="20.0" />
                            </VBox.margin>
                         </Text>
-                        <TableView fx:id="inputsTable" fixedCellSize="124.0" prefHeight="266.0" prefWidth="485.0">
+                        <TableView fx:id="inputsTable" fixedCellSize="124.0" onMouseClicked="#doubleClick" prefHeight="266.0" prefWidth="485.0" styleClass="listview">
                            <columns>
-                              <TableColumn prefWidth="124.0" resizable="false" text="Name" />
-                              <TableColumn prefWidth="125.0" resizable="false" text="Type" />
-                              <TableColumn prefWidth="125.0" resizable="false" text="Data Type" />
-                              <TableColumn prefWidth="124.0" resizable="false" text="Address" />
+                              <TableColumn fx:id="inName" prefWidth="125.0" text="Name" />
+                              <TableColumn fx:id="inDataType" prefWidth="90.0" text="Data Type" />
+                              <TableColumn fx:id="inAddress" prefWidth="125.0" text="Address" />
+                              <TableColumn fx:id="inBit" prefWidth="60.0" text="Bit" />
+                              <TableColumn fx:id="inInvLogic" prefWidth="85.0" text="Inv Logic" />
                            </columns>
                            <VBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -109,10 +110,10 @@
                         </Text>
                         <TableView fx:id="outputsTable" fixedCellSize="124.0" prefHeight="262.0" prefWidth="486.0">
                            <columns>
-                              <TableColumn prefWidth="124.0" resizable="false" text="Name" />
-                              <TableColumn prefWidth="124.0" resizable="false" text="Type" />
-                              <TableColumn prefWidth="124.0" resizable="false" text="Data Type" />
-                              <TableColumn prefWidth="124.0" resizable="false" text="Address" />
+                              <TableColumn fx:id="outName" prefWidth="124.0" text="Name" />
+                              <TableColumn fx:id="outDataType" prefWidth="124.0" text="Data Type" />
+                              <TableColumn fx:id="outAddress" prefWidth="124.0" text="Address" />
+                              <TableColumn fx:id="outBit" prefWidth="124.0" text="Bit" />
                            </columns>
                            <VBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

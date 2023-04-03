@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane prefHeight="655.0" prefWidth="1044.0" styleClass="bkg" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Text fill="WHITE" layoutX="-20.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitles" text="SFEIs" textAlignment="CENTER" wrappingWidth="200.0" x="35.0" y="70.0" />
@@ -43,6 +42,16 @@
                   <ImageView fitHeight="30.0" fitWidth="30.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../icons/minus_64px.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Pane prefHeight="40.0" prefWidth="21.0" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#updateTreeView" prefHeight="40.0" prefWidth="40.0" textAlignment="CENTER">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/refresh_64px.png" />
                      </image>
                   </ImageView>
                </graphic>

@@ -127,7 +127,8 @@ public class SFEE implements Externalizable {
 
         try {
             for (Map.Entry<Integer, sensor_actuator> entry : io.entrySet()) {
-                if (entry.getValue().getName().equalsIgnoreCase(name)) return entry.getValue();
+                if (entry.getValue().getName().equalsIgnoreCase(name))
+                    return entry.getValue();
             }
             throw new Exception("IO with name " + name + " not found!");
         } catch (Exception e) {

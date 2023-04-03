@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -20,8 +21,13 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="140.0" prefWidth="266.0" spacing="5.0">
                      <children>
-                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="SFEI Type" textAlignment="CENTER" wrappingWidth="74.9453125" />
-                        <ComboBox fx:id="sfei_type" onAction="#comboBoxPressed" prefWidth="200.0" promptText="SFEI Type" styleClass="comboBox_default" />
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="SFEI Name" textAlignment="CENTER" wrappingWidth="106.9453125" />
+                        <TextField fx:id="sfeiName" alignment="TOP_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="200.0" promptText="SFEI name" styleClass="text_field" />
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="SFEI Type" textAlignment="CENTER" wrappingWidth="74.9453125">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin></Text>
+                        <ComboBox fx:id="sfei_type" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#comboBoxPressed" prefWidth="200.0" promptText="SFEI Type" styleClass="comboBox_default" />
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="140.0" prefWidth="266.0">
@@ -53,29 +59,30 @@
                   <Insets />
                </VBox.margin>
             </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
-                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Is the shoop floor start item?" />
-                  <RadioButton mnemonicParsing="false" styleClass="text" text="Yes">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="start_item" />
-                     </toggleGroup>
-                  </RadioButton>
-                  <RadioButton mnemonicParsing="false" selected="true" styleClass="text" text="No" toggleGroup="$start_item" />
-               </children>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Is the shoop floor last item?  " />
-                  <RadioButton mnemonicParsing="false" styleClass="text" text="Yes">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="end_item" />
-                     </toggleGroup>
-                  </RadioButton>
-                  <RadioButton mnemonicParsing="false" selected="true" styleClass="text" text="No" toggleGroup="$end_item" />
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="335.0" spacing="10.0">
+                     <children>
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Is the shoop floor start item?" />
+                        <RadioButton mnemonicParsing="false" styleClass="text" text="Yes">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="start_item" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton mnemonicParsing="false" selected="true" styleClass="text" text="No" toggleGroup="$start_item" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="33.0" prefWidth="335.0" spacing="10.0">
+                     <children>
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Is the shoop floor last item?  " />
+                        <RadioButton mnemonicParsing="false" styleClass="text" text="Yes">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="end_item" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton mnemonicParsing="false" selected="true" styleClass="text" text="No" toggleGroup="$end_item" />
+                     </children>
+                  </HBox>
                </children>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
