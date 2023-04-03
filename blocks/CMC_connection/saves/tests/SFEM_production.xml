@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<production>
+    <c_Production>
+        <sfem sfemType="PRODUCTION" name="SFEM_Prod#0">
+            <SFEEs>
+                <entry>
+                    <key>0</key>
+                    <value sfeeType="SIMULATION" sfeeFunction="PRODUCTION" com="MODBUS" name="sfee1">
+                        <inSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                        <outSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                        <io>
+                            <entry>
+<key>0</key>
+<value name="FACTORY I/O (Paused)" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="0"/>
+                            </entry>
+                            <entry>
+<key>1</key>
+<value name="FACTORY I/O (Reset)" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="1"/>
+                            </entry>
+                            <entry>
+<key>2</key>
+<value name="FACTORY I/O (Running)" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="2"/>
+                            </entry>
+                            <entry>
+<key>3</key>
+<value name="MC1_has_error" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="3"/>
+                            </entry>
+                            <entry>
+<key>4</key>
+<value name="MC1_busy" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="4"/>
+                            </entry>
+                            <entry>
+<key>5</key>
+<value name="MC1_opened" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="5"/>
+                            </entry>
+                            <entry>
+<key>6</key>
+<value name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                            </entry>
+                            <entry>
+<key>7</key>
+<value name="s_entry_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="7"/>
+                            </entry>
+                            <entry>
+<key>8</key>
+<value name="s_entry_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="8"/>
+                            </entry>
+                            <entry>
+<key>9</key>
+<value name="s_exit_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="9"/>
+                            </entry>
+                            <entry>
+<key>10</key>
+<value name="s_exit_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="10"/>
+                            </entry>
+                            <entry>
+<key>11</key>
+<value name="s_lids_at_entry" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="11"/>
+                            </entry>
+                            <entry>
+<key>12</key>
+<value name="s_lids_at_exit" type="INPUT" invLogic="true" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
+                            </entry>
+                            <entry>
+<key>13</key>
+<value name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                            </entry>
+                            <entry>
+<key>14</key>
+<value name="s_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="14"/>
+                            </entry>
+                            <entry>
+<key>15</key>
+<value name="s_entry_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="15"/>
+                            </entry>
+                            <entry>
+<key>16</key>
+<value name="s_entry_remover2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="16"/>
+                            </entry>
+                            <entry>
+<key>17</key>
+<value name="s_lids_at_entry2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="17"/>
+                            </entry>
+                            <entry>
+<key>18</key>
+<value name="Emitter" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
+                            </entry>
+                            <entry>
+<key>19</key>
+<value name="entry_conveyor" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="1"/>
+                            </entry>
+                            <entry>
+<key>20</key>
+<value name="entry_emitter" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="2"/>
+                            </entry>
+                            <entry>
+<key>21</key>
+<value name="entry_remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="3"/>
+                            </entry>
+                            <entry>
+<key>22</key>
+<value name="exit_conveyor" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="4"/>
+                            </entry>
+                            <entry>
+<key>23</key>
+<value name="exit_emitter" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="5"/>
+                            </entry>
+                            <entry>
+<key>24</key>
+<value name="exit_remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="6"/>
+                            </entry>
+                            <entry>
+<key>25</key>
+<value name="FACTORY I/O (Pause)" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="7"/>
+                            </entry>
+                            <entry>
+<key>26</key>
+<value name="FACTORY I/O (Reset)" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="8"/>
+                            </entry>
+                            <entry>
+<key>27</key>
+<value name="FACTORY I/O (Run)" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="9"/>
+                            </entry>
+                            <entry>
+<key>28</key>
+<value name="MC1_reset" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="10"/>
+                            </entry>
+                            <entry>
+<key>29</key>
+<value name="MC1_produce" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="11"/>
+                            </entry>
+                            <entry>
+<key>30</key>
+<value name="MC1_start" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="12"/>
+                            </entry>
+                            <entry>
+<key>31</key>
+<value name="MC1_stop" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="13"/>
+                            </entry>
+                            <entry>
+<key>32</key>
+<value name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
+                            </entry>
+                            <entry>
+<key>33</key>
+<value name="Emitter2_emit" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="15"/>
+                            </entry>
+                            <entry>
+<key>34</key>
+<value name="entry_conveyor2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="16"/>
+                            </entry>
+                            <entry>
+<key>35</key>
+<value name="entry_emitter2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="17"/>
+                            </entry>
+                            <entry>
+<key>36</key>
+<value name="entry_remover2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="18"/>
+                            </entry>
+                            <entry>
+<key>37</key>
+<value name="FACTORY I/O (Time Scale)" type="INPUT" invLogic="false" dataType="REAL" addressType="INPUT_REGISTER" register="0" bitOffset="0"/>
+                            </entry>
+                            <entry>
+<key>38</key>
+<value name="MC1_progress" type="INPUT" invLogic="false" dataType="INT" addressType="INPUT_REGISTER" register="0" bitOffset="1"/>
+                            </entry>
+                            <entry>
+<key>39</key>
+<value name="v_MC1_exit" type="INPUT" invLogic="false" dataType="INT" addressType="INPUT_REGISTER" register="0" bitOffset="2"/>
+                            </entry>
+                            <entry>
+<key>40</key>
+<value name="FACTORY I/O (Camera Position)" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="0"/>
+                            </entry>
+                            <entry>
+<key>41</key>
+<value name="MC1_counter" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="1"/>
+                            </entry>
+                            <entry>
+<key>42</key>
+<value name="Emitter2_part" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
+                            </entry>
+                            <entry>
+<key>43</key>
+<value name="Emitter2_base" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
+                            </entry>
+                        </io>
+                        <SFEIs>
+                            <entry>
+<key>0</key>
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" isSimulation="true" name="entry_conveyor" sfeiType="CONVEYOR" minOperationTime="9" manufacturing_date="2023-03-30T08:59:51.332467400Z" last_maintenance="2023-03-30T08:59:51.332467400Z" lineStart="true" lineEnd="false">
+    <inSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+    <outSensor name="s_lids_at_entry" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="11"/>
+    <aRemover name="entry_remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="3"/>
+    <aEmitter name="entry_emitter" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="2"/>
+    <sRemover name="s_entry_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="8"/>
+    <sEmitter name="s_entry_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="7"/>
+    <aConveyorMotor name="entry_conveyor" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="1"/>
+</value>
+                            </entry>
+                            <entry>
+<key>1</key>
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" partForm="LID" name="MC1" sfeiType="MACHINE" minOperationTime="33" manufacturing_date="2023-03-30T08:59:51.354008700Z" last_maintenance="2023-03-30T08:59:51.354008700Z" lineStart="false" lineEnd="false">
+    <inSensor name="s_lids_at_entry" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="11"/>
+    <outSensor name="s_lids_at_exit" type="INPUT" invLogic="true" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
+    <aProduce name="MC1_produce" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="11"/>
+    <sDoor name="MC1_opened" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="5"/>
+    <aStop name="MC1_stop" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="13"/>
+</value>
+                            </entry>
+                            <entry>
+<key>2</key>
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" isSimulation="true" name="exit_conveyor" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-03-30T08:59:51.358009700Z" last_maintenance="2023-03-30T08:59:51.358009700Z" lineStart="false" lineEnd="false">
+    <inSensor name="s_lids_at_exit" type="INPUT" invLogic="true" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
+    <outSensor name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+    <aRemover name="exit_remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="6"/>
+    <aEmitter name="exit_emitter" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="5"/>
+    <sRemover name="s_exit_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="10"/>
+    <sEmitter name="s_exit_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="9"/>
+    <aConveyorMotor name="exit_conveyor" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="4"/>
+</value>
+                            </entry>
+                        </SFEIs>
+                    </value>
+                </entry>
+                <entry>
+                    <key>1</key>
+                    <value sfeeType="SIMULATION" sfeeFunction="PRODUCTION" com="MODBUS" name="sfee2">
+                        <inSensor name="s_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="14"/>
+                        <outSensor name="s_lids_at_entry2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="17"/>
+                        <io>
+                            <entry>
+<key>0</key>
+<value name="FACTORY I/O (Paused)" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="0"/>
+                            </entry>
+                            <entry>
+<key>1</key>
+<value name="FACTORY I/O (Reset)" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="1"/>
+                            </entry>
+                            <entry>
+<key>2</key>
+<value name="FACTORY I/O (Running)" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="2"/>
+                            </entry>
+                            <entry>
+<key>3</key>
+<value name="MC1_has_error" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="3"/>
+                            </entry>
+                            <entry>
+<key>4</key>
+<value name="MC1_busy" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="4"/>
+                            </entry>
+                            <entry>
+<key>5</key>
+<value name="MC1_opened" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="5"/>
+                            </entry>
+                            <entry>
+<key>6</key>
+<value name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                            </entry>
+                            <entry>
+<key>7</key>
+<value name="s_entry_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="7"/>
+                            </entry>
+                            <entry>
+<key>8</key>
+<value name="s_entry_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="8"/>
+                            </entry>
+                            <entry>
+<key>9</key>
+<value name="s_exit_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="9"/>
+                            </entry>
+                            <entry>
+<key>10</key>
+<value name="s_exit_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="10"/>
+                            </entry>
+                            <entry>
+<key>11</key>
+<value name="s_lids_at_entry" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="11"/>
+                            </entry>
+                            <entry>
+<key>12</key>
+<value name="s_lids_at_exit" type="INPUT" invLogic="true" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
+                            </entry>
+                            <entry>
+<key>13</key>
+<value name="s_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                            </entry>
+                            <entry>
+<key>14</key>
+<value name="s_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="14"/>
+                            </entry>
+                            <entry>
+<key>15</key>
+<value name="s_entry_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="15"/>
+                            </entry>
+                            <entry>
+<key>16</key>
+<value name="s_entry_remover2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="16"/>
+                            </entry>
+                            <entry>
+<key>17</key>
+<value name="s_lids_at_entry2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="17"/>
+                            </entry>
+                            <entry>
+<key>18</key>
+<value name="Emitter" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
+                            </entry>
+                            <entry>
+<key>19</key>
+<value name="entry_conveyor" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="1"/>
+                            </entry>
+                            <entry>
+<key>20</key>
+<value name="entry_emitter" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="2"/>
+                            </entry>
+                            <entry>
+<key>21</key>
+<value name="entry_remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="3"/>
+                            </entry>
+                            <entry>
+<key>22</key>
+<value name="exit_conveyor" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="4"/>
+                            </entry>
+                            <entry>
+<key>23</key>
+<value name="exit_emitter" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="5"/>
+                            </entry>
+                            <entry>
+<key>24</key>
+<value name="exit_remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="6"/>
+                            </entry>
+                            <entry>
+<key>25</key>
+<value name="FACTORY I/O (Pause)" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="7"/>
+                            </entry>
+                            <entry>
+<key>26</key>
+<value name="FACTORY I/O (Reset)" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="8"/>
+                            </entry>
+                            <entry>
+<key>27</key>
+<value name="FACTORY I/O (Run)" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="9"/>
+                            </entry>
+                            <entry>
+<key>28</key>
+<value name="MC1_reset" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="10"/>
+                            </entry>
+                            <entry>
+<key>29</key>
+<value name="MC1_produce" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="11"/>
+                            </entry>
+                            <entry>
+<key>30</key>
+<value name="MC1_start" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="12"/>
+                            </entry>
+                            <entry>
+<key>31</key>
+<value name="MC1_stop" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="13"/>
+                            </entry>
+                            <entry>
+<key>32</key>
+<value name="Remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
+                            </entry>
+                            <entry>
+<key>33</key>
+<value name="Emitter2_emit" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="15"/>
+                            </entry>
+                            <entry>
+<key>34</key>
+<value name="entry_conveyor2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="16"/>
+                            </entry>
+                            <entry>
+<key>35</key>
+<value name="entry_emitter2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="17"/>
+                            </entry>
+                            <entry>
+<key>36</key>
+<value name="entry_remover2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="18"/>
+                            </entry>
+                            <entry>
+<key>37</key>
+<value name="FACTORY I/O (Time Scale)" type="INPUT" invLogic="false" dataType="REAL" addressType="INPUT_REGISTER" register="0" bitOffset="0"/>
+                            </entry>
+                            <entry>
+<key>38</key>
+<value name="MC1_progress" type="INPUT" invLogic="false" dataType="INT" addressType="INPUT_REGISTER" register="0" bitOffset="1"/>
+                            </entry>
+                            <entry>
+<key>39</key>
+<value name="v_MC1_exit" type="INPUT" invLogic="false" dataType="INT" addressType="INPUT_REGISTER" register="0" bitOffset="2"/>
+                            </entry>
+                            <entry>
+<key>40</key>
+<value name="FACTORY I/O (Camera Position)" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="0"/>
+                            </entry>
+                            <entry>
+<key>41</key>
+<value name="MC1_counter" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="1"/>
+                            </entry>
+                            <entry>
+<key>42</key>
+<value name="Emitter2_part" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
+                            </entry>
+                            <entry>
+<key>43</key>
+<value name="Emitter2_base" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
+                            </entry>
+                        </io>
+                        <SFEIs>
+                            <entry>
+<key>0</key>
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" isSimulation="true" name="entry2_conveyor" sfeiType="CONVEYOR" minOperationTime="9" manufacturing_date="2023-03-30T09:02:16.678296700Z" last_maintenance="2023-03-30T09:02:16.678296700Z" lineStart="false" lineEnd="true">
+    <inSensor name="s_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="14"/>
+    <outSensor name="s_lids_at_entry2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="17"/>
+    <aRemover name="entry_remover2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="18"/>
+    <aEmitter name="entry_emitter2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="17"/>
+    <sRemover name="s_entry_remover2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="16"/>
+    <sEmitter name="s_entry_emitter2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="15"/>
+    <aConveyorMotor name="entry_conveyor2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="16"/>
+</value>
+                            </entry>
+                        </SFEIs>
+                    </value>
+                </entry>
+            </SFEEs>
+        </sfem>
+        <sfeeControllers opMode="PROG_FAILURES">
+            <mb ip="127.0.0.1" port="35502" slaveID="1"/>
+            <sfeeMonitor>
+                <visionSensorLocation>
+                    <entry>
+                        <key>2</key>
+                        <value name="v_MC1_exit" type="INPUT" invLogic="false" dataType="INT" addressType="INPUT_REGISTER" register="0" bitOffset="2"/>
+                    </entry>
+                </visionSensorLocation>
+            </sfeeMonitor>
+            <sfeeFailures2>
+                <stochasticType>GAUSSIAN</stochasticType>
+                <stochasticFormulas>60 </stochasticFormulas>
+                <stochasticFormulas>5 </stochasticFormulas>
+                <failuresFormulas>
+                    <item>prob [ 5 ] &lt;= 10</item>
+                    <item>linear [ 5 ]</item>
+                    <item>gauss [ 6 ; 3 ]</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>gauss [ 2 ; 1 ]</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>no</item>
+                    <item>no</item>
+                    <item>no</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>linear [ 2 ]</item>
+                    <item>no</item>
+                    <item>no</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>gauss [ 5 ; 2 ]</item>
+                    <item>no</item>
+                    <item>no</item>
+                </failuresFormulas>
+            </sfeeFailures2>
+        </sfeeControllers>
+        <sfeeControllers opMode="NORMAL">
+            <mb ip="127.0.0.1" port="35502" slaveID="2"/>
+            <sfeeMonitor/>
+        </sfeeControllers>
+    </c_Production>
+</production>

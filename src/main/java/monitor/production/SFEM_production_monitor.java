@@ -7,9 +7,10 @@ import models.base.SFEM;
 import models.base.part;
 import models.part_prodTime;
 import monitor.base.SFEM_monitor;
-import viewers.graphs.histogram;
-import viewers.graphs.histogram.intPair;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -17,7 +18,9 @@ import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-
+//@XmlRootElement(name = "SFEM_prod_monitor")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class SFEM_production_monitor extends SFEM_monitor implements Externalizable {
 
     @Override
@@ -88,11 +91,11 @@ public class SFEM_production_monitor extends SFEM_monitor implements Externaliza
         SFEM_production sfem = (SFEM_production) getSfem();
 
         // search for inOut sensor of SFEM : in from SFEE(0) / out from SFEE(size-1) ;
-        String inSFEM_sensor = sfem.getSFEEbyIndex(0).getInSensor().name();
+        String inSFEM_sensor = sfem.getSFEEbyIndex(0).getInSensor().getName();
 
         // Who is the last SFEI of this SFEM
         SFEE lastSFEE = sfem.getSFEEbyIndex(sfem.getSFEEs().size() - 1);
-        String outSFEM_sensor = lastSFEE.getSFEIbyIndex(lastSFEE.getSFEIs().size() - 1).getOutSensor().name();
+        String outSFEM_sensor = lastSFEE.getSFEIbyIndex(lastSFEE.getSFEIs().size() - 1).getOutSensor().getName();
 
         // Calculate the time between those SFEIs
         TreeMap<String, Instant> subTree = new TreeMap<>();

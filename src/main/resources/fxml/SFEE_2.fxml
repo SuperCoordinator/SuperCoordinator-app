@@ -44,6 +44,12 @@
                   <Pane focusTraversable="true" prefHeight="45.0" prefWidth="120.0" />
                   <ToggleButton fx:id="toggleComunication" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="250.0" styleClass="sfee-bar-btn" text="Communication" toggleGroup="$bar" />
                   <Pane prefHeight="200.0" prefWidth="120.0" />
+                  <ToggleButton fx:id="toggleItems" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="250.0" styleClass="sfee-bar-btn" text="Items">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="bar1" />
+                     </toggleGroup>
+                  </ToggleButton>
+                  <Pane prefHeight="200.0" prefWidth="120.0" />
                   <ToggleButton fx:id="toggleFailure" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="250.0" styleClass="sfee-bar-btn" text="Failure" toggleGroup="$bar" />
                   <Pane prefHeight="200.0" prefWidth="120.0" />
                   <ToggleButton fx:id="toggleFinish" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="250.0" styleClass="sfee-bar-btn" text="Finish" toggleGroup="$bar" />
@@ -57,8 +63,8 @@
             </HBox>
          </children></Pane>
 
-      <AnchorPane fx:id="SFEE_body" layoutX="88.0" layoutY="159.0" prefHeight="665.0" prefWidth="1071.0" />
-      <Button fx:id="next" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="1095.0" layoutY="825.0" mnemonicParsing="false" onAction="#goNext" prefHeight="47.0" prefWidth="46.0" style="-fx-background-color: transparent;" visible="false">
+      <AnchorPane fx:id="SFEE_body" layoutX="78.0" layoutY="160.0" prefHeight="665.0" prefWidth="1071.0" />
+      <Button fx:id="next" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="1095.0" layoutY="30.0" mnemonicParsing="false" onAction="#goNext" prefHeight="47.0" prefWidth="46.0" style="-fx-background-color: transparent;" visible="false">
          <graphic>
             <ImageView fitHeight="33.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                <image>

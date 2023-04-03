@@ -14,6 +14,7 @@ import monitor.production.SFEE_production_monitor;
 import monitor.setupRun;
 import utils.utils;
 
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -22,6 +23,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class cSFEE_production implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -43,8 +46,6 @@ public class cSFEE_production implements Externalizable {
         this.sfeeMonitor = (SFEE_production_monitor) in.readObject();
         this.sfeeFailures2 = (SFEE_failures2) in.readObject();
 
-        this.viewer = new viewers.SFEE();
-        this.utility = new utils();
     }
 
     public enum operationMode {
@@ -52,15 +53,19 @@ public class cSFEE_production implements Externalizable {
         PROG_FAILURES
     }
 
+    //    @XmlElement
     private SFEE sfee;
+    @XmlElement
     private modbus mb;
-    private SFEE_production_monitor sfeeMonitor;
-
+    @XmlAttribute
     private operationMode opMode;
+    @XmlElement
+    private SFEE_production_monitor sfeeMonitor;
+    @XmlElement
     private SFEE_failures2 sfeeFailures2;
 
-    private viewers.SFEE viewer;
-    private utils utility;
+    private viewers.SFEE viewer = new viewers.SFEE();
+    private utils utility = new utils();
 
     public cSFEE_production() {
     }
@@ -68,9 +73,15 @@ public class cSFEE_production implements Externalizable {
     public cSFEE_production(SFEE sfee, modbus mb) {
         this.sfee = sfee;
         this.mb = mb;
+    }
 
-        this.viewer = new viewers.SFEE();
-        this.utility = new utils();
+
+    private SFEE getSFEE() {
+        return sfee;
+    }
+
+    public void setSfee(SFEE sfee) {
+        this.sfee = sfee;
     }
 
     public String getSFEE_name() {
@@ -81,15 +92,27 @@ public class cSFEE_production implements Externalizable {
         this.mb = mb;
     }
 
+
     public modbus getMb() {
         return mb;
     }
 
+/*    private operationMode getOpMode() {
+        return opMode;
+    }
+
+    private SFEE_production_monitor getSfeeMonitor() {
+        return sfeeMonitor;
+    }
+
+    private SFEE_failures2 getSfeeFailures2() {
+        return sfeeFailures2;
+    }*/
+
     public void init(int scene) {
         try {
-
             switch (scene) {
-                case 1,10 -> {
+                case 0, 10 -> {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC_connection\\simulation\\Tags_CMC-connection_Modbus.csv";
                     importIO(csv_path, scene);
                 }
@@ -99,6 +122,10 @@ public class cSFEE_production implements Externalizable {
                 }
                 case 4 -> {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC2-connection_Modbus.csv";
+                    importIO(csv_path, scene);
+                }
+                case 5, 6, 7 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\simulation\\Tags_sorting_station_Modbus.csv";
                     importIO(csv_path, scene);
                 }
                 default -> {
@@ -117,7 +144,7 @@ public class cSFEE_production implements Externalizable {
             }
 
 
-            if (scene == 3 || scene == 1) {
+            if (scene == 3 || scene == 0) {
                 addNewSFEI_conveyor(
                         "entry_conveyor",
                         "s_emitter",
@@ -212,6 +239,51 @@ public class cSFEE_production implements Externalizable {
                         "s_exit_emitter",
                         false,
                         true);
+            }
+            if (scene == 5) {
+                addNewSFEI_conveyor(
+                        "metal_entry",
+                        "s_metal",
+                        "s_metal_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        "metal_conveyor",
+                        "",
+                        "",
+                        "",
+                        "",
+                        true,
+                        false);
+            }
+            if (scene == 6) {
+                addNewSFEI_conveyor(
+                        "green_entry",
+                        "s_green",
+                        "s_green_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        "green_conveyor",
+                        "",
+                        "",
+                        "",
+                        "",
+                        true,
+                        false);
+            }
+            if (scene == 7) {
+                addNewSFEI_conveyor(
+                        "blue_entry",
+                        "s_blue",
+                        "s_blue_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        "blue_conveyor",
+                        "",
+                        "",
+                        "",
+                        "",
+                        true,
+                        false);
             }
 
 
@@ -441,6 +513,13 @@ public class cSFEE_production implements Externalizable {
         }
     }
 
+    public void init_after_XML_load() {
+        // IF NULL, then is normal operation mode
+        if (opMode.equals(operationMode.PROG_FAILURES))
+            sfeeFailures2.setSfee(sfee);
+        sfeeMonitor.setSfee(sfee);
+    }
+
 
     public void loop() {
         try {
@@ -471,11 +550,11 @@ public class cSFEE_production implements Externalizable {
     }
 
     public void launchSimulation() {
-        mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Run)").bit_offset(), 1);
+        mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Run)").getBit_offset(), 1);
     }
 
     public void stopSimulation() {
-        mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Run)").bit_offset(), 0);
+        mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Run)").getBit_offset(), 0);
     }
 
     private Long[] getSFEEOperationTime() {

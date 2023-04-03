@@ -3,14 +3,20 @@ package models.SFEx_particular;
 import models.base.SFEI;
 import models.sensor_actuator;
 
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.time.Instant;
 
+//@XmlRootElement(name = "SFEI_conveyor")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+
 public class SFEI_conveyor extends SFEI implements Externalizable {
     public static final long serialVersionUID = 1234L;
+
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
@@ -33,13 +39,17 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
         this.isSimulation = in.readBoolean();
 
     }
-
+    @XmlElement
     private sensor_actuator aRemover;
+    @XmlElement
     private sensor_actuator aEmitter;
+    @XmlElement
     private sensor_actuator sRemover;
+    @XmlElement
     private sensor_actuator sEmitter;
+    @XmlElement
     private sensor_actuator aConveyorMotor;
-
+    @XmlAttribute
     private boolean isSimulation;
 
     public SFEI_conveyor() {
@@ -66,27 +76,32 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
         this.isSimulation = false;
     }
 
-
+//    @XmlElement(name = "remover_actuator")
     public sensor_actuator getaRemover() {
         return aRemover;
     }
 
+//    @XmlElement(name = "emitter_actuator")
     public sensor_actuator getaEmitter() {
         return aEmitter;
     }
 
+//    @XmlElement(name = "remover_sensor")
     public sensor_actuator getsRemover() {
         return sRemover;
     }
 
+//    @XmlElement(name = "emitter_sensor")
     public sensor_actuator getsEmitter() {
         return sEmitter;
     }
 
+//    @XmlElement(name = "conveyor_motor")
     public sensor_actuator getaConveyorMotor() {
         return aConveyorMotor;
     }
 
+//    @XmlAttribute(name = "is_simulation")
     public boolean isSimulation() {
         return isSimulation;
     }

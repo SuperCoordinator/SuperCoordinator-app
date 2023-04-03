@@ -11,6 +11,7 @@ import monitor.transport.SFEE_transport_monitor;
 import org.apache.commons.math3.util.Pair;
 import viewers.SFEE_transport;
 
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -18,6 +19,8 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class cSFEE_transport implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -38,33 +41,58 @@ public class cSFEE_transport implements Externalizable {
         this.sfeeMonitor = (SFEE_transport_monitor) in.readObject();
         this.sfeeFailures = (SFEE_transport_failures) in.readObject();
 
-
         this.prevSFEE_name = (String) in.readObject();
         this.nextSFEE_name = (String) in.readObject();
-        this.viewer = new SFEE_transport();
+
     }
 
     // SFEM_transport based on 1-1 connections between SFEE's
+//    @XmlElement
     private SFEE sfee;
+    @XmlElement
     private SFEE_transport_monitor sfeeMonitor;
-
+    @XmlElement
     private SFEE_transport_failures sfeeFailures;
 
     private modbus inMB;
     private modbus outMB;
+    @XmlAttribute
     private String prevSFEE_name;
+    @XmlAttribute
     private String nextSFEE_name;
 
-    private SFEE_transport viewer;
+    private SFEE_transport viewer = new SFEE_transport();
 
     public cSFEE_transport() {
     }
 
     public cSFEE_transport(SFEE sfee) {
         this.sfee = sfee;
-
-        this.viewer = new SFEE_transport();
     }
+
+    public void setSfee(SFEE sfee) {
+        this.sfee = sfee;
+    }
+
+    /*    @XmlElement(name = "SFEE_monitor")
+    private SFEE_transport_monitor getSfeeMonitor() {
+        return sfeeMonitor;
+    }
+
+    @XmlElement(name = "SFEE_failures")
+    private SFEE_transport_failures getSfeeFailures() {
+        return sfeeFailures;
+    }
+
+    @XmlAttribute(name = "previous_SFEI")
+    private String getPrevSFEE_name() {
+        return prevSFEE_name;
+    }
+
+    @XmlAttribute(name = "next_SFEI")
+    private String getNextSFEE_name() {
+        return nextSFEE_name;
+    }*/
 
 
     public void cSFEE_transport_init(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB) {
@@ -79,12 +107,12 @@ public class cSFEE_transport implements Externalizable {
         TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
 
         // The inSens is the sensor place in the remover (actuator) of last SFEE (SFEI to be more precise)
-        String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEE.getOutSensor().name());
+        String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEE.getOutSensor().getName());
         io.put(0, inSFEE.getOutSensor());
         io.put(1, inSFEE.getIObyName(in_SensAct[0]));
 
         // The outSens is the sensor place on the controller-defined emitter of next SFEE (SFEI to be more precise)
-        String[] out_SensAct = viewer.associateSensor2Actuator(3, outSFEE.getInSensor().name());
+        String[] out_SensAct = viewer.associateSensor2Actuator(3, outSFEE.getInSensor().getName());
         io.put(2, outSFEE.getInSensor());
         io.put(3, outSFEE.getIObyName(out_SensAct[0]));
         io.put(4, outSFEE.getIObyName(out_SensAct[1]));
@@ -121,7 +149,8 @@ public class cSFEE_transport implements Externalizable {
     public void cSFEE_transport_setup(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB) {
         this.inMB = inMB;
         this.outMB = outMB;
-        sfeeMonitor.setupPrevNextSFEI(inSFEE.getSFEIbyIndex(inSFEE.getSFEIs().size() - 1), outSFEE.getSFEIbyIndex(0));
+        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEE.getSFEIbyIndex(inSFEE.getSFEIs().size() - 1), outSFEE.getSFEIbyIndex(0));
+        sfeeFailures.setSfee(sfee);
 
     }
 

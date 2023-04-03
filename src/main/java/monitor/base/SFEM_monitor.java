@@ -3,8 +3,11 @@ package monitor.base;
 
 import models.base.SFEM;
 import models.part_prodTime;
+import monitor.production.SFEM_production_monitor;
+import monitor.transport.SFEM_transport_monitor;
 import viewers.graphs.histogram;
 
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -12,6 +15,12 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 
+/*@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)*/
+/*@XmlSeeAlso({
+        SFEM_production_monitor.class,
+        SFEM_transport_monitor.class
+})*/
 public class SFEM_monitor implements Externalizable {
     public static final long serialVersionUID = 1234L;
 
@@ -25,29 +34,23 @@ public class SFEM_monitor implements Externalizable {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.sfem = (SFEM) in.readObject();
 
-        this.init_t = Instant.now();
-        this.productionTime_cnt = new TreeMap<>();
-        this.isGraphsInited = false;
-
     }
-
+//    @XmlElement
     private SFEM sfem;
-    private TreeMap<Integer, Integer> productionTime_cnt;
+    private TreeMap<Integer, Integer> productionTime_cnt = new TreeMap<>();
 
     private histogram graphs;
-    private boolean isGraphsInited;
-    private Instant init_t;
+    private boolean isGraphsInited = false;
+    private Instant init_t = Instant.now();
 
     public SFEM_monitor() {
     }
 
     public SFEM_monitor(SFEM sfem) {
         this.sfem = sfem;
-        this.productionTime_cnt = new TreeMap<>();
-        this.isGraphsInited = false;
-        this.init_t = Instant.now();
     }
 
+//    @XmlElement(name = "SFEM")
     public SFEM getSfem() {
         return sfem;
     }
@@ -60,6 +63,7 @@ public class SFEM_monitor implements Externalizable {
         return graphs;
     }
 
+//    @XmlTransient
     public boolean isGraphsInited() {
         return isGraphsInited;
     }
@@ -74,6 +78,7 @@ public class SFEM_monitor implements Externalizable {
 
     private boolean printedStats = false;
 
+//    @XmlTransient
     public boolean isPrintedStats() {
         return printedStats;
     }
@@ -85,7 +90,6 @@ public class SFEM_monitor implements Externalizable {
     private part_prodTime min_time = null;
     private part_prodTime max_time = null;
     private boolean firstRun = true;
-
 
     public void printStats(List<Long> runtime) {
 

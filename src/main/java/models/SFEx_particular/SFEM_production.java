@@ -7,11 +7,17 @@ import models.base.SFEI;
 import models.base.SFEM;
 import models.part_prodTime;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
-
+//@XmlRootElement(name ="SFEM_production")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class SFEM_production extends SFEM implements Externalizable {
 
     public static final long serialVersionUID = 1234L;
@@ -27,7 +33,7 @@ public class SFEM_production extends SFEM implements Externalizable {
         super.readExternal(in);
         this.SFEEs = (TreeMap<Integer, SFEE>) in.readObject();
     }
-
+    @XmlElement
     private TreeMap<Integer, SFEE> SFEEs;
 
     public SFEM_production() {
@@ -39,7 +45,7 @@ public class SFEM_production extends SFEM implements Externalizable {
         this.SFEEs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
     }
 
-
+//    @XmlElement(name = "SFEEs")
     public TreeMap<Integer, SFEE> getSFEEs() {
         return SFEEs;
     }
