@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="290.0" prefWidth="680.0" styleClass="bkg" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox prefHeight="290.0" prefWidth="680.0" spacing="20.0">
+         <children>
+            <HBox alignment="BOTTOM_LEFT" prefHeight="75.0" prefWidth="680.0" spacing="10.0">
+               <children>
+                  <VBox prefHeight="160.0" prefWidth="230.0">
+                     <children>
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Conveyor Actuator" />
+                        <ComboBox fx:id="aConveyor" prefWidth="200.0" promptText="Conveyor Motor" styleClass="comboBox_default">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </ComboBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox prefHeight="40.0" prefWidth="770.0" spacing="10.0">
+               <children>
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Failures Support" />
+                  <RadioButton fx:id="yes" mnemonicParsing="false" onAction="#show_failure_support_pane" styleClass="text" text="Yes">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="failures_support" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="no" mnemonicParsing="false" onAction="#show_failure_support_pane" selected="true" styleClass="text" text="No" toggleGroup="$failures_support" />
+               </children>
+            </HBox>
+            <Pane fx:id="failure_pane" prefHeight="170.0" prefWidth="680.0" />
+         </children>
+         <padding>
+            <Insets left="5.0" right="5.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

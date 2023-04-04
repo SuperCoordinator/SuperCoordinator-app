@@ -43,13 +43,9 @@
                         <ToggleGroup fx:id="bar" />
                      </toggleGroup></ToggleButton>
                   <Pane focusTraversable="true" prefHeight="45.0" prefWidth="120.0" />
-                  <ToggleButton fx:id="toggleComunication" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="250.0" styleClass="sfee-bar-btn" text="Communication" toggleGroup="$bar" />
+                  <ToggleButton fx:id="toggleCommunication" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="250.0" styleClass="sfee-bar-btn" text="Communication" toggleGroup="$bar" />
                   <Pane prefHeight="200.0" prefWidth="120.0" />
-                  <ToggleButton fx:id="toggleItems" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="250.0" styleClass="sfee-bar-btn" text="Items">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="bar1" />
-                     </toggleGroup>
-                  </ToggleButton>
+                  <ToggleButton fx:id="toggleItems" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="250.0" styleClass="sfee-bar-btn" text="Items" toggleGroup="$bar" />
                   <Pane prefHeight="200.0" prefWidth="120.0" />
                   <ToggleButton fx:id="toggleFailure" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="250.0" styleClass="sfee-bar-btn" text="Failure" toggleGroup="$bar" />
                   <Pane prefHeight="200.0" prefWidth="120.0" />
@@ -64,7 +60,7 @@
             </HBox>
          </children></Pane>
 
-      <AnchorPane fx:id="SFEE_body" layoutX="78.0" layoutY="170.0" prefHeight="665.0" prefWidth="1071.0" />
+      <AnchorPane fx:id="SFEE_body" layoutX="85.0" layoutY="168.0" prefHeight="665.0" prefWidth="1071.0" />
       <Button fx:id="next" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="1095.0" layoutY="30.0" mnemonicParsing="false" onAction="#goNext" prefHeight="47.0" prefWidth="46.0" style="-fx-background-color: transparent;">
          <graphic>
             <ImageView fitHeight="33.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">

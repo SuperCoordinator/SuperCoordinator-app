@@ -121,8 +121,8 @@ public class C_SFEE_communication /*extends Application*/ implements Initializab
         f_chooser.setTitle("Select File");
 
         // set initial File
-        f_chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-
+//        f_chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        f_chooser.setInitialDirectory(new File("C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\simulation"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         file = f_chooser.showOpenDialog(stage);
         if (file != null)

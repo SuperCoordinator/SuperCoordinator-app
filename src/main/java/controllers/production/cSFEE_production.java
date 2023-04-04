@@ -168,6 +168,7 @@ public class cSFEE_production implements Externalizable {
                         Instant.now(),
                         Instant.now(),
                         true,
+                        true,
                         "MC1_produce",
                         "MC1_opened",
                         "MC1_stop",
@@ -230,6 +231,7 @@ public class cSFEE_production implements Externalizable {
                         "s_lids_at_exit",
                         Instant.now(),
                         Instant.now(),
+                        true,
                         true,
                         "MC1_produce",
                         "MC1_opened",
@@ -460,8 +462,12 @@ public class cSFEE_production implements Externalizable {
         return newObj;
     }*/
 
-    public void addNewSFEI_machine(String name, partsAspect.form partForm, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean supportsFailures, String produce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
-        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, partForm, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, supportsFailures, is_line_start, is_line_end, sfee.getIObyName(produce), sfee.getIObyName(sDoor), sfee.getIObyName(aStop));
+    public void addNewSFEI_machine(String name, partsAspect.form partForm, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportsFailures, String aProduce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
+        sensor_actuator[] vector = new sensor_actuator[3];
+        vector[0] = sfee.getIObyName(aProduce);
+        vector[1] = sfee.getIObyName(sDoor);
+        vector[2] = sfee.getIObyName(aStop);
+        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, partForm, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, isSimulation, supportsFailures, is_line_start, is_line_end, vector);
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
 
     }

@@ -89,28 +89,33 @@ public class SFEI implements Externalizable {
     @XmlAttribute(name = "last_maintenance", required = true)
     @XmlJavaTypeAdapter(InstantAdapter.class)
     private Instant dayOfLastMaintenance;
-
+    @XmlAttribute
+    private boolean simulation;
+    @XmlAttribute
     private boolean supportsFailures;
 
     private TreeMap<Integer, failure_occurrence> failuresHistory = new TreeMap<>();
 
     private ArrayList<Pair<Integer, Instant>> breakdownHistory = new ArrayList<>();
+
     @XmlAttribute
     private boolean line_start;
     @XmlAttribute
     private boolean line_end;
 
+
     public SFEI() {
     }
 
     public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
-                boolean supportsFailures, boolean line_start, boolean line_end) {
+                boolean simulation,boolean supportsFailures, boolean line_start, boolean line_end) {
         this.name = name;
         this.sfeiType = sfeiType;
         this.inSensor = inSensor;
         this.outSensor = outSensor;
         this.dayOfBirth = dayOfBirth;
         this.dayOfLastMaintenance = dayOfLastMaintenance;
+        this.simulation = simulation;
         this.supportsFailures = supportsFailures;
 
         this.line_start = line_start;
@@ -203,6 +208,14 @@ public class SFEI implements Externalizable {
 
     public void addBreakdown(Pair<Integer, Instant> event) {
         breakdownHistory.add(event);
+    }
+
+    public boolean isSimulation() {
+        return simulation;
+    }
+
+    public boolean isSupportsFailures() {
+        return supportsFailures;
     }
 
     //    @XmlAttribute(name = "isLine_start")

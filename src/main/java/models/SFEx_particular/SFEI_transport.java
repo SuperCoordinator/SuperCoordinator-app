@@ -57,7 +57,7 @@ public class SFEI_transport extends SFEI implements Externalizable {
     public SFEI_transport(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
                           Instant dayOfBirth, Instant dayOfLastMaintenance, sensor_actuator aRemover,
                           sensor_actuator aEmitter, sensor_actuator aEmitterpart, sensor_actuator aEmitterBase) {
-        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, false, false, false);
+        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance,true, false, false, false);
         this.aRemover = aRemover;
         this.aEmitter = aEmitter;
         this.aEmitterPart = aEmitterpart;

@@ -1,9 +1,15 @@
 package viewers.controllers.SFEI;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import models.SFEx_particular.SFEI_conveyor;
 import models.sensor_actuator;
 import utils.utils;
@@ -17,6 +23,8 @@ import java.util.TreeMap;
 public class C_SFEI_conveyor implements Initializable {
 
     private SFEI_conveyor sfeiConveyor;
+
+    private C_SFEI_conveyor_failures sfeiConveyorFailures;
 
     private final TreeMap<Integer, sensor_actuator> io;
 
@@ -36,48 +44,83 @@ public class C_SFEI_conveyor implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         utils utility = new utils();
 
-        TreeMap<Integer, sensor_actuator> inputs = utility.getSearch().getSensorsOrActuators(io, true);
         ArrayList<String> values_str = new ArrayList<>();
-        for (Map.Entry<Integer, sensor_actuator> entry : inputs.entrySet())
-            values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());
-        sEmitter.setItems(FXCollections.observableArrayList(values_str));
-        sRemover.setItems(FXCollections.observableArrayList(values_str));
 
         TreeMap<Integer, sensor_actuator> outputs = utility.getSearch().getSensorsOrActuators(io, false);
-        values_str.clear();
+
         for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
             values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());
         aConveyor.setItems(FXCollections.observableArrayList(values_str));
-        aEmitter.setItems(FXCollections.observableArrayList(values_str));
-        aRemover.setItems(FXCollections.observableArrayList(values_str));
+
     }
 
     @FXML
     private ComboBox<String> aConveyor;
 
     @FXML
-    private ComboBox<String> aEmitter;
+    private ToggleGroup failures_support;
+    @FXML
+    private Pane failure_pane;
 
     @FXML
-    private ComboBox<String> aRemover;
+    void show_failure_support_pane(ActionEvent event) {
 
-    @FXML
-    private ComboBox<String> sEmitter;
+        if (getFailures_support())
+            loadFailuresPane();
+        else
+            cleanFailuresPane();
+    }
 
-    @FXML
-    private ComboBox<String> sRemover;
+    public boolean getFailures_support() {
+        ToggleButton toggleButton = (ToggleButton) failures_support.getSelectedToggle();
+        return toggleButton.getText().equalsIgnoreCase("yes");
+    }
+
+    private void loadFailuresPane() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI_failures_support_conveyor.fxml"));
+
+            sfeiConveyorFailures = new C_SFEI_conveyor_failures(io);
+            loader.setController(sfeiConveyorFailures);
+
+            AnchorPane pane = loader.load();
+            failure_pane.getChildren().setAll(pane);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void cleanFailuresPane() {
+        sfeiConveyorFailures = null;
+        failure_pane.getChildren().clear();
+    }
 
 
     public sensor_actuator[] getSensAct() {
-        utils utils = new utils();
         sensor_actuator[] ret = new sensor_actuator[5];
-        ret[0] = utils.getSearch().getIObyName(aRemover.getValue(), io);
-        ret[1] = utils.getSearch().getIObyName(aEmitter.getValue(), io);
-        ret[2] = utils.getSearch().getIObyName(sRemover.getValue(), io);
-        ret[3] = utils.getSearch().getIObyName(sEmitter.getValue(), io);
-        ret[4] = utils.getSearch().getIObyName(aConveyor.getValue(), io);
+        if (sfeiConveyorFailures != null) {
+            ret[0] = search_sensor_actuator(sfeiConveyorFailures.getaRemover());
+            ret[1] = search_sensor_actuator(sfeiConveyorFailures.getaEmitter());
+            ret[2] = search_sensor_actuator(sfeiConveyorFailures.getsRemover());
+            ret[3] = search_sensor_actuator(sfeiConveyorFailures.getsEmitter());
+        } else {
+            ret[0] = null;
+            ret[1] = null;
+            ret[2] = null;
+            ret[3] = null;
+        }
+        ret[4] = search_sensor_actuator(aConveyor);
 
         return ret;
+    }
+
+    private sensor_actuator search_sensor_actuator(ComboBox<String> comboBox) {
+        utils utils = new utils();
+        if (comboBox.getValue() == null)
+            return null;
+        else
+            return utils.getSearch().getIObyName(comboBox.getValue(), io);
     }
 
 

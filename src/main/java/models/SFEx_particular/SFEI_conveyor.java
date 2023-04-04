@@ -25,7 +25,6 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
         out.writeObject(sRemover);
         out.writeObject(sEmitter);
         out.writeObject(aConveyorMotor);
-        out.writeBoolean(isSimulation);
     }
 
     @Override
@@ -36,7 +35,6 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
         this.sRemover = (sensor_actuator) in.readObject();
         this.sEmitter = (sensor_actuator) in.readObject();
         this.aConveyorMotor = (sensor_actuator) in.readObject();
-        this.isSimulation = in.readBoolean();
 
     }
 
@@ -50,8 +48,7 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
     private sensor_actuator sEmitter;
     @XmlElement
     private sensor_actuator aConveyorMotor;
-    @XmlAttribute
-    private boolean isSimulation;
+
 
     public SFEI_conveyor() {
         super();
@@ -60,7 +57,7 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
     public SFEI_conveyor(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
                          Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation,
                          boolean supportsFailures, boolean line_start, boolean line_end, sensor_actuator[] sensorActuators) {
-        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, supportsFailures, line_start, line_end);
+        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, isSimulation, supportsFailures, line_start, line_end);
 
         if (supportsFailures && isSimulation) {
             this.aRemover = sensorActuators[0];
@@ -68,10 +65,10 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
             this.sRemover = sensorActuators[2];
             this.sEmitter = sensorActuators[3];
             this.aConveyorMotor = sensorActuators[4];
-            this.isSimulation = true;
+
         } else if (supportsFailures) {
             this.aConveyorMotor = sensorActuators[4];
-            this.isSimulation = false;
+
         }
 
     }
@@ -122,7 +119,5 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
     }
 
     //    @XmlAttribute(name = "is_simulation")
-    public boolean isSimulation() {
-        return isSimulation;
-    }
+
 }

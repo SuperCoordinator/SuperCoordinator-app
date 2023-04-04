@@ -7,17 +7,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="170.0" prefWidth="690.0" styleClass="bkg" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="170.0" prefWidth="680.0" styleClass="bkg" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox alignment="CENTER" prefHeight="160.0" prefWidth="690.0" spacing="10.0">
+      <HBox alignment="CENTER" prefHeight="170.0" prefWidth="680.0" spacing="10.0">
          <children>
-            <VBox alignment="CENTER" prefHeight="160.0" prefWidth="230.0">
-               <children>
-                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Conveyor Actuator" />
-                  <ComboBox fx:id="aConveyor" prefWidth="200.0" promptText="Conveyor Motor" styleClass="comboBox_default" />
-               </children>
-            </VBox>
-            <VBox alignment="CENTER" prefHeight="160.0" prefWidth="230.0">
+            <VBox prefHeight="160.0" prefWidth="385.0">
                <children>
                   <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Remover Sensor" />
                   <ComboBox fx:id="sRemover" prefWidth="200.0" promptText="Remover Sensor" styleClass="comboBox_default" />
@@ -29,7 +23,7 @@
                   <ComboBox fx:id="aRemover" prefWidth="200.0" promptText="Remover" styleClass="comboBox_default" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" prefHeight="160.0" prefWidth="230.0">
+            <VBox prefHeight="160.0" prefWidth="385.0">
                <children>
                   <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Emitter Sensor" />
                   <ComboBox fx:id="sEmitter" prefWidth="200.0" promptText="Emitter Sensor" styleClass="comboBox_default" />
@@ -42,6 +36,9 @@
                </children>
             </VBox>
          </children>
+         <padding>
+            <Insets left="5.0" right="5.0" />
+         </padding>
       </HBox>
    </children>
 </AnchorPane>

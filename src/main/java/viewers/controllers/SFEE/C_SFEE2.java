@@ -31,10 +31,11 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
         CM_SFEE.getInstance().registerC_SFEE_body_failure(new C_SFEE_failure());
         CM_SFEE.getInstance().registerC_SFEE_body_finish(new C_SFEE_finish());
 
-        toggleComunication.setDisable(true);
+        toggleCommunication.setDisable(true);
         toggleItems.setDisable(true);
         toggleFailure.setDisable(true);
         toggleFinish.setDisable(true);
+
     }
 
     private enum Panes {
@@ -53,7 +54,7 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
     @FXML
     private ToggleButton toggleProperties;
     @FXML
-    private ToggleButton toggleComunication;
+    private ToggleButton toggleCommunication;
     @FXML
     private ToggleButton toggleItems;
     @FXML
@@ -98,12 +99,6 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
                 case "Finish" -> {
                     activePane = Panes.FINISH;
                 }
-/*                case "Failures" -> {
-                    paneFailuresMode.setVisible(true);
-                }
-                case "Normal" -> {
-                    paneFailuresMode.setVisible(false);
-                }*/
             }
 
             setPane();
@@ -137,13 +132,16 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
             case "Properties" -> {
                 if (CM_SFEE.getInstance().getProperties().validation_moveON()) {
                     activePane = Panes.COMMUNICATION;
-                    toggleComunication.setDisable(false);
-                    toggleComunication.requestFocus();
-                    bar.selectToggle(toggleComunication);
+                    toggleCommunication.setDisable(false);
+                    toggleCommunication.requestFocus();
+                    bar.selectToggle(toggleCommunication);
+                    Tooltip.uninstall(next,errorMsg);
                 } else {
                     error_icon.setVisible(true);
                     errorMsg.setText(CM_SFEE.getInstance().getProperties().getErrorMsg());
-                    next.setTooltip(errorMsg);
+                    Tooltip.install(next,errorMsg);
+//                    next.setTooltip(errorMsg);
+
                 }
             }
             case "Communication" -> {
@@ -152,22 +150,30 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
                     toggleItems.setDisable(false);
                     toggleItems.requestFocus();
                     bar.selectToggle(toggleItems);
+                    Tooltip.uninstall(next,errorMsg);
                 } else {
                     error_icon.setVisible(true);
                     errorMsg.setText(CM_SFEE.getInstance().getCommunication().getErrorMsg());
-                    next.setTooltip(errorMsg);
+//                    next.setTooltip(errorMsg);
+                    Tooltip.install(next,errorMsg);
+
                 }
             }
             case "Items" -> {
+
                 if (CM_SFEE.getInstance().getItems().validation_moveON()) {
+
                     activePane = Panes.FAILURE;
-                    toggleFailure.setDisable(true);
+                    toggleFailure.setDisable(false);
                     toggleFailure.requestFocus();
                     bar.selectToggle(toggleFailure);
+                    Tooltip.uninstall(next,errorMsg);
                 } else {
                     error_icon.setVisible(true);
                     errorMsg.setText(CM_SFEE.getInstance().getItems().getErrorMsg());
-                    next.setTooltip(errorMsg);
+                    Tooltip.install(next,errorMsg);
+//                    next.setTooltip(errorMsg);
+
                 }
             }
             case "Failure" -> {
@@ -177,6 +183,9 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
             }
             case "Finish" -> {
                 // to do
+            }
+            default -> {
+                System.out.println("THIS SHOULDN'T WRITE " + selected.getText());
             }
 
         }
@@ -203,7 +212,9 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
                     CM_SFEE.getInstance().getItems().setIo(CM_SFEE.getInstance().getCommunication().getIo());
                     loader.setController(CM_SFEE.getInstance().getItems());
                 }
-                case FAILURE -> loader.setController(CM_SFEE.getInstance().getFailure());
+                case FAILURE ->{
+                    loader.setController(CM_SFEE.getInstance().getFailure());
+                }
                 case FINISH -> loader.setController(CM_SFEE.getInstance().getFinish());
             }
             Pane pane = loader.load();
