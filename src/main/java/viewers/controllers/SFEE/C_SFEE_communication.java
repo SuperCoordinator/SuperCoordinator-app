@@ -23,11 +23,12 @@ import utils.utils;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
-public class C_SFEE_communication /*extends Application*/ implements Initializable {
+public class C_SFEE_communication implements Initializable {
 
     @FXML
     private ToggleGroup comProtocol;
@@ -81,10 +82,26 @@ public class C_SFEE_communication /*extends Application*/ implements Initializab
         outBit.setCellValueFactory(new PropertyValueFactory<>("bit_offset"));
 
         outputsTable.setFixedCellSize(30.0);
+
+
+        if (saveValues.size() > 0) {
+
+            for (int i = 0; i < comProtocol.getToggles().size(); i++) {
+                if (((ToggleButton) comProtocol.getToggles().get(i)).getId().equals(saveValues.get(0)))
+                    comProtocol.selectToggle(comProtocol.getToggles().get(i));
+            }
+
+            ip.setText((String) saveValues.get(1));
+            port.setText((String) saveValues.get(2));
+            slaveID.setText((String) saveValues.get(3));
+            updateTables();
+//            saveValues.clear();
+        }
     }
 
 
     public C_SFEE_communication() {
+        this.saveValues = new ArrayList<>();
     }
 
     @FXML
@@ -105,6 +122,7 @@ public class C_SFEE_communication /*extends Application*/ implements Initializab
     }
 
     private File file;
+    private ArrayList<Object> saveValues;
     private TreeMap<Integer, sensor_actuator> io;
 
     public TreeMap<Integer, sensor_actuator> getIo() {
@@ -125,12 +143,11 @@ public class C_SFEE_communication /*extends Application*/ implements Initializab
         f_chooser.setInitialDirectory(new File("C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\simulation"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         file = f_chooser.showOpenDialog(stage);
-        if (file != null)
+        if (file != null) {
             System.out.println(file.getPath());
-
-
-        io = utility.getReader().readModbusTags(file.getPath(), 0, false);
-        updateTables();
+            io = utility.getReader().readModbusTags(file.getPath(), 0, false);
+            updateTables();
+        }
     }
 
     @FXML
@@ -164,4 +181,17 @@ public class C_SFEE_communication /*extends Application*/ implements Initializab
         outputsTable.setItems(list_out);
 
     }
+
+    public void setSaveValues() {
+        System.out.println("Saving COMMUNICATIONS");
+        if (validation_moveON()) {
+            saveValues.add(0, ((ToggleButton) comProtocol.getSelectedToggle()).getId());
+            saveValues.add(1, ip.getText());
+            saveValues.add(2, port.getText());
+            saveValues.add(3, slaveID.getText());
+        }
+
+    }
+
+
 }

@@ -23,13 +23,13 @@
             </Text>
             <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="950.0">
                <children>
-                  <ToggleButton mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="Modbus TCP/IP" textFill="#d9d9d9">
+                  <ToggleButton fx:id="modbus" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="Modbus TCP/IP" textFill="#d9d9d9">
                      <toggleGroup>
                         <ToggleGroup fx:id="comProtocol" />
                      </toggleGroup>
                   </ToggleButton>
                   <Pane prefHeight="50.0" prefWidth="45.0" />
-                  <ToggleButton mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="OPC UA" textFill="#d9d9d9" toggleGroup="$comProtocol" />
+                  <ToggleButton fx:id="opcua" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="OPC UA" textFill="#d9d9d9" toggleGroup="$comProtocol" />
                </children>
                <VBox.margin>
                   <Insets />

@@ -30,16 +30,6 @@ public class C_SFEI extends CM_SFEI implements Initializable {
         this.io = io;
     }
 
-    @Override
-    public ArrayList<C_SFEI_conveyor> getSfeiConveyors() {
-        return super.getSfeiConveyors();
-    }
-
-    @Override
-    public ArrayList<C_SFEI_machine> getSfeiMachines() {
-        return super.getSfeiMachines();
-    }
-
     @FXML
     private TextField sfeiName;
     @FXML

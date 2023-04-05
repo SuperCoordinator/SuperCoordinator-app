@@ -18,10 +18,12 @@ import viewers.controllers.C_SFEM_layout;
 import viewers.mediators.CM_SFEE;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
 public class C_SFEE2 extends CM_SFEE implements Initializable {
+    ArrayList<ToggleButton> menu_bar = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -31,10 +33,15 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
         CM_SFEE.getInstance().registerC_SFEE_body_failure(new C_SFEE_failure());
         CM_SFEE.getInstance().registerC_SFEE_body_finish(new C_SFEE_finish());
 
-        toggleCommunication.setDisable(true);
-        toggleItems.setDisable(true);
-        toggleFailure.setDisable(true);
-        toggleFinish.setDisable(true);
+        menu_bar.add(toggleProperties);
+        menu_bar.add(toggleCommunication);
+        menu_bar.add(toggleItems);
+        menu_bar.add(toggleFailure);
+        menu_bar.add(toggleFinish);
+
+        for (int i = 1; i < menu_bar.size(); i++) {
+            menu_bar.get(i).setDisable(true);
+        }
 
     }
 
@@ -59,7 +66,6 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
     private ToggleButton toggleItems;
     @FXML
     private ToggleButton toggleFailure;
-
     @FXML
     private ToggleButton toggleFinish;
     @FXML
@@ -72,8 +78,23 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
     @FXML
     private Button next;
 
+
     public C_SFEE2() {
         super();
+    }
+
+    @FXML
+    void goBack(ActionEvent event) {
+        try {
+//            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SFEM_layout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEM_layout.fxml"));
+            loader.setController(new C_SFEM_layout(""));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -81,6 +102,9 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
 
         ToggleButton temp = (ToggleButton) event.getSource();
 
+        // Save data of current Pane
+        if (activePane != null)
+            saveActivePaneData();
         try {
             switch (temp.getText()) {
                 case "Properties" -> {
@@ -100,7 +124,7 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
                     activePane = Panes.FINISH;
                 }
             }
-
+            adjustStyle();
             setPane();
 
         } catch (
@@ -110,17 +134,12 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
 
     }
 
-    @FXML
-    void goBack(ActionEvent event) {
-        try {
-//            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SFEM_layout.fxml"));
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEM_layout.fxml"));
-            loader.setController(new C_SFEM_layout(""));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void saveActivePaneData() {
+        switch (activePane) {
+            case PROPERTIES -> CM_SFEE.getInstance().getProperties().setSaveValues();
+            case COMMUNICATION -> CM_SFEE.getInstance().getCommunication().setSaveValues();
+            case ITEMS -> CM_SFEE.getInstance().getItems().setSaveValues();
+            case FAILURE -> CM_SFEE.getInstance().getFailure().setSaveValues();
         }
     }
 
@@ -131,55 +150,65 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
         switch (selected.getText()) {
             case "Properties" -> {
                 if (CM_SFEE.getInstance().getProperties().validation_moveON()) {
+                    CM_SFEE.getInstance().getProperties().setSaveValues();
                     activePane = Panes.COMMUNICATION;
                     toggleCommunication.setDisable(false);
-                    toggleCommunication.requestFocus();
+//                    toggleCommunication.requestFocus();
                     bar.selectToggle(toggleCommunication);
-                    Tooltip.uninstall(next,errorMsg);
+                    Tooltip.uninstall(next, errorMsg);
                 } else {
                     error_icon.setVisible(true);
                     errorMsg.setText(CM_SFEE.getInstance().getProperties().getErrorMsg());
-                    Tooltip.install(next,errorMsg);
+                    Tooltip.install(next, errorMsg);
 //                    next.setTooltip(errorMsg);
 
                 }
             }
             case "Communication" -> {
                 if (CM_SFEE.getInstance().getCommunication().validation_moveON()) {
+                    CM_SFEE.getInstance().getCommunication().setSaveValues();
                     activePane = Panes.ITEMS;
                     toggleItems.setDisable(false);
-                    toggleItems.requestFocus();
+//                    toggleItems.requestFocus();
                     bar.selectToggle(toggleItems);
-                    Tooltip.uninstall(next,errorMsg);
+                    Tooltip.uninstall(next, errorMsg);
                 } else {
                     error_icon.setVisible(true);
                     errorMsg.setText(CM_SFEE.getInstance().getCommunication().getErrorMsg());
 //                    next.setTooltip(errorMsg);
-                    Tooltip.install(next,errorMsg);
+                    Tooltip.install(next, errorMsg);
 
                 }
             }
             case "Items" -> {
-
                 if (CM_SFEE.getInstance().getItems().validation_moveON()) {
-
+                    CM_SFEE.getInstance().getItems().setSaveValues();
                     activePane = Panes.FAILURE;
                     toggleFailure.setDisable(false);
-                    toggleFailure.requestFocus();
+//                    toggleFailure.requestFocus();
                     bar.selectToggle(toggleFailure);
-                    Tooltip.uninstall(next,errorMsg);
+                    Tooltip.uninstall(next, errorMsg);
                 } else {
                     error_icon.setVisible(true);
                     errorMsg.setText(CM_SFEE.getInstance().getItems().getErrorMsg());
-                    Tooltip.install(next,errorMsg);
+                    Tooltip.install(next, errorMsg);
 //                    next.setTooltip(errorMsg);
 
                 }
             }
             case "Failure" -> {
-                activePane = Panes.FINISH;
-                toggleFinish.requestFocus();
-                bar.selectToggle(toggleFinish);
+                if (CM_SFEE.getInstance().getFailure().validation_moveON()) {
+                    CM_SFEE.getInstance().getFailure().setSaveValues();
+                    activePane = Panes.FINISH;
+                    toggleFinish.setDisable(false);
+//                    toggleFinish.requestFocus();
+                    bar.selectToggle(toggleFinish);
+                    Tooltip.uninstall(next, errorMsg);
+                } else {
+                    error_icon.setVisible(true);
+                    errorMsg.setText(CM_SFEE.getInstance().getFailure().getErrorMsg());
+                    Tooltip.install(next, errorMsg);
+                }
             }
             case "Finish" -> {
                 // to do
@@ -189,7 +218,28 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
             }
 
         }
+        adjustStyle();
         setPane();
+
+    }
+
+    private void adjustStyle() {
+
+        for (int i = 0; i < menu_bar.size(); i++) {
+
+//            System.out.println(menu_bar.get(i).getText() + " " + menu_bar.get(i).getStyleClass().toString());
+
+            if (i == activePane.ordinal()) {
+                if (!menu_bar.get(i).getStyleClass().contains("sfee-bar-btn-active"))
+                    menu_bar.get(i).getStyleClass().add("sfee-bar-btn-active");
+                bar.selectToggle(menu_bar.get(i));
+            } else {
+                if (!menu_bar.get(i).isDisabled()) {
+//                    menubar.get(i).getStyleClass().clear();
+                    menu_bar.get(i).getStyleClass().remove("sfee-bar-btn-active");
+                }
+            }
+        }
 
     }
 
@@ -202,7 +252,7 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEE_" + name + ".fxml"));
             switch (activePane) {
                 case PROPERTIES -> {
-                    CM_SFEE.getInstance().getProperties().activatePreviousValues();
+
                     loader.setController(CM_SFEE.getInstance().getProperties());
                 }
                 case COMMUNICATION -> {
@@ -212,7 +262,7 @@ public class C_SFEE2 extends CM_SFEE implements Initializable {
                     CM_SFEE.getInstance().getItems().setIo(CM_SFEE.getInstance().getCommunication().getIo());
                     loader.setController(CM_SFEE.getInstance().getItems());
                 }
-                case FAILURE ->{
+                case FAILURE -> {
                     loader.setController(CM_SFEE.getInstance().getFailure());
                 }
                 case FINISH -> loader.setController(CM_SFEE.getInstance().getFinish());

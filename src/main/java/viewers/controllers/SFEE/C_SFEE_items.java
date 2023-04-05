@@ -21,7 +21,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
-public class C_SFEE_items implements Initializable {
+public class C_SFEE_items {
 
     private C_SFEI sfeisController;
     private TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
@@ -51,8 +51,9 @@ public class C_SFEE_items implements Initializable {
     @FXML
     private TreeView<String> treeView_SFEIs;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+    public void initialize() {
+        updateTreeView();
     }
 
     @FXML
@@ -79,7 +80,8 @@ public class C_SFEE_items implements Initializable {
                     if (!sfeisController.verifyFields()) {
                         sfeisController.addSFEI();
                         newSFEI_Pane.getChildren().clear();
-                        updateTreeView(event);
+                        updateSFEEname(event);
+                        updateTreeView();
                         Tooltip.uninstall(add, addSFEI_error);
                     } else {
                         error_icon.setVisible(true);
@@ -97,34 +99,11 @@ public class C_SFEE_items implements Initializable {
         }
     }
 
-
-    private void setPane() {
-
-       /* String name = String.valueOf(activePane);
-        name = name.toLowerCase();
-        try {
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEE_" + name + ".fxml"));
-            switch (activePane) {
-                case PROPERTIES -> loader.setController(CM_SFEE.getInstance().getProperties());
-                case COMMUNICATION -> loader.setController(CM_SFEE.getInstance().getCommunication());
-                case ITEMS -> loader.setController(CM_SFEE.getInstance().getItems());
-                case FAILURE -> loader.setController(CM_SFEE.getInstance().getFailure());
-                case FINISH -> loader.setController(CM_SFEE.getInstance().getFinish());
-            }
-            Pane pane = loader.load();
-            SFEE_body.getChildren().setAll(pane);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-    }
-
-    private String errorMsg;
+        private String errorMsg;
 
     public boolean validation_moveON() {
-        System.out.println("Conveyors: " + sfeisController.getSfeiConveyors().size());
-        System.out.println("Machines: " + sfeisController.getSfeiMachines().size());
+//        System.out.println("Conveyors: " + sfeisController.getSfeiConveyors().size());
+//        System.out.println("Machines: " + sfeisController.getSfeiMachines().size());
         if (sfeisController.getSfeiConveyors().size() == 0 && sfeisController.getSfeiMachines().size() == 0) {
             errorMsg = "Add SFEIs to the SFEE !";
             return false;
@@ -136,34 +115,46 @@ public class C_SFEE_items implements Initializable {
         return errorMsg;
     }
 
-    @FXML
-    public void updateTreeView(ActionEvent event) {
+    private String sfeeName = " ";
 
+
+    @FXML
+    private void updateSFEEname(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         for (Node node : stage.getScene().getRoot().getChildrenUnmodifiable()) {
 //            System.out.println(node.getId());
             TextField title = (TextField) node.lookup("#SFEE_name");
+
             if (title != null) {
-//                System.out.println(title.getText());
-                TreeItem<String> rootItem = new TreeItem<>(title.getText());
-
-//                System.out.println("N of SFEI_conveyors: " + getSfeisController().getSfeiConveyors().size());
-                for (C_SFEI_conveyor conveyor : getSfeisController().getSfeiConveyors()) {
-//                    System.out.println("SFEI name: " + conveyor.getSfeiConveyor().getName());
-                    TreeItem<String> branchItem = new TreeItem<>(conveyor.getSfeiConveyor().getName());
-                    rootItem.getChildren().add(branchItem);
-                }
-                for (C_SFEI_machine conveyor : getSfeisController().getSfeiMachines()) {
-//                    System.out.println("SFEI name: " + conveyor.getSfeiMachine().getName());
-                    TreeItem<String> branchItem = new TreeItem<>(conveyor.getSfeiMachine().getName());
-                    rootItem.getChildren().add(branchItem);
-                }
-
-                treeView_SFEIs.setRoot(rootItem);
+                sfeeName = title.getText();
+                // System.out.println(title.getText());
             }
         }
+        updateTreeView();
 
     }
 
+    private void updateTreeView() {
 
+        TreeItem<String> rootItem = new TreeItem<>(sfeeName);
+        System.out.println("#Conv: " + sfeisController.getSfeiConveyors().size());
+        for (C_SFEI_conveyor conveyor : getSfeisController().getSfeiConveyors()) {
+            System.out.println("SFEI name: " + conveyor.getSfeiConveyor().getName());
+            TreeItem<String> branchItem = new TreeItem<>(conveyor.getSfeiConveyor().getName());
+            rootItem.getChildren().add(branchItem);
+        }
+        System.out.println("#Mach: " + sfeisController.getSfeiMachines().size());
+        for (C_SFEI_machine conveyor : getSfeisController().getSfeiMachines()) {
+            System.out.println("SFEI name: " + conveyor.getSfeiMachine().getName());
+            TreeItem<String> branchItem = new TreeItem<>(conveyor.getSfeiMachine().getName());
+            rootItem.getChildren().add(branchItem);
+        }
+
+        treeView_SFEIs.setRoot(rootItem);
+    }
+
+
+    public void setSaveValues() {
+
+    }
 }

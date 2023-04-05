@@ -81,7 +81,7 @@
     -fx-font-size:14px;
 }
 
-.button_default:hover, .button_default:focused, .button_default:selected,
+.button_default:hover, .button_default:focused, .button_default:selected, .button_default:pressed,
  .comboBox_default:hover, .comboBox_default:focused, .comboBox_default:selected{
     -fx-background-color : #d9d9d9;
     -fx-background-radius:10;
@@ -120,6 +120,10 @@
 }
 
 .sfee-bar-btn:hover,.sfee-bar-btn:focused{
+    -fx-background-color:#d9d9d9;
+    -fx-text-fill:#000000;
+}
+.sfee-bar-btn-active{
     -fx-background-color:#d9d9d9;
     -fx-text-fill:#000000;
 }

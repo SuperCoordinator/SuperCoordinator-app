@@ -2,31 +2,30 @@ package viewers.controllers.SFEE;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
 public class C_SFEE_properties {
+
+    public C_SFEE_properties() {
+        this.saveValues = new ArrayList<>();
+
+    }
+
+    private final ArrayList<Object> saveValues;
+
     @FXML
     private ToggleGroup env;
     @FXML
-    private ToggleButton sim_tb;
-    @FXML
-    private ToggleButton real_tb;
-
-    @FXML
     private ToggleGroup func;
-    @FXML
-    private ToggleButton prod_tb;
-    @FXML
-    private ToggleButton trans_tb;
 
-
-    public C_SFEE_properties() {
-    }
 
     public String getEnvironment() {
         if (env == null)
@@ -43,24 +42,26 @@ public class C_SFEE_properties {
         return toggleButton.getText();
     }
 
-    public void activatePreviousValues() {
-        if (env != null) {
-            ToggleButton btn = (ToggleButton) env.getSelectedToggle();
-            if (btn != null)
-                if (btn.getText().equalsIgnoreCase(sim_tb.getText())) {
-                    env.selectToggle(sim_tb);
-                    sim_tb.requestFocus();
-                } else {
-                    env.selectToggle(real_tb);
-                    real_tb.requestFocus();
-                }
-        }
-        if (func != null) {
-            ToggleButton btn = (ToggleButton) func.getSelectedToggle();
-            if (btn != null) {
-                btn.requestFocus();
-                func.selectToggle(btn);
+
+    public void initialize() {
+
+        if (saveValues.size() > 0) {
+            for (int i = 0; i < env.getToggles().size(); i++) {
+                if (((ToggleButton) env.getToggles().get(i)).getId().equals(saveValues.get(0)))
+                    env.selectToggle(env.getToggles().get(i));
             }
+            for (int i = 0; i < func.getToggles().size(); i++) {
+                if (((ToggleButton) func.getToggles().get(i)).getId().equals(saveValues.get(1)))
+                    func.selectToggle(func.getToggles().get(i));
+            }
+//            saveValues.clear();
+        }
+    }
+
+    public void setSaveValues() {
+        if (validation_moveON()) {
+            saveValues.add(0, ((ToggleButton) env.getSelectedToggle()).getId());
+            saveValues.add(1, ((ToggleButton) func.getSelectedToggle()).getId());
         }
     }
 

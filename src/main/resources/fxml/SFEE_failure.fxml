@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="bkg" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="bkg" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="655.0" prefWidth="1044.0">
          <children>
@@ -26,13 +26,13 @@
             </Text>
             <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="950.0">
                <children>
-                  <ToggleButton mnemonicParsing="false" onAction="#buttonPressed" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="Normal" textFill="#d9d9d9">
+                  <ToggleButton fx:id="normal" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="Normal" textFill="#d9d9d9">
                      <toggleGroup>
                         <ToggleGroup fx:id="opMode" />
                      </toggleGroup>
                   </ToggleButton>
                   <Pane prefHeight="50.0" prefWidth="45.0" />
-                  <ToggleButton mnemonicParsing="false" onAction="#buttonPressed" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="Failures" textFill="#d9d9d9" toggleGroup="$opMode" />
+                  <ToggleButton fx:id="failures" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="Failures" textFill="#d9d9d9" toggleGroup="$opMode" />
                </children>
                <VBox.margin>
                   <Insets />
@@ -100,7 +100,7 @@
                         <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="950.0">
                            <children>
                               <Pane prefHeight="45.0" prefWidth="539.0" />
-                              <Text fill="#f5f4f4" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Gaussina repair time" />
+                              <Text fill="#f5f4f4" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Gaussian repair time" />
                               <Pane prefHeight="45.0" prefWidth="70.0" />
                               <TextField fx:id="BDwR_repair" alignment="CENTER" prefHeight="45.0" prefWidth="280.0" promptText="[ mean ; dev ]" styleClass="text_field" />
                            </children>
