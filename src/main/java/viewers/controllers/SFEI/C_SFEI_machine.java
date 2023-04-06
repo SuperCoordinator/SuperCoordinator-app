@@ -27,9 +27,14 @@ public class C_SFEI_machine implements Initializable {
     private SFEI_machine sfeiMachine;
     private C_SFEI_machine_failures sfeiMachineFailures;
     private final TreeMap<Integer, sensor_actuator> io;
+    private boolean editMode;
 
     public C_SFEI_machine(TreeMap<Integer, sensor_actuator> io) {
         this.io = io;
+    }
+
+    public void activeEditMode() {
+        this.editMode = true;
     }
 
     public SFEI_machine getSfeiMachine() {
@@ -42,14 +47,41 @@ public class C_SFEI_machine implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        utils utility = new utils();
+        if (!editMode) {
+            utils utility = new utils();
 
-        TreeMap<Integer, sensor_actuator> outputs = utility.getSearch().getSensorsOrActuators(io, false);
-        ArrayList<String> values_str = new ArrayList<>();
-        for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
-            values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());
-        aProduce.setItems(FXCollections.observableArrayList(values_str));
+            TreeMap<Integer, sensor_actuator> outputs = utility.getSearch().getSensorsOrActuators(io, false);
+            ArrayList<String> values_str = new ArrayList<>();
+            for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
+                values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());
+            aProduce.setItems(FXCollections.observableArrayList(values_str));
+        } else {
+            aProduce.setValue(sfeiMachine.getaProduce().getName());
 
+            if (((RadioButton) part_type.getToggles().get(0)).getText().equalsIgnoreCase("lid")) {
+                if (sfeiMachine.getPartForm().equals(partsAspect.form.LID)) {
+                    part_type.selectToggle(part_type.getToggles().get(0));
+                } else {
+                    part_type.selectToggle(part_type.getToggles().get(1));
+                }
+            } else {
+                if (sfeiMachine.getPartForm().equals(partsAspect.form.BASE)) {
+                    part_type.selectToggle(part_type.getToggles().get(0));
+                } else {
+                    part_type.selectToggle(part_type.getToggles().get(1));
+                }
+            }
+
+
+            if (sfeiMachine.isSupportsFailures()) {
+                loadFailuresPane();
+
+                if (((RadioButton) failures_support.getToggles().get(0)).getText().equalsIgnoreCase("yes"))
+                    failures_support.selectToggle(failures_support.getToggles().get(0));
+                else
+                    failures_support.selectToggle(failures_support.getToggles().get(1));
+            }
+        }
     }
 
     @FXML
@@ -75,11 +107,14 @@ public class C_SFEI_machine implements Initializable {
         ToggleButton toggleButton = (ToggleButton) failures_support.getSelectedToggle();
         return toggleButton.getText().equalsIgnoreCase("yes");
     }
+
     private void loadFailuresPane() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI_failures_support_machine.fxml"));
 
             sfeiMachineFailures = new C_SFEI_machine_failures(io);
+            if (editMode && sfeiMachine.isSupportsFailures())
+                sfeiMachineFailures.activeEditMode(sfeiMachine);
             loader.setController(sfeiMachineFailures);
 
             AnchorPane pane = loader.load();
@@ -100,22 +135,24 @@ public class C_SFEI_machine implements Initializable {
         RadioButton radioButton = (RadioButton) part_type.getSelectedToggle();
         return radioButton.getText().equalsIgnoreCase("lid") ? partsAspect.form.LID : partsAspect.form.BASE;
     }
+
     public boolean getFailure_support() {
-        ToggleButton toggleButton = (ToggleButton) failures_support.getSelectedToggle();
+        RadioButton toggleButton = (RadioButton) failures_support.getSelectedToggle();
         return toggleButton.getText().equalsIgnoreCase("yes");
     }
 
     public sensor_actuator[] getSensAct() {
 
         sensor_actuator[] ret = new sensor_actuator[3];
-        if(sfeiMachineFailures != null){
-            ret[0] = search_sensor_actuator(sfeiMachineFailures.getsDoor());
-            ret[1] = search_sensor_actuator(sfeiMachineFailures.getaStop());
-        }else{
-            ret[0] = null;
+        ret[0] = search_sensor_actuator(aProduce);
+        if (sfeiMachineFailures != null) {
+            ret[1] = search_sensor_actuator(sfeiMachineFailures.getsDoor());
+            ret[2] = search_sensor_actuator(sfeiMachineFailures.getaStop());
+        } else {
             ret[1] = null;
+            ret[2] = null;
         }
-        ret[2] = search_sensor_actuator(aProduce);
+
         return ret;
 
     }

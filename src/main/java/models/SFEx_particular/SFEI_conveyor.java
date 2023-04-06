@@ -64,12 +64,9 @@ public class SFEI_conveyor extends SFEI implements Externalizable {
             this.aEmitter = sensorActuators[1];
             this.sRemover = sensorActuators[2];
             this.sEmitter = sensorActuators[3];
-            this.aConveyorMotor = sensorActuators[4];
-
-        } else if (supportsFailures) {
-            this.aConveyorMotor = sensorActuators[4];
 
         }
+        this.aConveyorMotor = sensorActuators[4];
 
     }
 

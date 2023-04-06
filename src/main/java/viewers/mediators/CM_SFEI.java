@@ -5,19 +5,29 @@ import viewers.controllers.SFEI.C_SFEI_machine;
 
 import java.util.ArrayList;
 
-public class CM_SFEI implements IMC_SFEI{
+public class CM_SFEI implements IMC_SFEI {
 
     private final ArrayList<C_SFEI_conveyor> sfeiConveyors = new ArrayList<>();
     private final ArrayList<C_SFEI_machine> sfeiMachines = new ArrayList<>();
 
     @Override
     public void registerC_SFEI_conveyor(C_SFEI_conveyor controller) {
-            sfeiConveyors.add(sfeiConveyors.size(),controller);
+        sfeiConveyors.add(sfeiConveyors.size(), controller);
     }
 
     @Override
     public void registerC_SFEI_machine(C_SFEI_machine controller) {
-        sfeiMachines.add(sfeiMachines.size(),controller);
+        sfeiMachines.add(sfeiMachines.size(), controller);
+    }
+
+    @Override
+    public void updateC_SFEI_conveyor(int pos, C_SFEI_conveyor controller) {
+        sfeiConveyors.set(pos, controller);
+    }
+
+    @Override
+    public void updateC_SFEI_machine(int pos, C_SFEI_machine controller) {
+        sfeiMachines.set(pos, controller);
     }
 
     public ArrayList<C_SFEI_conveyor> getSfeiConveyors() {

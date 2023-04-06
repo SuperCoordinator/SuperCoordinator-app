@@ -1,25 +1,20 @@
 package viewers.controllers.SFEE;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.stage.Stage;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
 
 public class C_SFEE_properties {
 
     public C_SFEE_properties() {
-        this.saveValues = new ArrayList<>();
+        this.savedValues = new ArrayList<>();
 
     }
 
-    private final ArrayList<Object> saveValues;
+    private final ArrayList<Object> savedValues;
 
     @FXML
     private ToggleGroup env;
@@ -45,13 +40,13 @@ public class C_SFEE_properties {
 
     public void initialize() {
 
-        if (saveValues.size() > 0) {
+        if (savedValues.size() > 0) {
             for (int i = 0; i < env.getToggles().size(); i++) {
-                if (((ToggleButton) env.getToggles().get(i)).getId().equals(saveValues.get(0)))
+                if (((ToggleButton) env.getToggles().get(i)).getId().equals(savedValues.get(0)))
                     env.selectToggle(env.getToggles().get(i));
             }
             for (int i = 0; i < func.getToggles().size(); i++) {
-                if (((ToggleButton) func.getToggles().get(i)).getId().equals(saveValues.get(1)))
+                if (((ToggleButton) func.getToggles().get(i)).getId().equals(savedValues.get(1)))
                     func.selectToggle(func.getToggles().get(i));
             }
 //            saveValues.clear();
@@ -60,8 +55,8 @@ public class C_SFEE_properties {
 
     public void setSaveValues() {
         if (validation_moveON()) {
-            saveValues.add(0, ((ToggleButton) env.getSelectedToggle()).getId());
-            saveValues.add(1, ((ToggleButton) func.getSelectedToggle()).getId());
+            savedValues.add(0, ((ToggleButton) env.getSelectedToggle()).getId());
+            savedValues.add(1, ((ToggleButton) func.getSelectedToggle()).getId());
         }
     }
 

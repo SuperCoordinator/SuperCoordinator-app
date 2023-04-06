@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
@@ -23,13 +24,16 @@ import java.util.TreeMap;
 public class C_SFEI_conveyor implements Initializable {
 
     private SFEI_conveyor sfeiConveyor;
-
     private C_SFEI_conveyor_failures sfeiConveyorFailures;
-
     private final TreeMap<Integer, sensor_actuator> io;
+
+    private boolean editMode;
 
     public C_SFEI_conveyor(TreeMap<Integer, sensor_actuator> io) {
         this.io = io;
+    }
+    public void activeEditMode() {
+        this.editMode = true;
     }
 
     public SFEI_conveyor getSfeiConveyor() {
@@ -42,15 +46,29 @@ public class C_SFEI_conveyor implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        utils utility = new utils();
+        if (!editMode) {
+            utils utility = new utils();
 
-        ArrayList<String> values_str = new ArrayList<>();
+            ArrayList<String> values_str = new ArrayList<>();
 
-        TreeMap<Integer, sensor_actuator> outputs = utility.getSearch().getSensorsOrActuators(io, false);
+            TreeMap<Integer, sensor_actuator> outputs = utility.getSearch().getSensorsOrActuators(io, false);
 
-        for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
-            values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());
-        aConveyor.setItems(FXCollections.observableArrayList(values_str));
+            for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
+                values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());
+            aConveyor.setItems(FXCollections.observableArrayList(values_str));
+        } else {
+            aConveyor.setValue(sfeiConveyor.getaConveyorMotor().getName());
+
+            if (sfeiConveyor.isSupportsFailures()) {
+                loadFailuresPane();
+
+                if (((RadioButton) failures_support.getToggles().get(0)).getText().equalsIgnoreCase("yes"))
+                    failures_support.selectToggle(failures_support.getToggles().get(0));
+                else
+                    failures_support.selectToggle(failures_support.getToggles().get(1));
+
+            }
+        }
 
     }
 
@@ -81,6 +99,11 @@ public class C_SFEI_conveyor implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI_failures_support_conveyor.fxml"));
 
             sfeiConveyorFailures = new C_SFEI_conveyor_failures(io);
+            if (editMode && sfeiConveyor.isSupportsFailures()) {
+                sfeiConveyorFailures.activeEditMode(sfeiConveyor);
+                System.out.println("EXECUTOU");
+            }
+
             loader.setController(sfeiConveyorFailures);
 
             AnchorPane pane = loader.load();

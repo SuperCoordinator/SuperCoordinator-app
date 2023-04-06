@@ -2,11 +2,8 @@ package viewers.controllers.SFEE;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +11,10 @@ import java.util.List;
 public class C_SFEE_failure {
 
     private final ArrayList<TextField> textFields;
-    private final ArrayList<Object> saveValues;
+    private final ArrayList<Object> savedValues;
 
     public C_SFEE_failure() {
-        this.saveValues = new ArrayList<>();
+        this.savedValues = new ArrayList<>();
         this.textFields = new ArrayList<>();
     }
 
@@ -69,17 +66,17 @@ public class C_SFEE_failure {
     public void initialize() {
         textFields.clear();
         textFields.addAll(List.of(formula, BDwR_n, BDwR_a, BDwR_m, BDwR_repair, BD_n, BD_a, BD_m, PF_n, PF_a, PF_m, PM_n, PM_a, PM_m));
-        if (saveValues.size() > 0) {
+        if (savedValues.size() > 0) {
             System.out.println("Loading FAILURES");
             for (int i = 0; i < opMode.getToggles().size(); i++) {
-                if (((ToggleButton) opMode.getToggles().get(i)).getId().equals(saveValues.get(0)))
+                if (((ToggleButton) opMode.getToggles().get(i)).getId().equals(savedValues.get(0)))
                     opMode.selectToggle(opMode.getToggles().get(i));
             }
 
             if (((ToggleButton) opMode.getSelectedToggle()).getId().equals("failures")) {
                 paneFailuresMode.setVisible(true);
                 for (int i = 0; i < textFields.size(); i++) {
-                    textFields.get(i).setText((String) saveValues.get(i + 1));
+                    textFields.get(i).setText((String) savedValues.get(i + 1));
                 }
             }
         }
@@ -136,11 +133,11 @@ public class C_SFEE_failure {
 
     public void setSaveValues() {
         System.out.println("SAVING FAILURES");
-        saveValues.add(0, ((ToggleButton) opMode.getSelectedToggle()).getId());
+        savedValues.add(0, ((ToggleButton) opMode.getSelectedToggle()).getId());
 
         if (((ToggleButton) opMode.getSelectedToggle()).getId().equals("failures")) {
             for (int i = 0; i < textFields.size(); i++) {
-                saveValues.add(i + 1, textFields.get(i).getText());
+                savedValues.add(i + 1, textFields.get(i).getText());
             }
         }
 

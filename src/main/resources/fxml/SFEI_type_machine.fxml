@@ -19,12 +19,12 @@
                   <HBox prefHeight="100.0" prefWidth="335.0" spacing="10.0">
                      <children>
                         <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Product Type" />
-                        <RadioButton mnemonicParsing="false" prefWidth="55.0" text="Base" textFill="WHITE">
+                        <RadioButton mnemonicParsing="false" prefWidth="60.0" text="Base" textFill="WHITE">
                            <toggleGroup>
                               <ToggleGroup fx:id="part_type" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton mnemonicParsing="false" prefWidth="55.0" text="Lid  " textFill="WHITE" toggleGroup="$part_type" />
+                        <RadioButton mnemonicParsing="false" prefWidth="60.0" selected="true" text="Lid" textFill="WHITE" toggleGroup="$part_type" />
                      </children>
                   </HBox>
                   <VBox prefHeight="160.0" prefWidth="335.0">
