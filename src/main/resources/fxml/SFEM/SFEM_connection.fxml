@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane focusTraversable="true" prefHeight="800.0" prefWidth="1150.0" styleClass="bkg" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" layoutX="26.0" layoutY="118.0" prefHeight="500.0" prefWidth="200.0">
+         <children>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="titles" text="Modules" textAlignment="CENTER" wrappingWidth="120.138671875">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin></Text>
+            <ListView fx:id="SFEMs_list" prefHeight="405.0" prefWidth="200.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </ListView>
+         </children>
+      </VBox>
+      <ScrollPane fx:id="build_pane" layoutX="251.0" layoutY="18.0" prefHeight="770.0" prefWidth="890.0" />
+   </children>
+</AnchorPane>

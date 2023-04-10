@@ -64,11 +64,16 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        CM_SFEE.getInstance().registerC_SFEE_body_properties(new C_SFEE_properties());
+/*        CM_SFEE.getInstance().registerC_SFEE_body_properties(new C_SFEE_properties());
         CM_SFEE.getInstance().registerC_SFEE_body_communication(new C_SFEE_communication());
         CM_SFEE.getInstance().registerC_SFEE_body_items(new C_SFEE_items());
         CM_SFEE.getInstance().registerC_SFEE_body_failure(new C_SFEE_failure());
-        CM_SFEE.getInstance().registerC_SFEE_body_finish(new C_SFEE_finish());
+        CM_SFEE.getInstance().registerC_SFEE_body_finish(new C_SFEE_finish());*/
+        registerC_SFEE_body_properties(new C_SFEE_properties());
+        registerC_SFEE_body_communication(new C_SFEE_communication());
+        registerC_SFEE_body_items(new C_SFEE_items());
+        registerC_SFEE_body_failure(new C_SFEE_failure());
+        registerC_SFEE_body_finish(new C_SFEE_finish());
 
         menu_bar.add(toggleProperties);
         menu_bar.add(toggleCommunication);
@@ -139,10 +144,10 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
 
     private void saveActivePaneData() {
         switch (activePane) {
-            case PROPERTIES -> CM_SFEE.getInstance().getProperties().setSaveValues();
-            case COMMUNICATION -> CM_SFEE.getInstance().getCommunication().setSaveValues();
-            case ITEMS -> CM_SFEE.getInstance().getItems().setSaveValues();
-            case FAILURE -> CM_SFEE.getInstance().getFailure().setSaveValues();
+            case PROPERTIES -> /*CM_SFEE.getInstance().*/getProperties().setSaveValues();
+            case COMMUNICATION -> /*CM_SFEE.getInstance().*/getCommunication().setSaveValues();
+            case ITEMS -> /*CM_SFEE.getInstance().*/getItems().setSaveValues();
+            case FAILURE -> /*CM_SFEE.getInstance().*/getFailure().setSaveValues();
         }
     }
 
@@ -153,8 +158,9 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
 
             switch (selected.getText()) {
                 case "Properties" -> {
-                    if (CM_SFEE.getInstance().getProperties().validateMoveOn()) {
-                        CM_SFEE.getInstance().getProperties().setSaveValues();
+                    if (/*CM_SFEE.getInstance().*/getProperties().validateMoveOn()) {
+                        /* CM_SFEE.getInstance().*/
+                        getProperties().setSaveValues();
                         activePane = Panes.COMMUNICATION;
                         toggleCommunication.setDisable(false);
 //                    toggleCommunication.requestFocus();
@@ -162,15 +168,16 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
                         Tooltip.uninstall(next, errorMsg);
                     } else {
                         error_icon.setVisible(true);
-                        errorMsg.setText(CM_SFEE.getInstance().getProperties().getErrorMsg());
+                        errorMsg.setText(/*CM_SFEE.getInstance().*/getProperties().getErrorMsg());
                         Tooltip.install(next, errorMsg);
 //                    next.setTooltip(errorMsg);
 
                     }
                 }
                 case "Communication" -> {
-                    if (CM_SFEE.getInstance().getCommunication().validateMoveOn()) {
-                        CM_SFEE.getInstance().getCommunication().setSaveValues();
+                    if (/*CM_SFEE.getInstance().*/getCommunication().validateMoveOn()) {
+                        /*CM_SFEE.getInstance().*/
+                        getCommunication().setSaveValues();
                         activePane = Panes.ITEMS;
                         toggleItems.setDisable(false);
 //                    toggleItems.requestFocus();
@@ -178,15 +185,16 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
                         Tooltip.uninstall(next, errorMsg);
                     } else {
                         error_icon.setVisible(true);
-                        errorMsg.setText(CM_SFEE.getInstance().getCommunication().getErrorMsg());
+                        errorMsg.setText(/*CM_SFEE.getInstance().*/getCommunication().getErrorMsg());
 //                    next.setTooltip(errorMsg);
                         Tooltip.install(next, errorMsg);
 
                     }
                 }
                 case "Items" -> {
-                    if (CM_SFEE.getInstance().getItems().validateMoveOn()) {
-                        CM_SFEE.getInstance().getItems().setSaveValues();
+                    if (/*CM_SFEE.getInstance().*/getItems().validateMoveOn()) {
+                        /*CM_SFEE.getInstance().*/
+                        getItems().setSaveValues();
                         activePane = Panes.FAILURE;
                         toggleFailure.setDisable(false);
 //                    toggleFailure.requestFocus();
@@ -194,28 +202,31 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
                         Tooltip.uninstall(next, errorMsg);
                     } else {
                         error_icon.setVisible(true);
-                        errorMsg.setText(CM_SFEE.getInstance().getItems().getErrorMsg());
+                        errorMsg.setText(/*CM_SFEE.getInstance().*/getItems().getErrorMsg());
                         Tooltip.install(next, errorMsg);
 //                    next.setTooltip(errorMsg);
 
                     }
                 }
                 case "Failure" -> {
-                    if (CM_SFEE.getInstance().getFailure().validateMoveOn()) {
-                        CM_SFEE.getInstance().getFailure().setSaveValues();
+                    if (/*CM_SFEE.getInstance().*/getFailure().validateMoveOn()) {
+                        /*CM_SFEE.getInstance().*/
+                        getFailure().setSaveValues();
                         activePane = Panes.FINISH;
+                        getFinish().setSfeiConveyors(getItems().getSfeisController().getSfeiConveyors());
+                        getFinish().setSfeiMachines(getItems().getSfeisController().getSfeiMachines());
                         toggleFinish.setDisable(false);
 //                    toggleFinish.requestFocus();
                         bar.selectToggle(toggleFinish);
                         Tooltip.uninstall(next, errorMsg);
                     } else {
                         error_icon.setVisible(true);
-                        errorMsg.setText(CM_SFEE.getInstance().getFailure().getErrorMsg());
+                        errorMsg.setText(/*CM_SFEE.getInstance().*/getFailure().getErrorMsg());
                         Tooltip.install(next, errorMsg);
                     }
                 }
                 case "Finish" -> {
-                    if (CM_SFEE.getInstance().getFinish().validateMoveOn(event)) {
+                    if (/*CM_SFEE.getInstance().*/getFinish().validateMoveOn(event)) {
                         Tooltip.uninstall(next, errorMsg);
                         // return to C_ShopFloor
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ShopFloor.fxml"));
@@ -226,7 +237,7 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
 
                     } else {
                         error_icon.setVisible(true);
-                        errorMsg.setText(CM_SFEE.getInstance().getFinish().getErrorMsg());
+                        errorMsg.setText(/*CM_SFEE.getInstance().*/getFinish().getErrorMsg());
                         Tooltip.install(next, errorMsg);
                     }
                 }
@@ -273,19 +284,20 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
             switch (activePane) {
                 case PROPERTIES -> {
 
-                    loader.setController(CM_SFEE.getInstance().getProperties());
+                    loader.setController(/*CM_SFEE.getInstance().*/getProperties());
                 }
                 case COMMUNICATION -> {
-                    loader.setController(CM_SFEE.getInstance().getCommunication());
+                    loader.setController(/*CM_SFEE.getInstance().*/getCommunication());
                 }
                 case ITEMS -> {
-                    CM_SFEE.getInstance().getItems().setIo(CM_SFEE.getInstance().getCommunication().getIo());
-                    loader.setController(CM_SFEE.getInstance().getItems());
+                    /*CM_SFEE.getInstance().*/
+                    getItems().setIo(/*CM_SFEE.getInstance().*/getCommunication().getIo(), getProperties().getEnvironment().equalsIgnoreCase("simulation") ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL);
+                    loader.setController(/*CM_SFEE.getInstance().*/getItems());
                 }
                 case FAILURE -> {
-                    loader.setController(CM_SFEE.getInstance().getFailure());
+                    loader.setController(/*CM_SFEE.getInstance().*/getFailure());
                 }
-                case FINISH -> loader.setController(CM_SFEE.getInstance().getFinish());
+                case FINISH -> loader.setController(/*CM_SFEE.getInstance().*/getFinish());
             }
             Pane pane = loader.load();
             SFEE_body.getChildren().setAll(pane);

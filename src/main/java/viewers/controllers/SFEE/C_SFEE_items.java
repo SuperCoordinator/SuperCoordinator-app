@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import models.base.SFEE;
 import models.sensor_actuator;
 import viewers.controllers.SFEI.C_SFEIs;
 import viewers.controllers.SFEI.C_SFEI_conveyor;
@@ -24,10 +25,11 @@ public class C_SFEE_items {
     public C_SFEE_items() {
     }
 
-    public void setIo(TreeMap<Integer, sensor_actuator> io) {
+
+    public void setIo(TreeMap<Integer, sensor_actuator> io, SFEE.SFEE_type sfeeType) {
         this.io = io;
         if (sfeisController == null)
-            this.sfeisController = new C_SFEIs(io);
+            this.sfeisController = new C_SFEIs(io, sfeeType);
     }
 
 

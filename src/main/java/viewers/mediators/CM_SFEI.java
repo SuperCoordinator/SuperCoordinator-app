@@ -44,11 +44,11 @@ public class CM_SFEI implements IMC_SFEI {
     public CM_SFEI() {
     }
 
-    public static CM_SFEI getInstance() {
+/*    public static CM_SFEI getInstance() {
         return CM_SFEI.CM_SFEIHolder.INSTANCE;
     }
 
     private static class CM_SFEIHolder {
         private static final CM_SFEI INSTANCE = new CM_SFEI();
-    }
+    }*/
 }

@@ -25,6 +25,19 @@ import java.util.ArrayList;
 
 public class C_SFEE_finish {
 
+    private ArrayList<C_SFEI_conveyor> sfeiConveyors;
+    private ArrayList<C_SFEI_machine> sfeiMachines;
+
+    public C_SFEE_finish() {
+    }
+
+    public void setSfeiConveyors(ArrayList<C_SFEI_conveyor> sfeiConveyors) {
+        this.sfeiConveyors = sfeiConveyors;
+    }
+
+    public void setSfeiMachines(ArrayList<C_SFEI_machine> sfeiMachines) {
+        this.sfeiMachines = sfeiMachines;
+    }
 
     @FXML
     private TableView<SFEI> sumTable;
@@ -53,10 +66,10 @@ public class C_SFEE_finish {
         utils utility = new utils();
         ArrayList<SFEI> sfeiArrayList = new ArrayList<>();
 
-        for (C_SFEI_conveyor cSfeiConveyor : CM_SFEE.getInstance().getItems().getSfeisController().getSfeiConveyors()) {
+        for (C_SFEI_conveyor cSfeiConveyor : /*CM_SFEE.getInstance().getItems().getSfeisController().getSfeiConveyors()*/sfeiConveyors) {
             sfeiArrayList.add(cSfeiConveyor.getSfeiConveyor());
         }
-        for (C_SFEI_machine cSfeiMachine : CM_SFEE.getInstance().getItems().getSfeisController().getSfeiMachines()) {
+        for (C_SFEI_machine cSfeiMachine : /*CM_SFEE.getInstance().getItems().getSfeisController().getSfeiMachines()*/sfeiMachines) {
             sfeiArrayList.add(cSfeiMachine.getSfeiMachine());
         }
         ObservableList<SFEI> list_in = FXCollections.observableArrayList(sfeiArrayList);

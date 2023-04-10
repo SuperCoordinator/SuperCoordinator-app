@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
+import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
 import utils.utils;
@@ -29,8 +30,11 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
     private C_SFEI_conveyor cSfeiConveyor;
     private C_SFEI_machine cSfeiMachine;
 
-    public C_SFEIs(TreeMap<Integer, sensor_actuator> io) {
+    private SFEE.SFEE_type sfee_type;
+
+    public C_SFEIs(TreeMap<Integer, sensor_actuator> io, SFEE.SFEE_type sfee_type) {
         this.io = io;
+        this.sfee_type = sfee_type;
         this.editMode = false;
     }
 
@@ -45,6 +49,7 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
     public void deactivateEditMode() {
         this.editMode = false;
     }
+
 
     @FXML
     private TextField sfeiName;
@@ -298,7 +303,7 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
                         utility.getSearch().getIObyName(output_sensor.getValue(), io),
                         Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
                         Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
-                        CM_SFEE.getInstance().getProperties().getEnvironment().equalsIgnoreCase("simulation"),
+                        /*CM_SFEE.getInstance().getProperties().getEnvironment().equalsIgnoreCase("simulation")*/sfee_type.equals(SFEE.SFEE_type.SIMULATION),
                         cSfeiConveyor.getFailures_support(),
                         ((RadioButton) start_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
                         ((RadioButton) end_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
@@ -331,7 +336,7 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
                         utility.getSearch().getIObyName(output_sensor.getValue(), io),
                         Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
                         Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
-                        CM_SFEE.getInstance().getProperties().getEnvironment().equalsIgnoreCase("simulation"),
+                        /*CM_SFEE.getInstance().getProperties().getEnvironment().equalsIgnoreCase("simulation")*/sfee_type.equals(SFEE.SFEE_type.SIMULATION),
                         cSfeiMachine.getFailure_support(),
                         ((RadioButton) start_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
                         ((RadioButton) end_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),

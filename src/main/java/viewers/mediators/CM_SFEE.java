@@ -64,12 +64,12 @@ public class CM_SFEE implements IMC_SFEE {
     public CM_SFEE() {
     }
 
-    public static CM_SFEE getInstance() {
+/*    public static CM_SFEE getInstance() {
         return CM_SFEEHolder.INSTANCE;
     }
 
     private static class CM_SFEEHolder {
         private static final CM_SFEE INSTANCE = new CM_SFEE();
-    }
+    }*/
 
 }
