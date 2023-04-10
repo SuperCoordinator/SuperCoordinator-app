@@ -24,10 +24,9 @@ public class C_Homepage {
     public void handleNewConfig(ActionEvent event) throws IOException {
         try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEM_layout.fxml"));
-            loader.setController(new C_SFEM_layout(""));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ShopFloor.fxml"));
+            loader.setController(C_ShopFloor.getInstance());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(loader.load(), 1200, 900));
             stage.show();
 
@@ -60,12 +59,12 @@ public class C_Homepage {
 
             // To be substituted by the SFEM controller viewer
             // The Mediator should be the new SFEM viewer
-            C_SFEM_layout sfemLayout = new C_SFEM_layout(serializer.getProduction().getC_Production().get(0).getSfem().getName());
+            C_ShopFloor sfemLayout = new C_ShopFloor(serializer.getProduction().getC_Production().get(0).getSfem().getName());
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEM_layout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ShopFloor.fxml"));
             loader.setController(sfemLayout);
 
-//            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SFEM_layout.fxml"));
+//            Parent root = FXMLLoader.load(getClass().getResource("/fxml/ShopFloor.fxml"));
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(loader.load(), 1200, 900));
             stage.show();

@@ -96,7 +96,7 @@ public class C_SFEI_conveyor implements Initializable {
 
     private void loadFailuresPane() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI_failures_support_conveyor.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI/SFEI_failures_support_conveyor.fxml"));
 
             sfeiConveyorFailures = new C_SFEI_conveyor_failures(io);
             if (editMode && sfeiConveyor.isSupportsFailures()) {

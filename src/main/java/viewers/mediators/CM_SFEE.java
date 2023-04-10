@@ -1,6 +1,9 @@
 package viewers.mediators;
 
+import models.base.SFEE;
 import viewers.controllers.SFEE.*;
+
+import java.util.ArrayList;
 
 public class CM_SFEE implements IMC_SFEE {
 

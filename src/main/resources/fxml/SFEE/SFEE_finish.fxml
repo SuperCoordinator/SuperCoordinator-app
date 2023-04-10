@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="665.0" prefWidth="1044.0" styleClass="bkg" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text fill="WHITE" layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitles" text="Summary" wrappingWidth="421.13671875" />
+      <TableView fx:id="sumTable" layoutX="14.0" layoutY="54.0" prefHeight="288.0" prefWidth="580.0">
+        <columns>
+          <TableColumn fx:id="name_col" prefWidth="90.0" text="Name" />
+          <TableColumn fx:id="type_col" prefWidth="90.0" text="Type" />
+            <TableColumn fx:id="inSensor_col" prefWidth="200.0" text="Input Sensor" />
+            <TableColumn fx:id="outSensor_col" prefWidth="200.0" text="Output Sensor" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

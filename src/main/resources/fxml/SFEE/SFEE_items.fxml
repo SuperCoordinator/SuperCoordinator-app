@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="655.0" prefWidth="1044.0" styleClass="bkg" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="655.0" prefWidth="1044.0" styleClass="bkg" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Text fill="WHITE" layoutX="-20.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitles" text="SFEIs" textAlignment="CENTER" wrappingWidth="200.0" x="35.0" y="70.0" />
       <TreeView fx:id="treeView_SFEIs" layoutX="15.0" layoutY="115.0" prefHeight="425.0" prefWidth="200.0" />
@@ -21,7 +21,7 @@
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../icons/Plus_64px.png" />
+                        <Image url="@../../icons/Plus_64px.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -31,7 +31,7 @@
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../icons/edit_64px.png" />
+                        <Image url="@../../icons/edit_64px.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -41,7 +41,7 @@
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../icons/minus_64px.png" />
+                        <Image url="@../../icons/minus_64px.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -51,7 +51,7 @@
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../icons/refresh_64px.png" />
+                        <Image url="@../../icons/refresh_64px.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -64,7 +64,7 @@
                <graphic>
                   <ImageView fx:id="error_icon" fitHeight="26.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" visible="false">
                      <image>
-                        <Image url="@../icons/cancel_64px.png" />
+                        <Image url="@../../icons/cancel_64px.png" />
                      </image>
                   </ImageView>
                </graphic>

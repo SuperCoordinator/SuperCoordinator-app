@@ -54,7 +54,7 @@ public class C_SFEE_properties {
     }
 
     public void setSaveValues() {
-        if (validation_moveON()) {
+        if (validateMoveOn()) {
             savedValues.add(0, ((ToggleButton) env.getSelectedToggle()).getId());
             savedValues.add(1, ((ToggleButton) func.getSelectedToggle()).getId());
         }
@@ -62,28 +62,11 @@ public class C_SFEE_properties {
 
     private String errorMsg;
 
-    public boolean validation_moveON() {
+    public boolean validateMoveOn() {
         if (env.getSelectedToggle() == null || func.getSelectedToggle() == null)
             errorMsg = "Select all fields !";
 
         return env.getSelectedToggle() != null && func.getSelectedToggle() != null;
-      /*  Validator validator = new Validator();
-
-        validator.createCheck()
-                .dependsOn("env", env.selectedToggleProperty())
-//                .dependsOn("func", func.selectedToggleProperty())
-                .withMethod(c -> {
-                    ToggleButton env = c.get("env");
-//                    ToggleButton func = c.get("func");
-                    if (!(env.isSelected() *//*&& func.isSelected()*//*))
-                        c.error("All fields must be completed !");
-                })
-                .decorates((Node) env.getToggles())
-//                .decorates(func.getSelectedToggle())
-                .immediate();
-
-        return validator.validate();*/
-
     }
 
     public String getErrorMsg() {

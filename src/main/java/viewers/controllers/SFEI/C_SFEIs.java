@@ -23,12 +23,13 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
-public class C_SFEI extends CM_SFEI implements Initializable {
+public class C_SFEIs extends CM_SFEI implements Initializable {
 
     private final TreeMap<Integer, sensor_actuator> io;
+    private C_SFEI_conveyor cSfeiConveyor;
+    private C_SFEI_machine cSfeiMachine;
 
-
-    public C_SFEI(TreeMap<Integer, sensor_actuator> io) {
+    public C_SFEIs(TreeMap<Integer, sensor_actuator> io) {
         this.io = io;
         this.editMode = false;
     }
@@ -67,9 +68,6 @@ public class C_SFEI extends CM_SFEI implements Initializable {
     private ToggleGroup end_item;
     @FXML
     private ToggleGroup start_item;
-
-    private C_SFEI_conveyor cSfeiConveyor;
-    private C_SFEI_machine cSfeiMachine;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -127,7 +125,7 @@ public class C_SFEI extends CM_SFEI implements Initializable {
     private void editModeInitialize(SFEI_conveyor sfeiConveyor, SFEI_machine sfeiMachine) {
 
         if (sfeiConveyor == null && sfeiMachine == null)
-            throw new RuntimeException("(" + C_SFEI.class + ") sfeiMachine and sfeiConveyor both null");
+            throw new RuntimeException("(" + C_SFEIs.class + ") sfeiMachine and sfeiConveyor both null");
 
         SFEI sfei = Objects.requireNonNullElse(sfeiConveyor, sfeiMachine);
 
@@ -178,7 +176,7 @@ public class C_SFEI extends CM_SFEI implements Initializable {
             if (!type.equalsIgnoreCase("conveyor") && !type.equalsIgnoreCase("machine"))
                 return;
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI_type_" + type + ".fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI/SFEI_type_" + type + ".fxml"));
             if (type.equalsIgnoreCase("conveyor")) {
 //                    registerC_SFEI_conveyor(cSfeiConveyor);
                 if (editMode)

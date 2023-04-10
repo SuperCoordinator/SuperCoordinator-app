@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import models.base.SFEE;
 import models.sensor_actuator;
 import utils.utils;
 
@@ -66,14 +67,14 @@ public class C_SFEE_communication implements Initializable {
         inAddress.setCellValueFactory(new PropertyValueFactory<>("addressType"));
         inBit.setCellValueFactory(new PropertyValueFactory<>("bit_offset"));
         inInvLogic.setCellValueFactory(new PropertyValueFactory<>("invLogic"));
-
+        // Define cell height
         inputsTable.setFixedCellSize(30.0);
 
         outName.setCellValueFactory(new PropertyValueFactory<>("name"));
         outDataType.setCellValueFactory(new PropertyValueFactory<>("dataType"));
         outAddress.setCellValueFactory(new PropertyValueFactory<>("addressType"));
         outBit.setCellValueFactory(new PropertyValueFactory<>("bit_offset"));
-
+        // Define cell height
         outputsTable.setFixedCellSize(30.0);
 
 
@@ -148,10 +149,14 @@ public class C_SFEE_communication implements Initializable {
 
     }
 
+    public SFEE.communicationOption getComOption() {
+        return ((ToggleButton) comProtocol.getSelectedToggle()).getId().equalsIgnoreCase("modbus") ? SFEE.communicationOption.MODBUS : SFEE.communicationOption.OPC_UA;
+    }
+
 
     private String errorMsg;
 
-    public boolean validation_moveON() {
+    public boolean validateMoveOn() {
         if (comProtocol.getSelectedToggle() == null ||
                 ip.getText().isBlank() || port.getText().isBlank() || slaveID.getText().isBlank() ||
                 io.size() == 0) {
@@ -177,7 +182,7 @@ public class C_SFEE_communication implements Initializable {
 
     public void setSaveValues() {
         System.out.println("Saving COMMUNICATIONS");
-        if (validation_moveON()) {
+        if (validateMoveOn()) {
             savedValues.add(0, ((ToggleButton) comProtocol.getSelectedToggle()).getId());
             savedValues.add(1, ip.getText());
             savedValues.add(2, port.getText());

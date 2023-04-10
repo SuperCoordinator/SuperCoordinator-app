@@ -10,7 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import models.sensor_actuator;
-import viewers.controllers.SFEI.C_SFEI;
+import viewers.controllers.SFEI.C_SFEIs;
 import viewers.controllers.SFEI.C_SFEI_conveyor;
 import viewers.controllers.SFEI.C_SFEI_machine;
 
@@ -18,7 +18,7 @@ import java.util.TreeMap;
 
 public class C_SFEE_items {
 
-    private C_SFEI sfeisController;
+    private C_SFEIs sfeisController;
     private TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
 
     public C_SFEE_items() {
@@ -27,11 +27,11 @@ public class C_SFEE_items {
     public void setIo(TreeMap<Integer, sensor_actuator> io) {
         this.io = io;
         if (sfeisController == null)
-            this.sfeisController = new C_SFEI(io);
+            this.sfeisController = new C_SFEIs(io);
     }
 
 
-    public C_SFEI getSfeisController() {
+    public C_SFEIs getSfeisController() {
         return sfeisController;
     }
 
@@ -60,10 +60,20 @@ public class C_SFEE_items {
         Button temp = (Button) event.getSource();
         sfeisController.deactivateEditMode();
 
+        //Update SFEE name
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        for (Node node : stage.getScene().getRoot().getChildrenUnmodifiable()) {
+            TextField title = (TextField) node.lookup("#SFEE_name");
+            if (title != null) {
+                sfeeName = title.getText();
+            }
+        }
+
+
         try {
             switch (temp.getId()) {
                 case "new_sfei" -> {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI/SFEI.fxml"));
                     loader.setController(sfeisController);
                     AnchorPane pane = loader.load();
                     newSFEI_Pane.getChildren().setAll(pane);
@@ -76,7 +86,7 @@ public class C_SFEE_items {
                         String sfeiName = treeView_SFEIs.getSelectionModel().getSelectedItem().getValue();
                         System.out.println(sfeiName);
 
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI/SFEI.fxml"));
                         sfeisController.activeEditMode(sfeiName);
                         loader.setController(sfeisController);
                         AnchorPane pane = loader.load();
@@ -100,13 +110,6 @@ public class C_SFEE_items {
 
                 }
                 case "refresh_sfee" -> {
-                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                    for (Node node : stage.getScene().getRoot().getChildrenUnmodifiable()) {
-                        TextField title = (TextField) node.lookup("#SFEE_name");
-                        if (title != null) {
-                            sfeeName = title.getText();
-                        }
-                    }
                     updateTreeView();
                     newSFEI_Pane.getChildren().clear();
                     add.setVisible(false);
@@ -163,7 +166,7 @@ public class C_SFEE_items {
 
     private String errorMsg;
 
-    public boolean validation_moveON() {
+    public boolean validateMoveOn() {
 //        System.out.println("Conveyors: " + sfeisController.getSfeiConveyors().size());
 //        System.out.println("Machines: " + sfeisController.getSfeiMachines().size());
         if (sfeisController.getSfeiConveyors().size() == 0 && sfeisController.getSfeiMachines().size() == 0) {

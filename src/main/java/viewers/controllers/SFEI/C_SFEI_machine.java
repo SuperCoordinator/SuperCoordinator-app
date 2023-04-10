@@ -110,7 +110,7 @@ public class C_SFEI_machine implements Initializable {
 
     private void loadFailuresPane() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI_failures_support_machine.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI/SFEI_failures_support_machine.fxml"));
 
             sfeiMachineFailures = new C_SFEI_machine_failures(io);
             if (editMode && sfeiMachine.isSupportsFailures())

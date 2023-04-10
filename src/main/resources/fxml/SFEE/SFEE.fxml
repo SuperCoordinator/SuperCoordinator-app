@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1200.0" styleClass="bkg" stylesheets="@../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewers.controllers.SFEE.C_SFEE2">
+<AnchorPane prefHeight="900.0" prefWidth="1200.0" styleClass="bkg" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox fx:id="title" alignment="CENTER_RIGHT" layoutX="100.0" layoutY="170.0" prefHeight="47.0" prefWidth="600.0" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="10.0">
          <children>
@@ -21,7 +21,7 @@
                <graphic>
                   <ImageView fitHeight="39.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true" scaleX="1.5" scaleY="1.5">
                      <image>
-                        <Image url="@../icons/left_64px.png" />
+                        <Image url="@../../icons/left_64px.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -60,12 +60,12 @@
             </HBox>
          </children></Pane>
 
-      <AnchorPane fx:id="SFEE_body" layoutX="85.0" layoutY="168.0" prefHeight="665.0" prefWidth="1071.0" />
+      <AnchorPane fx:id="SFEE_body" layoutX="115.0" layoutY="162.0" prefHeight="665.0" prefWidth="1071.0" />
       <Button fx:id="next" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="1095.0" layoutY="30.0" mnemonicParsing="false" onAction="#goNext" prefHeight="47.0" prefWidth="46.0" style="-fx-background-color: transparent;">
          <graphic>
             <ImageView fitHeight="33.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../icons/right_64px.png" />
+                  <Image url="@../../icons/right_64px.png" />
                </image>
             </ImageView>
          </graphic>
@@ -74,7 +74,7 @@
                <graphic>
                   <ImageView fx:id="error_icon" fitHeight="26.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" visible="false">
                      <image>
-                        <Image url="@../icons/cancel_64px.png" />
+                        <Image url="@../../icons/cancel_64px.png" />
                      </image>
                   </ImageView>
                </graphic>

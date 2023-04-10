@@ -84,37 +84,31 @@ public class SFEE implements Externalizable {
         this.SFEIs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
     }
 
-    //    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
 
-    //    @XmlAttribute(name = "type")
     public SFEE.SFEE_type getSFEE_type() {
         return SFEE_type;
     }
 
-    //    @XmlAttribute(name = "function")
     public SFEE_function getSFEE_function() {
         return SFEE_function;
     }
 
-    //    @XmlAttribute(name = "communication")
     public communicationOption getCom() {
         return com;
     }
 
-    //    @XmlElement(name = "inputs_outputs")
     public TreeMap<Integer, sensor_actuator> getIo() {
         return io;
     }
 
-    //    @XmlElement(name = "input_sensor")
     public sensor_actuator getInSensor() {
         return inSensor;
     }
 
-    //    @XmlElement(name = "output_sensor")
+
     public sensor_actuator getOutSensor() {
         return outSensor;
     }

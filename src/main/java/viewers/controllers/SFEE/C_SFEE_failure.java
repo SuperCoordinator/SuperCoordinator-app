@@ -107,7 +107,7 @@ public class C_SFEE_failure {
 
     private String errorMsg;
 
-    public boolean validation_moveON() {
+    public boolean validateMoveOn() {
         boolean error = false;
         if (opMode.getSelectedToggle() == null) {
             errorMsg = "Select all fields !";
