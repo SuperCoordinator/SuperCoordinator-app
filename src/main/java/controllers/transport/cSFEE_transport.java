@@ -21,33 +21,10 @@ import java.util.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class cSFEE_transport implements Externalizable {
+public class cSFEE_transport  {
 
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfee);
-        out.writeObject(sfeeMonitor);
-        out.writeObject(sfeeFailures);
-
-        out.writeObject(prevSFEE_name);
-        out.writeObject(nextSFEE_name);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfee = (SFEE) in.readObject();
-        this.sfeeMonitor = (SFEE_transport_monitor) in.readObject();
-        this.sfeeFailures = (SFEE_transport_failures) in.readObject();
-
-        this.prevSFEE_name = (String) in.readObject();
-        this.nextSFEE_name = (String) in.readObject();
-
-    }
 
     // SFEM_transport based on 1-1 connections between SFEE's
-//    @XmlElement
     private SFEE sfee;
     @XmlElement
     private SFEE_transport_monitor sfeeMonitor;
@@ -73,27 +50,6 @@ public class cSFEE_transport implements Externalizable {
     public void setSfee(SFEE sfee) {
         this.sfee = sfee;
     }
-
-    /*    @XmlElement(name = "SFEE_monitor")
-    private SFEE_transport_monitor getSfeeMonitor() {
-        return sfeeMonitor;
-    }
-
-    @XmlElement(name = "SFEE_failures")
-    private SFEE_transport_failures getSfeeFailures() {
-        return sfeeFailures;
-    }
-
-    @XmlAttribute(name = "previous_SFEI")
-    private String getPrevSFEE_name() {
-        return prevSFEE_name;
-    }
-
-    @XmlAttribute(name = "next_SFEI")
-    private String getNextSFEE_name() {
-        return nextSFEE_name;
-    }*/
-
 
     public void cSFEE_transport_init(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB) {
 

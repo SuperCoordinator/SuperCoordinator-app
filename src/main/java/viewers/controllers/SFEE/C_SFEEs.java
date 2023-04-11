@@ -1,5 +1,6 @@
 package viewers.controllers.SFEE;
 
+import controllers.production.cSFEE_production;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,10 +22,17 @@ import java.util.ResourceBundle;
 
 
 public class C_SFEEs extends CM_SFEE implements Initializable {
+
+    // For use when load config
+    cSFEE_production cSFEEProduction;
     ArrayList<ToggleButton> menu_bar = new ArrayList<>();
 
     public C_SFEEs() {
         super();
+    }
+
+    public void setcSFEEProduction(cSFEE_production cSFEEProduction) {
+        this.cSFEEProduction = cSFEEProduction;
     }
 
     private enum Panes {
@@ -88,7 +96,10 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
     }
 
     public String getSFEE_name() {
-        return SFEE_name.getText();
+        if (SFEE_name == null)
+            return cSFEEProduction.getSFEE_name();
+        else
+            return SFEE_name.getText();
     }
 
     @FXML

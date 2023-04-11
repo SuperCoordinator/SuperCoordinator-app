@@ -1,5 +1,6 @@
 package viewers.controllers;
 
+import controllers.production.cSFEM_production;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -21,7 +22,7 @@ public class C_Homepage {
     @FXML
     private Button newConfig;
 
-    public void handleNewConfig(ActionEvent event) throws IOException {
+    public void handleNewConfig(ActionEvent event) {
         try {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ShopFloor.fxml"));
@@ -44,7 +45,8 @@ public class C_Homepage {
             f_chooser.setTitle("Select Production File");
 
             // set initial File
-            f_chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+//            f_chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+            f_chooser.setInitialDirectory(new File("C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\saves\\tests"));
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             File file = f_chooser.showOpenDialog(stage);
@@ -56,13 +58,17 @@ public class C_Homepage {
             serializer serializer = new serializer();
 
             serializer.loadXML_prod();
+            for (cSFEM_production production : serializer.getProduction().getC_Production()) {
+                production.init_after_XML_loading();
+            }
 
             // To be substituted by the SFEM controller viewer
             // The Mediator should be the new SFEM viewer
-            C_ShopFloor sfemLayout = new C_ShopFloor(serializer.getProduction().getC_Production().get(0).getSfem().getName());
+            C_ShopFloor cShopFloor = new C_ShopFloor(serializer.getProduction().getC_Production().get(0).getSfem().getName());
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ShopFloor.fxml"));
-            loader.setController(sfemLayout);
+            cShopFloor.loadData(serializer.getProduction());
+            loader.setController(cShopFloor);
 
 //            Parent root = FXMLLoader.load(getClass().getResource("/fxml/ShopFloor.fxml"));
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

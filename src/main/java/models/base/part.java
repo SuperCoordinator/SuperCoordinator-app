@@ -12,32 +12,7 @@ import java.time.Instant;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class part /*implements Externalizable*/ {
-
-   /* public static final long serialVersionUID = 1234L;
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt(id);
-        out.writeObject(expectation);
-        out.writeObject(itemTimestamps);
-        out.writeBoolean(defect);
-        out.writeBoolean(waitTransport);
-        out.writeBoolean(produced);
-
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.id = in.readInt();
-        this.expectation = (partsAspect) in.readObject();
-
-        this.itemTimestamps = (TreeMap<String, Instant>) in.readObject();
-        this.defect = in.readBoolean();
-        this.waitTransport = in.readBoolean();
-        this.produced = in.readBoolean();
-    }*/
-
-
+public class part {
     private int id;
     private partsAspect expectation;
     private TreeMap<String, Instant> itemTimestamps;
@@ -60,16 +35,6 @@ public class part /*implements Externalizable*/ {
         this.waitTransport = false;
         this.produced = false;
     }
-
-//    public part(part forCopy) {
-//        this.id = forCopy.getId();
-//        this.expectation = forCopy.getExpectation();
-//        this.itemTimestamps = forCopy.getTimestamps();
-//        this.reality = forCopy.getReality();
-//        this.defect = forCopy.isDefect();
-//        this.waitTransport = forCopy.isWaitTransport();
-//        this.produced = forCopy.isProduced();
-//    }
 
     public int getId() {
         return id;

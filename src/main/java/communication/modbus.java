@@ -22,23 +22,7 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class modbus implements Runnable, Externalizable {
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(ip);
-        out.writeInt(port);
-        out.writeInt(slaveID);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.ip = (String) in.readObject();
-        this.port = in.readInt();
-        this.slaveID = in.readInt();
-    }
-
+public class modbus implements Runnable {
     private ModbusTCPMaster con;
     @XmlAttribute
     private String ip;

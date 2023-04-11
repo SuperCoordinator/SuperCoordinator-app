@@ -18,29 +18,7 @@ import java.time.Instant;
 //@XmlRootElement(name = "SFEI_transport")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEI_transport extends SFEI implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(aRemover);
-        out.writeObject(aEmitter);
-        out.writeObject(aEmitterPart);
-        out.writeObject(aEmitterBase);
-
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        this.aRemover = (sensor_actuator) in.readObject();
-        this.aEmitter = (sensor_actuator) in.readObject();
-        this.aEmitterPart = (sensor_actuator) in.readObject();
-        this.aEmitterBase = (sensor_actuator) in.readObject();
-
-    }
+public class SFEI_transport extends SFEI  {
 
     @XmlElement
     private sensor_actuator aRemover;
@@ -64,22 +42,18 @@ public class SFEI_transport extends SFEI implements Externalizable {
         this.aEmitterBase = aEmitterBase;
     }
 
-    //    @XmlElement(name = "remover_actuator")
     public sensor_actuator getaRemover() {
         return aRemover;
     }
 
-    //    @XmlElement(name = "emitter_actuator")
     public sensor_actuator getaEmitter() {
         return aEmitter;
     }
 
-    //    @XmlElement(name = "emitter_part_actuator")
     public sensor_actuator getaEmitterPart() {
         return aEmitterPart;
     }
 
-    //    @XmlElement(name = "emitter_base_actuator")
     public sensor_actuator getaEmitterBase() {
         return aEmitterBase;
     }

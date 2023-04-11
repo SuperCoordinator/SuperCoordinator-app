@@ -15,16 +15,7 @@ import java.util.ArrayList;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class transport implements Externalizable {
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(C_Transport);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.C_Transport = new ArrayList<>((ArrayList<cSFEM_transport>) in.readObject());
-    }
+public class transport  {
 
     private ArrayList<cSFEM_transport> C_Transport = new ArrayList<>();
 

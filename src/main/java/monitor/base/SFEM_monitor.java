@@ -15,27 +15,7 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 
-/*@XmlRootElement
-@XmlAccessorType(XmlAccessType.NONE)*/
-/*@XmlSeeAlso({
-        SFEM_production_monitor.class,
-        SFEM_transport_monitor.class
-})*/
-public class SFEM_monitor implements Externalizable {
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfem);
-
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfem = (SFEM) in.readObject();
-
-    }
-//    @XmlElement
+public class SFEM_monitor  {
     private SFEM sfem;
     private TreeMap<Integer, Integer> productionTime_cnt = new TreeMap<>();
 

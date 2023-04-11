@@ -29,9 +29,6 @@ public class App {
             if (newConfig) {
                 // Create new configuration files
                 /* PRODUCTION MODULES*/
-/*            System.out.println("How many Production SFEModules ?");
-            String str = in.nextLine();
-            int nModules = Integer.parseInt(str);*/
                 int nModules = 1, nSFEE = 1;
 
                 if (app.scene.equals(serializer.scenes.CMC_connection)) {
@@ -55,7 +52,6 @@ public class App {
                     app.getProduction().getC_Production().add(i, sfemController);
                 }
                 // Serialize Production_Controllers
-                app.serialize_prod();
                 app.saveXML_prod();
 
                 // Open communications
@@ -93,7 +89,6 @@ public class App {
                     app.getTransport().getC_Transport().add(i, sfemController);
                 }
 
-                app.serialize_trans();
                 app.saveXML_trans();
 
 //                exit(0);
@@ -101,7 +96,7 @@ public class App {
             } else {
                 // Load existing configuration files
                 // Deserialize Production Controllers
-//                app.deserialize_prod();
+
                 app.loadXML_prod();
                 // Open communications
                 for (cSFEM_production production : app.getProduction().getC_Production()) {
@@ -114,7 +109,6 @@ public class App {
                 }
 
                 // Deserialize Transport Controllers
-//                app.deserialize_trans();
                 app.loadXML_trans();
                 // Initialize the monitors and controllers with the SFEE objects
                 for (cSFEM_transport transport : app.getTransport().getC_Transport()) {
@@ -135,6 +129,7 @@ public class App {
                             outSFEE.getFirst());
 
                 }
+
             }
 
             System.out.print("Press ENTER to start simulation");
@@ -163,49 +158,6 @@ public class App {
             e.printStackTrace();
         }
 
-
-
-/*        SFEM_production newSFEM = new SFEM_production("SFEM_production test");
-
-        cSFEM_production sfem1Controller = new cSFEM_production(newSFEM);
-        sfem1Controller.init_SFEEs(2);
-        sfem1Controller.init_SFEE_controllers(1);
-
-        app.serialize_prod(sfem1Controller);*/
-
-/*        cSFEM_production sfem1Controller = app.deserialize_prod();
-        SFEM_production newSFEM = sfem1Controller.getSfem();
-        sfem1Controller.openConnections();*/
-
- /*      SFEM_transport newSFEM_transp = new SFEM_transport("SFEM_transport");
-        cSFEM_transport sfemTransportController = new cSFEM_transport(newSFEM_transp);
-        sfemTransportController.init_SFEE_transport();
-        sfemTransportController.initSFEETransportController(
-                sfem1Controller.searchMBbySFEE(newSFEM.getSFEEs().get(0).getName()),
-                sfem1Controller.searchMBbySFEE(newSFEM.getSFEEs().get(1).getName()),
-                newSFEM.getSFEEs().get(0),
-                newSFEM.getSFEEs().get(1));
-        app.serialize_trans(sfemTransportController);*/
-
-        // Do the serialization here, before runtime
-/*
-        cSFEM_transport sfemTransportController = app.deserialize_trans();
-        sfemTransportController.setupSFEETransportController(
-                sfem1Controller.searchMBbySFEE(newSFEM.getSFEEs().get(0).getName()),
-                sfem1Controller.searchMBbySFEE(newSFEM.getSFEEs().get(1).getName()),
-                newSFEM.getSFEEs().get(0),
-                newSFEM.getSFEEs().get(1));
-*/
-
-//        exit(0);
-
-/*        try {
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-            scheduler.scheduleAtFixedRate(sfem1Controller, 0, 100, TimeUnit.MILLISECONDS);
-            scheduler.scheduleAtFixedRate(sfemTransportController, 0, 100, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
     }
 

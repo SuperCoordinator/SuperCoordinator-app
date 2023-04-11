@@ -16,25 +16,8 @@ import java.util.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEE_transport_failures implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfee);
-        out.writeObject(stochasticType);
-        out.writeObject(stochasticFormulas);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfee = (SFEE) in.readObject();
-        this.stochasticType = (stochasticTime.timeOptions) in.readObject();
-        this.stochasticFormulas = (String[]) in.readObject();
-    }
-
-    private enum SM {
+public class SFEE_transport_failures  {
+        private enum SM {
         INIT,
         PROCESS_STOCHASTIC,
         END
@@ -58,20 +41,6 @@ public class SFEE_transport_failures implements Externalizable {
         this.stochasticType = stochasticType;
         this.stochasticFormulas = stochasticTime_f;
     }
-
-/*    @XmlElement(name = "SFEE")
-    private SFEE getSfee(){
-        return sfee;
-    }
-    @XmlAttribute(name = "stochastic_type")
-    private stochasticTime.timeOptions getStochasticType(){
-        return stochasticType;
-    }
-    @XmlElement(name = "stochastic_formulas")
-    private String[] getStochasticFormulas() {
-        return stochasticFormulas;
-    }*/
-
     public void setSfee(SFEE sfee) {
         this.sfee = sfee;
     }

@@ -11,31 +11,7 @@ import java.io.ObjectOutput;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public final class sensor_actuator implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
-        out.writeObject(type);
-        out.writeBoolean(invLogic);
-        out.writeObject(dataType);
-        out.writeObject(addressType);
-        out.writeInt(register);
-        out.writeInt(bit_offset);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.name = (String) in.readObject();
-        this.type = (Type) in.readObject();
-        this.invLogic = in.readBoolean();
-        this.dataType = (DataType) in.readObject();
-        this.addressType = (AddressType) in.readObject();
-        this.register = in.readInt();
-        this.bit_offset = in.readInt();
-    }
+public final class sensor_actuator  {
 
     public enum Type {
         INPUT,
@@ -100,37 +76,31 @@ public final class sensor_actuator implements Externalizable {
         return new sensor_actuator(getName(), getType(), invLogic, getDataType(), getAddressType(), getRegister(), getBit_offset());
     }
 
-//    @XmlAttribute(name = "name")
+
     public String getName() {
         return name;
     }
 
-//    @XmlAttribute(name = "type")
     public Type getType() {
         return type;
     }
 
-//    @XmlAttribute(name = "data_type")
     public DataType getDataType() {
         return dataType;
     }
 
-//    @XmlAttribute(name = "address_type")
     public AddressType getAddressType() {
         return addressType;
     }
 
-//    @XmlAttribute(name = "inverse_logic")
     public boolean getInvLogic() {
         return invLogic;
     }
 
-//    @XmlAttribute(name = "register")
     public int getRegister() {
         return register;
     }
 
-//    @XmlAttribute(name = "bit_offset")
     public int getBit_offset() {
         return bit_offset;
     }

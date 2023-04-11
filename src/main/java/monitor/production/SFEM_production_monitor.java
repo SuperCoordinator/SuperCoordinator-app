@@ -18,20 +18,11 @@ import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-//@XmlRootElement(name = "SFEM_prod_monitor")
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEM_production_monitor extends SFEM_monitor implements Externalizable {
+public class SFEM_production_monitor extends SFEM_monitor  {
 
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-    }
 
     public SFEM_production_monitor() {
         super();

@@ -14,17 +14,7 @@ import java.util.ArrayList;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class production implements Externalizable {
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(C_Production);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.C_Production = new ArrayList<>((ArrayList<cSFEM_production>) in.readObject());
-    }
+public class production  {
 
     private ArrayList<cSFEM_production> C_Production = new ArrayList<>();
 

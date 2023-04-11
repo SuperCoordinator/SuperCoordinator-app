@@ -11,32 +11,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.time.Instant;
 
-//@XmlRootElement(name = "SFEI_machine")
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEI_machine extends SFEI implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(partForm);
-        out.writeObject(aProduce);
-        out.writeObject(sDoor);
-        out.writeObject(aStop);
-
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        this.partForm = (partsAspect.form) in.readObject();
-        this.aProduce = (sensor_actuator) in.readObject();
-        this.sDoor = (sensor_actuator) in.readObject();
-        this.aStop = (sensor_actuator) in.readObject();
-
-    }
+public class SFEI_machine extends SFEI {
 
     @XmlAttribute
     private partsAspect.form partForm;
@@ -66,22 +44,18 @@ public class SFEI_machine extends SFEI implements Externalizable {
         }
     }
 
-    //    @XmlAttribute(name = "part_form")
     public partsAspect.form getPartForm() {
         return partForm;
     }
 
-    //    @XmlElement(name = "produce_actuator")
     public sensor_actuator getaProduce() {
         return aProduce;
     }
 
-    //    @XmlElement(name = "door_sensor")
     public sensor_actuator getsDoor() {
         return sDoor;
     }
 
-    //    @XmlElement(name = "stop_actuator")
     public sensor_actuator getaStop() {
         return aStop;
     }

@@ -11,34 +11,7 @@ import java.util.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEE implements Externalizable {
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
-        out.writeObject(SFEE_type);
-        out.writeObject(SFEE_function);
-        out.writeObject(com);
-        out.writeObject(io);
-        out.writeObject(inSensor);
-        out.writeObject(outSensor);
-        out.writeObject(SFEIs);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.name = (String) in.readObject();
-        this.SFEE_type = (SFEE_type) in.readObject();
-        this.SFEE_function = (SFEE_function) in.readObject();
-        this.com = (communicationOption) in.readObject();
-        this.io = (TreeMap<Integer, sensor_actuator>) in.readObject();
-        this.inSensor = (sensor_actuator) in.readObject();
-        this.outSensor = (sensor_actuator) in.readObject();
-        this.SFEIs = (TreeMap<Integer, SFEI>) in.readObject();
-
-    }
-
+public class SFEE  {
     public enum SFEE_type {
         SIMULATION, REAL
     }
@@ -131,7 +104,6 @@ public class SFEE implements Externalizable {
         return null;
     }
 
-    //    @XmlElement(name = "SFEIs")
     public TreeMap<Integer, SFEI> getSFEIs() {
         return SFEIs;
     }

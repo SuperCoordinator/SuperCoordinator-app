@@ -3,6 +3,7 @@ package viewers.controllers.SFEE;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import models.base.SFEE;
 
 import java.util.ArrayList;
 
@@ -11,7 +12,6 @@ public class C_SFEE_properties {
 
     public C_SFEE_properties() {
         this.savedValues = new ArrayList<>();
-
     }
 
     private final ArrayList<Object> savedValues;
@@ -72,4 +72,6 @@ public class C_SFEE_properties {
     public String getErrorMsg() {
         return errorMsg;
     }
+
+
 }

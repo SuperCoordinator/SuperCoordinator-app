@@ -1,32 +1,26 @@
 package viewers.controllers;
 
-import javafx.collections.FXCollections;
+import controllers.production.cSFEE_production;
+import controllers.production.cSFEM_production;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 
 import javafx.event.ActionEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
-import models.SFEx_particular.SFEI_conveyor;
-import models.base.SFEE;
-import net.synedra.validatorfx.Validator;
+import utils.serialize.production;
+import viewers.controllers.SFEE.C_SFEE_communication;
+import viewers.controllers.SFEE.C_SFEE_properties;
 import viewers.controllers.SFEE.C_SFEEs;
-import viewers.controllers.SFEI.C_SFEI_conveyor;
-import viewers.controllers.SFEI.C_SFEI_machine;
 import viewers.controllers.SFEM.C_SFEM;
 import viewers.controllers.SFEM.C_SFEM_connection;
-import viewers.mediators.CM_SFEM;
 
 public class C_ShopFloor {
 
@@ -72,6 +66,20 @@ public class C_ShopFloor {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void loadData(production production) {
+        for (cSFEM_production cSFEMProduction : production.getC_Production()) {
+            C_SFEM cSfem = new C_SFEM(cSFEMProduction);
+/*            for (cSFEE_production cSFEEProduction : cSFEMProduction.getSfeeControllers()) {
+                C_SFEEs cSfees = new C_SFEEs();
+                cSfees.setcSFEEProduction(cSFEEProduction);
+                cSfees.getSFEE_name().setText(cSFEEProduction.getSFEE_name());
+                cSfem.registerC_SFEEs(cSfees);
+            }*/
+            C_ShopFloor.getInstance().getCmSfems().add(cSfem);
+            System.out.println(C_ShopFloor.class + " " + cSFEMProduction.getSfem().getName());
         }
     }
 

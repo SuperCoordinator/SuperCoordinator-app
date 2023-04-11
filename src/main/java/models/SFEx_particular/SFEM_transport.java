@@ -15,24 +15,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.TreeMap;
-//@XmlRootElement(name = "SFEM_transport")
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEM_transport extends SFEM implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(sfeeTransport);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        this.sfeeTransport = (SFEE) in.readObject();
-    }
+public class SFEM_transport extends SFEM  {
 
     @XmlElement
     private SFEE sfeeTransport;
@@ -43,7 +29,6 @@ public class SFEM_transport extends SFEM implements Externalizable {
     public SFEM_transport(String name) {
         super(name, SFEM_type.TRANSPORT);
     }
-//    @XmlElement(name = "SFEE_transport")
     public SFEE getSfeeTransport() {
         return sfeeTransport;
     }

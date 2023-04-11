@@ -15,25 +15,11 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
-//@XmlRootElement(name ="SFEM_production")
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEM_production extends SFEM implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(SFEEs);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        this.SFEEs = (TreeMap<Integer, SFEE>) in.readObject();
-    }
-    @XmlElement
+public class SFEM_production extends SFEM  {
+        @XmlElement
     private TreeMap<Integer, SFEE> SFEEs;
 
     public SFEM_production() {
@@ -45,7 +31,7 @@ public class SFEM_production extends SFEM implements Externalizable {
         this.SFEEs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
     }
 
-//    @XmlElement(name = "SFEEs")
+
     public TreeMap<Integer, SFEE> getSFEEs() {
         return SFEEs;
     }

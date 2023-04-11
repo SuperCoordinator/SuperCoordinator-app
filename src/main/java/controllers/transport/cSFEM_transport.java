@@ -14,29 +14,10 @@ import java.io.ObjectOutput;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-//@XmlType(propOrder = {"SFEM", "SFEM_monitor"})
-public class cSFEM_transport implements Runnable, Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfem);
-        out.writeObject(sfemTransportMonitor);
-        out.writeObject(sfeeTransportController);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfem = (SFEM_transport) in.readObject();
-        this.sfemTransportMonitor = (SFEM_transport_monitor) in.readObject();
-        this.sfeeTransportController = (cSFEE_transport) in.readObject();
-
-    }
+public class cSFEM_transport implements Runnable {
 
     @XmlElement
     private SFEM_transport sfem;
-    //    @XmlElement
     private SFEM_transport_monitor sfemTransportMonitor;
     @XmlElement
     private cSFEE_transport sfeeTransportController;
@@ -49,23 +30,6 @@ public class cSFEM_transport implements Runnable, Externalizable {
     public cSFEM_transport(SFEM_transport sfemTransport) {
         this.sfem = sfemTransport;
     }
-
-/*
-    @XmlElement(name = "SFEM")
-    private SFEM_transport getSfem() {
-        return sfem;
-    }
-
-    @XmlElement(name = "SFEM_monitor")
-    private SFEM_transport_monitor getSfemTransportMonitor() {
-        return sfemTransportMonitor;
-    }
-
-    @XmlElement(name = "SFEE_controller")
-    private cSFEE_transport getSfeeTransportController() {
-        return sfeeTransportController;
-    }
-*/
 
     public void init_SFEE_transport() {
 

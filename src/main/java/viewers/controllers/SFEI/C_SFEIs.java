@@ -1,8 +1,8 @@
 package viewers.controllers.SFEI;
 
 import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -15,7 +15,6 @@ import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
 import utils.utils;
-import viewers.mediators.CM_SFEE;
 import viewers.mediators.CM_SFEI;
 
 import java.net.URL;

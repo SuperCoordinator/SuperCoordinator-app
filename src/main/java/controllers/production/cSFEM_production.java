@@ -19,27 +19,10 @@ import java.util.Scanner;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class cSFEM_production implements Externalizable, Runnable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfem);
-        out.writeObject(sfemMonitor);
-        out.writeObject(sfeeControllers);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfem = (SFEM_production) in.readObject();
-        this.sfemMonitor = (SFEM_production_monitor) in.readObject();
-        this.sfeeControllers = (ArrayList<cSFEE_production>) in.readObject();
-    }
+public class cSFEM_production implements Runnable {
 
     @XmlElement
     private SFEM_production sfem;
-    //    @XmlElement
     private SFEM_production_monitor sfemMonitor;
     @XmlElement
     private ArrayList<cSFEE_production> sfeeControllers;
@@ -59,16 +42,9 @@ public class cSFEM_production implements Externalizable, Runnable {
         return sfem;
     }
 
-/*
-    private SFEM_production_monitor getSfemMonitor() {
-        return sfemMonitor;
-    }
-
-
-    private ArrayList<cSFEE_production> getSfeeControllers() {
+    public ArrayList<cSFEE_production> getSfeeControllers() {
         return sfeeControllers;
     }
-*/
 
     public void init_SFEEs(int nSFEEs) {
 

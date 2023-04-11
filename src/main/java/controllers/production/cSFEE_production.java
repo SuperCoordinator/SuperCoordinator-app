@@ -25,35 +25,11 @@ import java.util.concurrent.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class cSFEE_production implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfee);
-        out.writeObject(mb);
-        out.writeObject(opMode);
-        out.writeObject(sfeeMonitor);
-        out.writeObject(sfeeFailures2);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfee = (SFEE) in.readObject();
-        this.mb = (modbus) in.readObject();
-        this.opMode = (operationMode) in.readObject();
-        this.sfeeMonitor = (SFEE_production_monitor) in.readObject();
-        this.sfeeFailures2 = (SFEE_failures2) in.readObject();
-
-    }
-
+public class cSFEE_production {
     public enum operationMode {
         NORMAL,
         PROG_FAILURES
     }
-
-    //    @XmlElement
     private SFEE sfee;
     @XmlElement
     private modbus mb;
@@ -76,7 +52,7 @@ public class cSFEE_production implements Externalizable {
     }
 
 
-    private SFEE getSFEE() {
+    public SFEE getSFEE() {
         return sfee;
     }
 
@@ -96,18 +72,6 @@ public class cSFEE_production implements Externalizable {
     public modbus getMb() {
         return mb;
     }
-
-/*    private operationMode getOpMode() {
-        return opMode;
-    }
-
-    private SFEE_production_monitor getSfeeMonitor() {
-        return sfeeMonitor;
-    }
-
-    private SFEE_failures2 getSfeeFailures2() {
-        return sfeeFailures2;
-    }*/
 
     public void init(int scene) {
         try {

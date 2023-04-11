@@ -1,5 +1,7 @@
 package viewers.controllers.SFEM;
 
+import controllers.production.cSFEE_production;
+import controllers.production.cSFEM_production;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +24,7 @@ import java.util.ResourceBundle;
 public class C_SFEM extends CM_SFEM implements Initializable {
 
     private String sfemName;
+    private cSFEM_production cSFEMProduction;
 
     public C_SFEM() {
     }
@@ -30,8 +33,17 @@ public class C_SFEM extends CM_SFEM implements Initializable {
         this.sfemName = sfemName;
     }
 
+    public C_SFEM(cSFEM_production cSFEMProduction) {
+        this.cSFEMProduction = cSFEMProduction;
+        this.sfemName = cSFEMProduction.getSfem().getName();
+    }
+
     public String getSfemName() {
         return sfemName;
+    }
+
+    public cSFEM_production getcSFEMProduction() {
+        return cSFEMProduction;
     }
 
     @FXML
@@ -118,6 +130,7 @@ public class C_SFEM extends CM_SFEM implements Initializable {
     private void updateSFEMlist() {
         ArrayList<String> list = new ArrayList<>();
         for (C_SFEM cSfem : C_ShopFloor.getInstance().getCmSfems()) {
+            System.out.println(C_SFEM.class + " " + cSfem.getSfemName());
             list.add(cSfem.getSfemName());
         }
         SFEMs_list.getItems().clear();
@@ -129,19 +142,39 @@ public class C_SFEM extends CM_SFEM implements Initializable {
         TreeItem<String> root = new TreeItem<>(" ");
         if (SFEMs_list.getSelectionModel().getSelectedIndices().size() == 1) {
             C_SFEM cSfem = C_ShopFloor.getInstance().getCmSfems().get(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
+
+            if (cSfem.getSfeesControllers().size() == 0) {
+                loadData(cSfem);
+            }
             for (C_SFEEs cSfees : cSfem.getSfeesControllers()) {
                 TreeItem<String> branch = new TreeItem<>(cSfees.getSFEE_name());
-                for (C_SFEI_conveyor conveyor : cSfees.getItems().getSfeisController().getSfeiConveyors()) {
-                    TreeItem<String> leaf = new TreeItem<>(conveyor.getSfeiConveyor().getName());
-                    branch.getChildren().add(leaf);
-                }
-                for (C_SFEI_machine machine : cSfees.getItems().getSfeisController().getSfeiMachines()) {
-                    TreeItem<String> leaf = new TreeItem<>(machine.getSfeiMachine().getName());
-                    branch.getChildren().add(leaf);
+                if (cSfees.getItems() != null) {
+                    for (C_SFEI_conveyor conveyor : cSfees.getItems().getSfeisController().getSfeiConveyors()) {
+                        TreeItem<String> leaf = new TreeItem<>(conveyor.getSfeiConveyor().getName());
+                        branch.getChildren().add(leaf);
+                    }
+                    for (C_SFEI_machine machine : cSfees.getItems().getSfeisController().getSfeiMachines()) {
+                        TreeItem<String> leaf = new TreeItem<>(machine.getSfeiMachine().getName());
+                        branch.getChildren().add(leaf);
+                    }
                 }
                 root.getChildren().add(branch);
             }
             sfem_elements_tree.setRoot(root);
+        }
+    }
+
+    private void loadData(C_SFEM cSfem) {
+        try {
+            System.out.println("Size: " + cSfem.getcSFEMProduction().getSfeeControllers().size());
+            for (cSFEE_production cSFEEProduction : cSfem.getcSFEMProduction().getSfeeControllers()) {
+                C_SFEEs cSfees = new C_SFEEs();
+                cSfees.setcSFEEProduction(cSFEEProduction);
+
+                cSfem.registerC_SFEEs(cSfees);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

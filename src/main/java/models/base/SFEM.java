@@ -13,28 +13,13 @@ import java.util.TreeMap;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-//@XmlSeeAlso({SFEM_production.class, SFEM_transport.class})
-public class SFEM implements Externalizable {
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfemType);
-        out.writeObject(name);
-
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfemType = (SFEM_type) in.readObject();
-        this.name = (String) in.readObject();
-
-    }
+public class SFEM {
 
     public enum SFEM_type {
         PRODUCTION,
         TRANSPORT
     }
+
     @XmlAttribute
     private SFEM_type sfemType;
     @XmlAttribute
@@ -49,12 +34,10 @@ public class SFEM implements Externalizable {
         this.name = name;
     }
 
-//    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
 
-//    @XmlAttribute(name = "type")
     public SFEM_type getSfemType() {
         return sfemType;
     }
@@ -63,7 +46,6 @@ public class SFEM implements Externalizable {
         productionHistory.put(producedPart.part().getId(), producedPart);
     }
 
-//    @XmlTransient
     public TreeMap<Integer, part_prodTime> getProductionHistory() {
         return productionHistory;
     }

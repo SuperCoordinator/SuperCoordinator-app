@@ -23,47 +23,7 @@ import java.util.TreeSet;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlSeeAlso({SFEI_conveyor.class, SFEI_machine.class, SFEI_transport.class})
-//@XmlType(propOrder = {"name", "type", "min_operation_time", "manufacturing_date", "last_maintenance", "isLine_start", "isLine_end", "input_sensor", "output_sensor"})
-public class SFEI implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
-        out.writeObject(sfeiType);
-        out.writeObject(inSensor);
-        out.writeObject(outSensor);
-        out.writeLong(minOperationTime);
-/*        out.writeObject(partsATM);
-        out.writeInt(nPiecesMoved);*/
-        out.writeObject(dayOfBirth);
-        out.writeObject(dayOfLastMaintenance);
-        out.writeBoolean(line_start);
-        out.writeBoolean(line_end);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.name = (String) in.readObject();
-        this.sfeiType = (SFEI_type) in.readObject();
-        this.inSensor = (sensor_actuator) in.readObject();
-        this.outSensor = (sensor_actuator) in.readObject();
-        this.minOperationTime = in.readLong();
-
-//        this.partsATM = (TreeSet<part>) in.readObject();
-//        this.nPiecesMoved = in.readInt();
-        this.dayOfBirth = (Instant) in.readObject();
-        this.dayOfLastMaintenance = (Instant) in.readObject();
-        this.line_start = in.readBoolean();
-        this.line_end = in.readBoolean();
-
-/*        this.partsATM = new TreeSet<>(partsOrder.INSTANCE);
-        this.failuresHistory = new TreeMap<>();
-        this.breakdownHistory = new ArrayList<>();*/
-
-    }
-
+public class SFEI {
     public enum SFEI_type {
         CONVEYOR,
         MACHINE,
@@ -108,7 +68,7 @@ public class SFEI implements Externalizable {
     }
 
     public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
-                boolean simulation,boolean supportsFailures, boolean line_start, boolean line_end) {
+                boolean simulation, boolean supportsFailures, boolean line_start, boolean line_end) {
         this.name = name;
         this.sfeiType = sfeiType;
         this.inSensor = inSensor;
@@ -131,27 +91,26 @@ public class SFEI implements Externalizable {
         }
     }
 
-    //    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
 
-    //    @XmlAttribute(name = "type")
+
     public SFEI_type getSfeiType() {
         return sfeiType;
     }
 
-    //    @XmlElement(name = "input_sensor")
+
     public sensor_actuator getInSensor() {
         return inSensor;
     }
 
-    //    @XmlElement(name = "output_sensor")
+
     public sensor_actuator getOutSensor() {
         return outSensor;
     }
 
-    //    @XmlAttribute(name = "min_operation_time")
+
     public long getMinOperationTime() {
         return minOperationTime;
     }
@@ -160,7 +119,7 @@ public class SFEI implements Externalizable {
         this.minOperationTime = minOperationTime;
     }
 
-    //    @XmlTransient
+
     public synchronized TreeSet<part> getPartsATM() {
         return partsATM;
     }
@@ -169,7 +128,7 @@ public class SFEI implements Externalizable {
         this.partsATM.add(partATM);
     }
 
-    //    @XmlTransient
+
     public int getnPiecesMoved() {
         return nPiecesMoved;
     }
@@ -178,14 +137,11 @@ public class SFEI implements Externalizable {
         this.nPiecesMoved = nPiecesMoved;
     }
 
-    //    @XmlAttribute(name = "manufacturing_date", required = true)
-//    @XmlJavaTypeAdapter(InstantAdapter.class)
     public Instant getDayOfBirth() {
         return dayOfBirth;
     }
 
-    //    @XmlAttribute(name = "last_maintenance", required = true)
-//    @XmlJavaTypeAdapter(InstantAdapter.class)
+
     public Instant getDayOfLastMaintenance() {
         return dayOfLastMaintenance;
     }
@@ -218,12 +174,11 @@ public class SFEI implements Externalizable {
         return supportsFailures;
     }
 
-    //    @XmlAttribute(name = "isLine_start")
+
     public boolean isLine_start() {
         return line_start;
     }
 
-    //    @XmlAttribute(name = "isLine_end")
     public boolean isLine_end() {
         return line_end;
     }
