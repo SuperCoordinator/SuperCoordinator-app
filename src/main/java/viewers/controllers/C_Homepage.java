@@ -55,7 +55,7 @@ public class C_Homepage {
 
             serializer serializer = new serializer();
 
-            serializer.deserialize_prod(file.getPath());
+            serializer.loadXML_prod();
 
             // To be substituted by the SFEM controller viewer
             // The Mediator should be the new SFEM viewer
