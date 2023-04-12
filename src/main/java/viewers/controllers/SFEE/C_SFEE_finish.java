@@ -63,7 +63,7 @@ public class C_SFEE_finish {
     }
 
     private void updateTable() {
-        utils utility = new utils();
+
         ArrayList<SFEI> sfeiArrayList = new ArrayList<>();
 
         for (C_SFEI_conveyor cSfeiConveyor : /*CM_SFEE.getInstance().getItems().getSfeisController().getSfeiConveyors()*/sfeiConveyors) {

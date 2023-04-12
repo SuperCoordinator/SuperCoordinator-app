@@ -77,7 +77,6 @@ public class C_SFEM_connection {
 
             for (C_SFEEs cSfees : cSfem.getSfeesControllers()) {
 
-
                 for (C_SFEI_conveyor cSfeiConveyor : cSfees.getItems().getSfeisController().getSfeiConveyors()) {
                     MyRectangle rectangle = new MyRectangle(cSfeiConveyor.getSfeiConveyor().getName(), Rwidth, Rheight);
 

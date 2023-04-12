@@ -5,7 +5,7 @@ import models.base.SFEI;
 import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
 import models.base.part;
-import models.partsAspect;
+import models.partDescription;
 import models.sensor_actuator;
 import utils.utils;
 
@@ -55,7 +55,7 @@ public class SFEE_production_monitor implements Externalizable {
     @XmlElement
     private TreeMap<Integer, sensor_actuator> visionSensorLocation;
 
-    private partsAspect.form default_partForm;
+    private partDescription.form default_partForm;
     private boolean printedDBG = false;
 
     public SFEE_production_monitor() {
@@ -106,7 +106,7 @@ public class SFEE_production_monitor implements Externalizable {
 
         // GET SFEI_MACHINE for get the type of part to be produced
         // default -> LID
-        default_partForm = partsAspect.form.LID;
+        default_partForm = partDescription.form.LID;
 
         if (sfee.getSFEE_function().equals(SFEE.SFEE_function.PRODUCTION)) {
             for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet())
@@ -167,7 +167,7 @@ public class SFEE_production_monitor implements Externalizable {
                             id = sfee.getSFEIbyIndex(0).getnPiecesMoved();
 
                         if (sfei.isLine_start()) {
-                            part p = new part(id, new partsAspect(partsAspect.material.BLUE, default_partForm));
+                            part p = new part(id, new partDescription(partDescription.material.BLUE, default_partForm));
                             // This operation of concat is faster than + operation
                             String itemName = sfei.getName();
                             itemName = itemName.concat("-");
@@ -324,9 +324,9 @@ public class SFEE_production_monitor implements Externalizable {
 
                 SFEI_machine sfei = (SFEI_machine) sfeiEntry.getValue();
 
-                if (default_partForm.equals(partsAspect.form.LID)) {
+                if (default_partForm.equals(partDescription.form.LID)) {
                     actuatorsState.set(sfei.getaProduce().getBit_offset(), 1);
-                } else if (default_partForm.equals(partsAspect.form.BASE)) {
+                } else if (default_partForm.equals(partDescription.form.BASE)) {
                     actuatorsState.set(sfei.getaProduce().getBit_offset(), 0);
                 }
             }
@@ -344,7 +344,7 @@ public class SFEE_production_monitor implements Externalizable {
 
                 if (visionSensor_number > 0) {
                     if (sfeiConveyor.getPartsATM().size() > 0) {
-                        partsAspect reality = getPartsAspectByNumber(visionSensor_number);
+                        partDescription reality = getPartsAspectByNumber(visionSensor_number);
 //                        part lastPart = selectedOldestPartinSFEI(entry.getKey());
 //                        part lastPart = sfeiConveyor.getPartsATM().last();
                         part lastPart = sfeiConveyor.getPartsATM().first();
@@ -362,28 +362,28 @@ public class SFEE_production_monitor implements Externalizable {
         }
     }
 
-    private partsAspect getPartsAspectByNumber(int num) {
+    private partDescription getPartsAspectByNumber(int num) {
 
         if (num == 0 || num > 9)
             return null;
-        partsAspect.material mat;
+        partDescription.material mat;
         if (num > 0 && num <= 3) {
-            mat = partsAspect.material.BLUE;
+            mat = partDescription.material.BLUE;
         } else if (num > 3 && num <= 6) {
-            mat = partsAspect.material.GREEN;
+            mat = partDescription.material.GREEN;
         } else {
-            mat = partsAspect.material.METAL;
+            mat = partDescription.material.METAL;
         }
-        partsAspect.form f;
+        partDescription.form f;
         if (num % 3 == 1)
-            f = partsAspect.form.RAW;
+            f = partDescription.form.RAW;
         else if (num % 3 == 2) {
-            f = partsAspect.form.LID;
+            f = partDescription.form.LID;
         } else {
-            f = partsAspect.form.BASE;
+            f = partDescription.form.BASE;
         }
 
-        return new partsAspect(mat, f);
+        return new partDescription(mat, f);
 
     }
 

@@ -2,7 +2,7 @@ package failures.newVersion;
 
 import models.SFEx_particular.SFEI_conveyor;
 import models.base.part;
-import models.partsAspect;
+import models.partDescription;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -86,7 +86,7 @@ public class produce_more2 extends failures_conditions {
                     } else
                         id = sfeiConveyor.getnPiecesMoved();*/
 
-                    part p = new part(faulty_partID, new partsAspect(partsAspect.material.BLUE, partsAspect.form.RAW));
+                    part p = new part(faulty_partID, new partDescription(partDescription.material.BLUE, partDescription.form.RAW));
                     faulty_partID--;
                     // For the overflow, just in case
                     if (faulty_partID > 0)

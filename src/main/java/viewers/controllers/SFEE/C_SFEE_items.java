@@ -25,13 +25,11 @@ public class C_SFEE_items {
     public C_SFEE_items() {
     }
 
-
     public void setIo(TreeMap<Integer, sensor_actuator> io, SFEE.SFEE_type sfeeType) {
         this.io = io;
         if (sfeisController == null)
             this.sfeisController = new C_SFEIs(io, sfeeType);
     }
-
 
     public C_SFEIs getSfeisController() {
         return sfeisController;
@@ -45,16 +43,30 @@ public class C_SFEE_items {
     private ImageView error_icon;
 
     @FXML
-    private Button remove_sfei;
-    @FXML
     private Pane newSFEI_Pane;
 
     @FXML
     private TreeView<String> treeView_SFEIs;
 
+    @FXML
+    private Button new_sfei;
+    @FXML
+    private Button edit_sfei;
+    @FXML
+    private Button remove_sfei;
+    @FXML
+    private Button refresh_sfee;
+
 
     public void initialize() {
         updateTreeView();
+
+        // Install Tooltips over buttons
+
+        Tooltip.install(new_sfei, new Tooltip("Add new SFEI"));
+        Tooltip.install(edit_sfei, new Tooltip("Edit selected SFEI"));
+        Tooltip.install(remove_sfei, new Tooltip("Delete selected SFEI"));
+        Tooltip.install(refresh_sfee, new Tooltip("Refresh List"));
     }
 
     @FXML
@@ -70,7 +82,6 @@ public class C_SFEE_items {
                 sfeeName = title.getText();
             }
         }
-
 
         try {
             switch (temp.getId()) {

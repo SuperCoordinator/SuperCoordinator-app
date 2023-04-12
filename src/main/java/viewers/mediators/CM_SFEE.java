@@ -15,27 +15,32 @@ public class CM_SFEE implements IMC_SFEE {
 
     @Override
     public void registerC_SFEE_body_properties(C_SFEE_properties controller) {
-        this.properties = controller;
+        if (properties == null)
+            this.properties = controller;
     }
 
     @Override
     public void registerC_SFEE_body_communication(C_SFEE_communication controller) {
-        this.communication = controller;
+        if (communication == null)
+            this.communication = controller;
     }
 
     @Override
     public void registerC_SFEE_body_items(C_SFEE_items controller) {
-        this.items = controller;
+        if (items == null)
+            this.items = controller;
     }
 
     @Override
     public void registerC_SFEE_body_failure(C_SFEE_failure controller) {
-        this.failure = controller;
+        if (failure == null)
+            this.failure = controller;
     }
 
     @Override
     public void registerC_SFEE_body_finish(C_SFEE_finish controller) {
-        this.finish = controller;
+        if (finish == null)
+            this.finish = controller;
     }
 
     public C_SFEE_properties getProperties() {

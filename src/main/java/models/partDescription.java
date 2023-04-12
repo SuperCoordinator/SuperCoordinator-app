@@ -4,15 +4,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Objects;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public final class partsAspect {
+public final class partDescription {
     public enum material {
         BLUE, GREEN, METAL
     }
@@ -26,10 +21,10 @@ public final class partsAspect {
     @XmlAttribute
     private form form;
 
-    public partsAspect() {
+    public partDescription() {
     }
 
-    public partsAspect(material material, form form) {
+    public partDescription(material material, form form) {
         this.material = material;
         this.form = form;
     }

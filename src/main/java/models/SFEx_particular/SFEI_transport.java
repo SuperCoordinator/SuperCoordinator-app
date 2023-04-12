@@ -1,18 +1,12 @@
 package models.SFEx_particular;
 
 import models.base.SFEI;
-import models.base.part;
-import models.partsAspect;
 import models.sensor_actuator;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Instant;
 
 //@XmlRootElement(name = "SFEI_transport")

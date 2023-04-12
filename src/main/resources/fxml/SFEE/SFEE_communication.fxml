@@ -29,7 +29,7 @@
                      </toggleGroup>
                   </ToggleButton>
                   <Pane prefHeight="50.0" prefWidth="45.0" />
-                  <ToggleButton fx:id="opcua" disable="true" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="OPC UA" textFill="#d9d9d9" toggleGroup="$comProtocol" />
+                  <ToggleButton fx:id="opc_ua" disable="true" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="OPC UA" textFill="#d9d9d9" toggleGroup="$comProtocol" />
                </children>
                <VBox.margin>
                   <Insets />

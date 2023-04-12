@@ -8,17 +8,13 @@ import models.base.SFEE;
 import models.base.SFEI;
 import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
-import models.partsAspect;
+import models.partDescription;
 import models.sensor_actuator;
 import monitor.production.SFEE_production_monitor;
 import monitor.setupRun;
 import utils.utils;
 
 import javax.xml.bind.annotation.*;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
@@ -30,6 +26,7 @@ public class cSFEE_production {
         NORMAL,
         PROG_FAILURES
     }
+
     private SFEE sfee;
     @XmlElement
     private modbus mb;
@@ -68,9 +65,16 @@ public class cSFEE_production {
         this.mb = mb;
     }
 
+    public SFEE_failures2 getSfeeFailures2() {
+        return sfeeFailures2;
+    }
 
     public modbus getMb() {
         return mb;
+    }
+
+    public operationMode getOpMode() {
+        return opMode;
     }
 
     public void init(int scene) {
@@ -126,7 +130,7 @@ public class cSFEE_production {
                         false);
                 addNewSFEI_machine(
                         "MC1",
-                        partsAspect.form.LID,
+                        partDescription.form.LID,
                         "s_lids_at_entry",
                         "s_lids_at_exit",
                         Instant.now(),
@@ -190,7 +194,7 @@ public class cSFEE_production {
                         false);
                 addNewSFEI_machine(
                         "MC1",
-                        partsAspect.form.LID,
+                        partDescription.form.LID,
                         "s_lids_at_entry",
                         "s_lids_at_exit",
                         Instant.now(),
@@ -426,7 +430,7 @@ public class cSFEE_production {
         return newObj;
     }*/
 
-    public void addNewSFEI_machine(String name, partsAspect.form partForm, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportsFailures, String aProduce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
+    public void addNewSFEI_machine(String name, partDescription.form partForm, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportsFailures, String aProduce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
         sensor_actuator[] vector = new sensor_actuator[3];
         vector[0] = sfee.getIObyName(aProduce);
         vector[1] = sfee.getIObyName(sDoor);

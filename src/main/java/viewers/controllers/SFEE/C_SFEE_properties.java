@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import models.base.SFEE;
+import viewers.controllers.C_ShopFloor;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,9 @@ public class C_SFEE_properties {
     }
 
     private final ArrayList<Object> savedValues;
+
+    private SFEE.SFEE_type sfeeType;
+    private SFEE.SFEE_function sfeeFunction;
 
     @FXML
     private ToggleGroup env;
@@ -39,18 +43,35 @@ public class C_SFEE_properties {
 
 
     public void initialize() {
-
-        if (savedValues.size() > 0) {
+        if (!C_ShopFloor.getInstance().isLoadedConfig()) {
+            // Load data from "new configuration"
+            if (savedValues.size() > 0) {
+                for (int i = 0; i < env.getToggles().size(); i++) {
+                    if (((ToggleButton) env.getToggles().get(i)).getId().equals(savedValues.get(0)))
+                        env.selectToggle(env.getToggles().get(i));
+                }
+                for (int i = 0; i < func.getToggles().size(); i++) {
+                    if (((ToggleButton) func.getToggles().get(i)).getId().equals(savedValues.get(1)))
+                        func.selectToggle(func.getToggles().get(i));
+                }
+//            saveValues.clear();
+            }
+        } else {
+            // Load data from "load configuration"
             for (int i = 0; i < env.getToggles().size(); i++) {
-                if (((ToggleButton) env.getToggles().get(i)).getId().equals(savedValues.get(0)))
+                if (((ToggleButton) env.getToggles().get(i)).getText().equalsIgnoreCase(sfeeType.name().toLowerCase()))
                     env.selectToggle(env.getToggles().get(i));
             }
             for (int i = 0; i < func.getToggles().size(); i++) {
-                if (((ToggleButton) func.getToggles().get(i)).getId().equals(savedValues.get(1)))
+                if (((ToggleButton) func.getToggles().get(i)).getText().equalsIgnoreCase(sfeeFunction.name().toLowerCase()))
                     func.selectToggle(func.getToggles().get(i));
             }
-//            saveValues.clear();
         }
+    }
+
+    public void loadData(SFEE.SFEE_type sfeeType, SFEE.SFEE_function sfeeFunction) {
+        this.sfeeType = sfeeType;
+        this.sfeeFunction = sfeeFunction;
     }
 
     public void setSaveValues() {

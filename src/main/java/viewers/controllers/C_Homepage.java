@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
 import utils.serialize.serializer;
+import viewers.controllers.SFEM.C_SFEM;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,12 @@ public class C_Homepage {
     private Button loadConfig;
     @FXML
     private Button newConfig;
+
+    public void initialize() {
+        // clean memory
+        C_ShopFloor.getInstance().getCmSfems().clear();
+
+    }
 
     public void handleNewConfig(ActionEvent event) {
         try {
@@ -64,11 +71,14 @@ public class C_Homepage {
 
             // To be substituted by the SFEM controller viewer
             // The Mediator should be the new SFEM viewer
-            C_ShopFloor cShopFloor = new C_ShopFloor(serializer.getProduction().getC_Production().get(0).getSfem().getName());
+
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ShopFloor.fxml"));
-            cShopFloor.loadData(serializer.getProduction());
-            loader.setController(cShopFloor);
+            C_ShopFloor.getInstance().loadData(serializer.getProduction());
+            C_ShopFloor.getInstance().setLoadedConfig(true);
+
+            C_ShopFloor.getInstance().setCurrent_C_SFEM(C_ShopFloor.getInstance().getCmSfems().get(0));
+            loader.setController(C_ShopFloor.getInstance());
 
 //            Parent root = FXMLLoader.load(getClass().getResource("/fxml/ShopFloor.fxml"));
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

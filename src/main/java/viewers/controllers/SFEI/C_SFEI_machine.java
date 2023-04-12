@@ -12,7 +12,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import models.SFEx_particular.SFEI_machine;
-import models.partsAspect;
+import models.partDescription;
 import models.sensor_actuator;
 import utils.utils;
 
@@ -59,13 +59,13 @@ public class C_SFEI_machine implements Initializable {
             aProduce.setValue(sfeiMachine.getaProduce().getName());
 
             if (((RadioButton) part_type.getToggles().get(0)).getText().equalsIgnoreCase("lid")) {
-                if (sfeiMachine.getPartForm().equals(partsAspect.form.LID)) {
+                if (sfeiMachine.getPartForm().equals(partDescription.form.LID)) {
                     part_type.selectToggle(part_type.getToggles().get(0));
                 } else {
                     part_type.selectToggle(part_type.getToggles().get(1));
                 }
             } else {
-                if (sfeiMachine.getPartForm().equals(partsAspect.form.BASE)) {
+                if (sfeiMachine.getPartForm().equals(partDescription.form.BASE)) {
                     part_type.selectToggle(part_type.getToggles().get(0));
                 } else {
                     part_type.selectToggle(part_type.getToggles().get(1));
@@ -131,9 +131,9 @@ public class C_SFEI_machine implements Initializable {
     }
 
 
-    public partsAspect.form getPart_type() {
+    public partDescription.form getPart_type() {
         RadioButton radioButton = (RadioButton) part_type.getSelectedToggle();
-        return radioButton.getText().equalsIgnoreCase("lid") ? partsAspect.form.LID : partsAspect.form.BASE;
+        return radioButton.getText().equalsIgnoreCase("lid") ? partDescription.form.LID : partDescription.form.BASE;
     }
 
     public boolean getFailure_support() {

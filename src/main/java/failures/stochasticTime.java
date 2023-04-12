@@ -5,7 +5,7 @@ import models.base.SFEI;
 import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
 import models.base.part;
-import models.partsAspect;
+import models.partDescription;
 import utils.utils;
 
 import java.time.Duration;
@@ -371,20 +371,20 @@ public class stochasticTime {
 
     }
 
-    private int getNumberbyPartAspect(partsAspect aspect) {
+    private int getNumberbyPartAspect(partDescription aspect) {
 
         int num;
 
-        if (aspect.form().equals(partsAspect.form.RAW)) {
+        if (aspect.form().equals(partDescription.form.RAW)) {
             num = 0;
-        } else if (aspect.form().equals(partsAspect.form.BASE)) {
+        } else if (aspect.form().equals(partDescription.form.BASE)) {
             num = 3;
         } else {
             num = 6;
         }
-        if (aspect.material().equals(partsAspect.material.BLUE))
+        if (aspect.material().equals(partDescription.material.BLUE))
             num++;
-        else if (aspect.material().equals(partsAspect.material.GREEN)) {
+        else if (aspect.material().equals(partDescription.material.GREEN)) {
             num += 2;
         } else {
             num += 3;

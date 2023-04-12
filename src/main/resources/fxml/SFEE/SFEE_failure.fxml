@@ -32,7 +32,7 @@
                      </toggleGroup>
                   </ToggleButton>
                   <Pane prefHeight="50.0" prefWidth="45.0" />
-                  <ToggleButton fx:id="failures" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="Failures" textFill="#d9d9d9" toggleGroup="$opMode" />
+                  <ToggleButton fx:id="prog_failures" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="40.0" prefWidth="200.0" styleClass="button_default" text="Failures" textFill="#d9d9d9" toggleGroup="$opMode" />
                </children>
                <VBox.margin>
                   <Insets />

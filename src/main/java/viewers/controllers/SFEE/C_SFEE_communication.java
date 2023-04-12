@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import models.base.SFEE;
 import models.sensor_actuator;
 import utils.utils;
+import viewers.controllers.C_ShopFloor;
 
 import java.io.File;
 import java.net.URL;
@@ -23,6 +24,22 @@ import java.util.ResourceBundle;
 import java.util.TreeMap;
 
 public class C_SFEE_communication implements Initializable {
+
+    private File file;
+    private ArrayList<Object> savedValues;
+    private TreeMap<Integer, sensor_actuator> io;
+
+    private SFEE.communicationOption communicationOption;
+    private String[] communicationFields;
+    private final utils utility = new utils();
+
+    public C_SFEE_communication() {
+        this.savedValues = new ArrayList<>();
+    }
+
+    public TreeMap<Integer, sensor_actuator> getIo() {
+        return io;
+    }
 
     @FXML
     private ToggleGroup comProtocol;
@@ -77,26 +94,43 @@ public class C_SFEE_communication implements Initializable {
         // Define cell height
         outputsTable.setFixedCellSize(30.0);
 
+        if (!C_ShopFloor.getInstance().isLoadedConfig()) {
+            if (savedValues.size() > 0) {
+                // Load data from "new configuration"
+                for (int i = 0; i < comProtocol.getToggles().size(); i++) {
+                    if (((ToggleButton) comProtocol.getToggles().get(i)).getId().equals(savedValues.get(0)))
+                        comProtocol.selectToggle(comProtocol.getToggles().get(i));
+                }
 
-        if (savedValues.size() > 0) {
-
+                ip.setText((String) savedValues.get(1));
+                port.setText((String) savedValues.get(2));
+                slaveID.setText((String) savedValues.get(3));
+                updateTables();
+//            saveValues.clear();
+            }
+        } else {
+            // Load data from "load configuration"
             for (int i = 0; i < comProtocol.getToggles().size(); i++) {
-                if (((ToggleButton) comProtocol.getToggles().get(i)).getId().equals(savedValues.get(0)))
+                if (((ToggleButton) comProtocol.getToggles().get(i)).getId().equalsIgnoreCase(communicationOption.name().toLowerCase()))
                     comProtocol.selectToggle(comProtocol.getToggles().get(i));
             }
+            assert communicationFields != null;
+            ip.setText(communicationFields[0]);
+            port.setText(communicationFields[1]);
+            slaveID.setText(communicationFields[2]);
 
-            ip.setText((String) savedValues.get(1));
-            port.setText((String) savedValues.get(2));
-            slaveID.setText((String) savedValues.get(3));
+            // For IOs, it is already loaded !
             updateTables();
-//            saveValues.clear();
         }
+
     }
 
-
-    public C_SFEE_communication() {
-        this.savedValues = new ArrayList<>();
+    public void loadData(SFEE.communicationOption communicationOption, String[] communicationFields, TreeMap<Integer, sensor_actuator> IOs) {
+        this.communicationOption = communicationOption;
+        this.communicationFields = communicationFields;
+        this.io = IOs;
     }
+
 
     @FXML
     void doubleClick() {
@@ -115,15 +149,6 @@ public class C_SFEE_communication implements Initializable {
         updateTables();
     }
 
-    private File file;
-    private ArrayList<Object> savedValues;
-    private TreeMap<Integer, sensor_actuator> io;
-
-    public TreeMap<Integer, sensor_actuator> getIo() {
-        return io;
-    }
-
-    private final utils utility = new utils();
 
     @FXML
     void importCSV(ActionEvent event) {

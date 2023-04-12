@@ -1,23 +1,16 @@
 package models.base;
 
-import models.partsAspect;
-import org.apache.commons.math3.util.Pair;
+import models.partDescription;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 public class part {
     private int id;
-    private partsAspect expectation;
+    private partDescription expectation;
     private TreeMap<String, Instant> itemTimestamps;
 
-    private partsAspect reality;
+    private partDescription reality;
 
     private boolean defect;
     private boolean waitTransport;
@@ -26,7 +19,7 @@ public class part {
     public part() {
     }
 
-    public part(int id, partsAspect expectedPart) {
+    public part(int id, partDescription expectedPart) {
         this.id = id;
         this.expectation = expectedPart;
 
@@ -44,7 +37,7 @@ public class part {
         return itemTimestamps;
     }
 
-    public partsAspect getExpectation() {
+    public partDescription getExpectation() {
         return expectation;
     }
 
@@ -52,11 +45,11 @@ public class part {
         itemTimestamps.put(itemName, Instant.now());
     }
 
-    public void setReality(partsAspect aspect) {
+    public void setReality(partDescription aspect) {
         reality = aspect;
     }
 
-    public partsAspect getReality() {
+    public partDescription getReality() {
         return reality;
     }
 

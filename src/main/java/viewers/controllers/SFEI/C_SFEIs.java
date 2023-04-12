@@ -15,6 +15,7 @@ import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
 import utils.utils;
+import viewers.controllers.C_ShopFloor;
 import viewers.mediators.CM_SFEI;
 
 import java.net.URL;
@@ -102,6 +103,25 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
             cSfeiConveyor = new C_SFEI_conveyor(io);
             cSfeiMachine = new C_SFEI_machine(io);
         } else {
+            // From "load config"
+            if (C_ShopFloor.getInstance().isLoadedConfig()) {
+                //search for cSfeiConveyor/cSfeiMachine correct instance
+
+                for (C_SFEI_conveyor conveyor : getSfeiConveyors()) {
+                    if (conveyor.getSfeiConveyor().getName().equalsIgnoreCase(sfei2updateName)) {
+                        cSfeiConveyor = conveyor;
+                        break;
+                    }
+                }
+                if (cSfeiConveyor == null) {
+                    for (C_SFEI_machine machine : getSfeiMachines()) {
+                        if (machine.getSfeiMachine().getName().equalsIgnoreCase(sfei2updateName)) {
+                            cSfeiMachine = machine;
+                            break;
+                        }
+                    }
+                }
+            }
             // Search in the conveyors
             SFEI_conveyor sfeiConveyor = null;
             SFEI_machine sfeiMachine = null;

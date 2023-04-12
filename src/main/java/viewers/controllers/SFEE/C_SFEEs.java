@@ -1,6 +1,7 @@
 package viewers.controllers.SFEE;
 
 import controllers.production.cSFEE_production;
+import failures.stochasticTime;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,13 +13,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx_particular.SFEI_machine;
 import models.base.SFEE;
+import models.base.SFEI;
 import viewers.controllers.C_ShopFloor;
+import viewers.controllers.SFEI.C_SFEI_conveyor;
+import viewers.controllers.SFEI.C_SFEI_machine;
 import viewers.mediators.CM_SFEE;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class C_SFEEs extends CM_SFEE implements Initializable {
@@ -33,6 +38,7 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
 
     public void setcSFEEProduction(cSFEE_production cSFEEProduction) {
         this.cSFEEProduction = cSFEEProduction;
+        loadData();
     }
 
     private enum Panes {
@@ -77,6 +83,10 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
         CM_SFEE.getInstance().registerC_SFEE_body_items(new C_SFEE_items());
         CM_SFEE.getInstance().registerC_SFEE_body_failure(new C_SFEE_failure());
         CM_SFEE.getInstance().registerC_SFEE_body_finish(new C_SFEE_finish());*/
+
+        if (C_ShopFloor.getInstance().isLoadedConfig())
+            SFEE_name.setText(cSFEEProduction.getSFEE_name());
+
         registerC_SFEE_body_properties(new C_SFEE_properties());
         registerC_SFEE_body_communication(new C_SFEE_communication());
         registerC_SFEE_body_items(new C_SFEE_items());
@@ -92,6 +102,58 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
         for (int i = 1; i < menu_bar.size(); i++) {
             menu_bar.get(i).setDisable(true);
         }
+
+    }
+
+    private void loadData() {
+
+        C_SFEE_properties cSfeeProperties = new C_SFEE_properties();
+        cSfeeProperties.loadData(cSFEEProduction.getSFEE().getSFEE_type(), cSFEEProduction.getSFEE().getSFEE_function());
+
+        C_SFEE_communication cSfeeCommunication = new C_SFEE_communication();
+        String[] comsFields = {cSFEEProduction.getMb().getIp(), String.valueOf(cSFEEProduction.getMb().getPort()), String.valueOf(cSFEEProduction.getMb().getSlaveID())};
+        cSfeeCommunication.loadData(cSFEEProduction.getSFEE().getCom(), comsFields, cSFEEProduction.getSFEE().getIo());
+
+        C_SFEE_items cSfeeItems = new C_SFEE_items();
+        // setIo() by default create new sfeisController instance
+        cSfeeItems.setIo(cSFEEProduction.getSFEE().getIo(), cSFEEProduction.getSFEE().getSFEE_type());
+
+        for (Map.Entry<Integer, SFEI> entry : cSFEEProduction.getSFEE().getSFEIs().entrySet()) {
+            switch (entry.getValue().getSfeiType()) {
+                case CONVEYOR -> {
+                    C_SFEI_conveyor cSfeiConveyor = new C_SFEI_conveyor(cSFEEProduction.getSFEE().getIo());
+                    cSfeiConveyor.setSfeiConveyor((SFEI_conveyor) entry.getValue());
+                    cSfeeItems.getSfeisController().registerC_SFEI_conveyor(cSfeiConveyor);
+                }
+                case MACHINE -> {
+                    C_SFEI_machine cSfeiMachine = new C_SFEI_machine(cSFEEProduction.getSFEE().getIo());
+                    cSfeiMachine.setSfeiMachine((SFEI_machine) entry.getValue());
+                    cSfeeItems.getSfeisController().registerC_SFEI_machine(cSfeiMachine);
+                }
+            }
+        }
+
+
+        C_SFEE_failure cSfeeFailure = new C_SFEE_failure();
+        ArrayList<String> loadedData = new ArrayList<>();
+        if (cSFEEProduction.getOpMode().equals(cSFEE_production.operationMode.PROG_FAILURES)) {
+            if (cSFEEProduction.getSfeeFailures2().getStochasticType().equals(stochasticTime.timeOptions.GAUSSIAN)) {
+                // Rebuild string
+                cSFEEProduction.getSfeeFailures2().getFailuresFormulas().forEach(strings -> {
+                    loadedData.addAll(Arrays.stream(strings).toList());
+                });
+
+                String mean = cSFEEProduction.getSfeeFailures2().getStochasticFormulas()[0];
+                String dev = cSFEEProduction.getSfeeFailures2().getStochasticFormulas()[1];
+                loadedData.add(0, "gauss [ " + mean + " ; " + dev + " ]");
+            }
+        }
+        cSfeeFailure.loadData(cSFEEProduction.getOpMode(), cSFEEProduction.getOpMode().equals(cSFEE_production.operationMode.NORMAL) ? null : loadedData);
+
+        registerC_SFEE_body_properties(cSfeeProperties);
+        registerC_SFEE_body_communication(cSfeeCommunication);
+        registerC_SFEE_body_items(cSfeeItems);
+        registerC_SFEE_body_failure(cSfeeFailure);
 
     }
 

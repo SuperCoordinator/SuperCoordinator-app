@@ -28,6 +28,10 @@ public class C_ShopFloor {
 
     private String layout_name;
 
+    private boolean loadedConfig = false;
+
+    private C_SFEM current_C_SFEM;
+
     public C_ShopFloor() {
     }
 
@@ -37,6 +41,22 @@ public class C_ShopFloor {
 
     public ArrayList<C_SFEM> getCmSfems() {
         return cmSfems;
+    }
+
+    public void setLoadedConfig(boolean loadedConfig) {
+        this.loadedConfig = loadedConfig;
+    }
+
+    public boolean isLoadedConfig() {
+        return loadedConfig;
+    }
+
+    public void setCurrent_C_SFEM(C_SFEM current_C_SFEM) {
+        this.current_C_SFEM = current_C_SFEM;
+    }
+
+    public C_SFEM getCurrent_C_SFEM() {
+        return current_C_SFEM;
     }
 
     /**
@@ -60,7 +80,7 @@ public class C_ShopFloor {
     public void initialize() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEM/SFEM_elements.fxml"));
-            loader.setController(new C_SFEM());
+            loader.setController(C_ShopFloor.getInstance().isLoadedConfig() ? C_ShopFloor.getInstance().getCurrent_C_SFEM() : new C_SFEM());
             AnchorPane anchorPane = loader.load();
             pane.getChildren().setAll(anchorPane);
 
@@ -72,14 +92,8 @@ public class C_ShopFloor {
     public void loadData(production production) {
         for (cSFEM_production cSFEMProduction : production.getC_Production()) {
             C_SFEM cSfem = new C_SFEM(cSFEMProduction);
-/*            for (cSFEE_production cSFEEProduction : cSFEMProduction.getSfeeControllers()) {
-                C_SFEEs cSfees = new C_SFEEs();
-                cSfees.setcSFEEProduction(cSFEEProduction);
-                cSfees.getSFEE_name().setText(cSFEEProduction.getSFEE_name());
-                cSfem.registerC_SFEEs(cSfees);
-            }*/
             C_ShopFloor.getInstance().getCmSfems().add(cSfem);
-            System.out.println(C_ShopFloor.class + " " + cSFEMProduction.getSfem().getName());
+//            System.out.println(C_ShopFloor.class + " " + cSFEMProduction.getSfem().getName());
         }
     }
 
