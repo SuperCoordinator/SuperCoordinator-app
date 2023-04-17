@@ -40,6 +40,9 @@ public class App {
                 } else if (app.scene.equals(serializer.scenes.sorting_station)) {
                     nModules = 1;
                     nSFEE = 3;
+                } else if (app.scene.equals(serializer.scenes.SS_3CMC)) {
+                    nModules = 2;
+                    nSFEE = 3;
                 }
 
                 for (int i = 0; i < nModules; i++) {
@@ -66,6 +69,9 @@ public class App {
             int nModules = Integer.parseInt(str);*/
                 if (app.scene.equals(serializer.scenes.sorting_station))
                     nModules = 0;
+                else if(app.scene.equals(serializer.scenes.SS_3CMC)){
+                    nModules = 3;
+                }
                 else
                     nModules = 1;
 

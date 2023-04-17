@@ -5,9 +5,9 @@
             <SFEEs>
                 <entry>
                     <key>0</key>
-                    <value sfeeType="SIMULATION" sfeeFunction="PRODUCTION" com="MODBUS" name="metal_entry">
+                    <value sfeeType="SIMULATION" sfeeFunction="PRODUCTION" com="MODBUS" name="metalEntry_SFEE">
                         <inSensor name="s_metal" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="11"/>
-                        <outSensor name="s_metal_remover" type="INPUT" invLogic="true" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
+                        <outSensor name="s_metal_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
                         <io>
                             <entry>
 <key>0</key>
@@ -59,7 +59,7 @@
                             </entry>
                             <entry>
 <key>12</key>
-<value name="s_metal_remover" type="INPUT" invLogic="true" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
+<value name="s_metal_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
                             </entry>
                             <entry>
 <key>13</key>
@@ -177,9 +177,9 @@
                         <SFEIs>
                             <entry>
 <key>0</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="metal_entry" sfeiType="CONVEYOR" minOperationTime="9" manufacturing_date="2023-04-11T15:09:01.852840200Z" last_maintenance="2023-04-11T15:09:01.852840200Z" simulation="true" supportsFailures="false" lineStart="true" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="metal_entry" sfeiType="CONVEYOR" minOperationTime="9" manufacturing_date="2023-04-17T16:17:13.006978400Z" last_maintenance="2023-04-17T16:17:13.006978400Z" simulation="true" supportsFailures="false" lineStart="true" lineEnd="false">
     <inSensor name="s_metal" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="11"/>
-    <outSensor name="s_metal_remover" type="INPUT" invLogic="true" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
+    <outSensor name="s_metal_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
     <aConveyorMotor name="metal_conveyor" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
 </value>
                             </entry>
@@ -188,7 +188,7 @@
                 </entry>
                 <entry>
                     <key>1</key>
-                    <value sfeeType="SIMULATION" sfeeFunction="PRODUCTION" com="MODBUS" name="green_entry">
+                    <value sfeeType="SIMULATION" sfeeFunction="PRODUCTION" com="MODBUS" name="greenEntry_SFEE">
                         <inSensor name="s_green" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="9"/>
                         <outSensor name="s_green_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="10"/>
                         <io>
@@ -242,7 +242,7 @@
                             </entry>
                             <entry>
 <key>12</key>
-<value name="s_metal_remover" type="INPUT" invLogic="true" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
+<value name="s_metal_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
                             </entry>
                             <entry>
 <key>13</key>
@@ -360,7 +360,7 @@
                         <SFEIs>
                             <entry>
 <key>0</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="green_entry" sfeiType="CONVEYOR" minOperationTime="9" manufacturing_date="2023-04-11T15:09:32.293741200Z" last_maintenance="2023-04-11T15:09:32.293741200Z" simulation="true" supportsFailures="true" lineStart="true" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="green_entry" sfeiType="CONVEYOR" minOperationTime="9" manufacturing_date="2023-04-17T16:21:54.164450200Z" last_maintenance="2023-04-17T16:21:54.164450200Z" simulation="true" supportsFailures="true" lineStart="true" lineEnd="false">
     <inSensor name="s_green" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="9"/>
     <outSensor name="s_green_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="10"/>
     <aConveyorMotor name="green_conveyor" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="10"/>
@@ -371,7 +371,7 @@
                 </entry>
                 <entry>
                     <key>2</key>
-                    <value sfeeType="SIMULATION" sfeeFunction="PRODUCTION" com="MODBUS" name="blue_entry">
+                    <value sfeeType="SIMULATION" sfeeFunction="PRODUCTION" com="MODBUS" name="blueEntry_SFEE">
                         <inSensor name="s_blue" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
                         <outSensor name="s_blue_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="7"/>
                         <io>
@@ -425,7 +425,7 @@
                             </entry>
                             <entry>
 <key>12</key>
-<value name="s_metal_remover" type="INPUT" invLogic="true" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
+<value name="s_metal_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
                             </entry>
                             <entry>
 <key>13</key>
@@ -543,7 +543,7 @@
                         <SFEIs>
                             <entry>
 <key>0</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="blue_entry" sfeiType="CONVEYOR" minOperationTime="9" manufacturing_date="2023-04-11T15:09:49.837715Z" last_maintenance="2023-04-11T15:09:49.837715Z" simulation="true" supportsFailures="true" lineStart="true" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="blue_entry" sfeiType="CONVEYOR" minOperationTime="9" manufacturing_date="2023-04-17T16:22:23.196109Z" last_maintenance="2023-04-17T16:22:23.196109Z" simulation="true" supportsFailures="true" lineStart="true" lineEnd="false">
     <inSensor name="s_blue" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
     <outSensor name="s_blue_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="7"/>
     <aConveyorMotor name="blue_conveyor" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
@@ -555,7 +555,7 @@
             </SFEEs>
         </sfem>
         <sfeeControllers opMode="NORMAL">
-            <mb ip="127.0.0.1" port="35502" slaveID="1"/>
+            <mb ip="127.0.0.1" port="35502" slaveID="35502"/>
             <sfeeMonitor>
                 <visionSensorLocation>
                     <entry>

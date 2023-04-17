@@ -88,7 +88,7 @@ public class cSFEM_production implements Runnable {
                 cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
 
                 if (scene == 0)
-                    sfeeController.init(i == 0 ? scene : 10);
+                    sfeeController.init(i == 0 ? scene : -1);
                 else if (scene == 1) {
                     if (SFEM_idx == 0)
                         sfeeController.init(3);
@@ -101,6 +101,12 @@ public class cSFEM_production implements Runnable {
                         sfeeController.init(6);
                     } else if (i == 2) {
                         sfeeController.init(7);
+                    }
+                } else if (scene == 3) {
+                    if (SFEM_idx == 0) {
+                        sfeeController.init(scene + 5 + i);
+                    } else if (SFEM_idx == 1) {
+                        sfeeController.init(scene + 8 + i);
                     }
                 }
 

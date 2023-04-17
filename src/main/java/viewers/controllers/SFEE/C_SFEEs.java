@@ -107,6 +107,7 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
 
     private void loadData() {
 
+        // Only executed when C_ShopFloor.getInstance().isLoadedConfig() == TRUE
         C_SFEE_properties cSfeeProperties = new C_SFEE_properties();
         cSfeeProperties.loadData(cSFEEProduction.getSFEE().getSFEE_type(), cSFEEProduction.getSFEE().getSFEE_function());
 
@@ -154,6 +155,7 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
         registerC_SFEE_body_communication(cSfeeCommunication);
         registerC_SFEE_body_items(cSfeeItems);
         registerC_SFEE_body_failure(cSfeeFailure);
+        // For the Finish it is not needed because is a summary of these previous Controllers
 
     }
 

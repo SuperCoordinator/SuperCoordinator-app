@@ -15,12 +15,13 @@ public class serializer {
     public enum scenes {
         CMC_connection,
         CMC2_con_individual,
-        sorting_station
+        sorting_station,
+        SS_3CMC
     }
 
-    public final scenes scene = scenes.sorting_station;
-    private final String prod_filePath = "blocks/" + scene + "/saves/tests/SFEM_production";
-    private final String trans_filePath = "blocks/" + scene + "/saves/tests/SFEM_transport";
+    public final scenes scene = scenes.SS_3CMC;
+    private final String prod_filePath = "blocks/" + scene + "/saves/SFEM_production";
+    private final String trans_filePath = "blocks/" + scene + "/saves/SFEM_transport";
 
     private production production = new production();
     private transport transport = new transport();

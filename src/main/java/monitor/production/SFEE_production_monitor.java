@@ -152,7 +152,7 @@ public class SFEE_production_monitor implements Externalizable {
                 boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
                 boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
 
-                // SFEE entry, should create new part object
+/*                // SFEE entry, should create new part object
                 if (sfei_idx == 0) {
 
                     boolean sfee_inSensor = (int) sensorsState.get(sfee.getInSensor().getBit_offset()) == 1;
@@ -187,6 +187,44 @@ public class SFEE_production_monitor implements Externalizable {
                             }
                         }
 
+                    }
+                }*/
+
+                // SFEE line start, so should create a new part
+                if (sfei.isLine_start()) {
+
+                    // Save partDescription along the time
+
+                    boolean sfee_inSensor = (int) sensorsState.get(sfee.getInSensor().getBit_offset()) == 1;
+                    if (utility.getLogicalOperator().RE_detector(sfee_inSensor, SFEIs_old_inSensors[sfei_idx])) {
+
+                        int id = 0;
+                        if (sfei.getPartsATM().size() > 0) {
+                            if (sfei.getPartsATM().last().getId() >= sfei.getnPiecesMoved()) {
+                                id = sfee.getSFEIbyIndex(0).getPartsATM().last().getId() + 1;
+                            }
+                        } else {
+                            id = sfei.getnPiecesMoved();
+                        }
+
+                        part p = new part(id, new partDescription(partDescription.material.BLUE, default_partForm));
+                        // This operation of concat is faster than + operation
+                        String itemName = sfei.getName();
+                        itemName = itemName.concat("-");
+                        itemName = itemName.concat(sfei.getName());
+
+                        p.addTimestamp(itemName);
+                        sfei.addNewPartATM(p);
+                    }
+                } else {
+                    // Is not the production line start, so wait for the transport bring the part
+                    if (sfei.getPartsATM().size() > 0) {
+                        part p = sfei.getPartsATM().last();
+                        String itemName = sfei.getName();
+                        itemName = itemName.concat("-");
+                        itemName = itemName.concat(sfee.getInSensor().getName());
+
+                        p.addTimestamp(itemName);
                     }
                 }
 

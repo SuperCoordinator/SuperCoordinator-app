@@ -44,15 +44,15 @@ public class csv_reader {
             for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
                 System.out.println("   " + entry.getKey() + " - " + entry.getValue().getName());
             }
-/*            System.out.println("From the IO which are in inverse logic?");
+            System.out.println("From the IO which are in inverse logic?");
 
             Scanner in = new Scanner(System.in);
 
             System.out.println("Enter following the example pattern: 2,3,1,5");
-            String input = in.nextLine();*/
+            String input = in.nextLine();
 
             //String input = "6,7,8,9,10,12,13";
-            String input = "12";
+//            String input = "12";
 
 
             System.out.println(input);

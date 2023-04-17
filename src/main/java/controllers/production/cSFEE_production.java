@@ -80,7 +80,7 @@ public class cSFEE_production {
     public void init(int scene) {
         try {
             switch (scene) {
-                case 0, 10 -> {
+                case 0, -1 -> {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC_connection\\simulation\\Tags_CMC-connection_Modbus.csv";
                     importIO(csv_path, scene);
                 }
@@ -94,6 +94,14 @@ public class cSFEE_production {
                 }
                 case 5, 6, 7 -> {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\simulation\\Tags_sorting_station_Modbus.csv";
+                    importIO(csv_path, scene);
+                }
+                case 8, 9, 10 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_sorting_station_Modbus.csv";
+                    importIO(csv_path, scene);
+                }
+                case 11, 12, 13 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_3CMC_Modbus.csv";
                     importIO(csv_path, scene);
                 }
                 default -> {
@@ -158,7 +166,7 @@ public class cSFEE_production {
                         false,
                         false);
             }
-            if (scene == 10) {
+            if (scene == -1) {
                 addNewSFEI_conveyor(
                         "entry2_conveyor",
                         "s_emitter2",
@@ -174,6 +182,10 @@ public class cSFEE_production {
                         "entry_conveyor2",
                         false,
                         true);
+            }
+
+            if (scene == 8 || scene == 9 || scene == 10) {
+                scene = scene - 3;
             }
 
             if (scene == 4) {
@@ -274,7 +286,12 @@ public class cSFEE_production {
                         false);
             }
 
-
+            switch (scene) {
+                case 11, 12, 13 -> {
+                    int index = scene - 8 - 3;
+                    add_CMC_block(index);
+                }
+            }
             autoSetSFEE_InOut();
 //            autoSetSFEE_function();
 
@@ -311,6 +328,53 @@ public class cSFEE_production {
             e.printStackTrace();
         }
 
+    }
+
+    private void add_CMC_block(int index) {
+        addNewSFEI_conveyor(
+                "EntryConveyor_" + index,
+                "s_E" + index,
+                "s_entryMC" + index,
+                Instant.now(),
+                Instant.now(),
+                true,
+                true,
+                "entry_R" + index,
+                "entry_E" + index,
+                "s_entry_R" + index,
+                "s_entry_E" + index,
+                "entry_C" + index,
+                false,
+                false);
+        addNewSFEI_machine(
+                "MachineCenter_" + index,
+                partDescription.form.LID,
+                "s_entryMC" + index,
+                "s_exitMC" + index,
+                Instant.now(),
+                Instant.now(),
+                true,
+                true,
+                "MC" + index + "_produce",
+                "MC" + index + "_opened",
+                "MC" + index + "_stop",
+                false,
+                false);
+        addNewSFEI_conveyor(
+                "ExitConveyor_" + index,
+                "s_exitMC" + index,
+                "s_R" + index,
+                Instant.now(),
+                Instant.now(),
+                true,
+                true,
+                "exit_R" + index,
+                "exit_E" + index,
+                "s_exit_R" + index,
+                "s_exit_E" + index,
+                "exit_C" + index,
+                false,
+                false);
     }
 
     private void addSFEIS_manually() {
