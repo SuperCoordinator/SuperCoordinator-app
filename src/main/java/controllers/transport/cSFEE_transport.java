@@ -21,7 +21,7 @@ import java.util.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class cSFEE_transport  {
+public class cSFEE_transport {
 
 
     // SFEM_transport based on 1-1 connections between SFEE's
@@ -37,6 +37,10 @@ public class cSFEE_transport  {
     private String prevSFEE_name;
     @XmlAttribute
     private String nextSFEE_name;
+    @XmlAttribute
+    private String prevSFEI_name;
+    @XmlAttribute
+    private String nextSFEI_name;
 
     private SFEE_transport viewer = new SFEE_transport();
 
@@ -51,7 +55,7 @@ public class cSFEE_transport  {
         this.sfee = sfee;
     }
 
-    public void cSFEE_transport_init(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB) {
+    public void cSFEE_transport_init(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB, SFEI inSFEI, SFEI outSFEI) {
 
         this.inMB = inMB;
         this.outMB = outMB;
@@ -59,17 +63,20 @@ public class cSFEE_transport  {
         this.prevSFEE_name = inSFEE.getName();
         this.nextSFEE_name = outSFEE.getName();
 
+        this.prevSFEI_name = inSFEI.getName();
+        this.nextSFEI_name = outSFEI.getName();
+
         // I/O Setting
         TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
 
         // The inSens is the sensor place in the remover (actuator) of last SFEE (SFEI to be more precise)
-        String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEE.getOutSensor().getName());
-        io.put(0, inSFEE.getOutSensor());
+        String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEI.getOutSensor().getName());
+        io.put(0, inSFEI.getOutSensor());
         io.put(1, inSFEE.getIObyName(in_SensAct[0]));
 
         // The outSens is the sensor place on the controller-defined emitter of next SFEE (SFEI to be more precise)
         String[] out_SensAct = viewer.associateSensor2Actuator(3, outSFEE.getInSensor().getName());
-        io.put(2, outSFEE.getInSensor());
+        io.put(2, outSFEI.getInSensor());
         io.put(3, outSFEE.getIObyName(out_SensAct[0]));
         io.put(4, outSFEE.getIObyName(out_SensAct[1]));
         io.put(5, outSFEE.getIObyName(out_SensAct[2]));
@@ -80,32 +87,29 @@ public class cSFEE_transport  {
         SFEI_transport sfeiTransport = new SFEI_transport(
                 "sfei_transport",
                 SFEI.SFEI_type.TRANSPORT,
-                inSFEE.getOutSensor(),
-                outSFEE.getInSensor(),
+                inSFEI.getOutSensor(),
+                outSFEI.getInSensor(),
                 Instant.now(),
                 Instant.now(),
-                sfee.getIObyName(in_SensAct[0]),
-                sfee.getIObyName(out_SensAct[0]),
-                sfee.getIObyName(out_SensAct[1]),
-                sfee.getIObyName(out_SensAct[2]));
+                io.get(1), io.get(3), io.get(4), io.get(5));
 
 
         // ADD SFEI to SFEE
         sfee.getSFEIs().put(0, sfeiTransport);
         autoSetSFEE_InOut();
         // Initialize SFEE_transport_module
-        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEE.getSFEIbyIndex(inSFEE.getSFEIs().size() - 1), outSFEE.getSFEIbyIndex(0));
+        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEI, outSFEI);
 
     }
 
-    public Pair<String, String> prevNextSFEE() {
-        return new Pair<>(prevSFEE_name, nextSFEE_name);
+    public Pair<Pair<String, String>, Pair<String, String>> prevNextSFEE() {
+        return new Pair<>(new Pair<>(prevSFEE_name, prevSFEI_name), new Pair<>(nextSFEE_name, nextSFEI_name));
     }
 
-    public void cSFEE_transport_setup(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB) {
+    public void cSFEE_transport_setup(SFEI inSFEI, SFEI outSFEI, modbus inMB, modbus outMB) {
         this.inMB = inMB;
         this.outMB = outMB;
-        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEE.getSFEIbyIndex(inSFEE.getSFEIs().size() - 1), outSFEE.getSFEIbyIndex(0));
+        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEI, outSFEI);
         sfeeFailures.setSfee(sfee);
 
     }

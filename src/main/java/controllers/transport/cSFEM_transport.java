@@ -3,14 +3,11 @@ package controllers.transport;
 import communication.modbus;
 import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
+import models.base.SFEI;
 import monitor.transport.SFEM_transport_monitor;
 import org.apache.commons.math3.util.Pair;
 
 import javax.xml.bind.annotation.*;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -62,13 +59,13 @@ public class cSFEM_transport implements Runnable {
         sfemTransportMonitor = new SFEM_transport_monitor(sfem);
     }
 
-    public void initSFEETransportController(modbus inMB, modbus outMB, SFEE inSFEE, SFEE outSFEE) {
+    public void initSFEETransportController(modbus inMB, modbus outMB, SFEE inSFEE, SFEE outSFEE, SFEI inSFEI, SFEI outSFEI) {
         try {
             // Create new SFEE_tranport controller instance
             sfeeTransportController = new cSFEE_transport(sfem.getSfeeTransport());
 
             // init that instance
-            sfeeTransportController.cSFEE_transport_init(inSFEE, outSFEE, inMB, outMB);
+            sfeeTransportController.cSFEE_transport_init(inSFEE, outSFEE, inMB, outMB, inSFEI, outSFEI);
 
             sfeeTransportController.initOperationMode();
         } catch (Exception e) {
@@ -76,12 +73,12 @@ public class cSFEM_transport implements Runnable {
         }
     }
 
-    public Pair<String, String> getPrevNextSFEE_names() {
+    public Pair<Pair<String, String>,Pair<String, String>> getPrevNext_SFEE_SFEI_names() {
         return sfeeTransportController.prevNextSFEE();
     }
 
-    public void setupSFEETransportController(modbus inMB, modbus outMB, SFEE inSFEE, SFEE outSFEE) {
-        sfeeTransportController.cSFEE_transport_setup(inSFEE, outSFEE, inMB, outMB);
+    public void setupSFEETransportController(modbus inMB, modbus outMB, SFEI inSFEI, SFEI outSFEI) {
+        sfeeTransportController.cSFEE_transport_setup(inSFEI, outSFEI, inMB, outMB);
 
 
     }

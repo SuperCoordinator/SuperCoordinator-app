@@ -3,15 +3,15 @@ import controllers.transport.cSFEM_transport;
 import models.SFEx_particular.SFEM_production;
 import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
+import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
 import utils.serialize.serializer;
 
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static java.lang.System.exit;
 
 
 public class App {
@@ -49,7 +49,8 @@ public class App {
                     SFEM_production sfemProduction = new SFEM_production("SFEM_Prod#" + i);
 
                     cSFEM_production sfemController = new cSFEM_production(sfemProduction);
-                    sfemController.init_SFEEs(nSFEE);
+                    System.out.println("How many SFEE for this Module " + i + "?");
+                    sfemController.init_SFEEs(Integer.parseInt(in.nextLine()));
                     sfemController.init_SFEE_controllers(app.scene.ordinal(), i);
 
                     app.getProduction().getC_Production().add(i, sfemController);
@@ -63,16 +64,22 @@ public class App {
 
                 }
 
+/*                app.loadXML_prod();
+                // Open communications
+                for (cSFEM_production production : app.getProduction().getC_Production()) {
+                    production.init_after_XML_loading();
+                }*/
+
+
                 /* TRANSPORT MODULES*/
 /*            System.out.println("How many Transport SFEModules ?");
             String str = in.nextLine();
             int nModules = Integer.parseInt(str);*/
                 if (app.scene.equals(serializer.scenes.sorting_station))
                     nModules = 0;
-                else if(app.scene.equals(serializer.scenes.SS_3CMC)){
+                else if (app.scene.equals(serializer.scenes.SS_3CMC)) {
                     nModules = 3;
-                }
-                else
+                } else
                     nModules = 1;
 
                 for (int i = 0; i < nModules; i++) {
@@ -83,14 +90,32 @@ public class App {
 
                     System.out.println(sfemTransport.getName() + " input SFEE? ");
                     Pair<SFEE, cSFEM_production> inSFEE = app.searchSFEEbyName(in.nextLine());
+                    System.out.println("Connection Input SFEI?");
+                    int index = 0;
+                    for (Map.Entry<Integer, SFEI> entry : inSFEE.getFirst().getSFEIs().entrySet()) {
+                        System.out.println("  " + index + " -> " + entry.getValue().getName());
+                        index++;
+                    }
+                    SFEI inSFEI = inSFEE.getFirst().getSFEIbyIndex(Integer.parseInt(in.nextLine()));
+
+
                     System.out.println(sfemTransport.getName() + " output SFEE? ");
                     Pair<SFEE, cSFEM_production> outSFEE = app.searchSFEEbyName(in.nextLine());
+                    System.out.println("Connection Output SFEI?");
+                    index = 0;
+                    for (Map.Entry<Integer, SFEI> entry : outSFEE.getFirst().getSFEIs().entrySet()) {
+                        System.out.println("  " + index + " -> " + entry.getValue().getName());
+                        index++;
+                    }
+                    SFEI outSFEI = outSFEE.getFirst().getSFEIbyIndex(Integer.parseInt(in.nextLine()));
 
                     sfemController.initSFEETransportController(
                             inSFEE.getSecond().searchMBbySFEE(inSFEE.getFirst().getName()),
                             outSFEE.getSecond().searchMBbySFEE(outSFEE.getFirst().getName()),
                             inSFEE.getFirst(),
-                            outSFEE.getFirst());
+                            outSFEE.getFirst(),
+                            inSFEI,
+                            outSFEI);
 
                     app.getTransport().getC_Transport().add(i, sfemController);
                 }
@@ -123,16 +148,16 @@ public class App {
 
                 // Set up the connections between SFEEs
                 for (cSFEM_transport transport : app.getTransport().getC_Transport()) {
-                    Pair<String, String> names = transport.getPrevNextSFEE_names();
+                    Pair<Pair<String, String>, Pair<String, String>> names = transport.getPrevNext_SFEE_SFEI_names();
 
-                    Pair<SFEE, cSFEM_production> inSFEE = app.searchSFEEbyName(names.getFirst());
-                    Pair<SFEE, cSFEM_production> outSFEE = app.searchSFEEbyName(names.getSecond());
+                    Pair<SFEE, cSFEM_production> inSFEE = app.searchSFEEbyName(names.getFirst().getFirst());
+                    Pair<SFEE, cSFEM_production> outSFEE = app.searchSFEEbyName(names.getSecond().getFirst());
 
                     transport.setupSFEETransportController(
                             inSFEE.getSecond().searchMBbySFEE(inSFEE.getFirst().getName()),
                             outSFEE.getSecond().searchMBbySFEE(outSFEE.getFirst().getName()),
-                            inSFEE.getFirst(),
-                            outSFEE.getFirst());
+                            app.searchSFEIbySFEE(inSFEE.getFirst(), names.getFirst().getSecond()),
+                            app.searchSFEIbySFEE(outSFEE.getFirst(), names.getSecond().getSecond()));
 
                 }
 

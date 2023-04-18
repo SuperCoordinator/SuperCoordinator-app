@@ -96,11 +96,11 @@ public class cSFEE_production {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\simulation\\Tags_sorting_station_Modbus.csv";
                     importIO(csv_path, scene);
                 }
-                case 8, 9, 10 -> {
+                case 8 -> {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_sorting_station_Modbus.csv";
                     importIO(csv_path, scene);
                 }
-                case 11, 12, 13 -> {
+                case 9, 10, 11 -> {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_3CMC_Modbus.csv";
                     importIO(csv_path, scene);
                 }
@@ -184,9 +184,6 @@ public class cSFEE_production {
                         true);
             }
 
-            if (scene == 8 || scene == 9 || scene == 10) {
-                scene = scene - 3;
-            }
 
             if (scene == 4) {
                 addNewSFEI_conveyor(
@@ -248,7 +245,7 @@ public class cSFEE_production {
                         "",
                         "",
                         "metal_conveyor",
-                        true,
+                        false,
                         false);
             }
             if (scene == 6) {
@@ -259,13 +256,13 @@ public class cSFEE_production {
                         Instant.now(),
                         Instant.now(),
                         true,
-                        true,
+                        false,
                         "",
                         "",
                         "",
                         "",
                         "green_conveyor",
-                        true,
+                        false,
                         false);
             }
             if (scene == 7) {
@@ -276,24 +273,102 @@ public class cSFEE_production {
                         Instant.now(),
                         Instant.now(),
                         true,
-                        true,
+                        false,
                         "",
                         "",
                         "",
                         "",
                         "blue_conveyor",
+                        false,
+                        false);
+            }
+            if (scene == 8) {
+                addNewSFEI_conveyor(
+                        "parts_entry",
+                        "s_emitter",
+                        "s_faulty",
+                        Instant.now(),
+                        Instant.now(),
                         true,
+                        true,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "exit_conveyor",
+                        true,
+                        false);
+
+                addNewSFEI_conveyor(
+                        "metal_entry",
+                        "s_metal",
+                        "s_metal_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        true,
+                        false,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "metal_conveyor",
+                        false,
+                        false);
+                addNewSFEI_conveyor(
+                        "green_entry",
+                        "s_green",
+                        "s_green_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        true,
+                        false,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "green_conveyor",
+                        false,
+                        false);
+                addNewSFEI_conveyor(
+                        "blue_entry",
+                        "s_blue",
+                        "s_blue_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        true,
+                        false,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "blue_conveyor",
+                        false,
+                        false);
+                addNewSFEI_conveyor(
+                        "parts_exit",
+                        "s_faulty",
+                        "s_faulty_remover",
+                        Instant.now(),
+                        Instant.now(),
+                        true,
+                        false,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "faulty_conveyor",
+                        false,
                         false);
             }
 
             switch (scene) {
-                case 11, 12, 13 -> {
-                    int index = scene - 8 - 3;
+                case 9, 10, 11 -> {
+                    int index = scene - 9;
                     add_CMC_block(index);
                 }
             }
             autoSetSFEE_InOut();
-//            autoSetSFEE_function();
+            autoSetSFEE_function();
 
             // Initialize SFEE_production_monitor
 
@@ -329,6 +404,7 @@ public class cSFEE_production {
         }
 
     }
+
 
     private void add_CMC_block(int index) {
         addNewSFEI_conveyor(
@@ -505,8 +581,20 @@ public class cSFEE_production {
     }
 
     private void autoSetSFEE_InOut() {
+
         this.sfee.setInSensor(sfee.getSFEIs().get(0).getInSensor());
         this.sfee.setOutSensor(sfee.getSFEIs().get(sfee.getSFEIs().size() - 1).getOutSensor());
+    }
+
+    private void autoSetSFEE_function() {
+
+        // Detect if it is the starting of the line, so it is the Sorting Station case!
+        for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
+            if (entry.getValue().isLine_start()) {
+                sfee.setSFEE_function(SFEE.SFEE_function.SORTING_STATION);
+                break;
+            }
+        }
     }
 
 

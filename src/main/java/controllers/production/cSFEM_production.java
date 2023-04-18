@@ -104,13 +104,12 @@ public class cSFEM_production implements Runnable {
                     }
                 } else if (scene == 3) {
                     if (SFEM_idx == 0) {
-                        sfeeController.init(scene + 5 + i);
+                        sfeeController.init(scene + 5);
                     } else if (SFEM_idx == 1) {
-                        sfeeController.init(scene + 8 + i);
+                        sfeeController.init(scene + 6 + i);
+                        firstRun(false, i);
                     }
                 }
-
-                firstRun(false, i);
 
                 sfeeController.initFailures();
 

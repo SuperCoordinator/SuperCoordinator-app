@@ -19,9 +19,9 @@ public class part {
     public part() {
     }
 
-    public part(int id, partDescription expectedPart) {
+    public part(int id, partDescription partAppearance) {
         this.id = id;
-        this.expectation = expectedPart;
+        this.reality = partAppearance;
 
         this.itemTimestamps = new TreeMap<>();
         this.defect = false;

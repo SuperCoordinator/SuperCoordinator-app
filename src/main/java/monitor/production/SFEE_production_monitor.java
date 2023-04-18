@@ -116,6 +116,7 @@ public class SFEE_production_monitor implements Externalizable {
                     break;
                 }
         }
+
     }
 
     private boolean setup_run = true;
@@ -129,10 +130,22 @@ public class SFEE_production_monitor implements Externalizable {
                 updateSFEI_machinePartType(actuatorsState);
                 setup_run = false;
             }
-
-            monitorPartsMovements(sensorsState);
+            monitorProduction(sensorsState, inputRegsValue);
             if (visionSensorLocation != null)
                 validateProducedParts(sensorsState, inputRegsValue);
+/*
+            switch (sfee.getSFEE_function()) {
+                case PRODUCTION -> {
+                    monitorProduction(sensorsState, inputRegsValue);
+                    if (visionSensorLocation != null)
+                        validateProducedParts(sensorsState, inputRegsValue);
+                }
+                case SORTING_STATION -> {
+                    monitorSorting(sensorsState, inputRegsValue);
+                }
+            }
+*/
+
             printDBG();
 
         } catch (Exception e) {
@@ -140,7 +153,7 @@ public class SFEE_production_monitor implements Externalizable {
         }
     }
 
-    private void monitorPartsMovements(List<Object> sensorsState) {
+    private void monitorProduction(List<Object> sensorsState, List<Object> inputRegsValue) {
         try {
             for (int sfei_idx = 0; sfei_idx < sfee.getSFEIs().size(); sfei_idx++) {
 
@@ -151,6 +164,88 @@ public class SFEE_production_monitor implements Externalizable {
 
                 boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
                 boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
+
+                if (sfei.isLine_start()) {
+
+                    SFEI_conveyor commonConveyor = (SFEI_conveyor) sfee.getSFEIbyIndex(0);
+                    int visionSensor_number = (int) inputRegsValue.get(visionSensorLocation.get(0).getBit_offset());
+                    if (visionSensor_number > 0) {
+
+                        part p = new part(commonConveyor.getnPiecesMoved(), getPartsAspectByNumber(visionSensor_number));
+                        String itemName = commonConveyor.getName();
+                        itemName = itemName.concat("-");
+                        itemName = itemName.concat(commonConveyor.getInSensor().getName());
+
+                        p.addTimestamp(itemName);
+
+                        commonConveyor.addNewPartATM(p);
+                    }
+
+                }
+
+                if (sfee.getSFEE_function().equals(SFEE.SFEE_function.SORTING_STATION)) {
+                    if (utility.getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
+                        // New part arriving at specific conveyor -> result of separation
+
+                        // include timestamp of the end of SFEI at index 0
+                        // move part instance to current SFEI at index idx
+                        if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
+                            part p = sfee.getSFEIbyIndex(0).getPartsATM().pollFirst();
+
+                            String itemName = sfei.getName();
+                            itemName = itemName.concat("-");
+                            itemName = itemName.concat(sfei.getInSensor().getName());
+
+                            assert p != null;
+                            p.addTimestamp(itemName);
+
+                            sfei.addNewPartATM(p);
+                            sfee.getSFEIbyIndex(0).setnPiecesMoved(sfee.getSFEIbyIndex(0).getnPiecesMoved() + 1);
+
+
+                        } /*else
+                            throw new RuntimeException("(" + SFEE_production_monitor.class + ") Sorting SFEE has 0 parts");*/
+
+                    }
+
+                    if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+
+                        if (sfei.getPartsATM().size() > 0) {
+                            /* ATENÇAO -> antes tava last(), mas para o caso de a peça ser introduzida, pela P_MORE
+                             * iria dar o stamp na ultima e portanto o TRANSPORT nao iniciava*/
+                            sfei.getPartsATM().first().setWaitTransport(!sfei.isLine_end());
+                            // In both cases set produced TRUE
+                            // In that way the SFEM_monitor will put the part in their statistic
+                            // But as is not the end_line the transport will be done
+                            sfei.getPartsATM().first().setProduced(true);
+
+                        }
+                    }
+
+                    if (utility.getLogicalOperator().FE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                        sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
+                    }
+
+
+                } else {
+
+                    // Only register on the end (end of item[i-1] = start of item[i])
+                    // If SFEIs outSensor RE, then timestamp that event
+                    if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                        part oldest_part = selectedOldestPartInSFEI(sfei_idx);
+
+                        if (oldest_part != null) {
+                            String itemName = sfei.getName();
+                            itemName = itemName.concat("-");
+                            itemName = itemName.concat(sfei_outSensor.getName());
+
+                            oldest_part.addTimestamp(itemName);
+
+                            sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
+                        } else
+                            throw new RuntimeException("(" + SFEE_production_monitor.class + ") The part should not be NULL!");
+                    }
+
 
 /*                // SFEE entry, should create new part object
                 if (sfei_idx == 0) {
@@ -190,11 +285,10 @@ public class SFEE_production_monitor implements Externalizable {
                     }
                 }*/
 
-                // SFEE line start, so should create a new part
+/*                // SFEE line start, so should create a new part
                 if (sfei.isLine_start()) {
 
                     // Save partDescription along the time
-
                     boolean sfee_inSensor = (int) sensorsState.get(sfee.getInSensor().getBit_offset()) == 1;
                     if (utility.getLogicalOperator().RE_detector(sfee_inSensor, SFEIs_old_inSensors[sfei_idx])) {
 
@@ -211,7 +305,7 @@ public class SFEE_production_monitor implements Externalizable {
                         // This operation of concat is faster than + operation
                         String itemName = sfei.getName();
                         itemName = itemName.concat("-");
-                        itemName = itemName.concat(sfei.getName());
+                        itemName = itemName.concat(sfei.getInSensor().getName());
 
                         p.addTimestamp(itemName);
                         sfei.addNewPartATM(p);
@@ -226,26 +320,7 @@ public class SFEE_production_monitor implements Externalizable {
 
                         p.addTimestamp(itemName);
                     }
-                }
-
-                // Only register on the end (end of item[i-1] = start of item[i])
-                // If SFEIs outSensor RE, then timestamp that event
-                if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
-                    part oldest_part = selectedOldestPartinSFEI(sfei_idx);
-
-                    if (oldest_part != null) {
-
-                        String itemName = sfei.getName();
-                        itemName = itemName.concat("-");
-                        itemName = itemName.concat(sfei_outSensor.getName());
-
-                        oldest_part.addTimestamp(itemName);
-
-                        sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
-                    } else
-                        throw new RuntimeException("(" + SFEE_production_monitor.class + ") The part should not be NULL!");
-                }
-
+                }*/
 
 
 /*
@@ -274,41 +349,34 @@ public class SFEE_production_monitor implements Externalizable {
             }
         }*/
 
-                // Shift the part among SFEIs
-                if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
-                    if (sfei_idx + 1 < sfee.getSFEIs().size()) {
-                        // Then it is not in the last SFEI, so move the piece!
-                        // remove from the previous
-                        if (sfei.getPartsATM().size() > 0) {
-                            part p = sfei.getPartsATM().pollFirst();
-                            sfee.getSFEIbyIndex(sfei_idx + 1).addNewPartATM(p);
+                    // Shift the part among SFEIs
+                    if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                        if (sfei_idx + 1 < sfee.getSFEIs().size()) {
+                            // Then it is not in the last SFEI, so move the piece!
+                            // remove from the previous
+                            if (sfei.getPartsATM().size() > 0) {
+                                part p = sfei.getPartsATM().pollFirst();
+                                sfee.getSFEIbyIndex(sfei_idx + 1).addNewPartATM(p);
+                            }
                         }
                     }
-                }
 
-                // End of the SFEE, set part produced flag to TRUE
-                if (sfei_idx == sfee.getSFEIs().size() - 1) {
-                    boolean sfee_outSensor = (int) sensorsState.get(sfee.getOutSensor().getBit_offset()) == 1;
-                    if (utility.getLogicalOperator().RE_detector(sfee_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                    // End of the SFEE, set part produced flag to TRUE
+                    if (sfei_idx == sfee.getSFEIs().size() - 1) {
+                        boolean sfee_outSensor = (int) sensorsState.get(sfee.getOutSensor().getBit_offset()) == 1;
+                        if (utility.getLogicalOperator().RE_detector(sfee_outSensor, SFEIs_old_outSensors[sfei_idx])) {
 
-                        if (sfei.getPartsATM().size() > 0) {
-                            /* ATENÇAO -> antes tava last(), mas para o caso de a peça ser introduzida, pela P_MORE
-                             * iria dar o stamp na ultima e portanto o TRANSPORT nao iniciava*/
-                            if (sfei.isLine_end()) {
-                                sfei.getPartsATM().first().setWaitTransport(false);
-                            } else {
-                                sfei.getPartsATM().first().setWaitTransport(true);
+                            if (sfei.getPartsATM().size() > 0) {
+                                /* ATENÇAO -> antes tava last(), mas para o caso de a peça ser introduzida, pela P_MORE
+                                 * iria dar o stamp na ultima e portanto o TRANSPORT nao iniciava*/
+                                sfei.getPartsATM().first().setWaitTransport(!sfei.isLine_end());
+                                // In both cases set produced TRUE
+                                // In that way the SFEM_monitor will put the part in their statistic
+                                // But as is not the end_line the transport will be done
+                                sfei.getPartsATM().first().setProduced(true);
+
                             }
-                            // In both cases set produced TRUE
-                            // In that way the SFEM_monitor will put the part in their statistic
-                            // But as is not the end_line the transport will be done
-                            sfei.getPartsATM().first().setProduced(true);
-
                         }
-/*                    if (sfei.getValue().getName().equals("entry_conveyor2")) {
-                        part p = sfei.getValue().getPartsATM().last();
-                        System.out.println("part ID: " + p.getId() + " exp: " + p.getExpectation() + " real: " + p.getReality());
-                    }*/
                     }
                 }
 
@@ -317,15 +385,74 @@ public class SFEE_production_monitor implements Externalizable {
                 SFEIs_old_outSensors[sfei_idx] = b_outSensor;
 
             }
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void monitorSorting(List<Object> sensorsState, List<Object> inputRegsValue) {
+/*
+
+        // SFEI at index 0 -> create new part instance based on vision sensor value
+
+        if (sfee.getSFEIs().size() > 1) {
+            for (int idx = 1; idx < sfee.getSFEIs().size(); idx++) {
+
+                SFEI sfei = sfee.getSFEIbyIndex(idx);
+
+                sensor_actuator sfei_inSensor = sfei.getInSensor();
+                sensor_actuator sfei_outSensor = sfei.getOutSensor();
+
+                boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
+                boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
+
+                if (utility.getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[idx])) {
+                    // New part arriving at specific conveyor -> result of separation
+
+                    // include timestamp of the end of SFEI at index 0
+                    // move part instance to current SFEI at index idx
+                    if (commonConveyor.getPartsATM().size() > 0) {
+                        part p = commonConveyor.getPartsATM().pollFirst();
+
+                        String itemName = sfei.getName();
+                        itemName = itemName.concat("-");
+                        itemName = itemName.concat(sfei.getInSensor().getName());
+
+                        assert p != null;
+                        p.addTimestamp(itemName);
+
+                        sfei.addNewPartATM(p);
+
+                    } else
+                        throw new RuntimeException("(" + SFEE_production_monitor.class + ") Sorting SFEE has 0 parts");
+
+                }
+                // when it arrives the outSensor, apply the common procedure
+                if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[idx])) {
+
+                    if (sfei.getPartsATM().size() > 0) {
+
+                        sfei.getPartsATM().first().setWaitTransport(!sfei.isLine_end());
+
+                        // In both cases set produced TRUE
+                        // In that way the SFEM_monitor will put the part in their statistic
+                        // But as is not the end_line the transport will be done
+                        sfei.getPartsATM().first().setProduced(true);
+                    }
+                }
+
+                // Only update in the end in order to all functions see the values at the read moment
+                SFEIs_old_inSensors[idx] = b_inSensor;
+                SFEIs_old_outSensors[idx] = b_outSensor;
+            }
+        } else
+            throw new RuntimeException("(" + SFEE_production_monitor.class + ") Sorting SFEE only has 1 SFEI");
+*/
 
     }
 
-    private part selectedOldestPartinSFEI(int sfei_idx) {
+    private part selectedOldestPartInSFEI(int sfei_idx) {
         SFEI sfei = sfee.getSFEIbyIndex(sfei_idx);
         part oldest_part = null;
         if (sfei.getPartsATM().size() > 0) {
@@ -383,12 +510,12 @@ public class SFEE_production_monitor implements Externalizable {
                 if (visionSensor_number > 0) {
                     if (sfeiConveyor.getPartsATM().size() > 0) {
                         partDescription reality = getPartsAspectByNumber(visionSensor_number);
-//                        part lastPart = selectedOldestPartinSFEI(entry.getKey());
+//                        part lastPart = selectedOldestPartInSFEI(entry.getKey());
 //                        part lastPart = sfeiConveyor.getPartsATM().last();
                         part lastPart = sfeiConveyor.getPartsATM().first();
-                        if (!lastPart.getExpectation().equals(reality)) {
+/*                        if (!lastPart.getExpectation().equals(reality)) {
                             lastPart.setDefect();
-                        }
+                        }*/
                         lastPart.setReality(reality);
                     }
                 }

@@ -1,8 +1,5 @@
 package models.base;
 
-import models.SFEx_particular.SFEI_conveyor;
-import models.SFEx_particular.SFEI_machine;
-import models.SFEx_particular.SFEI_transport;
 import models.sensor_actuator;
 
 import javax.xml.bind.annotation.*;
@@ -21,7 +18,7 @@ public class SFEE  {
 
     public enum SFEE_function {
         PRODUCTION,
-        MOVEMENT,
+        SORTING_STATION,
         TRANSPORT
     }
 
@@ -67,6 +64,10 @@ public class SFEE  {
 
     public SFEE_function getSFEE_function() {
         return SFEE_function;
+    }
+
+    public void setSFEE_function(SFEE.SFEE_function SFEE_function) {
+        this.SFEE_function = SFEE_function;
     }
 
     public communicationOption getCom() {

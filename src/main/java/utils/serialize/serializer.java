@@ -2,6 +2,7 @@ package utils.serialize;
 
 import controllers.production.cSFEM_production;
 import models.base.SFEE;
+import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
 
 import javax.xml.bind.JAXBContext;
@@ -11,6 +12,7 @@ import java.io.*;
 import java.util.Map;
 
 public class serializer {
+
 
     public enum scenes {
         CMC_connection,
@@ -94,8 +96,21 @@ public class serializer {
             }
         }
         if (sfee == null)
-            throw new RuntimeException("SFEE not found");
+            throw new RuntimeException("(" + serializer.class + ") SFEE not found");
 
         return sfee;
+    }
+
+    public SFEI searchSFEIbySFEE(SFEE sfee, String SFEI_name) {
+        SFEI sfei = null;
+        for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
+            if (entry.getValue().getName().equals(SFEI_name))
+                sfei = entry.getValue();
+        }
+        if (sfei == null)
+            throw new RuntimeException("(" + serializer.class + ") SFEI not found");
+
+        return sfei;
+
     }
 }
