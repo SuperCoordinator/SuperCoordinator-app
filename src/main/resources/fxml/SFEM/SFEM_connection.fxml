@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane focusTraversable="true" prefHeight="800.0" prefWidth="1150.0" styleClass="bkg" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="CENTER" layoutX="26.0" layoutY="118.0" prefHeight="500.0" prefWidth="200.0">
+      <VBox alignment="CENTER" layoutX="30.0" layoutY="-16.0" prefHeight="500.0" prefWidth="200.0">
          <children>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="titles" text="Modules" textAlignment="CENTER" wrappingWidth="120.138671875">
                <VBox.margin>
@@ -22,6 +25,12 @@
             </ListView>
          </children>
       </VBox>
-      <ScrollPane fx:id="build_pane" layoutX="251.0" layoutY="18.0" prefHeight="770.0" prefWidth="890.0" />
+      <ScrollPane fx:id="build_pane" layoutX="236.0" layoutY="50.0" prefHeight="405.0" prefWidth="890.0" />
+      <Pane fx:id="sfemTransport_pane" layoutX="30.0" layoutY="465.0" prefHeight="270.0" prefWidth="1100.0" />
+      <Button fx:id="drawConnection" layoutX="1062.0" layoutY="735.0" mnemonicParsing="false" text="Connect">
+         <tooltip>
+            <Tooltip fx:id="connectBtn" />
+         </tooltip>
+      </Button>
    </children>
 </AnchorPane>

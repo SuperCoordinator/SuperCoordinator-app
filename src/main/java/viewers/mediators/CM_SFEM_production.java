@@ -1,11 +1,10 @@
 package viewers.mediators;
 
 import viewers.controllers.SFEE.C_SFEEs;
-import viewers.controllers.SFEM.C_SFEM;
 
 import java.util.ArrayList;
 
-public class CM_SFEM implements IMC_SFEM {
+public class CM_SFEM_production implements IMC_SFEM_production {
 
     private final ArrayList<C_SFEEs> sfeesControllers = new ArrayList<>();
 
@@ -21,14 +20,14 @@ public class CM_SFEM implements IMC_SFEM {
     /**
      * Everything below here is in support of Singleton pattern
      */
-    public CM_SFEM() {
+    public CM_SFEM_production() {
     }
 
-    public static CM_SFEM getInstance() {
-        return CM_SFEM.CM_SFEMHolder.INSTANCE;
+    public static CM_SFEM_production getInstance() {
+        return CM_SFEM_production.CM_SFEMHolder.INSTANCE;
     }
 
     private static class CM_SFEMHolder {
-        private static final CM_SFEM INSTANCE = new CM_SFEM();
+        private static final CM_SFEM_production INSTANCE = new CM_SFEM_production();
     }
 }

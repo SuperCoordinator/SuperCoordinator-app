@@ -16,25 +16,25 @@ import viewers.controllers.C_ShopFloor;
 import viewers.controllers.SFEE.C_SFEEs;
 import viewers.controllers.SFEI.C_SFEI_conveyor;
 import viewers.controllers.SFEI.C_SFEI_machine;
-import viewers.mediators.CM_SFEM;
+import viewers.mediators.CM_SFEM_production;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class C_SFEM extends CM_SFEM implements Initializable {
+public class C_SFEM_production extends CM_SFEM_production implements Initializable {
 
     private String sfemName;
     private cSFEM_production cSFEMProduction;
 
-    public C_SFEM() {
+    public C_SFEM_production() {
     }
 
-    public C_SFEM(String sfemName) {
+    public C_SFEM_production(String sfemName) {
         this.sfemName = sfemName;
     }
 
-    public C_SFEM(cSFEM_production cSFEMProduction) {
+    public C_SFEM_production(cSFEM_production cSFEMProduction) {
         this.cSFEMProduction = cSFEMProduction;
         this.sfemName = cSFEMProduction.getSfem().getName();
     }
@@ -128,7 +128,7 @@ public class C_SFEM extends CM_SFEM implements Initializable {
 
                     sfem_name.setOnKeyPressed(keyEvent -> {
                         if (keyEvent.getCode().equals(KeyCode.ENTER))
-                            C_ShopFloor.getInstance().getCmSfems().forEach(cSfem -> {
+                            C_ShopFloor.getInstance().getcSfemProductions().forEach(cSfem -> {
                                 if (cSfem.getSfemName().equals(oldSFEM_name)) {
                                     cSfem.setSfemName(sfem_name.getText());
                                     updateSFEMlist();
@@ -140,7 +140,7 @@ public class C_SFEM extends CM_SFEM implements Initializable {
                     });
                 }
                 case "delete_sfem" -> {
-                    if (C_ShopFloor.getInstance().getCmSfems().removeIf(cSfem -> cSfem.getSfemName().equals(SFEMs_list.getSelectionModel().getSelectedItem())))
+                    if (C_ShopFloor.getInstance().getcSfemProductions().removeIf(cSfem -> cSfem.getSfemName().equals(SFEMs_list.getSelectionModel().getSelectedItem())))
                         updateSFEMlist();
                 }
                 case "refresh_sfem" -> {
@@ -148,9 +148,9 @@ public class C_SFEM extends CM_SFEM implements Initializable {
 
                 }
                 case "new_sfee" -> {
-                    // Get selected row -> C_SFEM instance
+                    // Get selected row -> C_SFEM_production instance
                     if (SFEMs_list.getSelectionModel().getSelectedIndices().size() == 1) {
-                        C_SFEM cSfem = C_ShopFloor.getInstance().getCmSfems().get(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
+                        C_SFEM_production cSfem = C_ShopFloor.getInstance().getcSfemProductions().get(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEE/SFEE.fxml"));
                         // create new C_SFEEs instance
                         C_SFEEs cSfees = new C_SFEEs();
@@ -168,7 +168,7 @@ public class C_SFEM extends CM_SFEM implements Initializable {
                 }
                 case "edit_sfee" -> {
                     if (SFEMs_list.getSelectionModel().getSelectedIndices().size() == 1) {
-                        C_SFEM cSfem = C_ShopFloor.getInstance().getCmSfems().get(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
+                        C_SFEM_production cSfem = C_ShopFloor.getInstance().getcSfemProductions().get(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
                         String sfeeName = sfem_elements_tree.getSelectionModel().getSelectedItem().getValue();
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEE/SFEE.fxml"));
                         // load C_SFEE instance
@@ -194,7 +194,7 @@ public class C_SFEM extends CM_SFEM implements Initializable {
                 }
                 case "delete_sfee" -> {
                     if (SFEMs_list.getSelectionModel().getSelectedIndices().size() == 1) {
-                        C_SFEM cSfem = C_ShopFloor.getInstance().getCmSfems().get(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
+                        C_SFEM_production cSfem = C_ShopFloor.getInstance().getcSfemProductions().get(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
                         String sfeeName = sfem_elements_tree.getSelectionModel().getSelectedItem().getValue();
 
                         // load C_SFEE instance
@@ -233,7 +233,7 @@ public class C_SFEM extends CM_SFEM implements Initializable {
                 .immediate();
 
         if (validator.validate()) {
-            C_ShopFloor.getInstance().getCmSfems().add(C_ShopFloor.getInstance().getCmSfems().size(), new C_SFEM(sfem_name.getText()));
+            C_ShopFloor.getInstance().getcSfemProductions().add(C_ShopFloor.getInstance().getcSfemProductions().size(), new C_SFEM_production(sfem_name.getText()));
             updateSFEMlist();
             sfem_name.clear();
             sfem_name.setVisible(false);
@@ -243,8 +243,8 @@ public class C_SFEM extends CM_SFEM implements Initializable {
 
     private void updateSFEMlist() {
         ArrayList<String> list = new ArrayList<>();
-        for (C_SFEM cSfem : C_ShopFloor.getInstance().getCmSfems()) {
-//            System.out.println(C_SFEM.class + " " + cSfem.getSfemName());
+        for (C_SFEM_production cSfem : C_ShopFloor.getInstance().getcSfemProductions()) {
+//            System.out.println(C_SFEM_production.class + " " + cSfem.getSfemName());
             list.add(cSfem.getSfemName());
         }
         SFEMs_list.getItems().clear();
@@ -255,23 +255,23 @@ public class C_SFEM extends CM_SFEM implements Initializable {
     void updateElementsTreeView() {
         sfem_elements_tree.setRoot(null);
         try {
-            // Swap between C_SFEM when select one of them in the List
+            // Swap between C_SFEM_production when select one of them in the List
             if (SFEMs_list.getSelectionModel().getSelectedIndices().size() > 0) {
-                C_SFEM active_C_SFEM = null;
-                for (C_SFEM cSfem : C_ShopFloor.getInstance().getCmSfems()) {
+                C_SFEM_production active_C_SFEM = null;
+                for (C_SFEM_production cSfem : C_ShopFloor.getInstance().getcSfemProductions()) {
                     if (cSfem.getSfemName().equalsIgnoreCase(SFEMs_list.getSelectionModel().getSelectedItem()))
                         active_C_SFEM = cSfem;
                 }
 
                 if (active_C_SFEM == null)
-                    throw new RuntimeException(C_SFEM.class + " active_C_SFEM is NULL");
+                    throw new RuntimeException(C_SFEM_production.class + " active_C_SFEM is NULL");
 
                 C_ShopFloor.getInstance().setCurrent_C_SFEM(active_C_SFEM);
             }
 
             TreeItem<String> root = new TreeItem<>(SFEMs_list.getSelectionModel().getSelectedItem());
             if (SFEMs_list.getSelectionModel().getSelectedIndices().size() == 1) {
-                C_SFEM cSfem = C_ShopFloor.getInstance().getCmSfems().get(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
+                C_SFEM_production cSfem = C_ShopFloor.getInstance().getcSfemProductions().get(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
 
                 if (C_ShopFloor.getInstance().isLoadedConfig()) {
                     loadData(cSfem);
@@ -307,7 +307,7 @@ public class C_SFEM extends CM_SFEM implements Initializable {
 
     private final ArrayList<String> alreadyLoadedC_SFEM = new ArrayList<>();
 
-    private void loadData(C_SFEM cSfem) {
+    private void loadData(C_SFEM_production cSfem) {
         try {
             if (!alreadyLoadedC_SFEM.contains(cSfem.getSfemName())) {
                 System.out.println("Size: " + cSfem.getcSFEMProduction().getSfeeControllers().size());

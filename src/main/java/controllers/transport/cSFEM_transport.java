@@ -28,6 +28,10 @@ public class cSFEM_transport implements Runnable {
         this.sfem = sfemTransport;
     }
 
+    public SFEM_transport getSfem() {
+        return sfem;
+    }
+
     public void init_SFEE_transport() {
 
         try {

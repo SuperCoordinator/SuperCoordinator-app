@@ -6,14 +6,10 @@ import models.SFEx_particular.SFEI_machine;
 import models.SFEx_particular.SFEI_transport;
 import models.sensor_actuator;
 import org.apache.commons.math3.util.Pair;
-import utils.InstantAdapter;
+import utility.InstantAdapter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;

@@ -6,7 +6,7 @@ import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
 import models.base.part;
 import models.partDescription;
-import utils.utils;
+import utility.utils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -265,7 +265,7 @@ public class stochasticTime {
             sfei = sfeiTransport;
         }
 
-        double m = utility.getCustomCalc().calcExpression(mean,
+        double m = utility.getCustomCalculator().calcExpression(mean,
                 sfei.getnPiecesMoved(),
                 (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
                 (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
@@ -273,7 +273,7 @@ public class stochasticTime {
         double total_Time;
         if (timeType.equals(timeOptions.GAUSSIAN)) {
 
-            double dev = utility.getCustomCalc().calcExpression(std_dev,
+            double dev = utility.getCustomCalculator().calcExpression(std_dev,
                     sfei.getnPiecesMoved(),
                     (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
                     (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());

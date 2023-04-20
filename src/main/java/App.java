@@ -5,7 +5,7 @@ import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
-import utils.serialize.serializer;
+import utility.serialize.serializer;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -53,13 +53,11 @@ public class App {
                     sfemController.init_SFEEs(Integer.parseInt(in.nextLine()));
                     sfemController.init_SFEE_controllers(app.scene.ordinal(), i);
 
-                    app.getProduction().getC_Production().add(i, sfemController);
+                    app.getC_Production().add(i, sfemController);
                 }
-                // Serialize Production_Controllers
-                app.saveXML_prod();
 
                 // Open communications
-                for (cSFEM_production production : app.getProduction().getC_Production()) {
+                for (cSFEM_production production : app.getC_Production()) {
                     production.openConnections();
 
                 }
@@ -117,37 +115,37 @@ public class App {
                             inSFEI,
                             outSFEI);
 
-                    app.getTransport().getC_Transport().add(i, sfemController);
+                    app.getC_Transport().add(i, sfemController);
                 }
 
-                app.saveXML_trans();
+                app.saveXML();
 
 //                exit(0);
 
             } else {
                 // Load existing configuration files
                 // Deserialize Production Controllers
-
-                app.loadXML_prod();
+                app.loadXML();
+//                app.loadXML_prod();
                 // Open communications
-                for (cSFEM_production production : app.getProduction().getC_Production()) {
+                for (cSFEM_production production : app.getC_Production()) {
                     production.init_after_XML_loading();
                 }
 
-                for (cSFEM_production production : app.getProduction().getC_Production()) {
+                for (cSFEM_production production : app.getC_Production()) {
                     production.openConnections();
 
                 }
 
                 // Deserialize Transport Controllers
-                app.loadXML_trans();
+//                app.loadXML_trans();
                 // Initialize the monitors and controllers with the SFEE objects
-                for (cSFEM_transport transport : app.getTransport().getC_Transport()) {
+                for (cSFEM_transport transport : app.getC_Transport()) {
                     transport.init_after_XML_load();
                 }
 
                 // Set up the connections between SFEEs
-                for (cSFEM_transport transport : app.getTransport().getC_Transport()) {
+                for (cSFEM_transport transport : app.getC_Transport()) {
                     Pair<Pair<String, String>, Pair<String, String>> names = transport.getPrevNext_SFEE_SFEI_names();
 
                     Pair<SFEE, cSFEM_production> inSFEE = app.searchSFEEbyName(names.getFirst().getFirst());
@@ -160,6 +158,7 @@ public class App {
                             app.searchSFEIbySFEE(outSFEE.getFirst(), names.getSecond().getSecond()));
 
                 }
+//                app.saveXML();
 
             }
 
@@ -167,21 +166,21 @@ public class App {
             in.nextLine();
             // Function for start all simulations
             // 1 SFEM -> having 1SFEE or nSFEEs, is the same because the modbus connection is only 1 per simulation
-            for (cSFEM_production production : app.getProduction().getC_Production()) {
+            for (cSFEM_production production : app.getC_Production()) {
                 production.startSimulation();
             }
 
 //        exit(0);
 
 
-            int poolsize = app.getProduction().getC_Production().size() + app.getTransport().getC_Transport().size();
+            int poolsize = app.getC_Production().size() + app.getC_Transport().size();
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(poolsize);
 
-            for (cSFEM_production production : app.getProduction().getC_Production()) {
+            for (cSFEM_production production : app.getC_Production()) {
                 scheduler.scheduleAtFixedRate(production, 0, 100, TimeUnit.MILLISECONDS);
             }
 
-            for (cSFEM_transport transport : app.getTransport().getC_Transport()) {
+            for (cSFEM_transport transport : app.getC_Transport()) {
                 scheduler.scheduleAtFixedRate(transport, 0, 100, TimeUnit.MILLISECONDS);
             }
 

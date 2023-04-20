@@ -1,7 +1,7 @@
 package viewers;
 
 import models.sensor_actuator;
-import utils.customCalculator;
+import utility.customCalculator;
 
 import java.time.Instant;
 import java.util.ArrayList;

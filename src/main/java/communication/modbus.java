@@ -2,7 +2,7 @@ package communication;
 
 import models.sensor_actuator;
 import net.wimpi.modbus.procimg.SimpleRegister;
-import utils.utils;
+import utility.utils;
 import net.wimpi.modbus.facade.ModbusTCPMaster;
 import net.wimpi.modbus.procimg.InputRegister;
 import net.wimpi.modbus.procimg.Register;
@@ -10,10 +10,6 @@ import net.wimpi.modbus.util.BitVector;
 
 
 import javax.xml.bind.annotation.*;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;

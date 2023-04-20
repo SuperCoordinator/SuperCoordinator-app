@@ -1,6 +1,5 @@
 package viewers.controllers;
 
-import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,22 +14,22 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-import utils.serialize.production;
-import viewers.controllers.SFEE.C_SFEE_communication;
-import viewers.controllers.SFEE.C_SFEE_properties;
-import viewers.controllers.SFEE.C_SFEEs;
-import viewers.controllers.SFEM.C_SFEM;
+import viewers.controllers.SFEM.C_SFEM_transport;
+import viewers.controllers.SFEM.C_SFEM_production;
 import viewers.controllers.SFEM.C_SFEM_connection;
 
 public class C_ShopFloor {
 
-    private final ArrayList<C_SFEM> cmSfems = new ArrayList<>();
+    private final ArrayList<C_SFEM_production> cSfemProductions = new ArrayList<>();
+    private final ArrayList<C_SFEM_transport> cSfemTransports = new ArrayList<>();
 
     private String layout_name;
 
     private boolean loadedConfig = false;
 
-    private C_SFEM current_C_SFEM;
+    private C_SFEM_production current_C_SFEMProduction;
+
+    private C_SFEM_transport current_C_SFEMTransport;
 
     public C_ShopFloor() {
     }
@@ -39,8 +38,12 @@ public class C_ShopFloor {
         this.layout_name = layout_name;
     }
 
-    public ArrayList<C_SFEM> getCmSfems() {
-        return cmSfems;
+    public ArrayList<C_SFEM_production> getcSfemProductions() {
+        return cSfemProductions;
+    }
+
+    public ArrayList<C_SFEM_transport> getcSfemTransports() {
+        return cSfemTransports;
     }
 
     public void setLoadedConfig(boolean loadedConfig) {
@@ -51,12 +54,20 @@ public class C_ShopFloor {
         return loadedConfig;
     }
 
-    public void setCurrent_C_SFEM(C_SFEM current_C_SFEM) {
-        this.current_C_SFEM = current_C_SFEM;
+    public void setCurrent_C_SFEM(C_SFEM_production current_C_SFEMProduction) {
+        this.current_C_SFEMProduction = current_C_SFEMProduction;
     }
 
-    public C_SFEM getCurrent_C_SFEM() {
-        return current_C_SFEM;
+    public C_SFEM_production getCurrent_C_SFEM() {
+        return current_C_SFEMProduction;
+    }
+
+    public C_SFEM_transport getCurrent_C_SFEMTransport() {
+        return current_C_SFEMTransport;
+    }
+
+    public void setCurrent_C_SFEMTransport(C_SFEM_transport current_C_SFEMTransport) {
+        this.current_C_SFEMTransport = current_C_SFEMTransport;
     }
 
     /**
@@ -80,7 +91,7 @@ public class C_ShopFloor {
     public void initialize() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEM/SFEM_elements.fxml"));
-            loader.setController(C_ShopFloor.getInstance().isLoadedConfig() ? C_ShopFloor.getInstance().getCurrent_C_SFEM() : new C_SFEM());
+            loader.setController(C_ShopFloor.getInstance().isLoadedConfig() ? C_ShopFloor.getInstance().getCurrent_C_SFEM() : new C_SFEM_production());
             AnchorPane anchorPane = loader.load();
             pane.getChildren().setAll(anchorPane);
 
@@ -89,10 +100,10 @@ public class C_ShopFloor {
         }
     }
 
-    public void loadData(production production) {
-        for (cSFEM_production cSFEMProduction : production.getC_Production()) {
-            C_SFEM cSfem = new C_SFEM(cSFEMProduction);
-            C_ShopFloor.getInstance().getCmSfems().add(cSfem);
+    public void loadData(ArrayList<cSFEM_production> cSFEM_Productions) {
+        for (cSFEM_production cSFEMProduction : cSFEM_Productions) {
+            C_SFEM_production cSfem = new C_SFEM_production(cSFEMProduction);
+            C_ShopFloor.getInstance().getcSfemProductions().add(cSfem);
 //            System.out.println(C_ShopFloor.class + " " + cSFEMProduction.getSfem().getName());
         }
     }

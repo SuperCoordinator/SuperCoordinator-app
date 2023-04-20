@@ -1,4 +1,4 @@
-package utils;
+package utility;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.Instant;

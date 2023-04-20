@@ -92,7 +92,7 @@
             <version>3.8.3</version>
         </dependency>
 
-        <!-- Maths utils (Precision.round(), p.e)-->
+        <!-- Maths utility (Precision.round(), p.e)-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>

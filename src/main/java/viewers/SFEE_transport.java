@@ -1,6 +1,6 @@
 package viewers;
 
-import utils.customCalculator;
+import utility.customCalculator;
 
 import java.util.Scanner;
 

@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import utility.customCalculator;
 import viewers.controllers.C_ShopFloor;
 
 import java.util.ArrayList;
@@ -133,6 +134,7 @@ public class C_SFEE_failure {
 
     public boolean validateMoveOn() {
         boolean error = false;
+        customCalculator customCalculator = new customCalculator();
         if (opMode.getSelectedToggle() == null) {
             errorMsg = "Select all fields !";
             error = true;
@@ -140,6 +142,8 @@ public class C_SFEE_failure {
             if (formula.getText().isBlank()) {
                 errorMsg = "For the failures mode, formulas is mandatory! \n";
                 error = true;
+            } else if (customCalculator.evalStochasticTimeExpression(formula.getText())) {
+                errorMsg = customCalculator.errorMsg(formula.getText());
             }
             if (!BDwR_n.getText().isBlank() || !BDwR_a.getText().isBlank() || !BDwR_m.getText().isBlank()) {
                 if (BDwR_repair.getText().isBlank()) {

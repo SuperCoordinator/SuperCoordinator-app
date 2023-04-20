@@ -1,4 +1,4 @@
-package utils;
+package utility;
 
 public class utils {
 
@@ -20,7 +20,19 @@ public class utils {
         return logicalOp;
     }
 
-    public  customCalculator getCustomCalc() {
+    public customCalculator getCustomCalculator() {
         return customCalc;
+    }
+
+    public utils() {
+    }
+
+    public static utils getInstance() {
+        return utils.utilsHolder.INSTANCE;
+    }
+
+
+    private static class utilsHolder {
+        private static final utils INSTANCE = new utils();
     }
 }

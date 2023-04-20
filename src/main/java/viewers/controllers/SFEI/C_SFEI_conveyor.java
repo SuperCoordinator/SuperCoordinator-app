@@ -13,7 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import models.SFEx_particular.SFEI_conveyor;
 import models.sensor_actuator;
-import utils.utils;
+import utility.utils;
 
 import java.net.URL;
 import java.util.ArrayList;

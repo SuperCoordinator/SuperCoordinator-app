@@ -7,7 +7,7 @@ import models.SFEx_particular.SFEI_machine;
 import models.base.part;
 import models.partDescription;
 import models.sensor_actuator;
-import utils.utils;
+import utility.utils;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

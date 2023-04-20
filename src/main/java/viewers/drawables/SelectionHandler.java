@@ -5,13 +5,14 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Rectangle;
 import org.apache.commons.math3.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class SelectionHandler {
@@ -53,7 +54,7 @@ public class SelectionHandler {
     private void doOnMousePressed(Parent root, MouseEvent event) {
         // The target is the rectangle, but the root child is the StackPane
         Node target = ((Node) event.getTarget()).getParent();
-        System.out.println(target.getId());
+
 /*        if (target.equals(root))
             clipboard.unselectAll();*/
         if (root.getChildrenUnmodifiable().contains(target) && target instanceof SelectableNode) {
@@ -90,6 +91,8 @@ public class SelectionHandler {
 
             target.setTranslateX(event.getSceneX() - sceneXY.getFirst());
             target.setTranslateY(event.getSceneY() - sceneXY.getSecond());
+
+
 /*            System.out.println("TranslateXY: " + (event.getSceneX() - sceneXY.getFirst()) + " " + (event.getSceneY() - sceneXY.getSecond()));
             System.out.println();*/
 

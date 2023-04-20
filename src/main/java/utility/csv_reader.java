@@ -1,4 +1,4 @@
-package utils;
+package utility;
 
 import models.sensor_actuator;
 

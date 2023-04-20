@@ -1,6 +1,6 @@
 package failures.oldVersion;
 
-import utils.*;
+import utility.*;
 
 import java.util.Random;
 
@@ -74,12 +74,12 @@ public class failure {
         }
         members = f.split(op);
         String[] operator = op.split(" ");
-        double leftMember = utility.getCustomCalc().calcExpression(
+        double leftMember = utility.getCustomCalculator().calcExpression(
                 members[0],
                 nParts,
                 age_inDays,
                 maintenance_inDays);
-        double rightMember = utility.getCustomCalc().calcExpression(
+        double rightMember = utility.getCustomCalculator().calcExpression(
                 members[1],
                 nParts,
                 age_inDays,
@@ -115,7 +115,7 @@ public class failure {
         members = f.split(op);
         String[] operator = op.split(" ");
         boolean leftMember = members[0].contains("prob");
-        double val = utility.getCustomCalc().calcExpression(
+        double val = utility.getCustomCalculator().calcExpression(
                 leftMember ? members[1] : members[0],
                 nParts,
                 age_inDays,

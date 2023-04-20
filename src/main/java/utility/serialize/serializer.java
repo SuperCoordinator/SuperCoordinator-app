@@ -1,6 +1,7 @@
-package utils.serialize;
+package utility.serialize;
 
 import controllers.production.cSFEM_production;
+import controllers.transport.cSFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
@@ -9,6 +10,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class serializer {
@@ -22,63 +24,42 @@ public class serializer {
     }
 
     public final scenes scene = scenes.SS_3CMC;
-    private final String prod_filePath = "blocks/" + scene + "/saves/SFEM_production";
-    private final String trans_filePath = "blocks/" + scene + "/saves/SFEM_transport";
+    private final String filePath = "blocks/" + scene + "/saves/" + scene;
 
-    private production production = new production();
-    private transport transport = new transport();
+    private serializable serializable = new serializable();
 
     public serializer() {
     }
 
-
-    public utils.serialize.production getProduction() {
-        return production;
+    public ArrayList<cSFEM_production> getC_Production() {
+        return serializable.getC_Production();
     }
 
-    public utils.serialize.transport getTransport() {
-        return transport;
+    public ArrayList<cSFEM_transport> getC_Transport() {
+        return serializable.getC_Transport();
     }
 
-    public void saveXML_prod() {
+
+    public void saveXML() {
         try {
-            JAXBContext context = JAXBContext.newInstance(utils.serialize.production.class);
+
+            JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(production, new File(prod_filePath + ".xml"));
+            marshaller.marshal(serializable, new File(filePath + ".xml"));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void saveXML_trans() {
+    public void loadXML() {
         try {
-            JAXBContext context = JAXBContext.newInstance(utils.serialize.transport.class);
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(transport, new File(trans_filePath + ".xml"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void loadXML_prod() {
-        try {
-            JAXBContext context = JAXBContext.newInstance(utils.serialize.production.class);
+            JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
 
-            production = (utils.serialize.production) unmarshaller.unmarshal(new FileReader(prod_filePath + ".xml"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+            serializable = (utility.serialize.serializable) unmarshaller.unmarshal(new FileReader(filePath + ".xml"));
 
-    public void loadXML_trans() {
-        try {
-            JAXBContext context = JAXBContext.newInstance(utils.serialize.transport.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-
-            transport = (utils.serialize.transport) unmarshaller.unmarshal(new FileReader(trans_filePath + ".xml"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,7 +68,7 @@ public class serializer {
 
     public Pair<SFEE, cSFEM_production> searchSFEEbyName(String name) {
         Pair<SFEE, cSFEM_production> sfee = null;
-        for (cSFEM_production sfemController : production.getC_Production()) {
+        for (cSFEM_production sfemController : serializable.getC_Production()) {
             for (Map.Entry<Integer, SFEE> currentSFEE : sfemController.getSfem().getSFEEs().entrySet()) {
                 if (currentSFEE.getValue().getName().equals(name)) {
                     sfee = new Pair<>(currentSFEE.getValue(), sfemController);

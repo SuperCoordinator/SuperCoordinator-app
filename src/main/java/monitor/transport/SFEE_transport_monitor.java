@@ -4,12 +4,8 @@ import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;
 import models.sensor_actuator;
-import utils.utils;
+import utility.utils;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;

@@ -10,11 +10,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
-import utils.serialize.serializer;
-import viewers.controllers.SFEM.C_SFEM;
+import utility.serialize.serializer;
 
 import java.io.File;
-import java.io.IOException;
 
 public class C_Homepage {
 
@@ -25,7 +23,7 @@ public class C_Homepage {
 
     public void initialize() {
         // clean memory
-        C_ShopFloor.getInstance().getCmSfems().clear();
+        C_ShopFloor.getInstance().getcSfemProductions().clear();
 
     }
 
@@ -53,7 +51,7 @@ public class C_Homepage {
 
             // set initial File
 //            f_chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-            f_chooser.setInitialDirectory(new File("C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\saves\\tests"));
+            f_chooser.setInitialDirectory(new File("C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\saves"));
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             File file = f_chooser.showOpenDialog(stage);
@@ -64,8 +62,8 @@ public class C_Homepage {
 
             serializer serializer = new serializer();
 
-            serializer.loadXML_prod();
-            for (cSFEM_production production : serializer.getProduction().getC_Production()) {
+            serializer.loadXML();
+            for (cSFEM_production production : serializer.getC_Production()) {
                 production.init_after_XML_loading();
             }
 
@@ -74,10 +72,10 @@ public class C_Homepage {
 
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ShopFloor.fxml"));
-            C_ShopFloor.getInstance().loadData(serializer.getProduction());
+            C_ShopFloor.getInstance().loadData(serializer.getC_Production());
             C_ShopFloor.getInstance().setLoadedConfig(true);
 
-            C_ShopFloor.getInstance().setCurrent_C_SFEM(C_ShopFloor.getInstance().getCmSfems().get(0));
+            C_ShopFloor.getInstance().setCurrent_C_SFEM(C_ShopFloor.getInstance().getcSfemProductions().get(0));
             loader.setController(C_ShopFloor.getInstance());
 
 //            Parent root = FXMLLoader.load(getClass().getResource("/fxml/ShopFloor.fxml"));

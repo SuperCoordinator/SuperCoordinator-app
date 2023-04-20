@@ -6,7 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import models.SFEx_particular.SFEI_conveyor;
 import models.sensor_actuator;
-import utils.utils;
+import utility.utils;
 
 import java.net.URL;
 import java.util.ArrayList;

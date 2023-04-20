@@ -1,25 +1,19 @@
 package viewers.controllers.SFEE;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableStringValue;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import models.base.SFEI;
-import utils.utils;
 import viewers.controllers.SFEI.C_SFEI_conveyor;
 import viewers.controllers.SFEI.C_SFEI_machine;
-import viewers.mediators.CM_SFEE;
 
 import java.util.ArrayList;
 

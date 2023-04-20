@@ -1,27 +1,25 @@
-package utils.serialize;
+package utility.serialize;
 
 import controllers.production.cSFEM_production;
+import controllers.transport.cSFEM_transport;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class production  {
+public class serializable {
 
     private ArrayList<cSFEM_production> C_Production = new ArrayList<>();
+    private ArrayList<cSFEM_transport> C_Transport = new ArrayList<>();
 
-    public production() {
+    public serializable() {
     }
 
-    public production(ArrayList<cSFEM_production> c_Production) {
+    public void setC_Production(ArrayList<cSFEM_production> c_Production) {
         C_Production = c_Production;
     }
 
@@ -30,5 +28,12 @@ public class production  {
         return C_Production;
     }
 
+    public void setC_Transport(ArrayList<cSFEM_transport> c_Transport) {
+        C_Transport = c_Transport;
+    }
+    @XmlElement
+    public ArrayList<cSFEM_transport> getC_Transport() {
+        return C_Transport;
+    }
 
 }

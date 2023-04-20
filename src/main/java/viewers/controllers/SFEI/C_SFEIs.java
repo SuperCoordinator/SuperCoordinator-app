@@ -14,7 +14,7 @@ import models.SFEx_particular.SFEI_machine;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
-import utils.utils;
+import utility.utils;
 import viewers.controllers.C_ShopFloor;
 import viewers.mediators.CM_SFEI;
 

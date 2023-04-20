@@ -1,12 +1,19 @@
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.HashMap;
 
 import static java.lang.System.getenv;
 
 public class HelloApplication extends Application {
+
+    private final HashMap<String, Boolean> activeKeys = new HashMap<>();
+
+    public HashMap<String, Boolean> getActiveKeys() {
+        return activeKeys;
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -21,9 +28,9 @@ public class HelloApplication extends Application {
         }
 
     }
+
     public static void main(String[] args) {
         launch();
     }
-
 
 }
