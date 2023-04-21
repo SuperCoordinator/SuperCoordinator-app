@@ -176,8 +176,8 @@ public class C_SFEM_connection {
                 System.out.println(((Node) event1.getTarget()).getId());
             });
 
-            canvasWrapper.getChildren().add(/*new Group(start, end, line)*/line);
-//        canvasWrapper.getChildren().removeAll(clickedNodes);
+            canvasWrapper.getChildren().add(line);
+
             build_pane.setContent(canvasWrapper);
 
             sfemTransport_pane.getChildren().clear();

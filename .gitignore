@@ -28,6 +28,7 @@ blocks/CMC2-con_individual/control/*
 
 blocks/SS_3CMC/control/*
 !blocks/SS_3CMC/control/*.project
+!blocks/SS_3CMC/control/arduinoSlave
 
 .idea/*
 *.iml
