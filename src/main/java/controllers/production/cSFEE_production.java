@@ -104,6 +104,10 @@ public class cSFEE_production {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_3CMC_Modbus.csv";
                     importIO(csv_path, scene);
                 }
+                case 12 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\MC_Staudinger\\simulation\\Tags_MC_Staudinger.csv";
+                    importIO(csv_path, scene);
+                }
                 default -> {
                     String csv_path = viewer.readIOpath();
                     importIO(csv_path, 0);
@@ -367,6 +371,37 @@ public class cSFEE_production {
                     add_CMC_block(index);
                 }
             }
+
+            if (scene == 12) {
+                addNewSFEI_machine("MCS_MC1",
+                        partDescription.form.UNKNOWN,
+                        "s_pusher_forward",
+                        "s_conveyor2",
+                        Instant.now(),
+                        Instant.now(),
+                        false,
+                        false,
+                        "",
+                        "",
+                        "machine1_tool",
+                        true,
+                        false);
+                addNewSFEI_machine("MCS_MC2",
+                        partDescription.form.UNKNOWN,
+                        "s_conveyor2",
+                        "sw_endLine",
+                        Instant.now(),
+                        Instant.now(),
+                        false,
+                        false,
+                        "",
+                        "",
+                        "machine2_tool",
+                        false,
+                        true);
+            }
+
+
             autoSetSFEE_InOut();
             autoSetSFEE_function();
 
@@ -590,7 +625,7 @@ public class cSFEE_production {
 
         // Detect if it is the starting of the line, so it is the Sorting Station case!
         for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
-            if (entry.getValue().isLine_start()) {
+            if (entry.getValue().isLine_start() && sfee.getSFEE_type().equals(SFEE.SFEE_type.SIMULATION)) {
                 sfee.setSFEE_function(SFEE.SFEE_function.SORTING_STATION);
                 break;
             }
@@ -704,7 +739,10 @@ public class cSFEE_production {
     }
 
     public void launchSimulation() {
-        mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Run)").getBit_offset(), 1);
+        if (sfee.getSFEE_type().equals(SFEE.SFEE_type.SIMULATION))
+            mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Run)").getBit_offset(), 1);
+        else
+            mb.writeSingleCoil(sfee.getIObyName("start_module").getBit_offset(), 1);
     }
 
     public void stopSimulation() {

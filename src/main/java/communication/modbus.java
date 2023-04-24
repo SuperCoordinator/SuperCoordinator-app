@@ -151,18 +151,21 @@ public class modbus implements Runnable {
                     coils.getAndSet(i, outputs_invLogic[i] == bitVector.getBit(i) ? 0 : 1);
                 }
             }*/
-
-            if (discreteInputs.length() > 0) {
-                BitVector bitVector = con.readInputDiscretes(0, discreteInputs.length());
-                for (int i = 0; i < bitVector.size(); i++) {
-                    // Evaluation of the discrete inputs (sensors) logic
-                    discreteInputs.getAndSet(i, inputs_invLogic[i] == bitVector.getBit(i) ? 0 : 1);
+            if (discreteInputs != null) {
+                if (discreteInputs.length() > 0) {
+                    BitVector bitVector = con.readInputDiscretes(0, discreteInputs.length());
+                    for (int i = 0; i < bitVector.size(); i++) {
+                        // Evaluation of the discrete inputs (sensors) logic
+                        discreteInputs.getAndSet(i, inputs_invLogic[i] == bitVector.getBit(i) ? 0 : 1);
+                    }
                 }
             }
-            if (inputRegisters.length() > 0) {
-                InputRegister[] registers = con.readInputRegisters(0, inputRegisters.length());
-                for (int i = 0; i < registers.length; i++) {
-                    inputRegisters.getAndSet(i, registers[i].getValue());
+            if (inputRegisters != null) {
+                if (inputRegisters.length() > 0) {
+                    InputRegister[] registers = con.readInputRegisters(0, inputRegisters.length());
+                    for (int i = 0; i < registers.length; i++) {
+                        inputRegisters.getAndSet(i, registers[i].getValue());
+                    }
                 }
             }
 /*              if (holdingRegisters.length() > 0) {
@@ -173,26 +176,29 @@ public class modbus implements Runnable {
             }*/
 
             // Write Step
-            if (coilsUpdated.get()) {
-                BitVector bitVector = new BitVector(coils.length());
-                for (int i = 0; i < bitVector.size(); i++) {
-                    // Evaluation of the coils (outputs) logic
-                    bitVector.setBit(i, outputs_invLogic[i] ? coils.get(i) == 0 : coils.get(i) == 1);
+            if (coils != null) {
+                if (coilsUpdated.get()) {
+                    BitVector bitVector = new BitVector(coils.length());
+                    for (int i = 0; i < bitVector.size(); i++) {
+                        // Evaluation of the coils (outputs) logic
+                        bitVector.setBit(i, outputs_invLogic[i] ? coils.get(i) == 0 : coils.get(i) == 1);
+                    }
+                    con.writeMultipleCoils(0, bitVector);
+                    coilsUpdated.set(false);
+                    writeLoop++;
                 }
-                con.writeMultipleCoils(0, bitVector);
-                coilsUpdated.set(false);
-                writeLoop++;
             }
-
-            if (hRegUpdated.get()) {
-                Register[] registers = new Register[holdingRegisters.length()];
+            if (holdingRegisters != null) {
+                if (hRegUpdated.get()) {
+                    Register[] registers = new Register[holdingRegisters.length()];
 //                Register reg  = new SimpleRegister()
-                for (int i = 0; i < registers.length; i++) {
-                    registers[i] = new SimpleRegister(holdingRegisters.get(i));
+                    for (int i = 0; i < registers.length; i++) {
+                        registers[i] = new SimpleRegister(holdingRegisters.get(i));
+                    }
+                    con.writeMultipleRegisters(0, registers);
+                    hRegUpdated.set(false);
+                    writeLoop++;
                 }
-                con.writeMultipleRegisters(0, registers);
-                hRegUpdated.set(false);
-                writeLoop++;
             }
             runtime.add(Duration.between(start_t, Instant.now()).toMillis());
 //            System.out.println("MB execution time (ms) " + Duration.between(start_t, Instant.now()).toMillis());
@@ -217,22 +223,13 @@ public class modbus implements Runnable {
 
         } catch (Exception e) {
             e.printStackTrace();
-        } /*finally {
-            configured = false;
-            do {
-                openConnection(io);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            } while (!configured);
-
-        }*/
+        }
 
     }
 
     public List<Object> readCoils() {
+        if (coils == null)
+            return new ArrayList<>();
         List<Object> list = new ArrayList<>();
 
         for (int i = 0; i < coils.length(); i++) {
@@ -242,6 +239,8 @@ public class modbus implements Runnable {
     }
 
     public List<Object> readDiscreteInputs() {
+        if (discreteInputs == null)
+            return new ArrayList<>();
         List<Object> list = new ArrayList<>();
 
         for (int i = 0; i < discreteInputs.length(); i++) {
@@ -251,6 +250,8 @@ public class modbus implements Runnable {
     }
 
     public List<Object> readInputRegisters() {
+        if (inputRegisters == null)
+            return new ArrayList<>();
         List<Object> list = new ArrayList<>();
 
         for (int i = 0; i < inputRegisters.length(); i++) {
@@ -260,6 +261,8 @@ public class modbus implements Runnable {
     }
 
     public List<Object> readHoldingRegisters() {
+        if (holdingRegisters == null)
+            return new ArrayList<>();
         List<Object> list = new ArrayList<>();
 
         for (int i = 0; i < holdingRegisters.length(); i++) {
@@ -270,13 +273,15 @@ public class modbus implements Runnable {
 
     public void writeCoils(List<Object> coilsList) {
         try {
-            for (int i = 0; i < coils.length(); i++) {
-                if ((Integer) coilsList.get(i) == -1) {
-                    continue;
+            if (coils != null) {
+                for (int i = 0; i < coils.length(); i++) {
+                    if ((Integer) coilsList.get(i) == -1) {
+                        continue;
+                    }
+                    int old = coils.getAndSet(i, (Integer) coilsList.get(i));
+                    if (old != (Integer) coilsList.get(i))
+                        coilsUpdated.getAndSet(true);
                 }
-                int old = coils.getAndSet(i, (Integer) coilsList.get(i));
-                if (old != (Integer) coilsList.get(i))
-                    coilsUpdated.getAndSet(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -286,13 +291,15 @@ public class modbus implements Runnable {
 
     public void writeRegisters(List<Object> registers) {
         try {
-            for (int i = 0; i < holdingRegisters.length(); i++) {
-                if ((Integer) registers.get(i) == -1) {
-                    continue;
-                }
-                int old = holdingRegisters.getAndSet(i, (Integer) registers.get(i));
-                if (old != (Integer) registers.get(i)) {
-                    hRegUpdated.getAndSet(true);
+            if (holdingRegisters != null) {
+                for (int i = 0; i < holdingRegisters.length(); i++) {
+                    if ((Integer) registers.get(i) == -1) {
+                        continue;
+                    }
+                    int old = holdingRegisters.getAndSet(i, (Integer) registers.get(i));
+                    if (old != (Integer) registers.get(i)) {
+                        hRegUpdated.getAndSet(true);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -303,8 +310,10 @@ public class modbus implements Runnable {
 
     // For now, only used for Start and Stop F_IO
     public void writeSingleCoil(int offset, int newValue) {
-        coils.getAndSet(offset, newValue);
-        coilsUpdated.getAndSet(true);
+        if (coils != null) {
+            coils.getAndSet(offset, newValue);
+            coilsUpdated.getAndSet(true);
+        }
     }
 
 }

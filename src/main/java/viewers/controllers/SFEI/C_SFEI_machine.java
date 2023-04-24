@@ -53,9 +53,10 @@ public class C_SFEI_machine implements Initializable {
             TreeMap<Integer, sensor_actuator> outputs = utility.getSearch().getSensorsOrActuators(io, false);
             ArrayList<String> values_str = new ArrayList<>();
             for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
-                values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());
+                values_str.add(entry.getValue().getName());
             aProduce.setItems(FXCollections.observableArrayList(values_str));
         } else {
+
             aProduce.setValue(sfeiMachine.getaProduce().getName());
 
             if (((RadioButton) part_type.getToggles().get(0)).getText().equalsIgnoreCase("lid")) {

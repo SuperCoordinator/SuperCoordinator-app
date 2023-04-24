@@ -1,6 +1,7 @@
 package viewers.controllers;
 
 import controllers.production.cSFEM_production;
+import controllers.transport.cSFEM_transport;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -100,11 +101,15 @@ public class C_ShopFloor {
         }
     }
 
-    public void loadData(ArrayList<cSFEM_production> cSFEM_Productions) {
+    public void loadData(ArrayList<cSFEM_production> cSFEM_Productions, ArrayList<cSFEM_transport> cSFEM_Transports) {
         for (cSFEM_production cSFEMProduction : cSFEM_Productions) {
             C_SFEM_production cSfem = new C_SFEM_production(cSFEMProduction);
             C_ShopFloor.getInstance().getcSfemProductions().add(cSfem);
-//            System.out.println(C_ShopFloor.class + " " + cSFEMProduction.getSfem().getName());
+        }
+
+        for (cSFEM_transport cSFEMTransport : cSFEM_Transports) {
+            C_SFEM_transport cSfem = new C_SFEM_transport(cSFEMTransport);
+            C_ShopFloor.getInstance().getcSfemTransports().add(cSfem);
         }
     }
 

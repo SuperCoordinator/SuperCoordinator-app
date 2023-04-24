@@ -219,10 +219,10 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
 
     private void saveActivePaneData() {
         switch (activePane) {
-            case PROPERTIES -> /*CM_SFEE.getInstance().*/getProperties().setSaveValues();
-            case COMMUNICATION -> /*CM_SFEE.getInstance().*/getCommunication().setSaveValues();
-            case ITEMS -> /*CM_SFEE.getInstance().*/getItems().setSaveValues();
-            case FAILURE -> /*CM_SFEE.getInstance().*/getFailure().setSaveValues();
+            case PROPERTIES -> getProperties().setSaveValues();
+            case COMMUNICATION -> getCommunication().setSaveValues();
+            case ITEMS -> getItems().setSaveValues();
+            case FAILURE -> getFailure().setSaveValues();
         }
     }
 
@@ -233,76 +233,66 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
 
             switch (selected.getText()) {
                 case "Properties" -> {
-                    if (/*CM_SFEE.getInstance().*/getProperties().validateMoveOn()) {
-                        /* CM_SFEE.getInstance().*/
+                    if (getProperties().validateMoveOn()) {
                         getProperties().setSaveValues();
+                        getFailure().setSfeeType(getProperties().getEnvironment().equalsIgnoreCase("simulation") ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL);
                         activePane = Panes.COMMUNICATION;
                         toggleCommunication.setDisable(false);
-//                    toggleCommunication.requestFocus();
                         bar.selectToggle(toggleCommunication);
                         Tooltip.uninstall(next, errorMsg);
                     } else {
                         error_icon.setVisible(true);
-                        errorMsg.setText(/*CM_SFEE.getInstance().*/getProperties().getErrorMsg());
+                        errorMsg.setText(getProperties().getErrorMsg());
                         Tooltip.install(next, errorMsg);
-//                    next.setTooltip(errorMsg);
-
                     }
                 }
                 case "Communication" -> {
-                    if (/*CM_SFEE.getInstance().*/getCommunication().validateMoveOn()) {
-                        /*CM_SFEE.getInstance().*/
+                    if (getCommunication().validateMoveOn()) {
+
                         getCommunication().setSaveValues();
                         activePane = Panes.ITEMS;
                         toggleItems.setDisable(false);
-//                    toggleItems.requestFocus();
                         bar.selectToggle(toggleItems);
                         Tooltip.uninstall(next, errorMsg);
                     } else {
                         error_icon.setVisible(true);
-                        errorMsg.setText(/*CM_SFEE.getInstance().*/getCommunication().getErrorMsg());
-//                    next.setTooltip(errorMsg);
+                        errorMsg.setText(getCommunication().getErrorMsg());
                         Tooltip.install(next, errorMsg);
 
                     }
                 }
                 case "Items" -> {
-                    if (/*CM_SFEE.getInstance().*/getItems().validateMoveOn()) {
-                        /*CM_SFEE.getInstance().*/
+                    if (getItems().validateMoveOn()) {
                         getItems().setSaveValues();
                         activePane = Panes.FAILURE;
                         toggleFailure.setDisable(false);
-//                    toggleFailure.requestFocus();
                         bar.selectToggle(toggleFailure);
                         Tooltip.uninstall(next, errorMsg);
                     } else {
                         error_icon.setVisible(true);
-                        errorMsg.setText(/*CM_SFEE.getInstance().*/getItems().getErrorMsg());
+                        errorMsg.setText(getItems().getErrorMsg());
                         Tooltip.install(next, errorMsg);
-//                    next.setTooltip(errorMsg);
-
                     }
                 }
                 case "Failure" -> {
-                    if (/*CM_SFEE.getInstance().*/getFailure().validateMoveOn()) {
-                        /*CM_SFEE.getInstance().*/
+                    if (getFailure().validateMoveOn()) {
                         getFailure().setSaveValues();
                         activePane = Panes.FINISH;
                         getFinish().setSfeiConveyors(getItems().getSfeisController().getSfeiConveyors());
                         getFinish().setSfeiMachines(getItems().getSfeisController().getSfeiMachines());
                         toggleFinish.setDisable(false);
-//                    toggleFinish.requestFocus();
                         bar.selectToggle(toggleFinish);
                         Tooltip.uninstall(next, errorMsg);
                     } else {
                         error_icon.setVisible(true);
-                        errorMsg.setText(/*CM_SFEE.getInstance().*/getFailure().getErrorMsg());
+                        errorMsg.setText(getFailure().getErrorMsg());
                         Tooltip.install(next, errorMsg);
                     }
                 }
                 case "Finish" -> {
-                    if (/*CM_SFEE.getInstance().*/getFinish().validateMoveOn(event)) {
+                    if (getFinish().validateMoveOn(event)) {
                         Tooltip.uninstall(next, errorMsg);
+
                         // return to C_ShopFloor
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ShopFloor.fxml"));
                         loader.setController(C_ShopFloor.getInstance());
@@ -359,20 +349,19 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
             switch (activePane) {
                 case PROPERTIES -> {
 
-                    loader.setController(/*CM_SFEE.getInstance().*/getProperties());
+                    loader.setController(getProperties());
                 }
                 case COMMUNICATION -> {
-                    loader.setController(/*CM_SFEE.getInstance().*/getCommunication());
+                    loader.setController(getCommunication());
                 }
                 case ITEMS -> {
-                    /*CM_SFEE.getInstance().*/
-                    getItems().setIo(/*CM_SFEE.getInstance().*/getCommunication().getIo(), getProperties().getEnvironment().equalsIgnoreCase("simulation") ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL);
-                    loader.setController(/*CM_SFEE.getInstance().*/getItems());
+                    getItems().setIo(getCommunication().getIo(), getProperties().getEnvironment().equalsIgnoreCase("simulation") ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL);
+                    loader.setController(getItems());
                 }
                 case FAILURE -> {
-                    loader.setController(/*CM_SFEE.getInstance().*/getFailure());
+                    loader.setController(getFailure());
                 }
-                case FINISH -> loader.setController(/*CM_SFEE.getInstance().*/getFinish());
+                case FINISH -> loader.setController(getFinish());
             }
             Pane pane = loader.load();
             SFEE_body.getChildren().setAll(pane);

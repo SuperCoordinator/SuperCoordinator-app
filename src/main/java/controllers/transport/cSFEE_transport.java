@@ -55,6 +55,18 @@ public class cSFEE_transport {
         this.sfee = sfee;
     }
 
+    public SFEE getSfee() {
+        return sfee;
+    }
+
+    public String getPrevSFEI_name() {
+        return prevSFEI_name;
+    }
+
+    public String getNextSFEI_name() {
+        return nextSFEI_name;
+    }
+
     public void cSFEE_transport_init(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB, SFEI inSFEI, SFEI outSFEI) {
 
         this.inMB = inMB;

@@ -9,11 +9,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class partDescription {
     public enum material {
-        BLUE, GREEN, METAL
+        BLUE, GREEN, METAL, UNKNOWN
     }
 
     public enum form {
-        RAW, LID, BASE
+        RAW, LID, BASE, UNKNOWN
     }
 
     @XmlAttribute

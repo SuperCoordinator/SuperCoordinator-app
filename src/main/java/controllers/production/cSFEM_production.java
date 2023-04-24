@@ -33,7 +33,6 @@ public class cSFEM_production implements Runnable {
 
     public cSFEM_production(SFEM_production sfem) {
         this.sfem = sfem;
-
         this.sfeeControllers = new ArrayList<>();
     }
 
@@ -109,6 +108,8 @@ public class cSFEM_production implements Runnable {
                         sfeeController.init(scene + 6 + i);
                         firstRun(false, i);
                     }
+                }else if(scene == 4){
+                    sfeeController.init(scene + 8);
                 }
 
                 sfeeController.initFailures();

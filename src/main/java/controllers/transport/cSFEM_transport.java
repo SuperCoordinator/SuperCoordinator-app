@@ -32,6 +32,10 @@ public class cSFEM_transport implements Runnable {
         return sfem;
     }
 
+    public cSFEE_transport getSfeeTransportController() {
+        return sfeeTransportController;
+    }
+
     public void init_SFEE_transport() {
 
         try {

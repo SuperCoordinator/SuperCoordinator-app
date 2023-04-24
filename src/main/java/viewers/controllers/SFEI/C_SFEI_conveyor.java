@@ -44,6 +44,12 @@ public class C_SFEI_conveyor implements Initializable {
         this.sfeiConveyor = sfeiConveyor;
     }
 
+    @FXML
+    private ComboBox<String> aConveyor;
+    @FXML
+    private ToggleGroup failures_support;
+    @FXML
+    private Pane failure_pane;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (!editMode) {
@@ -71,14 +77,6 @@ public class C_SFEI_conveyor implements Initializable {
         }
 
     }
-
-    @FXML
-    private ComboBox<String> aConveyor;
-
-    @FXML
-    private ToggleGroup failures_support;
-    @FXML
-    private Pane failure_pane;
 
     @FXML
     void show_failure_support_pane(ActionEvent event) {
@@ -139,11 +137,10 @@ public class C_SFEI_conveyor implements Initializable {
     }
 
     private sensor_actuator search_sensor_actuator(ComboBox<String> comboBox) {
-        utils utils = new utils();
         if (comboBox.getValue() == null)
             return null;
         else
-            return utils.getSearch().getIObyName(comboBox.getValue(), io);
+            return utils.getInstance().getSearch().getIObyName(comboBox.getValue(), io);
     }
 
 

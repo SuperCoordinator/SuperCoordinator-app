@@ -16,26 +16,7 @@ import java.util.Map;
 
 //@XmlRootElement
 //@XmlAccessorType(XmlAccessType.NONE)
-public class SFEE_transport_monitor implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfee);
- /*       out.writeObject(previousSFEI);
-        out.writeObject(nextSFEI);*/
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfee = (SFEE) in.readObject();
-/*        this.previousSFEI = (SFEI) in.readObject();
-        this.nextSFEI = (SFEI) in.readObject();*/
-
-    }
-
-//    @XmlElement
+public class SFEE_transport_monitor {
     private SFEE sfee;
     private SFEI previousSFEI;
     private SFEI nextSFEI;
@@ -56,11 +37,6 @@ public class SFEE_transport_monitor implements Externalizable {
         this.nextSFEI = nextSFEI;
 
     }
-
-//    @XmlElement(name = "SFEE")
-//    private SFEE getSfee() {
-//        return sfee;
-//    }
 
     private void init_oldSensorsValues(ArrayList<List<Object>> sensorsState) {
 
@@ -147,7 +123,7 @@ public class SFEE_transport_monitor implements Externalizable {
                         } else {
                             currPart = previousSFEI.getPartsATM().first();
                         }
-                    }else
+                    } else
                         throw new RuntimeException(previousSFEI.getName() + " RE out_sensor but partsATM size is 0");
 
                 }

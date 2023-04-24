@@ -71,16 +71,6 @@ public class SFEE_production_monitor implements Externalizable {
         this.sfee = sfee;
     }
 
-    //    @XmlElement(name = "SFEE")
-//    private SFEE getSfee() {
-//        return sfee;
-//    }
-//
-//    @XmlElement(name = "vision_sensor_location")
-//    private TreeMap<Integer, sensor_actuator> getVisionSensorLocation() {
-//        return visionSensorLocation;
-//    }
-
     public void setVisionSensorLocation(TreeMap<Integer, sensor_actuator> visionSensorLocation) {
         this.visionSensorLocation = visionSensorLocation;
     }
@@ -133,18 +123,6 @@ public class SFEE_production_monitor implements Externalizable {
             monitorProduction(sensorsState, inputRegsValue);
             if (visionSensorLocation != null)
                 validateProducedParts(sensorsState, inputRegsValue);
-/*
-            switch (sfee.getSFEE_function()) {
-                case PRODUCTION -> {
-                    monitorProduction(sensorsState, inputRegsValue);
-                    if (visionSensorLocation != null)
-                        validateProducedParts(sensorsState, inputRegsValue);
-                }
-                case SORTING_STATION -> {
-                    monitorSorting(sensorsState, inputRegsValue);
-                }
-            }
-*/
 
             printDBG();
 
@@ -165,22 +143,24 @@ public class SFEE_production_monitor implements Externalizable {
                 boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
                 boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
 
-                if (sfei.isLine_start()) {
-
-                    SFEI_conveyor commonConveyor = (SFEI_conveyor) sfee.getSFEIbyIndex(0);
-                    int visionSensor_number = (int) inputRegsValue.get(visionSensorLocation.get(0).getBit_offset());
-                    if (visionSensor_number > 0) {
-
-                        part p = new part(commonConveyor.getnPiecesMoved(), getPartsAspectByNumber(visionSensor_number));
-                        String itemName = commonConveyor.getName();
-                        itemName = itemName.concat("-");
-                        itemName = itemName.concat(commonConveyor.getInSensor().getName());
-
-                        p.addTimestamp(itemName);
-
-                        commonConveyor.addNewPartATM(p);
+                if (sfei.isLine_start() && utility.getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
+                    part p = new part();
+                    if (visionSensorLocation != null) {
+                        int visionSensor_number = (int) inputRegsValue.get(visionSensorLocation.get(0).getBit_offset());
+                        if (visionSensor_number > 0) {
+                            p = new part(sfei.getnPiecesMoved(), getPartsAspectByNumber(visionSensor_number));
+                        }
+                    } else {
+                        // There is not vision sensor, so the part is
+                        p = new part(sfei.getnPiecesMoved(), new partDescription(partDescription.material.UNKNOWN, partDescription.form.UNKNOWN));
                     }
+                    String itemName = sfei.getName();
+                    itemName = itemName.concat("-");
+                    itemName = itemName.concat(sfei.getInSensor().getName());
 
+                    p.addTimestamp(itemName);
+
+                    sfei.addNewPartATM(p);
                 }
 
                 if (sfee.getSFEE_function().equals(SFEE.SFEE_function.SORTING_STATION)) {
@@ -201,10 +181,9 @@ public class SFEE_production_monitor implements Externalizable {
 
                             sfei.addNewPartATM(p);
                             sfee.getSFEIbyIndex(0).setnPiecesMoved(sfee.getSFEIbyIndex(0).getnPiecesMoved() + 1);
+                            System.out.println("BLah blah");
 
-
-                        } /*else
-                            throw new RuntimeException("(" + SFEE_production_monitor.class + ") Sorting SFEE has 0 parts");*/
+                        }
 
                     }
 
@@ -485,7 +464,7 @@ public class SFEE_production_monitor implements Externalizable {
     private void updateSFEI_machinePartType(List<Object> actuatorsState) {
         for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet()) {
 
-            if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
+            if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE) && sfee.getSFEE_type().equals(SFEE.SFEE_type.SIMULATION)) {
 
                 SFEI_machine sfei = (SFEI_machine) sfeiEntry.getValue();
 

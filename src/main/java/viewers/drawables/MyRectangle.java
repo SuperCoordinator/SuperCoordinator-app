@@ -24,7 +24,6 @@ public class MyRectangle extends StackPane implements SelectableNode {
         this.getChildren().addAll(rectangle, text);
 
     }
-
     public MyRectangle(MyRectangle myRectangle) {
         super();
         super.setId(myRectangle.getId());
@@ -49,5 +48,7 @@ public class MyRectangle extends StackPane implements SelectableNode {
         }
     }
 
-
+    public Rectangle getRectangle() {
+        return rectangle;
+    }
 }

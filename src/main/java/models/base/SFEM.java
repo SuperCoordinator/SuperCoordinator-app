@@ -38,6 +38,10 @@ public class SFEM {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public SFEM_type getSfemType() {
         return sfemType;
     }

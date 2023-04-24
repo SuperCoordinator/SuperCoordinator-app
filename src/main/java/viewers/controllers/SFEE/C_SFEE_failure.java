@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import models.base.SFEE;
 import utility.customCalculator;
 import viewers.controllers.C_ShopFloor;
 
@@ -17,11 +18,16 @@ public class C_SFEE_failure {
     private final ArrayList<Object> savedValues;
 
     private cSFEE_production.operationMode operationMode;
+    private SFEE.SFEE_type sfeeType;
     private ArrayList<String> loadedData;
 
     public C_SFEE_failure() {
         this.savedValues = new ArrayList<>();
         this.textFields = new ArrayList<>();
+    }
+
+    public void setSfeeType(SFEE.SFEE_type sfeeType) {
+        this.sfeeType = sfeeType;
     }
 
     @FXML
@@ -101,6 +107,14 @@ public class C_SFEE_failure {
                 }
             }
         }
+        // In case of real modules, not support failures
+        if (sfeeType.equals(SFEE.SFEE_type.REAL)) {
+            for (int i = 0; i < opMode.getToggles().size(); i++) {
+                if (((ToggleButton) opMode.getToggles().get(i)).getId().equals("prog_failures")) {
+                    ((ToggleButton) opMode.getToggles().get(i)).setDisable(true);
+                }
+            }
+        }
     }
 
     public void loadData(cSFEE_production.operationMode operationMode, ArrayList<String> loadedData) {
@@ -160,7 +174,7 @@ public class C_SFEE_failure {
     }
 
     public void setSaveValues() {
-        System.out.println("SAVING FAILURES");
+//        System.out.println("SAVING FAILURES");
         savedValues.add(0, ((ToggleButton) opMode.getSelectedToggle()).getId());
 
         if (((ToggleButton) opMode.getSelectedToggle()).getId().equals("prog_failures")) {

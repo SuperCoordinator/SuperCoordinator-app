@@ -1,6 +1,7 @@
 package viewers.controllers;
 
 import controllers.production.cSFEM_production;
+import controllers.transport.cSFEM_transport;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -10,6 +11,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
+import models.base.SFEE;
+import org.apache.commons.math3.util.Pair;
 import utility.serialize.serializer;
 
 import java.io.File;
@@ -51,7 +54,7 @@ public class C_Homepage {
 
             // set initial File
 //            f_chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-            f_chooser.setInitialDirectory(new File("C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\saves"));
+            f_chooser.setInitialDirectory(new File("C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\saves"));
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             File file = f_chooser.showOpenDialog(stage);
@@ -67,18 +70,35 @@ public class C_Homepage {
                 production.init_after_XML_loading();
             }
 
+            for (cSFEM_transport transport : serializer.getC_Transport()) {
+                transport.init_after_XML_load();
+            }
+
+            // Set up the connections between SFEEs
+            for (cSFEM_transport transport : serializer.getC_Transport()) {
+                Pair<Pair<String, String>, Pair<String, String>> names = transport.getPrevNext_SFEE_SFEI_names();
+
+                Pair<SFEE, cSFEM_production> inSFEE = serializer.searchSFEEbyName(names.getFirst().getFirst());
+                Pair<SFEE, cSFEM_production> outSFEE = serializer.searchSFEEbyName(names.getSecond().getFirst());
+
+                transport.setupSFEETransportController(
+                        inSFEE.getSecond().searchMBbySFEE(inSFEE.getFirst().getName()),
+                        outSFEE.getSecond().searchMBbySFEE(outSFEE.getFirst().getName()),
+                        serializer.searchSFEIbySFEE(inSFEE.getFirst(), names.getFirst().getSecond()),
+                        serializer.searchSFEIbySFEE(outSFEE.getFirst(), names.getSecond().getSecond()));
+
+            }
+
             // To be substituted by the SFEM controller viewer
             // The Mediator should be the new SFEM viewer
 
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ShopFloor.fxml"));
-            C_ShopFloor.getInstance().loadData(serializer.getC_Production());
+            C_ShopFloor.getInstance().loadData(serializer.getC_Production(),serializer.getC_Transport());
             C_ShopFloor.getInstance().setLoadedConfig(true);
 
             C_ShopFloor.getInstance().setCurrent_C_SFEM(C_ShopFloor.getInstance().getcSfemProductions().get(0));
             loader.setController(C_ShopFloor.getInstance());
 
-//            Parent root = FXMLLoader.load(getClass().getResource("/fxml/ShopFloor.fxml"));
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(loader.load(), 1200, 900));
             stage.show();

@@ -20,7 +20,8 @@ public class serializer {
         CMC_connection,
         CMC2_con_individual,
         sorting_station,
-        SS_3CMC
+        SS_3CMC,
+        MC_Staudinger
     }
 
     public final scenes scene = scenes.SS_3CMC;
