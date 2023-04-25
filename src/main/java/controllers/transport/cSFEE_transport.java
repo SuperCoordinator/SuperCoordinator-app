@@ -12,10 +12,6 @@ import org.apache.commons.math3.util.Pair;
 import viewers.SFEE_transport;
 
 import javax.xml.bind.annotation.*;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 
@@ -67,10 +63,15 @@ public class cSFEE_transport {
         return nextSFEI_name;
     }
 
-    public void cSFEE_transport_init(SFEE inSFEE, SFEE outSFEE, modbus inMB, modbus outMB, SFEI inSFEI, SFEI outSFEI) {
+    public void init(ArrayList<Object> data) {
 
-        this.inMB = inMB;
-        this.outMB = outMB;
+        SFEE inSFEE = (SFEE) data.get(3);
+        SFEE outSFEE = (SFEE) data.get(4);
+        SFEI inSFEI = (SFEI) data.get(5);
+        SFEI outSFEI = (SFEI) data.get(6);
+
+        this.inMB = (modbus) data.get(1);
+        this.outMB = (modbus) data.get(2);
 
         this.prevSFEE_name = inSFEE.getName();
         this.nextSFEE_name = outSFEE.getName();
@@ -82,22 +83,23 @@ public class cSFEE_transport {
         TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
 
         // The inSens is the sensor place in the remover (actuator) of last SFEE (SFEI to be more precise)
-        String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEI.getOutSensor().getName());
+//        String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEI.getOutSensor().getName());
         io.put(0, inSFEI.getOutSensor());
-        io.put(1, inSFEE.getIObyName(in_SensAct[0]));
+        io.put(1, inSFEE.getIObyName((String) data.get(7)));
 
+        // ESTA VERIFICAÇÃO TEM DE DEPENDER DO TIPO DE SFEE, SIM OU REAL
         // The outSens is the sensor place on the controller-defined emitter of next SFEE (SFEI to be more precise)
-        String[] out_SensAct = viewer.associateSensor2Actuator(3, outSFEE.getInSensor().getName());
+//        String[] out_SensAct = viewer.associateSensor2Actuator(3, outSFEE.getInSensor().getName());
         io.put(2, outSFEI.getInSensor());
-        io.put(3, outSFEE.getIObyName(out_SensAct[0]));
-        io.put(4, outSFEE.getIObyName(out_SensAct[1]));
-        io.put(5, outSFEE.getIObyName(out_SensAct[2]));
+        io.put(3, outSFEE.getIObyName((String) data.get(8)));
+        io.put(4, outSFEE.getIObyName((String) data.get(9)));
+        io.put(5, outSFEE.getIObyName((String) data.get(10)));
 
         sfee.setIo(io);
 
         // create new SFEI_transport instance
         SFEI_transport sfeiTransport = new SFEI_transport(
-                "sfei_transport",
+                (String) data.get(0),
                 SFEI.SFEI_type.TRANSPORT,
                 inSFEI.getOutSensor(),
                 outSFEI.getInSensor(),
@@ -131,24 +133,27 @@ public class cSFEE_transport {
         this.sfee.setOutSensor(sfee.getSFEIs().get(sfee.getSFEIs().size() - 1).getOutSensor());
     }
 
-    public void initOperationMode() {
+    public void init_OperationMode(ArrayList<Object> data) {
 
-        String[] sfeeTime = viewer.SFEE_stochasticTime();
+//        String[] sfeeTime = viewer.SFEE_stochasticTime();
+        System.out.println(Arrays.toString(data.toArray()));
+        String operator = (String) data.get(0);
+        String mean = (String) data.get(1);
+        String dev = (String) data.get(2);
 
-
-        if (sfeeTime[0].contains("gauss")) {
+        if (operator.contains("gauss")) {
             // Stochastic Time
             sfeeFailures = new SFEE_transport_failures(
                     sfee,
                     stochasticTime.timeOptions.GAUSSIAN,
-                    new String[]{sfeeTime[1], sfeeTime[2]});
+                    new String[]{mean, dev});
 
-        } else if (sfeeTime[0].contains("linear")) {
+        } else if (operator.contains("linear")) {
             // Linear Time
             sfeeFailures = new SFEE_transport_failures(
                     sfee,
                     stochasticTime.timeOptions.LINEAR,
-                    new String[]{sfeeTime[1], sfeeTime[2]});
+                    new String[]{mean, dev});
         }
     }
 

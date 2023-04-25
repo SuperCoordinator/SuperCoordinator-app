@@ -183,7 +183,7 @@ public class customCalculator {
 
         boolean error = false;
 
-        if(formula.contains("no"))
+        if (formula.contains("no"))
             return error;
 
         if (formula.indexOf(';') == -1) {
@@ -196,6 +196,7 @@ public class customCalculator {
 
             elements[0] = formula.substring(0, formula.indexOf('['));
             elements[1] = formula.substring(formula.indexOf('[') + 1, formula.indexOf(']'));
+            elements[2] = "";
 
         } // Is gaussian
         else {
@@ -213,7 +214,7 @@ public class customCalculator {
             elements[0] = elements[0].substring(1);
         if (elements[1].charAt(0) == ' ')
             elements[1] = elements[1].substring(1);
-        if (elements[2] != null)
+        if (!elements[2].isEmpty())
             if (elements[2].charAt(0) == ' ')
                 elements[2] = elements[2].substring(1);
 

@@ -1,7 +1,9 @@
 package utility.serialize;
 
+import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
+import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
@@ -11,10 +13,24 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 public class serializer {
 
+    /**
+     * Singleton pattern
+     */
+    public serializer() {
+    }
+
+    public static serializer getInstance() {
+        return serializer.serializerHolder.INSTANCE;
+    }
+
+    private static class serializerHolder {
+        private static final serializer INSTANCE = new serializer();
+    }
 
     public enum scenes {
         CMC_connection,
@@ -29,9 +45,6 @@ public class serializer {
 
     private serializable serializable = new serializable();
 
-    public serializer() {
-    }
-
     public ArrayList<cSFEM_production> getC_Production() {
         return serializable.getC_Production();
     }
@@ -39,7 +52,6 @@ public class serializer {
     public ArrayList<cSFEM_transport> getC_Transport() {
         return serializable.getC_Transport();
     }
-
 
     public void saveXML() {
         try {
@@ -66,6 +78,34 @@ public class serializer {
         }
     }
 
+    public void new_cSFEM_transport(ArrayList<Object> data) {
+
+        SFEM_transport sfemTransport = new SFEM_transport((String) data.get(0));
+        cSFEM_transport sfemController = new cSFEM_transport(sfemTransport);
+
+        sfemController.init_SFEE_transport((String) data.get(1));
+
+        // Perform searches for SFEIs and SFEEs objects based on the elements name
+        Pair<SFEE, SFEI> in = searchSFEE_SFEIbySFEI_name((String) data.get(7));
+        Pair<SFEE, SFEI> out = searchSFEE_SFEIbySFEI_name((String) data.get(8));
+
+        data.set(5, in.getFirst());
+        data.set(6, out.getFirst());
+        data.set(7, in.getSecond());
+        data.set(8, out.getSecond());
+
+        sfemController.init_cSFEETransport(new ArrayList<>(data.subList(2, 13)), new ArrayList<>(data.subList(14, data.size())));
+
+        // Add if not exist or update if exists
+        int i = 0;
+        for (i = 0; i < serializer.getInstance().getC_Transport().size(); i++) {
+            if(serializer.getInstance().getC_Transport().removeIf(next -> next.getSfem().getName().equals(data.get(0))))
+                serializer.getInstance().getC_Transport().add(i,sfemController);
+        }
+        if (i == serializer.getInstance().getC_Transport().size() - 1)
+            serializer.getInstance().getC_Transport().add(serializer.getInstance().getC_Transport().size() - 1, sfemController);
+
+    }
 
     public Pair<SFEE, cSFEM_production> searchSFEEbyName(String name) {
         Pair<SFEE, cSFEM_production> sfee = null;
@@ -93,6 +133,25 @@ public class serializer {
             throw new RuntimeException("(" + serializer.class + ") SFEI not found");
 
         return sfei;
+
+    }
+
+    public Pair<SFEE, SFEI> searchSFEE_SFEIbySFEI_name(String name) {
+        Pair<SFEE, SFEI> returnPair = null;
+        System.out.println(serializer.getInstance().getC_Production());
+        for (cSFEM_production cSFEMProduction : serializer.getInstance().getC_Production()) {
+            for (cSFEE_production cSFEEProduction : cSFEMProduction.getSfeeControllers()) {
+                for (Map.Entry<Integer, SFEI> entry : cSFEEProduction.getSFEE().getSFEIs().entrySet()) {
+                    if (entry.getValue().getName().equals(name)) {
+                        returnPair = new Pair<>(cSFEEProduction.getSFEE(), entry.getValue());
+                    }
+                }
+            }
+        }
+        if (returnPair == null)
+            throw new RuntimeException("SFEI " + name + " not found in any SFEM");
+
+        return returnPair;
 
     }
 }

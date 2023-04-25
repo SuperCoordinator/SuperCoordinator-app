@@ -63,29 +63,27 @@ public class C_Homepage {
             else
                 throw new RuntimeException("File is Null");
 
-            serializer serializer = new serializer();
-
-            serializer.loadXML();
-            for (cSFEM_production production : serializer.getC_Production()) {
+            serializer.getInstance().loadXML();
+            for (cSFEM_production production : serializer.getInstance().getC_Production()) {
                 production.init_after_XML_loading();
             }
 
-            for (cSFEM_transport transport : serializer.getC_Transport()) {
+            for (cSFEM_transport transport : serializer.getInstance().getC_Transport()) {
                 transport.init_after_XML_load();
             }
 
             // Set up the connections between SFEEs
-            for (cSFEM_transport transport : serializer.getC_Transport()) {
+            for (cSFEM_transport transport : serializer.getInstance().getC_Transport()) {
                 Pair<Pair<String, String>, Pair<String, String>> names = transport.getPrevNext_SFEE_SFEI_names();
 
-                Pair<SFEE, cSFEM_production> inSFEE = serializer.searchSFEEbyName(names.getFirst().getFirst());
-                Pair<SFEE, cSFEM_production> outSFEE = serializer.searchSFEEbyName(names.getSecond().getFirst());
+                Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(names.getFirst().getFirst());
+                Pair<SFEE, cSFEM_production> outSFEE = serializer.getInstance().searchSFEEbyName(names.getSecond().getFirst());
 
                 transport.setupSFEETransportController(
                         inSFEE.getSecond().searchMBbySFEE(inSFEE.getFirst().getName()),
                         outSFEE.getSecond().searchMBbySFEE(outSFEE.getFirst().getName()),
-                        serializer.searchSFEIbySFEE(inSFEE.getFirst(), names.getFirst().getSecond()),
-                        serializer.searchSFEIbySFEE(outSFEE.getFirst(), names.getSecond().getSecond()));
+                        serializer.getInstance().searchSFEIbySFEE(inSFEE.getFirst(), names.getFirst().getSecond()),
+                        serializer.getInstance().searchSFEIbySFEE(outSFEE.getFirst(), names.getSecond().getSecond()));
 
             }
 
@@ -93,7 +91,7 @@ public class C_Homepage {
             // The Mediator should be the new SFEM viewer
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ShopFloor.fxml"));
-            C_ShopFloor.getInstance().loadData(serializer.getC_Production(),serializer.getC_Transport());
+            C_ShopFloor.getInstance().loadData(serializer.getInstance().getC_Production(), serializer.getInstance().getC_Transport());
             C_ShopFloor.getInstance().setLoadedConfig(true);
 
             C_ShopFloor.getInstance().setCurrent_C_SFEM(C_ShopFloor.getInstance().getcSfemProductions().get(0));

@@ -35,9 +35,9 @@
             <String fx:value="transparent" />
          </styleClass>
       </TextField>
-      <Button fx:id="drawConnection" layoutX="1034.0" layoutY="470.0" maxWidth="-Infinity" mnemonicParsing="false" prefWidth="80.0" text="Connect">
+      <Button fx:id="connectionBtn" layoutX="1034.0" layoutY="470.0" maxWidth="-Infinity" mnemonicParsing="false" prefWidth="80.0" text="Connect">
          <tooltip>
-            <Tooltip fx:id="connectBtn" />
+            <Tooltip fx:id="connectionBtnTooltip" />
          </tooltip>
       </Button>
    </children>

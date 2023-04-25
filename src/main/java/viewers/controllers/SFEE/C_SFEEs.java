@@ -29,8 +29,8 @@ import java.util.*;
 public class C_SFEEs extends CM_SFEE implements Initializable {
 
     // For use when load config
-    cSFEE_production cSFEEProduction;
-    ArrayList<ToggleButton> menu_bar = new ArrayList<>();
+    private cSFEE_production cSFEEProduction;
+    private ArrayList<ToggleButton> menu_bar = new ArrayList<>();
 
     public C_SFEEs() {
         super();
@@ -39,6 +39,10 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
     public void setcSFEEProduction(cSFEE_production cSFEEProduction) {
         this.cSFEEProduction = cSFEEProduction;
         loadData();
+    }
+
+    public cSFEE_production getcSFEEProduction() {
+        return cSFEEProduction;
     }
 
     private enum Panes {

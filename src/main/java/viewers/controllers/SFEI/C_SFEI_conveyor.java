@@ -99,7 +99,6 @@ public class C_SFEI_conveyor implements Initializable {
             sfeiConveyorFailures = new C_SFEI_conveyor_failures(io);
             if (editMode && sfeiConveyor.isSupportsFailures()) {
                 sfeiConveyorFailures.activeEditMode(sfeiConveyor);
-                System.out.println("EXECUTOU");
             }
 
             loader.setController(sfeiConveyorFailures);

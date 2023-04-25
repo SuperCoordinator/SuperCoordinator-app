@@ -6,7 +6,10 @@ import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
 import utility.serialize.serializer;
+import viewers.SFEE_transport;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
@@ -21,29 +24,26 @@ public class App {
 
         Scanner in = new Scanner(System.in);
 
-        serializer app = new serializer();
-
         boolean newConfig = false;
-
         try {
             if (newConfig) {
                 // Create new configuration files
                 /* PRODUCTION MODULES*/
                 int nModules = 1, nSFEE = 1;
 
-                if (app.scene.equals(serializer.scenes.CMC_connection)) {
+                if (serializer.getInstance().scene.equals(serializer.scenes.CMC_connection)) {
                     nModules = 1;
                     nSFEE = 2;
-                } else if (app.scene.equals(serializer.scenes.CMC2_con_individual)) {
+                } else if (serializer.getInstance().scene.equals(serializer.scenes.CMC2_con_individual)) {
                     nModules = 2;
                     nSFEE = 1;
-                } else if (app.scene.equals(serializer.scenes.sorting_station)) {
+                } else if (serializer.getInstance().scene.equals(serializer.scenes.sorting_station)) {
                     nModules = 1;
                     nSFEE = 3;
-                } else if (app.scene.equals(serializer.scenes.SS_3CMC)) {
+                } else if (serializer.getInstance().scene.equals(serializer.scenes.SS_3CMC)) {
                     nModules = 2;
                     nSFEE = 3;
-                }else if (app.scene.equals(serializer.scenes.MC_Staudinger)){
+                } else if (serializer.getInstance().scene.equals(serializer.scenes.MC_Staudinger)) {
                     nModules = 1;
                     nSFEE = 1;
                 }
@@ -54,46 +54,51 @@ public class App {
                     cSFEM_production sfemController = new cSFEM_production(sfemProduction);
                     System.out.println("How many SFEE for this Module " + i + "?");
                     sfemController.init_SFEEs(Integer.parseInt(in.nextLine()));
-                    sfemController.init_SFEE_controllers(app.scene.ordinal(), i);
+                    sfemController.init_SFEE_controllers(serializer.getInstance().scene.ordinal(), i);
 
-                    app.getC_Production().add(i, sfemController);
+                    serializer.getInstance().getC_Production().add(i, sfemController);
                 }
 
                 // Open communications
-                for (cSFEM_production production : app.getC_Production()) {
+                for (cSFEM_production production : serializer.getInstance().getC_Production()) {
                     production.openConnections();
 
                 }
 
-/*                app.loadXML_prod();
+/*                serializer.getInstance().loadXML_prod();
                 // Open communications
-                for (cSFEM_production production : app.getProduction().getC_Production()) {
+                for (cSFEM_production production : serializer.getInstance().getProduction().getC_Production()) {
                     production.init_after_XML_loading();
                 }*/
 
 
                 /* TRANSPORT MODULES*/
-/*            System.out.println("How many Transport SFEModules ?");
+/*          System.out.println("How many Transport SFEModules ?");
             String str = in.nextLine();
             int nModules = Integer.parseInt(str);*/
-                if (app.scene.equals(serializer.scenes.sorting_station))
+                if (serializer.getInstance().scene.equals(serializer.scenes.sorting_station))
                     nModules = 0;
-                else if (app.scene.equals(serializer.scenes.SS_3CMC)) {
+                else if (serializer.getInstance().scene.equals(serializer.scenes.SS_3CMC)) {
                     nModules = 3;
-                }else if(app.scene.equals(serializer.scenes.MC_Staudinger)){
+                } else if (serializer.getInstance().scene.equals(serializer.scenes.MC_Staudinger)) {
                     nModules = 0;
-                }
-                else
+                } else
                     nModules = 1;
 
                 for (int i = 0; i < nModules; i++) {
 
-                    SFEM_transport sfemTransport = new SFEM_transport("SFEM_Trans#" + i);
+/*                    SFEM_transport sfemTransport = new SFEM_transport("SFEM_Trans#" + i);
                     cSFEM_transport sfemController = new cSFEM_transport(sfemTransport);
-                    sfemController.init_SFEE_transport();
 
-                    System.out.println(sfemTransport.getName() + " input SFEE? ");
-                    Pair<SFEE, cSFEM_production> inSFEE = app.searchSFEEbyName(in.nextLine());
+                    sfemController.initSFEE_transport_FromTerminal();*/
+                    System.out.print("SFEM transport name ? ");
+                    String sfem_transport_name = in.nextLine();
+
+                    System.out.print("SFEE transport name ? ");
+                    String sfee_transport_name = in.nextLine();
+
+                    System.out.println(sfem_transport_name + " input SFEE? ");
+                    Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
                     System.out.println("Connection Input SFEI?");
                     int index = 0;
                     for (Map.Entry<Integer, SFEI> entry : inSFEE.getFirst().getSFEIs().entrySet()) {
@@ -102,9 +107,8 @@ public class App {
                     }
                     SFEI inSFEI = inSFEE.getFirst().getSFEIbyIndex(Integer.parseInt(in.nextLine()));
 
-
-                    System.out.println(sfemTransport.getName() + " output SFEE? ");
-                    Pair<SFEE, cSFEM_production> outSFEE = app.searchSFEEbyName(in.nextLine());
+                    System.out.println(sfem_transport_name + " output SFEE? ");
+                    Pair<SFEE, cSFEM_production> outSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
                     System.out.println("Connection Output SFEI?");
                     index = 0;
                     for (Map.Entry<Integer, SFEI> entry : outSFEE.getFirst().getSFEIs().entrySet()) {
@@ -112,59 +116,77 @@ public class App {
                         index++;
                     }
                     SFEI outSFEI = outSFEE.getFirst().getSFEIbyIndex(Integer.parseInt(in.nextLine()));
+                    SFEE_transport viewer = new SFEE_transport();
 
-                    sfemController.initSFEETransportController(
-                            inSFEE.getSecond().searchMBbySFEE(inSFEE.getFirst().getName()),
-                            outSFEE.getSecond().searchMBbySFEE(outSFEE.getFirst().getName()),
-                            inSFEE.getFirst(),
-                            outSFEE.getFirst(),
-                            inSFEI,
-                            outSFEI);
+                    String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEI.getOutSensor().getName());
+                    String[] out_SensAct = viewer.associateSensor2Actuator(3, outSFEI.getInSensor().getName());
 
-                    app.getC_Transport().add(i, sfemController);
+                    ArrayList<Object> initController_data = new ArrayList<>();
+                    initController_data.add(0, "SFEI_transport " + i);
+                    initController_data.add(1, inSFEE.getSecond().searchMBbySFEE(inSFEE.getFirst().getName()));
+                    initController_data.add(2, outSFEE.getSecond().searchMBbySFEE(outSFEE.getFirst().getName()));
+                    initController_data.add(3, inSFEE.getFirst());
+                    initController_data.add(4, outSFEE.getFirst());
+                    initController_data.add(5, inSFEI);
+                    initController_data.add(6, outSFEI);
+                    initController_data.addAll(List.of(in_SensAct));
+                    initController_data.addAll(List.of(out_SensAct));
+
+
+                    ArrayList<Object> init_OperationMode_data = new ArrayList<>(List.of(viewer.SFEE_stochasticTime()));
+
+//                    sfemController.init_cSFEETransport(initController_data, init_OperationMode_data);
+//                    serializer.getInstance().getC_Transport().add(i, sfemController);
+                    ArrayList<Object> data = new ArrayList<>();
+                    data.add(0, sfem_transport_name);
+                    data.add(1, sfee_transport_name);
+                    data.addAll(initController_data);
+                    data.addAll(init_OperationMode_data);
+
+                    serializer.getInstance().new_cSFEM_transport(data);
+
                 }
-
-                app.saveXML();
+                serializer.getInstance().saveXML();
 
 //                exit(0);
 
             } else {
                 // Load existing configuration files
                 // Deserialize Production Controllers
-                app.loadXML();
-//                app.loadXML_prod();
+                serializer.getInstance().loadXML();
+//                serializer.getInstance().loadXML_prod();
                 // Open communications
-                for (cSFEM_production production : app.getC_Production()) {
+                for (cSFEM_production production : serializer.getInstance().getC_Production()) {
                     production.init_after_XML_loading();
                 }
 
-                for (cSFEM_production production : app.getC_Production()) {
+                for (cSFEM_production production : serializer.getInstance().getC_Production()) {
                     production.openConnections();
 
                 }
 
                 // Deserialize Transport Controllers
-//                app.loadXML_trans();
+//                serializer.getInstance().loadXML_trans();
                 // Initialize the monitors and controllers with the SFEE objects
-                for (cSFEM_transport transport : app.getC_Transport()) {
+                for (cSFEM_transport transport : serializer.getInstance().getC_Transport()) {
                     transport.init_after_XML_load();
                 }
 
                 // Set up the connections between SFEEs
-                for (cSFEM_transport transport : app.getC_Transport()) {
+                for (cSFEM_transport transport : serializer.getInstance().getC_Transport()) {
                     Pair<Pair<String, String>, Pair<String, String>> names = transport.getPrevNext_SFEE_SFEI_names();
 
-                    Pair<SFEE, cSFEM_production> inSFEE = app.searchSFEEbyName(names.getFirst().getFirst());
-                    Pair<SFEE, cSFEM_production> outSFEE = app.searchSFEEbyName(names.getSecond().getFirst());
+                    Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(names.getFirst().getFirst());
+                    Pair<SFEE, cSFEM_production> outSFEE = serializer.getInstance().searchSFEEbyName(names.getSecond().getFirst());
 
                     transport.setupSFEETransportController(
                             inSFEE.getSecond().searchMBbySFEE(inSFEE.getFirst().getName()),
                             outSFEE.getSecond().searchMBbySFEE(outSFEE.getFirst().getName()),
-                            app.searchSFEIbySFEE(inSFEE.getFirst(), names.getFirst().getSecond()),
-                            app.searchSFEIbySFEE(outSFEE.getFirst(), names.getSecond().getSecond()));
+                            serializer.getInstance().searchSFEIbySFEE(inSFEE.getFirst(), names.getFirst().getSecond()),
+                            serializer.getInstance().searchSFEIbySFEE(outSFEE.getFirst(), names.getSecond().getSecond()));
 
                 }
-//                app.saveXML();
+//                serializer.getInstance().saveXML();
 
             }
 
@@ -172,21 +194,21 @@ public class App {
             in.nextLine();
             // Function for start all simulations
             // 1 SFEM -> having 1SFEE or nSFEEs, is the same because the modbus connection is only 1 per simulation
-            for (cSFEM_production production : app.getC_Production()) {
+            for (cSFEM_production production : serializer.getInstance().getC_Production()) {
                 production.startSimulation();
             }
 
 //        exit(0);
 
 
-            int poolsize = app.getC_Production().size() + app.getC_Transport().size();
+            int poolsize = serializer.getInstance().getC_Production().size() + serializer.getInstance().getC_Transport().size();
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(poolsize);
 
-            for (cSFEM_production production : app.getC_Production()) {
+            for (cSFEM_production production : serializer.getInstance().getC_Production()) {
                 scheduler.scheduleAtFixedRate(production, 0, 100, TimeUnit.MILLISECONDS);
             }
 
-            for (cSFEM_transport transport : app.getC_Transport()) {
+            for (cSFEM_transport transport : serializer.getInstance().getC_Transport()) {
                 scheduler.scheduleAtFixedRate(transport, 0, 100, TimeUnit.MILLISECONDS);
             }
 

@@ -8,6 +8,8 @@ import monitor.transport.SFEM_transport_monitor;
 import org.apache.commons.math3.util.Pair;
 
 import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -36,10 +38,10 @@ public class cSFEM_transport implements Runnable {
         return sfeeTransportController;
     }
 
-    public void init_SFEE_transport() {
+    public void initSFEE_transport_FromTerminal() {
 
         try {
-//            String[] input = viewer.init_SFEE_transport();
+//            String[] input = viewer.initSFEE_transport_FromTerminal();
             String[] input = new String[]{"SFEE_Connection_test", "1", "1", "1"};
             SFEE.communicationOption com = null;
             if (!input[2].equals(input[3])) {
@@ -54,12 +56,25 @@ public class cSFEM_transport implements Runnable {
                     com);
 
             sfem.setSfeeTransport(sfeeTransp);
+
+            // Initialization of SFEM_transport_monitor
+            sfemTransportMonitor = new SFEM_transport_monitor(sfem);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // Here initialization of SFEM_transport_monitor in case it will be needed !
-        sfemTransportMonitor = new SFEM_transport_monitor(sfem);
+    }
 
+    public void init_SFEE_transport(String SFEE_transport_name) {
+        try {
+            SFEE sfeeTransp = new SFEE(SFEE_transport_name,
+                    SFEE.SFEE_type.SIMULATION,
+                    SFEE.SFEE_function.TRANSPORT,
+                    SFEE.communicationOption.MODBUS);
+            sfem.setSfeeTransport(sfeeTransp);
+            sfemTransportMonitor = new SFEM_transport_monitor(sfem);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void init_after_XML_load() {
@@ -67,21 +82,21 @@ public class cSFEM_transport implements Runnable {
         sfemTransportMonitor = new SFEM_transport_monitor(sfem);
     }
 
-    public void initSFEETransportController(modbus inMB, modbus outMB, SFEE inSFEE, SFEE outSFEE, SFEI inSFEI, SFEI outSFEI) {
+    public void init_cSFEETransport(ArrayList<Object> initController_data, ArrayList<Object> initOperationMode_data) {
         try {
             // Create new SFEE_tranport controller instance
             sfeeTransportController = new cSFEE_transport(sfem.getSfeeTransport());
 
             // init that instance
-            sfeeTransportController.cSFEE_transport_init(inSFEE, outSFEE, inMB, outMB, inSFEI, outSFEI);
+            sfeeTransportController.init(initController_data);
 
-            sfeeTransportController.initOperationMode();
+            sfeeTransportController.init_OperationMode(initOperationMode_data);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public Pair<Pair<String, String>,Pair<String, String>> getPrevNext_SFEE_SFEI_names() {
+    public Pair<Pair<String, String>, Pair<String, String>> getPrevNext_SFEE_SFEI_names() {
         return sfeeTransportController.prevNextSFEE();
     }
 

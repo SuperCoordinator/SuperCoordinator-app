@@ -8,18 +8,23 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import models.SFEx_particular.SFEI_transport;
-import org.apache.commons.math3.util.Pair;
+import models.sensor_actuator;
 import utility.utils;
 import viewers.controllers.C_ShopFloor;
-import viewers.controllers.SFEI.C_SFEI_machine;
 import viewers.controllers.SFEI.C_SFEI_transport;
-import viewers.controllers.SFEM.C_SFEM_transport;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class C_SFEE_transport {
 
     private String inSFEI, outSFEI;
     private cSFEE_transport cSFEETransport;
+
+    private boolean editMode;
 
     public C_SFEE_transport() {
     }
@@ -31,15 +36,36 @@ public class C_SFEE_transport {
 
     public void setcSFEETransport(cSFEE_transport cSFEETransport) {
         this.cSFEETransport = cSFEETransport;
-        loadData();
     }
 
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
+    }
+
+    public String getInSFEI() {
+        return inSFEI;
+    }
+
+    public String getOutSFEI() {
+        return outSFEI;
+    }
+
+    /**
+     * To simulate the CM_SFEI_transport
+     */
     private C_SFEI_transport transport;
 
     public void registerC_SFEI_transport(C_SFEI_transport controller) {
         this.transport = controller;
     }
 
+    public C_SFEI_transport getC_SFEI_Transport() {
+        return transport;
+    }
+
+    /**
+     * END !
+     */
 
     @FXML
     private TextField formula;
@@ -64,17 +90,10 @@ public class C_SFEE_transport {
     private Button swap_SFEI_order;
 
     public void initialize() {
-        if (!C_ShopFloor.getInstance().isLoadedConfig()) {
+        if (!editMode) {
             C_SFEI_transport cSfeiTransport = new C_SFEI_transport();
-            cSfeiTransport.setIo();
+            cSfeiTransport.setIO(getIOsBySFEIs(inSFEI), getIOsBySFEIs(outSFEI));
             registerC_SFEI_transport(cSfeiTransport);
-
-        } else {
-            C_SFEI_transport cSfeiTransport = new C_SFEI_transport();
-            cSfeiTransport.setSfeiTransport((SFEI_transport) cSFEETransport.getSfee().getSFEIbyIndex(0));
-            cSfeiTransport.setIo(cSFEETransport.getSfee().getIo());
-            registerC_SFEI_transport(cSfeiTransport);
-
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI/SFEI_transport.fxml"));
                 loader.setController(cSfeiTransport);
@@ -83,12 +102,23 @@ public class C_SFEE_transport {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            Pair<Pair<String, String>, Pair<String, String>> pair = cSFEETransport.prevNextSFEE();
-
-            inSFEI_name.setText(pair.getFirst().getSecond());
-            outSFEI_name.setText(pair.getSecond().getSecond());
+        } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI/SFEI_transport.fxml"));
+                C_ShopFloor.getInstance().getCurrent_C_SFEMTransport().getcSfeeTransport().setEditMode(true);
+                loader.setController(C_ShopFloor.getInstance().getCurrent_C_SFEMTransport().getcSfeeTransport());
+                AnchorPane pane = loader.load();
+                sfei_transport_pane.getChildren().setAll(pane);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            sfee_transport_name.setText(savedValues.get(0));
+            sfee_transport_name.setEditable(false);
+            formula.setText(savedValues.get(1));
         }
+
+        inSFEI_name.setText(inSFEI);
+        outSFEI_name.setText(outSFEI);
 
         infoOperationTime.setText("""
                 Valid variables: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes\\s
@@ -107,12 +137,34 @@ public class C_SFEE_transport {
         });
     }
 
-    private void loadData() {
+    private TreeMap<Integer, sensor_actuator> getIOsBySFEIs(String sfeiName) {
 
-/*        C_SFEI_transport cSfeiTransport = new C_SFEI_transport(cSFEETransport.getSfee().getIo());
-        cSfeiTransport.setSfeiTransport((SFEI_transport) cSFEETransport.getSfee().getSFEIbyIndex(0));
-        registerC_SFEI_transport(cSfeiTransport);*/
+        AtomicReference<TreeMap<Integer, sensor_actuator>> treeMap = new AtomicReference<>(new TreeMap<>());
+        C_ShopFloor.getInstance().getcSfemProductions().forEach(cSfemProduction -> {
+            cSfemProduction.getSfeesControllers().forEach(cSfees -> {
+                cSfees.getcSFEEProduction().getSFEE().getSFEIs().forEach((key, value) -> {
+                    if (value.getName().equals(sfeiName))
+                        treeMap.set(cSfees.getcSFEEProduction().getSFEE().getIo());
+                });
+            });
+        });
+        return treeMap.get();
+    }
 
+    public TextField getSfee_transport_name() {
+        return sfee_transport_name;
+    }
+
+    public TextField getInSFEI_name() {
+        return inSFEI_name;
+    }
+
+    public ArrayList<Object> getFormulaSplitted() {
+        ArrayList<Object> ret = new ArrayList<>();
+        ret.add(0, formula.getText().contains("gauss") ? "gauss" : "linear");
+        utils.getInstance().getCustomCalculator().evalStochasticTimeExpression(formula.getText());
+        ret.addAll(List.of(utils.getInstance().getCustomCalculator().getStochasticTimeFormulaElements()));
+        return ret;
     }
 
     private String errorMsg = "Missing fields: \n";
@@ -133,13 +185,24 @@ public class C_SFEE_transport {
             errorMsg = "Formula is mandatory to define transport time! \n";
             error = true;
         } else if (utils.getInstance().getCustomCalculator().evalStochasticTimeExpression(formula.getText())) {
+            error = true;
             errorMsg = utils.getInstance().getCustomCalculator().errorMsg(formula.getText());
         }
-        return !error;
+        if (!error)
+            setSavedValues();
+
+        return error;
     }
 
     public String getErrorMsg() {
         return errorMsg;
+    }
+
+    private final ArrayList<String> savedValues = new ArrayList<>();
+
+    private void setSavedValues() {
+        savedValues.add(0, sfee_transport_name.getText());
+        savedValues.add(1, formula.getText());
     }
 
 
