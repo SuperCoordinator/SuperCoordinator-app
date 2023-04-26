@@ -13,7 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import net.synedra.validatorfx.Validator;
 import viewers.controllers.C_ShopFloor;
-import viewers.controllers.SFEE.C_SFEEs;
+import viewers.controllers.SFEE.production.C_SFEEs;
 import viewers.controllers.SFEI.C_SFEI_conveyor;
 import viewers.controllers.SFEI.C_SFEI_machine;
 import viewers.mediators.CM_SFEM_production;
@@ -310,7 +310,7 @@ public class C_SFEM_production extends CM_SFEM_production implements Initializab
     private void loadData(C_SFEM_production cSfem) {
         try {
             if (!alreadyLoadedC_SFEM.contains(cSfem.getSfemName())) {
-                System.out.println("Size: " + cSfem.getcSFEMProduction().getSfeeControllers().size());
+//                System.out.println("Size: " + cSfem.getcSFEMProduction().getSfeeControllers().size());
                 for (cSFEE_production cSFEEProduction : cSfem.getcSFEMProduction().getSfeeControllers()) {
 
                     C_SFEEs cSfees = new C_SFEEs();
@@ -322,6 +322,10 @@ public class C_SFEM_production extends CM_SFEM_production implements Initializab
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void create_cSFEM_production(){
+
     }
 
 }

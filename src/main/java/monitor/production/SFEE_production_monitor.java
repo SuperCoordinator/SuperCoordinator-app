@@ -48,7 +48,6 @@ public class SFEE_production_monitor implements Externalizable {
 
     //    @XmlElement
     private SFEE sfee;
-    private utils utility = new utils();
     private boolean[] SFEIs_old_inSensors;
     private boolean[] SFEIs_old_outSensors;
 
@@ -143,7 +142,7 @@ public class SFEE_production_monitor implements Externalizable {
                 boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
                 boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
 
-                if (sfei.isLine_start() && utility.getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
+                if (sfei.isLine_start() && utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
                     part p = new part();
                     if (visionSensorLocation != null) {
                         int visionSensor_number = (int) inputRegsValue.get(visionSensorLocation.get(0).getBit_offset());
@@ -164,7 +163,7 @@ public class SFEE_production_monitor implements Externalizable {
                 }
 
                 if (sfee.getSFEE_function().equals(SFEE.SFEE_function.SORTING_STATION)) {
-                    if (utility.getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
+                    if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
                         // New part arriving at specific conveyor -> result of separation
 
                         // include timestamp of the end of SFEI at index 0
@@ -187,7 +186,7 @@ public class SFEE_production_monitor implements Externalizable {
 
                     }
 
-                    if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                    if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
 
                         if (sfei.getPartsATM().size() > 0) {
                             /* ATENÇAO -> antes tava last(), mas para o caso de a peça ser introduzida, pela P_MORE
@@ -201,7 +200,7 @@ public class SFEE_production_monitor implements Externalizable {
                         }
                     }
 
-                    if (utility.getLogicalOperator().FE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                    if (utils.getInstance().getLogicalOperator().FE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
                         sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
                     }
 
@@ -210,7 +209,7 @@ public class SFEE_production_monitor implements Externalizable {
 
                     // Only register on the end (end of item[i-1] = start of item[i])
                     // If SFEIs outSensor RE, then timestamp that event
-                    if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                    if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
                         part oldest_part = selectedOldestPartInSFEI(sfei_idx);
 
                         if (oldest_part != null) {
@@ -230,7 +229,7 @@ public class SFEE_production_monitor implements Externalizable {
                 if (sfei_idx == 0) {
 
                     boolean sfee_inSensor = (int) sensorsState.get(sfee.getInSensor().getBit_offset()) == 1;
-                    if (utility.getLogicalOperator().RE_detector(sfee_inSensor, SFEIs_old_inSensors[sfei_idx])) {
+                    if (utils.getInstance().getLogicalOperator().RE_detector(sfee_inSensor, SFEIs_old_inSensors[sfei_idx])) {
 
                         int id = 0;
                         if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
@@ -269,7 +268,7 @@ public class SFEE_production_monitor implements Externalizable {
 
                     // Save partDescription along the time
                     boolean sfee_inSensor = (int) sensorsState.get(sfee.getInSensor().getBit_offset()) == 1;
-                    if (utility.getLogicalOperator().RE_detector(sfee_inSensor, SFEIs_old_inSensors[sfei_idx])) {
+                    if (utils.getInstance().getLogicalOperator().RE_detector(sfee_inSensor, SFEIs_old_inSensors[sfei_idx])) {
 
                         int id = 0;
                         if (sfei.getPartsATM().size() > 0) {
@@ -329,7 +328,7 @@ public class SFEE_production_monitor implements Externalizable {
         }*/
 
                     // Shift the part among SFEIs
-                    if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                    if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
                         if (sfei_idx + 1 < sfee.getSFEIs().size()) {
                             // Then it is not in the last SFEI, so move the piece!
                             // remove from the previous
@@ -343,7 +342,7 @@ public class SFEE_production_monitor implements Externalizable {
                     // End of the SFEE, set part produced flag to TRUE
                     if (sfei_idx == sfee.getSFEIs().size() - 1) {
                         boolean sfee_outSensor = (int) sensorsState.get(sfee.getOutSensor().getBit_offset()) == 1;
-                        if (utility.getLogicalOperator().RE_detector(sfee_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                        if (utils.getInstance().getLogicalOperator().RE_detector(sfee_outSensor, SFEIs_old_outSensors[sfei_idx])) {
 
                             if (sfei.getPartsATM().size() > 0) {
                                 /* ATENÇAO -> antes tava last(), mas para o caso de a peça ser introduzida, pela P_MORE
@@ -386,7 +385,7 @@ public class SFEE_production_monitor implements Externalizable {
                 boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
                 boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
 
-                if (utility.getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[idx])) {
+                if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[idx])) {
                     // New part arriving at specific conveyor -> result of separation
 
                     // include timestamp of the end of SFEI at index 0
@@ -408,7 +407,7 @@ public class SFEE_production_monitor implements Externalizable {
 
                 }
                 // when it arrives the outSensor, apply the common procedure
-                if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[idx])) {
+                if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[idx])) {
 
                     if (sfei.getPartsATM().size() > 0) {
 

@@ -58,9 +58,11 @@ public class C_Homepage {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             File file = f_chooser.showOpenDialog(stage);
-            if (file != null)
+/*            if (file != null)
                 System.out.println(file.getPath());
             else
+                throw new RuntimeException("File is Null");*/
+            if (file == null)
                 throw new RuntimeException("File is Null");
 
             serializer.getInstance().loadXML();

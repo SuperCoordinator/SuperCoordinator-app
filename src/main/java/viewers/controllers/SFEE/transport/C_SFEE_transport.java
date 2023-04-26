@@ -1,5 +1,6 @@
-package viewers.controllers.SFEE;
+package viewers.controllers.SFEE.transport;
 
+import controllers.production.cSFEE_production;
 import controllers.transport.cSFEE_transport;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,23 +9,20 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import models.SFEx_particular.SFEI_transport;
+import models.base.SFEI;
 import models.sensor_actuator;
 import utility.utils;
 import viewers.controllers.C_ShopFloor;
 import viewers.controllers.SFEI.C_SFEI_transport;
+import viewers.controllers.SFEM.C_SFEM_production;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.*;
 
 public class C_SFEE_transport {
 
     private String inSFEI, outSFEI;
     private cSFEE_transport cSFEETransport;
-
-    private boolean editMode;
 
     public C_SFEE_transport() {
     }
@@ -36,10 +34,14 @@ public class C_SFEE_transport {
 
     public void setcSFEETransport(cSFEE_transport cSFEETransport) {
         this.cSFEETransport = cSFEETransport;
+        loadData();
     }
 
-    public void setEditMode(boolean editMode) {
-        this.editMode = editMode;
+    private void loadData() {
+        C_SFEI_transport cSfeiTransport = new C_SFEI_transport();
+        cSfeiTransport.setIO(getIOsBySFEIs(cSFEETransport.getPrevSFEI_name()), getIOsBySFEIs(cSFEETransport.getNextSFEI_name()));
+        cSfeiTransport.setSfeiTransport((SFEI_transport) cSFEETransport.getSfee().getSFEIbyIndex(0));
+        registerC_SFEI_transport(cSfeiTransport);
     }
 
     public String getInSFEI() {
@@ -90,7 +92,7 @@ public class C_SFEE_transport {
     private Button swap_SFEI_order;
 
     public void initialize() {
-        if (!editMode) {
+        if (cSFEETransport == null) {
             C_SFEI_transport cSfeiTransport = new C_SFEI_transport();
             cSfeiTransport.setIO(getIOsBySFEIs(inSFEI), getIOsBySFEIs(outSFEI));
             registerC_SFEI_transport(cSfeiTransport);
@@ -105,16 +107,19 @@ public class C_SFEE_transport {
         } else {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEI/SFEI_transport.fxml"));
-                C_ShopFloor.getInstance().getCurrent_C_SFEMTransport().getcSfeeTransport().setEditMode(true);
-                loader.setController(C_ShopFloor.getInstance().getCurrent_C_SFEMTransport().getcSfeeTransport());
+//                C_ShopFloor.getInstance().getCurrent_C_SFEMTransport().getcSfeeTransport().getC_SFEI_Transport().setEditMode(true);
+                loader.setController(C_ShopFloor.getInstance().getCurrent_C_SFEMTransport().getcSfeeTransport().getC_SFEI_Transport());
                 AnchorPane pane = loader.load();
                 sfei_transport_pane.getChildren().setAll(pane);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            sfee_transport_name.setText(savedValues.get(0));
+//            sfee_transport_name.setText(savedValues.get(0));
+//            sfee_transport_name.setEditable(false);
+//            formula.setText(savedValues.get(1));
+            sfee_transport_name.setText(cSFEETransport.getSfee().getName());
             sfee_transport_name.setEditable(false);
-            formula.setText(savedValues.get(1));
+            formula.setText(cSFEETransport.getSavedFormula());
         }
 
         inSFEI_name.setText(inSFEI);
@@ -138,17 +143,19 @@ public class C_SFEE_transport {
     }
 
     private TreeMap<Integer, sensor_actuator> getIOsBySFEIs(String sfeiName) {
-
-        AtomicReference<TreeMap<Integer, sensor_actuator>> treeMap = new AtomicReference<>(new TreeMap<>());
-        C_ShopFloor.getInstance().getcSfemProductions().forEach(cSfemProduction -> {
-            cSfemProduction.getSfeesControllers().forEach(cSfees -> {
-                cSfees.getcSFEEProduction().getSFEE().getSFEIs().forEach((key, value) -> {
-                    if (value.getName().equals(sfeiName))
-                        treeMap.set(cSfees.getcSFEEProduction().getSFEE().getIo());
-                });
-            });
-        });
-        return treeMap.get();
+        System.out.println(sfeiName);
+        TreeMap<Integer, sensor_actuator> treeMap = new TreeMap<>();
+        for (C_SFEM_production cSFEMProduction : C_ShopFloor.getInstance().getcSfemProductions()) {
+            for (cSFEE_production cSFEEProduction : cSFEMProduction.getcSFEMProduction().getSfeeControllers()) {
+                for (Map.Entry<Integer, SFEI> entry : cSFEEProduction.getSFEE().getSFEIs().entrySet()) {
+                    if (entry.getValue().getName().equals(sfeiName)) {
+                        treeMap = cSFEEProduction.getSFEE().getIo();
+                        break;
+                    }
+                }
+            }
+        }
+        return treeMap;
     }
 
     public TextField getSfee_transport_name() {
@@ -159,7 +166,7 @@ public class C_SFEE_transport {
         return inSFEI_name;
     }
 
-    public ArrayList<Object> getFormulaSplitted() {
+    public ArrayList<Object> getFormulaSplit() {
         ArrayList<Object> ret = new ArrayList<>();
         ret.add(0, formula.getText().contains("gauss") ? "gauss" : "linear");
         utils.getInstance().getCustomCalculator().evalStochasticTimeExpression(formula.getText());

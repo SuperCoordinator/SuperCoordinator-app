@@ -1,6 +1,6 @@
 package viewers.mediators;
 
-import viewers.controllers.SFEE.C_SFEEs;
+import viewers.controllers.SFEE.production.C_SFEEs;
 
 
 public interface IMC_SFEM_production {

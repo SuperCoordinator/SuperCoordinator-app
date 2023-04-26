@@ -8,7 +8,8 @@ import java.util.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEE  {
+public class SFEE {
+
     public enum SFEE_type {
         SIMULATION, REAL
     }
@@ -92,8 +93,10 @@ public class SFEE  {
     }
 
     public sensor_actuator getIObyName(String name) {
-
         try {
+            if (name.equalsIgnoreCase("none"))
+                return null;
+
             for (Map.Entry<Integer, sensor_actuator> entry : io.entrySet()) {
                 if (entry.getValue().getName().equalsIgnoreCase(name))
                     return entry.getValue();

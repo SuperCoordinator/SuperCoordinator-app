@@ -53,11 +53,9 @@ public class C_SFEI_conveyor implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (!editMode) {
-            utils utility = new utils();
-
             ArrayList<String> values_str = new ArrayList<>();
 
-            TreeMap<Integer, sensor_actuator> outputs = utility.getSearch().getSensorsOrActuators(io, false);
+            TreeMap<Integer, sensor_actuator> outputs = utils.getInstance().getSearch().getSensorsOrActuators(io, false);
 
             for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
                 values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());

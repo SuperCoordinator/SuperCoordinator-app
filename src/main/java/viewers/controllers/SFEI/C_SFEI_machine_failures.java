@@ -32,15 +32,14 @@ public class C_SFEI_machine_failures implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (!editMode) {
-            utils utility = new utils();
 
-            TreeMap<Integer, sensor_actuator> inputs = utility.getSearch().getSensorsOrActuators(io, true);
+            TreeMap<Integer, sensor_actuator> inputs = utils.getInstance().getSearch().getSensorsOrActuators(io, true);
             ArrayList<String> values_str = new ArrayList<>();
             for (Map.Entry<Integer, sensor_actuator> entry : inputs.entrySet())
                 values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());
             sDoor.setItems(FXCollections.observableArrayList(values_str));
 
-            TreeMap<Integer, sensor_actuator> outputs = utility.getSearch().getSensorsOrActuators(io, false);
+            TreeMap<Integer, sensor_actuator> outputs = utils.getInstance().getSearch().getSensorsOrActuators(io, false);
             values_str.clear();
             for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
                 values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());

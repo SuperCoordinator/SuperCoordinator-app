@@ -1,6 +1,6 @@
 package viewers.mediators;
 
-import viewers.controllers.SFEE.C_SFEE_transport;
+import viewers.controllers.SFEE.transport.C_SFEE_transport;
 
 public interface IMC_SFEM_transport {
 

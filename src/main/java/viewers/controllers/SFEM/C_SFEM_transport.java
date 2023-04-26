@@ -6,7 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import viewers.controllers.C_ShopFloor;
-import viewers.controllers.SFEE.C_SFEE_transport;
+import viewers.controllers.SFEE.transport.C_SFEE_transport;
 import viewers.mediators.CM_SFEM_transport;
 
 public class C_SFEM_transport extends CM_SFEM_transport {
@@ -15,13 +15,9 @@ public class C_SFEM_transport extends CM_SFEM_transport {
     private cSFEM_transport cSFEMTransport;
     private String inSFEI, outSFEI;
 
-    private boolean editMode;
+//    private boolean editMode;
 
     public C_SFEM_transport() {
-    }
-
-    public C_SFEM_transport(String sfemName) {
-        this.sfemName = sfemName;
     }
 
     public C_SFEM_transport(String sfemName, String inSFEI, String outSFEI) {
@@ -33,6 +29,13 @@ public class C_SFEM_transport extends CM_SFEM_transport {
     public C_SFEM_transport(cSFEM_transport cSfemTransport) {
         this.cSFEMTransport = cSfemTransport;
         this.sfemName = cSfemTransport.getSfem().getName();
+        loadData();
+    }
+
+    private void loadData() {
+        C_SFEE_transport cSfeeTransport = new C_SFEE_transport(cSFEMTransport.getSfeeTransportController().getPrevSFEI_name(), cSFEMTransport.getSfeeTransportController().getNextSFEI_name());
+        cSfeeTransport.setcSFEETransport(cSFEMTransport.getSfeeTransportController());
+        registerC_SFEE_transport(cSfeeTransport);
     }
 
 
@@ -48,16 +51,17 @@ public class C_SFEM_transport extends CM_SFEM_transport {
         this.sfemName = sfemName;
     }
 
-    public void setEditMode(boolean editMode) {
+/*    public void setEditMode(boolean editMode) {
         this.editMode = editMode;
-    }
+    }*/
 
     @FXML
     private Pane sfee_transport_pane;
 
     public void initialize() {
 
-        if (!editMode) {
+        if (/*C_ShopFloor.getInstance().getCurrent_C_SFEMTransport().*/getcSfeeTransport() == null) {
+            System.out.println(inSFEI + " " + outSFEI);
             C_SFEE_transport cSfeeTransport = new C_SFEE_transport(inSFEI, outSFEI);
             registerC_SFEE_transport(cSfeeTransport);
             try {
@@ -71,7 +75,7 @@ public class C_SFEM_transport extends CM_SFEM_transport {
         } else {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SFEE/SFEE_transport.fxml"));
-                C_ShopFloor.getInstance().getCurrent_C_SFEMTransport().getcSfeeTransport().setEditMode(true);
+//                C_ShopFloor.getInstance().getCurrent_C_SFEMTransport().getcSfeeTransport().setEditMode(true);
                 loader.setController(C_ShopFloor.getInstance().getCurrent_C_SFEMTransport().getcSfeeTransport());
                 AnchorPane pane = loader.load();
                 sfee_transport_pane.getChildren().setAll(pane);

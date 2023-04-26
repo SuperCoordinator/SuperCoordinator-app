@@ -1,7 +1,6 @@
 package viewers.mediators;
 
-import models.base.SFEE;
-import viewers.controllers.SFEE.*;
+import viewers.controllers.SFEE.production.*;
 
 public interface IMC_SFEE {
 

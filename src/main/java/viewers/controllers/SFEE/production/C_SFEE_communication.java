@@ -1,4 +1,4 @@
-package viewers.controllers.SFEE;
+package viewers.controllers.SFEE.production;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,8 +31,6 @@ public class C_SFEE_communication implements Initializable {
 
     private SFEE.communicationOption communicationOption;
     private String[] communicationFields;
-    private final utils utility = new utils();
-
     public C_SFEE_communication() {
         this.savedValues = new ArrayList<>();
     }
@@ -164,7 +162,7 @@ public class C_SFEE_communication implements Initializable {
         file = f_chooser.showOpenDialog(stage);
         if (file != null) {
             System.out.println(file.getPath());
-            io = utility.getReader().readModbusTags(file.getPath(), 0, false);
+            io = utils.getInstance().getReader().readModbusTags(file.getPath(), 0, false);
             updateTables();
         }
     }
@@ -197,10 +195,10 @@ public class C_SFEE_communication implements Initializable {
     }
 
     private void updateTables() {
-        ObservableList<sensor_actuator> list_in = FXCollections.observableArrayList(utility.getSearch().getSensorsOrActuators(io, true).values());
+        ObservableList<sensor_actuator> list_in = FXCollections.observableArrayList(utils.getInstance().getSearch().getSensorsOrActuators(io, true).values());
         inputsTable.setItems(list_in);
 
-        ObservableList<sensor_actuator> list_out = FXCollections.observableArrayList(utility.getSearch().getSensorsOrActuators(io, false).values());
+        ObservableList<sensor_actuator> list_out = FXCollections.observableArrayList(utils.getInstance().getSearch().getSensorsOrActuators(io, false).values());
         outputsTable.setItems(list_out);
 
     }

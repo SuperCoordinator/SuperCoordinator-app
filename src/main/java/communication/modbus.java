@@ -46,7 +46,6 @@ public class modbus implements Runnable {
     private final AtomicBoolean hRegUpdated = new AtomicBoolean(false);
     private AtomicIntegerArray holdingRegisters;
 
-    private final utils util = new utils();
     private boolean configured = false;
 
     private void connect() {
@@ -97,7 +96,7 @@ public class modbus implements Runnable {
 
     private void setAtomicArrays() {
 
-        int[] nIOperAddrType = util.getSearch().getLargestOffsetperAddressType(io);
+        int[] nIOperAddrType = utils.getInstance().getSearch().getLargestOffsetperAddressType(io);
 
         if (nIOperAddrType[0] > 0)
             coils = new AtomicIntegerArray(nIOperAddrType[0]);
@@ -111,7 +110,7 @@ public class modbus implements Runnable {
     }
 
     private void detectInverseLogicIO() {
-        ArrayList<sensor_actuator> inputs = new ArrayList<>(util.getSearch().getSensorsOrActuators(io, true).values());
+        ArrayList<sensor_actuator> inputs = new ArrayList<>(utils.getInstance().getSearch().getSensorsOrActuators(io, true).values());
         inputs.removeIf(sensorActuator -> !sensorActuator.getAddressType().equals(sensor_actuator.AddressType.DISCRETE_INPUT));
 
         if (inputs.size() > 0) {
@@ -120,7 +119,7 @@ public class modbus implements Runnable {
                 inputs_invLogic[i] = inputs.get(i).getInvLogic();
             }
         }
-        ArrayList<sensor_actuator> outputs = new ArrayList<>(util.getSearch().getSensorsOrActuators(io, false).values());
+        ArrayList<sensor_actuator> outputs = new ArrayList<>(utils.getInstance().getSearch().getSensorsOrActuators(io, false).values());
         outputs.removeIf(sensorActuator -> !sensorActuator.getAddressType().equals(sensor_actuator.AddressType.COIL));
 
         if (outputs.size() > 0) {

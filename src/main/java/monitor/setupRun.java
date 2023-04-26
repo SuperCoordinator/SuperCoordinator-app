@@ -12,12 +12,11 @@ public class setupRun implements Callable {
 
     private final SFEI sfei;
     private final modbus mb;
-    private final utils utility;
 
     public setupRun(SFEI sfei, modbus mb) {
         this.sfei = sfei;
         this.mb = mb;
-        this.utility = new utils();
+
     }
 
     @Override
@@ -45,7 +44,7 @@ public class setupRun implements Callable {
         int obj = (int) mb.readCoils().get(sfei.getInSensor().getBit_offset());
         boolean sStart = (obj == 1);
 
-        if (utility.getLogicalOperator().RE_detector(sStart, old_sStart)) {
+        if (utils.getInstance().getLogicalOperator().RE_detector(sStart, old_sStart)) {
             if (start_t == null) {
                 start_t = Instant.now();
             }
@@ -60,7 +59,7 @@ public class setupRun implements Callable {
 //        int obj = (int) mb.readState(sfei.getOutSensor()).get(0);
         int obj = (int) mb.readCoils().get(sfei.getOutSensor().getBit_offset());
         boolean sEnd = (obj == 1);
-        if (utility.getLogicalOperator().RE_detector(sEnd, old_sEnd)) {
+        if (utils.getInstance().getLogicalOperator().RE_detector(sEnd, old_sEnd)) {
             if (start_t != null) {
 
                 Instant end_t = Instant.now();

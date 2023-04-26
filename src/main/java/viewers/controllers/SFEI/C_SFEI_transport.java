@@ -18,7 +18,7 @@ public class C_SFEI_transport {
     private TreeMap<Integer, sensor_actuator> inSFEI_io;
     private TreeMap<Integer, sensor_actuator> outSFEI_io;
 
-    private boolean editMode;
+//    private boolean editMode;
 
     public C_SFEI_transport() {
     }
@@ -29,9 +29,9 @@ public class C_SFEI_transport {
         this.outSFEI_io = outIO;
     }
 
-    public void setEditMode(boolean editMode) {
-        this.editMode = editMode;
-    }
+//    public void setEditMode(boolean editMode) {
+//        this.editMode = editMode;
+//    }
 
     public SFEI_transport getSfeiTransport() {
         return sfeiTransport;
@@ -51,38 +51,29 @@ public class C_SFEI_transport {
     private ComboBox<String> emit_part_bit;
 
     public void initialize() {
-        if (!editMode) {
-            ArrayList<String> values_str = new ArrayList<>();
-            values_str.add("none");
-            TreeMap<Integer, sensor_actuator> outputs = utils.getInstance().getSearch().getSensorsOrActuators(inSFEI_io, false);
-            for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
-                values_str.add(entry.getValue().getName());
-            remover_bit.setItems(FXCollections.observableArrayList(values_str));
 
-            values_str.clear();
-            values_str.add("none");
-            outputs = utils.getInstance().getSearch().getSensorsOrActuators(outSFEI_io, false);
-            for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
-                values_str.add(entry.getValue().getName());
-            emit_bit.setItems(FXCollections.observableArrayList(values_str));
-            emit_part_bit.setItems(FXCollections.observableArrayList(values_str));
-            emit_base_bit.setItems(FXCollections.observableArrayList(values_str));
+        ArrayList<String> values_str = new ArrayList<>();
+        values_str.add("none");
+        TreeMap<Integer, sensor_actuator> outputs = utils.getInstance().getSearch().getSensorsOrActuators(inSFEI_io, false);
+        for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
+            values_str.add(entry.getValue().getName());
+        remover_bit.setItems(FXCollections.observableArrayList(values_str));
 
-        } else {
-            // load saved values
-            if (sfeiTransport == null) {
-                remover_bit.setValue(savedValues.get(0));
-                emit_bit.setValue(savedValues.get(1));
-                emit_part_bit.setValue(savedValues.get(2));
-                emit_base_bit.setValue(savedValues.get(3));
-            } else {
-                remover_bit.setValue(sfeiTransport.getaRemover().getName());
-                emit_bit.setValue(sfeiTransport.getaEmitter().getName());
-                emit_part_bit.setValue(sfeiTransport.getaEmitterPart().getName());
-                emit_base_bit.setValue(sfeiTransport.getaEmitterBase().getName());
+        values_str.clear();
+        values_str.add("none");
+        outputs = utils.getInstance().getSearch().getSensorsOrActuators(outSFEI_io, false);
+        for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
+            values_str.add(entry.getValue().getName());
+        emit_bit.setItems(FXCollections.observableArrayList(values_str));
+        emit_part_bit.setItems(FXCollections.observableArrayList(values_str));
+        emit_base_bit.setItems(FXCollections.observableArrayList(values_str));
 
-            }
 
+        if (sfeiTransport != null) {
+            remover_bit.setValue(sfeiTransport.getaRemover().getName());
+            emit_bit.setValue(sfeiTransport.getaEmitter().getName());
+            emit_part_bit.setValue(sfeiTransport.getaEmitterPart().getName());
+            emit_base_bit.setValue(sfeiTransport.getaEmitterBase().getName());
         }
     }
 

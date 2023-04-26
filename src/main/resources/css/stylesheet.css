@@ -68,12 +68,12 @@
 }
 
 .comboBox_default {
-    -fx-border-width : 3;
+/*    -fx-border-width : 3;
     -fx-background-color : transparent;
     -fx-border-color: #d9d9d9;
     -fx-border-radius:5;
     -fx-font-size:14px;
-    -fx-text-fill:#FFFFFF;
+    -fx-text-fill:#FFFFFF;*/
 }
 
 .date_picker{
@@ -81,8 +81,8 @@
     -fx-font-size:14px;
 }
 
-.button_default:hover, .button_default:focused, .button_default:selected, .button_default:pressed,
- .comboBox_default:hover, .comboBox_default:focused, .comboBox_default:selected{
+.button_default:hover, .button_default:focused, .button_default:selected, .button_default:pressed/*,
+ .comboBox_default:hover, .comboBox_default:focused, .comboBox_default:selected*/{
     -fx-background-color : #d9d9d9;
     -fx-background-radius:10;
     -fx-text-fill: #000000;

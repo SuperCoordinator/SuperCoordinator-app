@@ -63,8 +63,6 @@ public class stochasticTime {
     private final part part;
     private final long delay;
 
-    private final utils utility;
-
     public stochasticTime(SFEI sfei, part part, timeOptions timeType, String[] formulas, int minSFEEOperationTime) {
 
         if (sfei.getSfeiType().equals(SFEI.SFEI_type.CONVEYOR)) {
@@ -99,7 +97,6 @@ public class stochasticTime {
             this.mean = formulas[0];
             this.std_dev = " ";
         }
-        this.utility = new utils();
 
         this.delay = calculateDelay(minSFEEOperationTime);
         this.smConv = SM_conv.INIT;
@@ -155,7 +152,7 @@ public class stochasticTime {
                 case INIT -> {
                     sensor = (int) sensorsState.get(sfeiConveyor.getsRemover().getBit_offset()) == 1;
                     if (sfeiConveyor.getPartsATM().size() > 0) {
-                        if (sfeiConveyor.getPartsATM().first().getId() == part.getId() && utility.getLogicalOperator().RE_detector(sensor, old_sRemover)) {
+                        if (sfeiConveyor.getPartsATM().first().getId() == part.getId() && utils.getInstance().getLogicalOperator().RE_detector(sensor, old_sRemover)) {
                             smConv = SM_conv.REMOVING;
                         }
                     }
@@ -168,7 +165,7 @@ public class stochasticTime {
                         isRemoverON = true;
                     }
                     sensor = (int) sensorsState.get(sfeiConveyor.getsRemover().getBit_offset()) == 1;
-                    if (utility.getLogicalOperator().FE_detector(sensor, old_sRemover)) {
+                    if (utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sRemover)) {
                         actuatorsState.set(sfeiConveyor.getaRemover().getBit_offset(), 0);
                         isRemoverON = false;
                         smConv = SM_conv.WAITING;
@@ -186,7 +183,7 @@ public class stochasticTime {
                         isEmitterON = true;
                     }
                     sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().getBit_offset()) == 1;
-                    if (sfeiConveyor.getPartsATM().last().getId() == part.getId() && utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+                    if (sfeiConveyor.getPartsATM().last().getId() == part.getId() && utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                         actuatorsState.set(sfeiConveyor.getaEmitter().getBit_offset(), 0);
                         smConv = SM_conv.END;
                     }
@@ -212,7 +209,7 @@ public class stochasticTime {
             case WAITING -> {
                 boolean b_machine_door = (int) sensorsState.get(sfeiMachine.getsDoor().getBit_offset()) == 1;
                 if (sfeiMachine.getPartsATM().size() > 0) {
-                    if (sfeiMachine.getPartsATM().first().getId() == part.getId() && utility.getLogicalOperator().FE_detector(b_machine_door, old_sMachine_door)) {
+                    if (sfeiMachine.getPartsATM().first().getId() == part.getId() && utils.getInstance().getLogicalOperator().FE_detector(b_machine_door, old_sMachine_door)) {
                         smMach = SM_mach.LOADING;
                     }
                 }
@@ -220,7 +217,7 @@ public class stochasticTime {
             }
             case LOADING -> {
                 boolean b_machine_door = (int) sensorsState.get(sfeiMachine.getsDoor().getBit_offset()) == 1;
-                if (utility.getLogicalOperator().RE_detector(b_machine_door, old_sMachine_door)) {
+                if (utils.getInstance().getLogicalOperator().RE_detector(b_machine_door, old_sMachine_door)) {
                     smMach = SM_mach.UNLOADING;
                     safety_margin_start = Instant.now();
                 }
@@ -265,7 +262,7 @@ public class stochasticTime {
             sfei = sfeiTransport;
         }
 
-        double m = utility.getCustomCalculator().calcExpression(mean,
+        double m = utils.getInstance().getCustomCalculator().calcExpression(mean,
                 sfei.getnPiecesMoved(),
                 (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
                 (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
@@ -273,7 +270,7 @@ public class stochasticTime {
         double total_Time;
         if (timeType.equals(timeOptions.GAUSSIAN)) {
 
-            double dev = utility.getCustomCalculator().calcExpression(std_dev,
+            double dev = utils.getInstance().getCustomCalculator().calcExpression(std_dev,
                     sfei.getnPiecesMoved(),
                     (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
                     (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
@@ -321,7 +318,7 @@ public class stochasticTime {
 
                     }
                     sensor = (int) discreteInputs_inMB.get(sfeiTransport.getInSensor().getBit_offset()) == 1;
-                    if (utility.getLogicalOperator().FE_detector(sensor, old_sRemover)) {
+                    if (utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sRemover)) {
                         coils_inMB.set(sfeiTransport.getaRemover().getBit_offset(), 0);
                         isRemoverON = false;
                         smTrans = SM_trans.WAITING;
@@ -350,7 +347,7 @@ public class stochasticTime {
                         smTrans = SM_trans.END;
                     }
                 } else*/
-                    if (/*sfeiTransport.getPartsATM().size() == 0 &&*/ utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+                    if (/*sfeiTransport.getPartsATM().size() == 0 &&*/ utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                         // The part was removed in this cycle by the SFEM_monitor, by the SFEI outSensor Activation
                         // To prove it, the execution of the following is done because the FE_detector
                         coilsState_outMB.set(sfeiTransport.getaEmitter().getBit_offset(), 0);

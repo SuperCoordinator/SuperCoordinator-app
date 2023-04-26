@@ -33,12 +33,6 @@ public class csv_reader {
                 // TreeMap with object name as KEY and fieldObj as VALUE
                 treeMap.put(treeMap.size(), createObj(row));
 
-                if (dbg) {
-                    for (String cell : row) {
-                        System.out.print(cell + "\t");
-                    }
-                    System.out.println();
-                }
             }
             System.out.println("*** All imported IOs ***");
             for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
@@ -47,20 +41,20 @@ public class csv_reader {
             System.out.println("From the IO which are in inverse logic?");
 
             Scanner in = new Scanner(System.in);
+            if (dbg) {
+                System.out.println("Enter following the example pattern: 2,3,1,5");
+                String input = in.nextLine();
 
-            System.out.println("Enter following the example pattern: 2,3,1,5");
-            String input = in.nextLine();
-
-            //String input = "6,7,8,9,10,12,13";
+                //String input = "6,7,8,9,10,12,13";
 //            String input = "12";
 
+                System.out.println(input);
 
-            System.out.println(input);
-            for (String str : input.split(",")) {
-                int key = Integer.parseInt(str);
-                treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
+                for (String str : input.split(",")) {
+                    int key = Integer.parseInt(str);
+                    treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
+                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

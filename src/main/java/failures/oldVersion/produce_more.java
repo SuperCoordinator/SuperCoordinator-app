@@ -3,6 +3,7 @@ package failures.oldVersion;
 import models.SFEx_particular.SFEI_conveyor;
 import models.base.part;
 import models.partDescription;
+import utility.utils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -65,7 +66,7 @@ public class produce_more extends failure {
             }
             case WAITING -> {
                 boolean sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().getBit_offset()) == 1;
-                if (getUtility().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+                if (utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                     int id = 0;
                     if (sfeiConveyor.getPartsATM().size() > 0) {
                         if (sfeiConveyor.getPartsATM().last().getId() >= sfeiConveyor.getnPiecesMoved()) {

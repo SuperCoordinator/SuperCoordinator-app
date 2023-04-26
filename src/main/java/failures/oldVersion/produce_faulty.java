@@ -1,6 +1,7 @@
 package failures.oldVersion;
 
 import models.SFEx_particular.SFEI_machine;
+import utility.utils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -65,7 +66,7 @@ public class produce_faulty extends failure {
             case WAITING_PART_POSITIONING -> {
                 boolean b_machine_door = (int) sensorsState.get(sfeiMachine.getsDoor().getBit_offset()) == 1;
                 if (sfeiMachine.getPartsATM().size() > 0) {
-                    if (getUtility().getLogicalOperator().FE_detector(b_machine_door, old_sMachine_door)) {
+                    if (utils.getInstance().getLogicalOperator().FE_detector(b_machine_door, old_sMachine_door)) {
                         state = SM.INJECT_FAILURE;
                     }
                 }

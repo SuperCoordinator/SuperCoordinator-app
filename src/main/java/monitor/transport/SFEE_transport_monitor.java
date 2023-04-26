@@ -20,7 +20,6 @@ public class SFEE_transport_monitor {
     private SFEE sfee;
     private SFEI previousSFEI;
     private SFEI nextSFEI;
-    private utils utility = new utils();
 
     private boolean SFEI_old_inSensors = false;
     private boolean SFEI_old_outSensors = false;
@@ -105,7 +104,7 @@ public class SFEE_transport_monitor {
                     }
 
 //                boolean sfee_inSensor = (int) sensorsState.get(sfee.getInSensor().bit_offset()) == 1;
-                } else if (utility.getLogicalOperator().RE_detector(b_inSensor, SFEI_old_inSensors)) {
+                } else if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEI_old_inSensors)) {
                     if (previousSFEI.getPartsATM().size() > 0) {
                         if (previousSFEI.getPartsATM().first().isWaitTransport() && previousSFEI.getPartsATM().first().isProduced()) {
                             part p = previousSFEI.getPartsATM().pollFirst();
@@ -130,7 +129,7 @@ public class SFEE_transport_monitor {
 
                 // Only register on the end (end of item[i-1] = start of item[i])
                 // If SFEIs outSensor RE, then timestamp that event
-                if (utility.getLogicalOperator().RE_detector(b_outSensor, SFEI_old_outSensors)) {
+                if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEI_old_outSensors)) {
                     if (sfei.getValue().getPartsATM().size() > 0) {
                         // This operation of concat is faster than + operation
                         String itemName = sfei.getValue().getName();
@@ -148,7 +147,7 @@ public class SFEE_transport_monitor {
 
 
                 boolean sfee_outSensor = (int) sensorsState.get(1).get(sfee.getOutSensor().getBit_offset()) == 1;
-                if (utility.getLogicalOperator().RE_detector(sfee_outSensor, SFEI_old_outSensors)) {
+                if (utils.getInstance().getLogicalOperator().RE_detector(sfee_outSensor, SFEI_old_outSensors)) {
                     if (sfei.getValue().getPartsATM().size() > 0) {
                         part p = sfei.getValue().getPartsATM().first();
                         // setProduced(FALSE)

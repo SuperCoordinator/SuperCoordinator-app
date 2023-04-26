@@ -38,7 +38,6 @@ public class cSFEE_production {
     private SFEE_failures2 sfeeFailures2;
 
     private viewers.SFEE viewer = new viewers.SFEE();
-    private utils utility = new utils();
 
     public cSFEE_production() {
     }
@@ -568,7 +567,7 @@ public class cSFEE_production {
      ************************************ */
 
     public void importIO(String file_path, int scene) {
-        sfee.setIo(utility.getReader().readModbusTags(file_path, scene, false));
+        sfee.setIo(utils.getInstance().getReader().readModbusTags(file_path, scene, true));
 //        printAllIO();
     }
 

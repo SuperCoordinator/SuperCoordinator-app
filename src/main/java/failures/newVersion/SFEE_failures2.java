@@ -25,7 +25,6 @@ public class SFEE_failures2  {
     }
 
     private SM state;
-    //    @XmlElement
     private SFEE sfee;
     private LinkedList<stochasticTime> stochasticTimeTasks = new LinkedList<>();
     @XmlElement

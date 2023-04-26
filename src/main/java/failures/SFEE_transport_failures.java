@@ -24,7 +24,6 @@ public class SFEE_transport_failures  {
     }
 
     private SM state, old_state;
-    //    @XmlElement
     private SFEE sfee;
 
     private stochasticTime stochasticTimeTask;
@@ -43,6 +42,14 @@ public class SFEE_transport_failures  {
     }
     public void setSfee(SFEE sfee) {
         this.sfee = sfee;
+    }
+
+    public stochasticTime.timeOptions getStochasticType() {
+        return stochasticType;
+    }
+
+    public String[] getStochasticFormulas() {
+        return stochasticFormulas;
     }
 
     private boolean first_exe = true;

@@ -48,9 +48,7 @@ public class C_SFEI_machine implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (!editMode) {
-            utils utility = new utils();
-
-            TreeMap<Integer, sensor_actuator> outputs = utility.getSearch().getSensorsOrActuators(io, false);
+            TreeMap<Integer, sensor_actuator> outputs = utils.getInstance().getSearch().getSensorsOrActuators(io, false);
             ArrayList<String> values_str = new ArrayList<>();
             for (Map.Entry<Integer, sensor_actuator> entry : outputs.entrySet())
                 values_str.add(entry.getValue().getName());
@@ -159,11 +157,11 @@ public class C_SFEI_machine implements Initializable {
     }
 
     private sensor_actuator search_sensor_actuator(ComboBox<String> comboBox) {
-        utils utils = new utils();
+
         if (comboBox.getValue() == null)
             return null;
         else
-            return utils.getSearch().getIObyName(comboBox.getValue(), io);
+            return utils.getInstance().getSearch().getIObyName(comboBox.getValue(), io);
     }
 
 

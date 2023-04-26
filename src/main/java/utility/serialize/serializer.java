@@ -55,12 +55,10 @@ public class serializer {
 
     public void saveXML() {
         try {
-
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(serializable, new File(filePath + ".xml"));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,7 +68,6 @@ public class serializer {
         try {
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-
             serializable = (utility.serialize.serializable) unmarshaller.unmarshal(new FileReader(filePath + ".xml"));
 
         } catch (Exception e) {
@@ -79,31 +76,40 @@ public class serializer {
     }
 
     public void new_cSFEM_transport(ArrayList<Object> data) {
+        try {
+            SFEM_transport sfemTransport = new SFEM_transport((String) data.get(0));
+            cSFEM_transport sfemController = new cSFEM_transport(sfemTransport);
 
-        SFEM_transport sfemTransport = new SFEM_transport((String) data.get(0));
-        cSFEM_transport sfemController = new cSFEM_transport(sfemTransport);
+            sfemController.init_SFEE_transport((String) data.get(1));
 
-        sfemController.init_SFEE_transport((String) data.get(1));
+            // Perform searches for SFEIs and SFEEs objects based on the elements name
+            Pair<SFEE, SFEI> in = searchSFEE_SFEIbySFEI_name((String) data.get(7));
+            Pair<SFEE, SFEI> out = searchSFEE_SFEIbySFEI_name((String) data.get(8));
 
-        // Perform searches for SFEIs and SFEEs objects based on the elements name
-        Pair<SFEE, SFEI> in = searchSFEE_SFEIbySFEI_name((String) data.get(7));
-        Pair<SFEE, SFEI> out = searchSFEE_SFEIbySFEI_name((String) data.get(8));
+            data.set(5, in.getFirst());
+            data.set(6, out.getFirst());
+            data.set(7, in.getSecond());
+            data.set(8, out.getSecond());
 
-        data.set(5, in.getFirst());
-        data.set(6, out.getFirst());
-        data.set(7, in.getSecond());
-        data.set(8, out.getSecond());
+            sfemController.init_cSFEETransport(new ArrayList<>(data.subList(2, 13)), new ArrayList<>(data.subList(14, data.size())));
 
-        sfemController.init_cSFEETransport(new ArrayList<>(data.subList(2, 13)), new ArrayList<>(data.subList(14, data.size())));
+            // Add if not exist or update if exists
+            int i;
+            for (i = 0; i < serializer.getInstance().getC_Transport().size(); i++) {
+                if (serializer.getInstance().getC_Transport().removeIf(next -> next.getSfem().getName().equals(data.get(0)))) {
+                    serializer.getInstance().getC_Transport().add(i, sfemController);
+                    System.out.println("Updated C_Transport");
+                    break;
+                }
+            }
 
-        // Add if not exist or update if exists
-        int i = 0;
-        for (i = 0; i < serializer.getInstance().getC_Transport().size(); i++) {
-            if(serializer.getInstance().getC_Transport().removeIf(next -> next.getSfem().getName().equals(data.get(0))))
-                serializer.getInstance().getC_Transport().add(i,sfemController);
+            if (i == serializer.getInstance().getC_Transport().size()) {
+                serializer.getInstance().getC_Transport().add(serializer.getInstance().getC_Transport().size() - 1, sfemController);
+                System.out.println("Created new C_Transport");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (i == serializer.getInstance().getC_Transport().size() - 1)
-            serializer.getInstance().getC_Transport().add(serializer.getInstance().getC_Transport().size() - 1, sfemController);
 
     }
 

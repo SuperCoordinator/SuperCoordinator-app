@@ -63,6 +63,17 @@ public class cSFEE_transport {
         return nextSFEI_name;
     }
 
+    public String getSavedFormula() {
+
+        String reBuiltFormula;
+        if (sfeeFailures.getStochasticType().equals(stochasticTime.timeOptions.LINEAR))
+            reBuiltFormula = "linear [ " + sfeeFailures.getStochasticFormulas()[0] + "]";
+        else
+            reBuiltFormula = "gauss [ " + sfeeFailures.getStochasticFormulas()[0] + "; " + sfeeFailures.getStochasticFormulas()[1] + "]";
+
+        return reBuiltFormula;
+    }
+
     public void init(ArrayList<Object> data) {
 
         SFEE inSFEE = (SFEE) data.get(3);
@@ -136,7 +147,6 @@ public class cSFEE_transport {
     public void init_OperationMode(ArrayList<Object> data) {
 
 //        String[] sfeeTime = viewer.SFEE_stochasticTime();
-        System.out.println(Arrays.toString(data.toArray()));
         String operator = (String) data.get(0);
         String mean = (String) data.get(1);
         String dev = (String) data.get(2);

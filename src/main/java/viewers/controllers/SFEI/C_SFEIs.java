@@ -14,9 +14,9 @@ import models.SFEx_particular.SFEI_machine;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
-import utility.utils;
 import viewers.controllers.C_ShopFloor;
 import viewers.mediators.CM_SFEI;
+import utility.utils;
 
 import java.net.URL;
 import java.time.Instant;
@@ -82,7 +82,6 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
         else
             title.setText("New Shop Floor Educational Item");
 
-        utils utility = new utils();
 
         SFEI.SFEI_type[] values = SFEI.SFEI_type.values();
         ArrayList<String> values_str = new ArrayList<>();
@@ -92,7 +91,7 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
 
 
         values_str.clear();
-        TreeMap<Integer, sensor_actuator> inputs = utility.getSearch().getSensorsOrActuators(io, true);
+        TreeMap<Integer, sensor_actuator> inputs = utils.getInstance().getSearch().getSensorsOrActuators(io, true);
         for (Map.Entry<Integer, sensor_actuator> entry : inputs.entrySet())
             values_str.add(/*entry.getValue().getBit_offset() + " - " +*/ entry.getValue().getName());
         input_sensor.setItems(FXCollections.observableArrayList(values_str));
@@ -219,8 +218,6 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
         }
     }
 
-    private final utils utility = new utils();
-
     private String errorMsg = "Missing fields: \n";
 
     public boolean verifyFields() {
@@ -318,8 +315,8 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
                 SFEI_conveyor newObj = new SFEI_conveyor(
                         sfeiName.getText(),
                         SFEI.SFEI_type.CONVEYOR,
-                        utility.getSearch().getIObyName(input_sensor.getValue(), io),
-                        utility.getSearch().getIObyName(output_sensor.getValue(), io),
+                        utils.getInstance().getSearch().getIObyName(input_sensor.getValue(), io),
+                        utils.getInstance().getSearch().getIObyName(output_sensor.getValue(), io),
                         Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
                         Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
                         sfee_type.equals(SFEE.SFEE_type.SIMULATION),
@@ -351,8 +348,8 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
                         sfeiName.getText(),
                         SFEI.SFEI_type.MACHINE,
                         cSfeiMachine.getPart_type(),
-                        utility.getSearch().getIObyName(input_sensor.getValue(), io),
-                        utility.getSearch().getIObyName(output_sensor.getValue(), io),
+                        utils.getInstance().getSearch().getIObyName(input_sensor.getValue(), io),
+                        utils.getInstance().getSearch().getIObyName(output_sensor.getValue(), io),
                         Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
                         Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
                         sfee_type.equals(SFEE.SFEE_type.SIMULATION),
