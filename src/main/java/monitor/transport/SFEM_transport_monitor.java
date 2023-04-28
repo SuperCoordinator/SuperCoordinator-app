@@ -16,13 +16,8 @@ import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-//@XmlRootElement(name = "SFEM_trans_monitor")
-//@XmlRootElement
-public class SFEM_transport_monitor extends SFEM_monitor {
 
-    public SFEM_transport_monitor() {
-        super();
-    }
+public class SFEM_transport_monitor extends SFEM_monitor {
 
     public SFEM_transport_monitor(SFEM sfem) {
         super(sfem);

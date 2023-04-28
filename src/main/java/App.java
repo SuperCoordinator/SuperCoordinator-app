@@ -1,17 +1,16 @@
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
+import controllers.warehouse.cSFEM_warehouse;
 import models.SFEx_particular.SFEM_production;
 import models.SFEx_particular.SFEM_transport;
+import models.SFEx_particular.SFEM_warehouse;
 import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
 import utility.serialize.serializer;
 import viewers.SFEE_transport;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,9 +23,17 @@ public class App {
 
         Scanner in = new Scanner(System.in);
 
-        boolean newConfig = false;
+        boolean newConfig = true;
         try {
             if (newConfig) {
+
+                /* WAREHOUSE MODULE */
+                SFEM_warehouse sfemWarehouse = new SFEM_warehouse();
+
+                cSFEM_warehouse cSFEMWarehouse = new cSFEM_warehouse(sfemWarehouse);
+
+                cSFEMWarehouse.init("sfee_warehouse");
+
                 // Create new configuration files
                 /* PRODUCTION MODULES*/
                 int nModules = 1, nSFEE = 1;
@@ -85,8 +92,48 @@ public class App {
                 } else
                     nModules = 1;
 
-                for (int i = 0; i < nModules; i++) {
+                // Special Transport Module -> warehouse
+                ArrayList<Object> wh_inData = new ArrayList<>();
+                wh_inData.add(0, "SFEM_T_WH2IN");
+                wh_inData.add(1, "SFEE_T_WH2IN");
 
+                ArrayList<Object> initController_wh_inData = new ArrayList<>();
+
+                System.out.println("SFEM_T_WH2IN output SFEE? ");
+                Pair<SFEE, cSFEM_production> wh_outSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
+                System.out.println("Connection Output SFEI?");
+                int index = 0;
+                for (Map.Entry<Integer, SFEI> entry : wh_outSFEE.getFirst().getSFEIs().entrySet()) {
+                    System.out.println("  " + index + " -> " + entry.getValue().getName());
+                    index++;
+                }
+                SFEI wh_outSFEI = wh_outSFEE.getFirst().getSFEIbyIndex(Integer.parseInt(in.nextLine()));
+                SFEE_transport viewer = new SFEE_transport();
+
+                String[] wh_out_SensAct = viewer.associateSensor2Actuator(3, wh_outSFEI.getInSensor().getName());
+
+                initController_wh_inData.add(0, "sfei_warehouse");
+                // MB connection
+                initController_wh_inData.add(1, null);
+                initController_wh_inData.add(2, wh_outSFEE.getSecond().searchMBbySFEE(wh_outSFEE.getFirst().getName()));
+                // in/out SFEE
+                initController_wh_inData.add(3, cSFEMWarehouse.getSfem().getSfeeWarehouse());
+                initController_wh_inData.add(4, wh_outSFEE.getFirst());
+                // in/out SFEI
+                initController_wh_inData.add(5, cSFEMWarehouse.getSfem().getSfeeWarehouse().getSFEIbyIndex(0));
+                initController_wh_inData.add(6, wh_outSFEI);
+
+                initController_wh_inData.add("none");
+                initController_wh_inData.addAll(List.of(wh_out_SensAct));
+
+                ArrayList<Object> init_OperationMode_wh_inData = new ArrayList<>(List.of(viewer.SFEE_stochasticTime()));
+
+                wh_inData.addAll(initController_wh_inData);
+                wh_inData.addAll(init_OperationMode_wh_inData);
+
+                serializer.getInstance().new_cSFEM_transport(wh_inData);
+
+                for (int i = 0; i < nModules; i++) {
 /*                    SFEM_transport sfemTransport = new SFEM_transport("SFEM_Trans#" + i);
                     cSFEM_transport sfemController = new cSFEM_transport(sfemTransport);
 
@@ -100,7 +147,7 @@ public class App {
                     System.out.println(sfem_transport_name + " input SFEE? ");
                     Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
                     System.out.println("Connection Input SFEI?");
-                    int index = 0;
+                    index = 0;
                     for (Map.Entry<Integer, SFEI> entry : inSFEE.getFirst().getSFEIs().entrySet()) {
                         System.out.println("  " + index + " -> " + entry.getValue().getName());
                         index++;
@@ -116,7 +163,7 @@ public class App {
                         index++;
                     }
                     SFEI outSFEI = outSFEE.getFirst().getSFEIbyIndex(Integer.parseInt(in.nextLine()));
-                    SFEE_transport viewer = new SFEE_transport();
+//                    SFEE_transport viewer = new SFEE_transport();
 
                     String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEI.getOutSensor().getName());
                     String[] out_SensAct = viewer.associateSensor2Actuator(3, outSFEI.getInSensor().getName());
@@ -136,7 +183,7 @@ public class App {
                     ArrayList<Object> init_OperationMode_data = new ArrayList<>(List.of(viewer.SFEE_stochasticTime()));
 
 //                    sfemController.init_cSFEETransport(initController_data, init_OperationMode_data);
-//                    serializer.getInstance().getC_Transport().add(i, sfemController);
+//                    serializer.getInstance().getC_Transport().insert(i, sfemController);
                     ArrayList<Object> data = new ArrayList<>();
                     data.add(0, sfem_transport_name);
                     data.add(1, sfee_transport_name);

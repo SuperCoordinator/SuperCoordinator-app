@@ -1,5 +1,7 @@
 package failures.newVersion.formulas;
 
+import utility.utils;
+
 import java.util.ArrayList;
 
 public class gaussFormula extends formula {
@@ -23,7 +25,7 @@ public class gaussFormula extends formula {
 
     private void init() {
         for (int i = 0; i < 1024 * 2; i++) {
-            double gauss = getRandom().nextGaussian() * dev + mean;
+            double gauss = utils.getInstance().getRandom().nextGaussian() * dev + mean;
             double r = (double) Math.round(gauss);
             array.add(r);
         }

@@ -251,8 +251,6 @@ public class stochasticTime {
 
     private int calculateDelay(int sumSFEEminOperationTime) {
 
-        Random random = new Random();
-        random.setSeed(3587214);
         SFEI sfei;
         if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
             sfei = sfeiConveyor;
@@ -276,7 +274,7 @@ public class stochasticTime {
                     (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
 
 //            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
-            total_Time = random.nextGaussian() * dev + m;
+            total_Time = utils.getInstance().getRandom().nextGaussian() * dev + m;
             System.out.println("Calculated Mean: " + m + " and dev:" + dev + " with total time of: " + total_Time);
         } else {
             total_Time = m;

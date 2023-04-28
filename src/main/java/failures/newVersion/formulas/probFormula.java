@@ -1,5 +1,7 @@
 package failures.newVersion.formulas;
 
+import utility.utils;
+
 public class probFormula extends formula {
 
     public enum signal {
@@ -35,7 +37,7 @@ public class probFormula extends formula {
     }
 
     private void nextState() {
-        int n = getRandom().nextInt(1, 100);
+        int n = utils.getInstance().getRandom().nextInt(1, 100);
 
         switch (signal) {
             case LESS -> state = n < thres;

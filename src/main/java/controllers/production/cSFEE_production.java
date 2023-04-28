@@ -107,6 +107,10 @@ public class cSFEE_production {
                     String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\MC_Staudinger\\simulation\\Tags_MC_Staudinger.csv";
                     importIO(csv_path, scene);
                 }
+                case 13 -> {
+                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\WH_SS\\simulation\\Tags_sorting_station_Modbus.csv";
+                    importIO(csv_path, scene);
+                }
                 default -> {
                     String csv_path = viewer.readIOpath();
                     importIO(csv_path, 0);
@@ -285,7 +289,7 @@ public class cSFEE_production {
                         false,
                         false);
             }
-            if (scene == 8) {
+            if (scene == 8 || scene == 13) {
                 addNewSFEI_conveyor(
                         "parts_entry",
                         "s_emitter",

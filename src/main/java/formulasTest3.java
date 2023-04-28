@@ -3,6 +3,7 @@ import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.style.Styler;
+import utility.utils;
 import viewers.graphs.histogram;
 
 import java.util.*;
@@ -14,14 +15,12 @@ public class formulasTest3 {
         double mean = 100.0;
         double dev = 5.5;
 
-        Random random = new Random();
-        random.setSeed(3587214);
 
         TreeMap<Double, Double> discreteGaussDistr = new TreeMap<>();
         ArrayList<Double> unOrder = new ArrayList<>();
 
         for (int i = 0; i < 1024*2; i++) {
-            double gauss = random.nextGaussian() * dev + mean;
+            double gauss = utils.getInstance().getRandom().nextGaussian() * dev + mean;
             double r = (double) Math.round(gauss);
             if (discreteGaussDistr.keySet().contains(r)) {
                 discreteGaussDistr.replace(r, discreteGaussDistr.get(r), discreteGaussDistr.get(r) + 1);

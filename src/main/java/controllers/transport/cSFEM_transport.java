@@ -43,7 +43,7 @@ public class cSFEM_transport implements Runnable {
         try {
 //            String[] input = viewer.initSFEE_transport_FromTerminal();
             String[] input = new String[]{"SFEE_Connection_test", "1", "1", "1"};
-            SFEE.communicationOption com = null;
+            SFEE.communicationOption com;
             if (!input[2].equals(input[3])) {
                 com = SFEE.communicationOption.MIXED;
             } else {
@@ -112,7 +112,7 @@ public class cSFEM_transport implements Runnable {
             sfeeTransportController.loop();
             sfemTransportMonitor.loop();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
     }

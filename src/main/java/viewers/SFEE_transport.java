@@ -39,7 +39,7 @@ public class SFEE_transport {
         System.out.println("SFEE Transport Operation Time?");
         System.out.println("Valid variables: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
         System.out.println("Valid operator: + - * / % or gauss[ mean ; dev ] linear[ value ] ");
-        System.out.println("Please add a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]");
+        System.out.println("Please insert a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]");
         System.out.print("Enter expression:");
         do {
             if (retry)

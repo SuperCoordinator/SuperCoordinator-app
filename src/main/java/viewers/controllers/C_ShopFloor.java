@@ -107,7 +107,7 @@ public class C_ShopFloor {
             C_ShopFloor.getInstance().getcSfemProductions().add(cSfem);
 
 /*            if (!C_ShopFloor.getInstance().getcSfemProductions().contains(cSfem)) {
-                C_ShopFloor.getInstance().getcSfemProductions().add(cSfem);
+                C_ShopFloor.getInstance().getcSfemProductions().insert(cSfem);
             }*/
         }
 
@@ -115,7 +115,7 @@ public class C_ShopFloor {
             C_SFEM_transport cSfem = new C_SFEM_transport(cSFEMTransport);
             C_ShopFloor.getInstance().getcSfemTransports().add(cSfem);
 /*            if (!C_ShopFloor.getInstance().getcSfemTransports().contains(cSfem)) {
-                C_ShopFloor.getInstance().getcSfemTransports().add(cSfem);
+                C_ShopFloor.getInstance().getcSfemTransports().insert(cSfem);
             }*/
 
         }
@@ -130,7 +130,7 @@ public class C_ShopFloor {
                 C_SFEM_production cSfemProduction = C_ShopFloor.getInstance().getcSfemProductions().get(j);
                 if (cSfemProduction.getSfemName().equals(cSFEMProduction.getSfem().getName())) {
                     exist = true;
-                    // update (Remove and add in the same position)
+                    // update (Remove and insert in the same position)
                     C_ShopFloor.getInstance().getcSfemProductions().remove(j);
                     C_ShopFloor.getInstance().getcSfemProductions().add(j, new C_SFEM_production(cSFEMProduction));
                     break;
@@ -149,7 +149,7 @@ public class C_ShopFloor {
                 C_SFEM_transport cSfemTransport = C_ShopFloor.getInstance().getcSfemTransports().get(j);
                 if (cSfemTransport.getSfemName().equals(cSFEMTransport.getSfem().getName())) {
                     exist = true;
-                    // update (Remove and add in the same position
+                    // update (Remove and insert in the same position
                     C_ShopFloor.getInstance().getcSfemTransports().remove(j);
                     C_ShopFloor.getInstance().getcSfemTransports().add(j, new C_SFEM_transport(cSFEMTransport));
                     break;

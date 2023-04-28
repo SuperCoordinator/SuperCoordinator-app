@@ -1,5 +1,6 @@
 package monitor.transport;
 
+import models.SFEx_particular.SFEI_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;
@@ -13,9 +14,9 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-//@XmlRootElement
-//@XmlAccessorType(XmlAccessType.NONE)
+
 public class SFEE_transport_monitor {
     private SFEE sfee;
     private SFEI previousSFEI;
@@ -27,9 +28,6 @@ public class SFEE_transport_monitor {
     private boolean setup_run = true;
     private part currPart = null;
 
-    public SFEE_transport_monitor() {
-    }
-
     public SFEE_transport_monitor(SFEE sfee, SFEI previousSFEI, SFEI nextSFEI) {
         this.sfee = sfee;
         this.previousSFEI = previousSFEI;
@@ -37,15 +35,18 @@ public class SFEE_transport_monitor {
 
     }
 
-    private void init_oldSensorsValues(ArrayList<List<Object>> sensorsState) {
+    private void init_oldSensorsValues(ArrayList<List<Object>> sensorsState, boolean isSFEI_warehouse) {
 
-        sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
+        if (!isSFEI_warehouse) {
+            sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
+            SFEI_old_inSensors = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
+        }
         sensor_actuator sfei_outSensor = sfee.getSFEIbyIndex(0).getOutSensor();
+        SFEI_old_outSensors = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
 
+/*        sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
         boolean b_inSensor = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
-        boolean b_outSensor = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
-        SFEI_old_inSensors = b_inSensor;
-        SFEI_old_outSensors = b_outSensor;
+        SFEI_old_inSensors = b_inSensor;*/
 
     }
 
@@ -55,17 +56,60 @@ public class SFEE_transport_monitor {
     }
 
     public void loop(ArrayList<List<Object>> sensorsState) {
-
         try {
-            if (setup_run) {
-                init_oldSensorsValues(sensorsState);
-                setup_run = false;
+            if (sfee.getSFEIs().get(0).isLine_start()) {
+                if (setup_run) {
+                    // If it is line start, then the connection is established with the warehouse
+                    init_oldSensorsValues(sensorsState, true);
+                    setup_run = false;
+                }
+                placeNewParts(sensorsState);
+            } else {
+                // Normal Transport between SFEIs
+                if (setup_run) {
+                    // If it is line start, then the connection is established with the warehouse
+                    init_oldSensorsValues(sensorsState, false);
+                    setup_run = false;
+                }
+                monitorPartsMovements(sensorsState);
             }
-            monitorPartsMovements(sensorsState);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+
+
+    }
+
+    private void placeNewParts(ArrayList<List<Object>> sensorsState) {
+        // Only have 1 SFEI
+        SFEI_transport sfeiTransport = (SFEI_transport) sfee.getSFEIbyIndex(0);
+
+        boolean b_outSensor = (int) sensorsState.get(1).get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
+
+        if (previousSFEI.getPartsATM().size() > 0) {
+            part p = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
+            p.setWaitTransport(false);
+            // This operation of concat is faster than + operation
+            String itemName = sfee.getName();
+            itemName = itemName.concat("-");
+            itemName = itemName.concat(sfee.getInSensor().getName());
+
+            p.addTimestamp(itemName);
+            sfeiTransport.addNewPartATM(p);
+        }
+
+        boolean sfee_outSensor = (int) sensorsState.get(1).get(sfee.getOutSensor().getBit_offset()) == 1;
+        if (utils.getInstance().getLogicalOperator().RE_detector(sfee_outSensor, SFEI_old_outSensors)) {
+            if (sfeiTransport.getPartsATM().size() > 0) {
+                part p = sfeiTransport.getPartsATM().first();
+                p.setProduced(false);
+                nextSFEI.getPartsATM().add(p);
+            }
+        }
+
+        // Only update in the end in order to all functions see the values at the read moment
+        SFEI_old_outSensors = b_outSensor;
 
     }
 
@@ -86,9 +130,7 @@ public class SFEE_transport_monitor {
                     // It means that previously a part was detected but not had the isWaitTransport flag TRUE
                     if (currPart.isWaitTransport() && currPart.isProduced()) {
 
-                        part p = previousSFEI.getPartsATM().pollFirst();
-                        if (p == null)
-                            throw new RuntimeException(SFEE_transport_monitor.class + " part is NULL!");
+                        part p = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
 
                         // setWaitTransport(FALSE), but the produced is TRUE
                         p.setWaitTransport(false);
@@ -107,9 +149,8 @@ public class SFEE_transport_monitor {
                 } else if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEI_old_inSensors)) {
                     if (previousSFEI.getPartsATM().size() > 0) {
                         if (previousSFEI.getPartsATM().first().isWaitTransport() && previousSFEI.getPartsATM().first().isProduced()) {
-                            part p = previousSFEI.getPartsATM().pollFirst();
-                            if (p == null)
-                                throw new RuntimeException(SFEE_transport_monitor.class + " part is NULL!");
+                            part p = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
+
 
                             p.setWaitTransport(false);
                             // This operation of concat is faster than + operation

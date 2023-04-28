@@ -21,32 +21,14 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEE_production_monitor implements Externalizable {
+public class SFEE_production_monitor {
 
-    public static final long serialVersionUID = 1234L;
 
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfee);
-        out.writeObject(visionSensorLocation);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfee = (SFEE) in.readObject();
-        this.visionSensorLocation = (TreeMap<Integer, sensor_actuator>) in.readObject();
-
-        this.SFEIs_old_inSensors = new boolean[sfee.getSFEIs().size()];
-        this.SFEIs_old_outSensors = new boolean[sfee.getSFEIs().size()];
-
-//        extractPartsType();
-    }
-
-    //    @XmlElement
     private SFEE sfee;
     private boolean[] SFEIs_old_inSensors;
     private boolean[] SFEIs_old_outSensors;
@@ -62,8 +44,6 @@ public class SFEE_production_monitor implements Externalizable {
 
     public SFEE_production_monitor(SFEE sfee) {
         this.sfee = sfee;
-
-//        extractPartsType();
     }
 
     public void setSfee(SFEE sfee) {
@@ -142,7 +122,8 @@ public class SFEE_production_monitor implements Externalizable {
                 boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
                 boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
 
-                if (sfei.isLine_start() && utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
+                // Substituted by the WAREHOUSE
+/*                if (sfei.isLine_start() && utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
                     part p = new part();
                     if (visionSensorLocation != null) {
                         int visionSensor_number = (int) inputRegsValue.get(visionSensorLocation.get(0).getBit_offset());
@@ -160,7 +141,7 @@ public class SFEE_production_monitor implements Externalizable {
                     p.addTimestamp(itemName);
 
                     sfei.addNewPartATM(p);
-                }
+                }*/
 
                 if (sfee.getSFEE_function().equals(SFEE.SFEE_function.SORTING_STATION)) {
                     if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
@@ -169,18 +150,17 @@ public class SFEE_production_monitor implements Externalizable {
                         // include timestamp of the end of SFEI at index 0
                         // move part instance to current SFEI at index idx
                         if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
-                            part p = sfee.getSFEIbyIndex(0).getPartsATM().pollFirst();
+                            part p = Objects.requireNonNull(sfee.getSFEIbyIndex(0).getPartsATM().pollFirst());
 
                             String itemName = sfei.getName();
                             itemName = itemName.concat("-");
                             itemName = itemName.concat(sfei.getInSensor().getName());
 
-                            assert p != null;
                             p.addTimestamp(itemName);
 
                             sfei.addNewPartATM(p);
                             sfee.getSFEIbyIndex(0).setnPiecesMoved(sfee.getSFEIbyIndex(0).getnPiecesMoved() + 1);
-                            System.out.println("BLah blah");
+//                            System.out.println("BLah blah");
 
                         }
 
@@ -364,7 +344,7 @@ public class SFEE_production_monitor implements Externalizable {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
     }

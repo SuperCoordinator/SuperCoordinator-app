@@ -128,7 +128,7 @@ public class C_SFEE_items {
                     add.setVisible(false);
 
                 }
-                case "add" -> {
+                case "insert" -> {
 
                     switch (temp.getText()) {
                         case "Add" -> {

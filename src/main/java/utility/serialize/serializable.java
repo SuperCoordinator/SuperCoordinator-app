@@ -1,5 +1,6 @@
 package utility.serialize;
 
+import communication.database.dbConnection;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 @XmlAccessorType(XmlAccessType.NONE)
 public class serializable {
 
+    private dbConnection connection = new dbConnection();
     private ArrayList<cSFEM_production> C_Production = new ArrayList<>();
     private ArrayList<cSFEM_transport> C_Transport = new ArrayList<>();
 
@@ -34,6 +36,15 @@ public class serializable {
     @XmlElement
     public ArrayList<cSFEM_transport> getC_Transport() {
         return C_Transport;
+    }
+
+    public void setConnection(dbConnection connection) {
+        this.connection = connection;
+    }
+
+    @XmlElement
+    public dbConnection getConnection() {
+        return connection;
     }
 
 }

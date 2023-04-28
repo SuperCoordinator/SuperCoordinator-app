@@ -17,7 +17,8 @@ public class SFEM {
 
     public enum SFEM_type {
         PRODUCTION,
-        TRANSPORT
+        TRANSPORT,
+        WAREHOUSE
     }
 
     @XmlAttribute

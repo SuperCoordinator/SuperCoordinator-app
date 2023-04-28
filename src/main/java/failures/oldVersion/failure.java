@@ -112,8 +112,8 @@ public class failure {
                 nParts,
                 age_inDays,
                 maintenance_inDays);
-        Random random = new Random();
-        int prob = random.nextInt(1, 101);
+
+        int prob = utils.getInstance().getRandom().nextInt(1, 101);
         System.out.println("prob : " + prob);
         return switch (operator[0]) {
             case ">" -> leftMember ? prob > val : val > prob;

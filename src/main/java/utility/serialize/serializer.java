@@ -1,5 +1,7 @@
 package utility.serialize;
 
+import communication.database.dbConnection;
+import communication.database.sf_configuration;
 import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
@@ -9,6 +11,7 @@ import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
@@ -37,10 +40,11 @@ public class serializer {
         CMC2_con_individual,
         sorting_station,
         SS_3CMC,
-        MC_Staudinger
+        MC_Staudinger,
+        WH_SS
     }
 
-    public final scenes scene = scenes.SS_3CMC;
+    public final scenes scene = scenes.WH_SS;
     private final String filePath = "blocks/" + scene + "/saves/" + scene;
 
     private serializable serializable = new serializable();
@@ -54,14 +58,16 @@ public class serializer {
     }
 
     public void saveXML() {
+
         try {
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(serializable, new File(filePath + ".xml"));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
         }
+
     }
 
     public void loadXML() {
@@ -69,10 +75,14 @@ public class serializer {
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             serializable = (utility.serialize.serializable) unmarshaller.unmarshal(new FileReader(filePath + ".xml"));
-
+            createDB_Instance();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+    }
+
+    private void createDB_Instance() {
+        sf_configuration.getInstance().insert(scene.name());
     }
 
     public void new_cSFEM_transport(ArrayList<Object> data) {
@@ -108,7 +118,7 @@ public class serializer {
                 System.out.println("Created new C_Transport");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
     }

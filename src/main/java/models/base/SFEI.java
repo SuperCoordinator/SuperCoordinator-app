@@ -23,7 +23,8 @@ public class SFEI {
     public enum SFEI_type {
         CONVEYOR,
         MACHINE,
-        TRANSPORT
+        TRANSPORT,
+        WAREHOUSE
     }
 
     @XmlAttribute

@@ -30,7 +30,6 @@ public class SFEM_monitor  {
         this.sfem = sfem;
     }
 
-//    @XmlElement(name = "SFEM")
     public SFEM getSfem() {
         return sfem;
     }
@@ -39,18 +38,6 @@ public class SFEM_monitor  {
         return productionTime_cnt;
     }
 
-    public histogram getGraphs() {
-        return graphs;
-    }
-
-//    @XmlTransient
-    public boolean isGraphsInited() {
-        return isGraphsInited;
-    }
-
-    public void setGraphsInited(boolean graphsInited) {
-        isGraphsInited = graphsInited;
-    }
 
     public Instant getInit_t() {
         return init_t;
@@ -58,7 +45,6 @@ public class SFEM_monitor  {
 
     private boolean printedStats = false;
 
-//    @XmlTransient
     public boolean isPrintedStats() {
         return printedStats;
     }

@@ -20,7 +20,8 @@ public class SFEE {
     public enum SFEE_function {
         PRODUCTION,
         SORTING_STATION,
-        TRANSPORT
+        TRANSPORT,
+        WAREHOUSE
     }
 
     @XmlAttribute

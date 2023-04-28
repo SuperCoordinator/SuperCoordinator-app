@@ -81,7 +81,7 @@ public class C_SFEM_connection {
 /*                System.out.println(SFEMs_list.getSelectionModel().getSelectedItem());
                 if (!drawnElements.contains(SFEMs_list.getSelectionModel().getSelectedIndices().get(0))) {
                     drawSFEM_elements(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
-                    drawnElements.add(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
+                    drawnElements.insert(SFEMs_list.getSelectionModel().getSelectedIndices().get(0));
                 }*/
             }
         });
