@@ -76,4 +76,9 @@ public class part {
     public void setProduced(boolean produced) {
         this.produced = produced;
     }
+
+    @Override
+    public String toString() {
+        return "part [id=" + id + ", reality=" + reality.toString() + "]";
+    }
 }

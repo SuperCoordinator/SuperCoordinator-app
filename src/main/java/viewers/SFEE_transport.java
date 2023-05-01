@@ -1,6 +1,7 @@
 package viewers;
 
 import utility.customCalculator;
+import utility.utils;
 
 import java.util.Scanner;
 
@@ -33,7 +34,6 @@ public class SFEE_transport {
     public String[] SFEE_stochasticTime() {
 
         String str = null;
-        customCalculator customCalculator = new customCalculator();
         boolean retry = false;
 
         System.out.println("SFEE Transport Operation Time?");
@@ -43,11 +43,11 @@ public class SFEE_transport {
         System.out.print("Enter expression:");
         do {
             if (retry)
-                System.out.println("Msg: " + customCalculator.errorMsg(str));
+                System.out.println("Msg: " + utils.getInstance().getCustomCalculator().errorMsg(str));
             str = in.nextLine();
-            retry = customCalculator.evalStochasticTimeExpression(str);
+            retry = utils.getInstance().getCustomCalculator().evalStochasticTimeExpression(str);
         } while (retry);
 
-        return customCalculator.getStochasticTimeFormulaElements();
+        return utils.getInstance().getCustomCalculator().getStochasticTimeFormulaElements();
     }
 }

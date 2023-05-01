@@ -19,7 +19,6 @@ public class cSFEM_warehouse implements Runnable {
 
     private SFEM_warehouse_monitor sfemWarehouseMonitor;
 
-    @XmlElement
     private cSFEE_warehouse sfeeWarehouseController;
 
     public cSFEM_warehouse() {
@@ -47,6 +46,14 @@ public class cSFEM_warehouse implements Runnable {
         sfemWarehouseMonitor = new SFEM_warehouse_monitor(0);
     }
 
+    public void init_afterLoad() {
+        sfeeWarehouseController = new cSFEE_warehouse(sfem.getSfeeWarehouse());
+        sfeeWarehouseController.init();
+
+        // This part_id_offset should be a query in DB
+        sfemWarehouseMonitor = new SFEM_warehouse_monitor(0);
+    }
+
     public cSFEE_warehouse getSfeeWarehouseController() {
         return sfeeWarehouseController;
     }
@@ -58,6 +65,7 @@ public class cSFEM_warehouse implements Runnable {
 
             if (sfemWarehouseMonitor.loop()) {
                 sfeeWarehouseController.storeParts(sfemWarehouseMonitor.getRecentArrivedParts());
+                sfemWarehouseMonitor.clearStoredParts();
             }
 
         } catch (Exception e) {

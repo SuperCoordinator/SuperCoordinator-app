@@ -69,8 +69,10 @@ public class SFEM_transport_monitor extends SFEM_monitor {
         SFEM_transport sfem = (SFEM_transport) getSfem();
 
         // search for inOut sensor of SFEM : in from SFEE(0) / out from SFEE(size-1) ;
-
-        String inSFEM_sensor = sfem.getSfeeTransport().getInSensor().getName();
+        String inSFEM_sensor = "none";
+        if (!sfem.getSfeeTransport().getSFEIbyIndex(0).getSfeiType().equals(SFEI.SFEI_type.TRANSPORT)){
+            inSFEM_sensor = sfem.getSfeeTransport().getInSensor().getName();
+        }
 
         String outSFEM_sensor = sfem.getSfeeTransport().getOutSensor().getName();
 

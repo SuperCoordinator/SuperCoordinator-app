@@ -102,6 +102,16 @@ public class stochasticTime {
         this.smConv = SM_conv.INIT;
         this.smMach = SM_mach.WAITING;
         this.smTrans = SM_trans.INIT;
+
+        // For the warehouse transport
+        if (sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT)) {
+
+            if (Objects.requireNonNull(sfeiTransport).getaRemover() == null) {
+                // If the aRemover == NULL then it is the WH-InSFEI case
+                initial_t = Instant.now();
+                this.smTrans = SM_trans.WAITING;
+            }
+        }
     }
 
 
@@ -136,7 +146,7 @@ public class stochasticTime {
                         sensorsState.get(1), actuatorsState.get(1), actuatorsState.get(2));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
     }

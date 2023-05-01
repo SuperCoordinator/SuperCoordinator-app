@@ -16,8 +16,8 @@ import java.util.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEE_transport_failures  {
-        private enum SM {
+public class SFEE_transport_failures {
+    private enum SM {
         INIT,
         PROCESS_STOCHASTIC,
         END
@@ -40,6 +40,7 @@ public class SFEE_transport_failures  {
         this.stochasticType = stochasticType;
         this.stochasticFormulas = stochasticTime_f;
     }
+
     public void setSfee(SFEE sfee) {
         this.sfee = sfee;
     }
@@ -50,6 +51,10 @@ public class SFEE_transport_failures  {
 
     public String[] getStochasticFormulas() {
         return stochasticFormulas;
+    }
+
+    public boolean waitNewPart() {
+        return state.equals(SM.INIT);
     }
 
     private boolean first_exe = true;
@@ -97,8 +102,8 @@ public class SFEE_transport_failures  {
             }
         }
 
-/*        if (old_state != state)
-            System.out.println(state);*/
+        if (old_state != state)
+            System.out.println(state);
 
         old_state = state;
 
@@ -108,11 +113,14 @@ public class SFEE_transport_failures  {
 
     private boolean checkNewPiece() {
         int currID = oldPartID;
-
+/*        System.out.println("[" + SFEE_transport_failures.class + "]  partsATM size:" + sfee.getSFEIbyIndex(0).getPartsATM().size());
+        sfee.getSFEIbyIndex(0).getPartsATM().forEach(System.out::println);*/
         if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
             currID = sfee.getSFEIbyIndex(0).getPartsATM().first().getId();
         }
         if (currID != oldPartID) {
+
+
             oldPartID = currID;
             return true;
         }

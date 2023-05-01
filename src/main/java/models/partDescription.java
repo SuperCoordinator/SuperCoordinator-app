@@ -37,5 +37,8 @@ public final class partDescription {
         return form;
     }
 
-
+    @Override
+    public String toString() {
+        return "partDescription=[material=" + material + " form=" + form + "]";
+    }
 }

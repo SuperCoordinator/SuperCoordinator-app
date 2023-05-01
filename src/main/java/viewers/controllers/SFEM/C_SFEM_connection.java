@@ -305,7 +305,7 @@ public class C_SFEM_connection {
 /*        System.out.println("Before update data: C_ShopFloor - " + C_ShopFloor.getInstance().getcSfemTransports().size()
                 + " serializer - " + serializer.getInstance().getC_Transport().size());*/
 
-        serializer.getInstance().new_cSFEM_transport(data);
+        serializer.getInstance().new_cSFEM_transport(data, false);
         // Update C_ShopFloor singleton with the new C_SFEM_transport
         C_ShopFloor.getInstance().updateData(serializer.getInstance().getC_Production(), serializer.getInstance().getC_Transport());
 

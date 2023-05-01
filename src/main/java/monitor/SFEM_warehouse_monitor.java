@@ -10,12 +10,10 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileReader;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class SFEM_warehouse_monitor {
-
 
     private ArrayList<part> recentArrivedParts = new ArrayList<>();
 
@@ -35,10 +33,9 @@ public class SFEM_warehouse_monitor {
     public boolean loop() {
 
         try {
-
             if (Duration.between(old_t, Instant.now()).toMinutes() >= 1) {
                 receiveOrders();
-                System.out.println("#parts in stock:" + recentArrivedParts.size());
+//                System.out.println("#parts in stock:" + recentArrivedParts.size());
                 old_t = Instant.now();
                 return true;
             }
@@ -49,7 +46,7 @@ public class SFEM_warehouse_monitor {
 
     }
 
-    private int file_index = 4;
+    private int file_index = 0;
 
     private void receiveOrders() {
         try {
@@ -75,6 +72,7 @@ public class SFEM_warehouse_monitor {
 
     private void createParts(inboundOrder order) {
         try {
+            recentArrivedParts.clear();
             for (int i = 0; i < order.getMetal_qty(); i++) {
                 // partID ?? - get from DB ?
                 recentArrivedParts.add(new part(part_id, new partDescription(partDescription.material.METAL, partDescription.form.RAW)));
@@ -93,5 +91,9 @@ public class SFEM_warehouse_monitor {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void clearStoredParts() {
+        recentArrivedParts.clear();
     }
 }

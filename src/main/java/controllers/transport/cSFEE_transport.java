@@ -149,7 +149,10 @@ public class cSFEE_transport {
 //        String[] sfeeTime = viewer.SFEE_stochasticTime();
         String operator = (String) data.get(0);
         String mean = (String) data.get(1);
-        String dev = (String) data.get(2);
+        String dev = " ";
+
+        if (operator.contains("gauss"))
+            dev = (String) data.get(2);
 
         if (operator.contains("gauss")) {
             // Stochastic Time
@@ -171,18 +174,17 @@ public class cSFEE_transport {
         // Monitor -> Move parts between inSFEI -> buffer -> outSFEI
         // based on the state of FAILURES, Monitor moves
         try {
-            List<Object> discreteInputsState_inMB = new ArrayList<>(inMB.readDiscreteInputs());
-//        List<Object> inputRegsValue = new ArrayList<>(inMB.readInputRegisters());
+            List<Object> discreteInputsState_inMB = new ArrayList<>();
+            List<Object> coilsState_inMB = new ArrayList<>();
+            if (!sfeeMonitor.getNextSFEI().isLine_start()) {
+                discreteInputsState_inMB = new ArrayList<>(inMB.readDiscreteInputs());
+                coilsState_inMB = new ArrayList<>(inMB.readCoils());
+                coilsState_inMB = new ArrayList<>(Collections.nCopies(coilsState_inMB.size(), -1));
+            }
 
-//        System.out.println(Arrays.toString(inputRegsValue.toArray()));
-            List<Object> coilsState_inMB = new ArrayList<>(inMB.readCoils());
-            coilsState_inMB = new ArrayList<>(Collections.nCopies(coilsState_inMB.size(), -1));
-//        List<Object> holdRegsValues = new ArrayList<>(inMB.readHoldingRegisters());
 
             List<Object> discreteInputsState_outMB = new ArrayList<>(outMB.readDiscreteInputs());
-//        List<Object> inputRegsValue = new ArrayList<>(inMB.readInputRegisters());
 
-//        System.out.println(Arrays.toString(inputRegsValue.toArray()));
             List<Object> coilsState_outMB = new ArrayList<>(outMB.readCoils());
             coilsState_outMB = new ArrayList<>(Collections.nCopies(coilsState_outMB.size(), -1));
             List<Object> holdRegsValues_outMB = new ArrayList<>(outMB.readHoldingRegisters());
@@ -198,13 +200,12 @@ public class cSFEE_transport {
             outputs.add(coilsState_outMB);
             outputs.add(holdRegsValues_outMB);
 
-
-            sfeeMonitor.loop(inputs);
-
             sfeeFailures.loop(inputs, outputs);
+            sfeeMonitor.loop(inputs,sfeeFailures.waitNewPart());
 
-
-            inMB.writeCoils(coilsState_inMB);
+            if (!sfeeMonitor.getNextSFEI().isLine_start()) {
+                inMB.writeCoils(coilsState_inMB);
+            }
 
             outMB.writeCoils(coilsState_outMB);
             outMB.writeRegisters(holdRegsValues_outMB);

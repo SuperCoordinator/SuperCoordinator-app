@@ -151,7 +151,7 @@ public class SFEE_production_monitor {
                         // move part instance to current SFEI at index idx
                         if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
                             part p = Objects.requireNonNull(sfee.getSFEIbyIndex(0).getPartsATM().pollFirst());
-
+                            System.out.println("[" + SFEE_production_monitor.class + "] removed " + p + "and size is : " + sfee.getSFEIbyIndex(0).getPartsATM().size());
                             String itemName = sfei.getName();
                             itemName = itemName.concat("-");
                             itemName = itemName.concat(sfei.getInSensor().getName());

@@ -1,10 +1,10 @@
 package utility.serialize;
 
-import communication.database.dbConnection;
 import communication.database.sf_configuration;
 import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
+import controllers.warehouse.cSFEM_warehouse;
 import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
@@ -16,7 +16,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 public class serializer {
@@ -48,6 +47,14 @@ public class serializer {
     private final String filePath = "blocks/" + scene + "/saves/" + scene;
 
     private serializable serializable = new serializable();
+
+    public void setC_Warehouse(cSFEM_warehouse cSFEMWarehouse) {
+        serializable.setC_Warehouse(cSFEMWarehouse);
+    }
+
+    public cSFEM_warehouse getC_Warehouse() {
+        return serializable.getC_Warehouse();
+    }
 
     public ArrayList<cSFEM_production> getC_Production() {
         return serializable.getC_Production();
@@ -85,7 +92,7 @@ public class serializer {
         sf_configuration.getInstance().insert(scene.name());
     }
 
-    public void new_cSFEM_transport(ArrayList<Object> data) {
+    public void new_cSFEM_transport(ArrayList<Object> data, boolean isWH) {
         try {
             SFEM_transport sfemTransport = new SFEM_transport((String) data.get(0));
             cSFEM_transport sfemController = new cSFEM_transport(sfemTransport);
@@ -93,7 +100,12 @@ public class serializer {
             sfemController.init_SFEE_transport((String) data.get(1));
 
             // Perform searches for SFEIs and SFEEs objects based on the elements name
-            Pair<SFEE, SFEI> in = searchSFEE_SFEIbySFEI_name((String) data.get(7));
+            Pair<SFEE, SFEI> in;
+            if (!isWH) {
+                in = searchSFEE_SFEIbySFEI_name((String) data.get(7));
+            } else {
+                in = new Pair<>((SFEE) data.get(5), (SFEI) data.get(7));
+            }
             Pair<SFEE, SFEI> out = searchSFEE_SFEIbySFEI_name((String) data.get(8));
 
             data.set(5, in.getFirst());
@@ -101,7 +113,7 @@ public class serializer {
             data.set(7, in.getSecond());
             data.set(8, out.getSecond());
 
-            sfemController.init_cSFEETransport(new ArrayList<>(data.subList(2, 13)), new ArrayList<>(data.subList(14, data.size())));
+            sfemController.init_cSFEETransport(new ArrayList<>(data.subList(2, 13)), new ArrayList<>(data.subList(13, data.size())));
 
             // Add if not exist or update if exists
             int i;
@@ -113,10 +125,12 @@ public class serializer {
                 }
             }
 
-            if (i == serializer.getInstance().getC_Transport().size()) {
-                serializer.getInstance().getC_Transport().add(serializer.getInstance().getC_Transport().size() - 1, sfemController);
+            if (i == serializer.getInstance().getC_Transport().size() /*&& i > 0*/) {
+                serializer.getInstance().getC_Transport().add(/*serializer.getInstance().getC_Transport().size() - 1,*/ sfemController);
                 System.out.println("Created new C_Transport");
-            }
+            } /*else {
+                serializer.getInstance().getC_Transport().add(serializer.getInstance().getC_Transport().size(), sfemController);
+            }*/
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -124,6 +138,8 @@ public class serializer {
     }
 
     public Pair<SFEE, cSFEM_production> searchSFEEbyName(String name) {
+
+
         Pair<SFEE, cSFEM_production> sfee = null;
         for (cSFEM_production sfemController : serializable.getC_Production()) {
             for (Map.Entry<Integer, SFEE> currentSFEE : sfemController.getSfem().getSFEEs().entrySet()) {
@@ -134,7 +150,7 @@ public class serializer {
             }
         }
         if (sfee == null)
-            throw new RuntimeException("(" + serializer.class + ") SFEE not found");
+            throw new RuntimeException("(" + serializer.class + ") SFEE " + name + " not found");
 
         return sfee;
     }

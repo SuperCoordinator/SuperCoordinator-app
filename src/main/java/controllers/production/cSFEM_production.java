@@ -110,6 +110,8 @@ public class cSFEM_production implements Runnable {
                     }
                 }else if(scene == 4){
                     sfeeController.init(scene + 8);
+                }else if(scene == 5){
+                    sfeeController.init(scene + 8);
                 }
 
                 sfeeController.initFailures();
