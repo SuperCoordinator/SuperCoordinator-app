@@ -1,6 +1,6 @@
 package failures.oldVersion;
 
-import utils.*;
+import utility.*;
 
 import java.util.Random;
 
@@ -17,13 +17,9 @@ public class failure {
     private final String formula;
     private final boolean isProbability;
 
-    private final utils utility;
-
     public failure(failure.type type, String formula) {
         this.type = type;
         this.formula = formula;
-
-        this.utility = new utils();
 
         if (formula.contains("prob"))
             this.isProbability = true;
@@ -33,10 +29,6 @@ public class failure {
 
     public failure.type getType() {
         return type;
-    }
-
-    public utils getUtility() {
-        return utility;
     }
 
     public boolean isProbability() {
@@ -74,12 +66,12 @@ public class failure {
         }
         members = f.split(op);
         String[] operator = op.split(" ");
-        double leftMember = utility.getCustomCalc().calcExpression(
+        double leftMember = utils.getInstance().getCustomCalculator().calcExpression(
                 members[0],
                 nParts,
                 age_inDays,
                 maintenance_inDays);
-        double rightMember = utility.getCustomCalc().calcExpression(
+        double rightMember = utils.getInstance().getCustomCalculator().calcExpression(
                 members[1],
                 nParts,
                 age_inDays,
@@ -115,13 +107,13 @@ public class failure {
         members = f.split(op);
         String[] operator = op.split(" ");
         boolean leftMember = members[0].contains("prob");
-        double val = utility.getCustomCalc().calcExpression(
+        double val = utils.getInstance().getCustomCalculator().calcExpression(
                 leftMember ? members[1] : members[0],
                 nParts,
                 age_inDays,
                 maintenance_inDays);
-        Random random = new Random();
-        int prob = random.nextInt(1, 101);
+
+        int prob = utils.getInstance().getRandom().nextInt(1, 101);
         System.out.println("prob : " + prob);
         return switch (operator[0]) {
             case ">" -> leftMember ? prob > val : val > prob;

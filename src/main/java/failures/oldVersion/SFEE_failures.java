@@ -151,7 +151,7 @@ public class SFEE_failures {
                         stochasticType,
                         stochasticFormulas,
                         minSFEEminOperation_t);
-                stochasticTimeTasks.add(stochasticTime);
+                stochasticTimeTasks.insert(stochasticTime);
 
             }
         }

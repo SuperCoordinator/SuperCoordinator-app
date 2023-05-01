@@ -1,6 +1,7 @@
 package failures.oldVersion;
 
 import models.SFEx_particular.SFEI_machine;
+import utility.utils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -63,9 +64,9 @@ public class produce_faulty extends failure {
                 }
             }
             case WAITING_PART_POSITIONING -> {
-                boolean b_machine_door = (int) sensorsState.get(sfeiMachine.getsDoor().bit_offset()) == 1;
+                boolean b_machine_door = (int) sensorsState.get(sfeiMachine.getsDoor().getBit_offset()) == 1;
                 if (sfeiMachine.getPartsATM().size() > 0) {
-                    if (getUtility().getLogicalOperator().FE_detector(b_machine_door, old_sMachine_door)) {
+                    if (utils.getInstance().getLogicalOperator().FE_detector(b_machine_door, old_sMachine_door)) {
                         state = SM.INJECT_FAILURE;
                     }
                 }
@@ -97,7 +98,7 @@ public class produce_faulty extends failure {
             }
             case INJECT_FAILURE -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiMachine.getaStop().bit_offset(), 1);
+                    actuatorsState.set(sfeiMachine.getaStop().getBit_offset(), 1);
                     closed_door_at = Instant.now();
                     System.out.println("P_Faulty -> " + state);
                 }
@@ -105,7 +106,7 @@ public class produce_faulty extends failure {
             }
             case INJECTED -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiMachine.getaStop().bit_offset(), 0);
+                    actuatorsState.set(sfeiMachine.getaStop().getBit_offset(), 0);
                     System.out.println("P_Faulty -> " + state);
                 }
             }

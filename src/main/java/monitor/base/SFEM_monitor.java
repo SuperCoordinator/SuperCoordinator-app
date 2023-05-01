@@ -3,8 +3,11 @@ package monitor.base;
 
 import models.base.SFEM;
 import models.part_prodTime;
+import monitor.production.SFEM_production_monitor;
+import monitor.transport.SFEM_transport_monitor;
 import viewers.graphs.histogram;
 
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -12,40 +15,19 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 
-public class SFEM_monitor implements Externalizable {
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfem);
-
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfem = (SFEM) in.readObject();
-
-        this.init_t = Instant.now();
-        this.productionTime_cnt = new TreeMap<>();
-        this.isGraphsInited = false;
-
-    }
-
+public class SFEM_monitor  {
     private SFEM sfem;
-    private TreeMap<Integer, Integer> productionTime_cnt;
+    private TreeMap<Integer, Integer> productionTime_cnt = new TreeMap<>();
 
     private histogram graphs;
-    private boolean isGraphsInited;
-    private Instant init_t;
+    private boolean isGraphsInited = false;
+    private Instant init_t = Instant.now();
 
     public SFEM_monitor() {
     }
 
     public SFEM_monitor(SFEM sfem) {
         this.sfem = sfem;
-        this.productionTime_cnt = new TreeMap<>();
-        this.isGraphsInited = false;
-        this.init_t = Instant.now();
     }
 
     public SFEM getSfem() {
@@ -56,17 +38,6 @@ public class SFEM_monitor implements Externalizable {
         return productionTime_cnt;
     }
 
-    public histogram getGraphs() {
-        return graphs;
-    }
-
-    public boolean isGraphsInited() {
-        return isGraphsInited;
-    }
-
-    public void setGraphsInited(boolean graphsInited) {
-        isGraphsInited = graphsInited;
-    }
 
     public Instant getInit_t() {
         return init_t;
@@ -85,7 +56,6 @@ public class SFEM_monitor implements Externalizable {
     private part_prodTime min_time = null;
     private part_prodTime max_time = null;
     private boolean firstRun = true;
-
 
     public void printStats(List<Long> runtime) {
 

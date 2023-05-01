@@ -1,7 +1,7 @@
 package failures.newVersion;
 
 import models.base.SFEI;
-import utils.utils;
+import utility.utils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -18,21 +18,12 @@ public class failure2 {
 
     private final type type;
 
-    private final utils utility;
-
     public failure2(failure2.type type) {
         this.type = type;
-
-        this.utility = new utils();
-
     }
 
     public failure2.type getType() {
         return type;
-    }
-
-    public utils getUtility() {
-        return utility;
     }
 
     public int[] getLastFailureOccurrence(SFEI sfei) {

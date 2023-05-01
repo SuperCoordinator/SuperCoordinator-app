@@ -2,63 +2,46 @@ package models.base;
 
 import models.sensor_actuator;
 
+import javax.xml.bind.annotation.*;
 import java.io.*;
 import java.util.*;
 
-public class SFEE implements Externalizable {
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
-        out.writeObject(SFEE_type);
-        out.writeObject(SFEE_function);
-        out.writeObject(com);
-        out.writeObject(io);
-        out.writeObject(inSensor);
-        out.writeObject(outSensor);
-        out.writeObject(SFEIs);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.name = (String) in.readObject();
-        this.SFEE_type = (SFEE_type) in.readObject();
-        this.SFEE_function = (SFEE_function) in.readObject();
-        this.com = (communicationOption) in.readObject();
-        this.io = (TreeMap<Integer, sensor_actuator>) in.readObject();
-        this.inSensor = (sensor_actuator) in.readObject();
-        this.outSensor = (sensor_actuator) in.readObject();
-        this.SFEIs = (TreeMap<Integer, SFEI>) in.readObject();
-
-    }
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+public class SFEE {
 
     public enum SFEE_type {
         SIMULATION, REAL
     }
 
+    @XmlAttribute
     private SFEE_type SFEE_type;
 
     public enum SFEE_function {
         PRODUCTION,
-        MOVEMENT,
-        TRANSPORT
+        SORTING_STATION,
+        TRANSPORT,
+        WAREHOUSE
     }
 
+    @XmlAttribute
     private SFEE_function SFEE_function;
 
     public enum communicationOption {
         MODBUS, OPC_UA, MIXED
     }
 
+    @XmlAttribute
     private communicationOption com;
-
+    @XmlAttribute
     private String name;
-
+    @XmlElement
     private sensor_actuator inSensor;
+    @XmlElement
     private sensor_actuator outSensor;
+    @XmlElement
     private TreeMap<Integer, sensor_actuator> io;
-
+    @XmlElement
     private TreeMap<Integer, SFEI> SFEIs;
 
     public SFEE() {
@@ -73,10 +56,6 @@ public class SFEE implements Externalizable {
         this.SFEIs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
     }
 
-    public communicationOption getCom() {
-        return com;
-    }
-
     public String getName() {
         return name;
     }
@@ -89,16 +68,25 @@ public class SFEE implements Externalizable {
         return SFEE_function;
     }
 
-    public sensor_actuator getInSensor() {
-        return inSensor;
+    public void setSFEE_function(SFEE.SFEE_function SFEE_function) {
+        this.SFEE_function = SFEE_function;
     }
 
-    public sensor_actuator getOutSensor() {
-        return outSensor;
+    public communicationOption getCom() {
+        return com;
     }
 
     public TreeMap<Integer, sensor_actuator> getIo() {
         return io;
+    }
+
+    public sensor_actuator getInSensor() {
+        return inSensor;
+    }
+
+
+    public sensor_actuator getOutSensor() {
+        return outSensor;
     }
 
     public void setIo(TreeMap<Integer, sensor_actuator> io) {
@@ -106,10 +94,13 @@ public class SFEE implements Externalizable {
     }
 
     public sensor_actuator getIObyName(String name) {
-
         try {
+            if (name.equalsIgnoreCase("none"))
+                return null;
+
             for (Map.Entry<Integer, sensor_actuator> entry : io.entrySet()) {
-                if (entry.getValue().name().equalsIgnoreCase(name)) return entry.getValue();
+                if (entry.getValue().getName().equalsIgnoreCase(name))
+                    return entry.getValue();
             }
             throw new Exception("IO with name " + name + " not found!");
         } catch (Exception e) {

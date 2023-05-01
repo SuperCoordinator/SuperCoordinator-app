@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="170.0" prefWidth="680.0" styleClass="bkg" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" prefHeight="170.0" prefWidth="680.0" spacing="10.0">
+         <padding>
+            <Insets left="5.0" right="5.0" />
+         </padding>
+         <children>
+            <VBox prefHeight="160.0" prefWidth="385.0">
+               <children>
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Machine Door Sensor" />
+                  <ComboBox fx:id="sDoor" prefWidth="200.0" promptText="Door Sensor" styleClass="comboBox_default" />
+               </children>
+            </VBox>
+            <VBox prefHeight="160.0" prefWidth="385.0">
+               <children>
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Stop Actuator">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Text>
+                  <ComboBox fx:id="aStop" prefWidth="200.0" promptText="Stop" styleClass="comboBox_default" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

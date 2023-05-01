@@ -26,5 +26,13 @@ blocks/CMC2-connection/control/*
 blocks/CMC2-con_individual/control/*
 !blocks/CMC-con_individual/control/*.project
 
+blocks/SS_3CMC/control/*
+!blocks/SS_3CMC/control/*.project
+
+blocks/MC_Staudinger/control/*
+!blocks/MC_Staudinger/control/*.project
+!blocks/MC_Staudinger/control/arduinoSlave
+
 .idea/*
 *.iml
+out/*

@@ -5,6 +5,7 @@ import models.base.SFEE;
 import models.SFEx_particular.SFEM_production;
 import monitor.production.SFEM_production_monitor;
 
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -16,46 +17,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class cSFEM_production implements Externalizable, Runnable {
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+public class cSFEM_production implements Runnable {
 
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfem);
-        out.writeObject(sfemMonitor);
-        out.writeObject(sfeeControllers);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfem = (SFEM_production) in.readObject();
-        this.sfemMonitor = (SFEM_production_monitor) in.readObject();
-        this.sfeeControllers = (ArrayList<cSFEE_production>) in.readObject();
-
-        this.viewer = new viewers.SFEM();
-    }
-
+    @XmlElement
     private SFEM_production sfem;
-
     private SFEM_production_monitor sfemMonitor;
-
+    @XmlElement
     private ArrayList<cSFEE_production> sfeeControllers;
-    private viewers.SFEM viewer;
+    private viewers.SFEM viewer = new viewers.SFEM();
 
     public cSFEM_production() {
     }
 
     public cSFEM_production(SFEM_production sfem) {
         this.sfem = sfem;
-
         this.sfeeControllers = new ArrayList<>();
-        this.viewer = new viewers.SFEM();
-
     }
+
 
     public SFEM_production getSfem() {
         return sfem;
+    }
+
+    public ArrayList<cSFEE_production> getSfeeControllers() {
+        return sfeeControllers;
     }
 
     public void init_SFEEs(int nSFEEs) {
@@ -82,6 +69,10 @@ public class cSFEM_production implements Externalizable, Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        init_SFEM_production_monitor();
+    }
+
+    private void init_SFEM_production_monitor() {
         sfemMonitor = new SFEM_production_monitor(sfem);
     }
 
@@ -96,15 +87,32 @@ public class cSFEM_production implements Externalizable, Runnable {
                 cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
 
                 if (scene == 0)
-                    sfeeController.init(i == 0 ? scene : 10);
+                    sfeeController.init(i == 0 ? scene : -1);
                 else if (scene == 1) {
                     if (SFEM_idx == 0)
                         sfeeController.init(3);
                     else
                         sfeeController.init(4);
+                } else if (scene == 2) {
+                    if (i == 0)
+                        sfeeController.init(5);
+                    else if (i == 1) {
+                        sfeeController.init(6);
+                    } else if (i == 2) {
+                        sfeeController.init(7);
+                    }
+                } else if (scene == 3) {
+                    if (SFEM_idx == 0) {
+                        sfeeController.init(scene + 5);
+                    } else if (SFEM_idx == 1) {
+                        sfeeController.init(scene + 6 + i);
+                        firstRun(false, i);
+                    }
+                }else if(scene == 4){
+                    sfeeController.init(scene + 8);
+                }else if(scene == 5){
+                    sfeeController.init(scene + 8);
                 }
-
-                firstRun(false, i);
 
                 sfeeController.initFailures();
 
@@ -116,6 +124,17 @@ public class cSFEM_production implements Externalizable, Runnable {
         }
 
 
+    }
+
+    public void init_after_XML_loading() {
+
+        for (int i = 0; i < sfem.getSFEEs().size(); i++) {
+            sfeeControllers.get(i).setSfee(sfem.getSFEEbyIndex(i));
+        }
+
+        for (cSFEE_production cSFEEProduction : sfeeControllers) {
+            cSFEEProduction.init_after_XML_load();
+        }
     }
 
     public void openConnections() {
@@ -203,6 +222,10 @@ public class cSFEM_production implements Externalizable, Runnable {
             }
 
             firstExe = false;
+
+            // In case of load from XML
+            if (sfemMonitor == null)
+                init_SFEM_production_monitor();
         }
         sfeeControllers.get(0).launchSimulation();
     }

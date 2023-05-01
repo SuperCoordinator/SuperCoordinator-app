@@ -6,36 +6,16 @@ import models.base.SFEI;
 import models.SFEx_particular.SFEI_conveyor;
 import models.SFEx_particular.SFEI_machine;
 
+import javax.xml.bind.annotation.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.*;
 
-public class SFEE_failures2 implements Externalizable {
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sfee);
-        out.writeObject(stochasticType);
-        out.writeObject(stochasticFormulas);
-        out.writeObject(failuresFormulas);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.sfee = (SFEE) in.readObject();
-        this.stochasticType = (stochasticTime.timeOptions) in.readObject();
-        this.stochasticFormulas = (String[]) in.readObject();
-        this.failuresFormulas = (ArrayList<String[]>) in.readObject();
-
-        this.state = SM.STOCHASTIC;
-        this.stochasticTimeTasks = new LinkedList<>();
-        init_();
-
-    }
-
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+public class SFEE_failures2  {
     private enum SM {
         STOCHASTIC,
         BREAKDOWN,
@@ -45,11 +25,13 @@ public class SFEE_failures2 implements Externalizable {
     }
 
     private SM state;
-
     private SFEE sfee;
-    private LinkedList<stochasticTime> stochasticTimeTasks;
+    private LinkedList<stochasticTime> stochasticTimeTasks = new LinkedList<>();
+    @XmlElement
     private stochasticTime.timeOptions stochasticType;
+    @XmlElement
     private String[] stochasticFormulas;
+    @XmlElement
     private ArrayList<String[]> failuresFormulas;
 
     private breakdown_repair2 breakdownRepair2;
@@ -68,11 +50,23 @@ public class SFEE_failures2 implements Externalizable {
         this.stochasticType = stochasticType;
         this.stochasticFormulas = stochasticTime_f;
         this.failuresFormulas = failures_f;
-        this.stochasticTimeTasks = new LinkedList<>();
 
-        this.state = SM.STOCHASTIC;
+    }
 
-        init_();
+    public void setSfee(SFEE sfee) {
+        this.sfee = sfee;
+    }
+
+    public stochasticTime.timeOptions getStochasticType() {
+        return stochasticType;
+    }
+
+    public String[] getStochasticFormulas() {
+        return stochasticFormulas;
+    }
+
+    public ArrayList<String[]> getFailuresFormulas() {
+        return failuresFormulas;
     }
 
     private void init_() {
@@ -96,10 +90,17 @@ public class SFEE_failures2 implements Externalizable {
         this.produceMore2 = new produce_more2(
                 failuresFormulas.get(4),
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
+
+        this.state = SM.STOCHASTIC;
     }
 
-    public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
+    private boolean first_run = true;
 
+    public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
+        if (first_run) {
+            init_();
+            first_run = false;
+        }
         try {
             // Evaluate of the transitions
             switch (state) {
@@ -119,9 +120,7 @@ public class SFEE_failures2 implements Externalizable {
                                 produceMore2.loop(sensorsState.get(0), actuatorsState.get(0));
                                 if (produceMore2.isActive()) {
                                     state = SM.PRODUCE_MORE;
-                                } /*else {
-                                    state = SM.STOCHASTIC;
-                                }*/
+                                } /*ELSE state = SM.STOCHASTIC; */
                             }
                         }
                     }

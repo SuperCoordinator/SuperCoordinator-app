@@ -2,7 +2,8 @@ package failures.oldVersion;
 
 import models.SFEx_particular.SFEI_conveyor;
 import models.base.part;
-import models.partsAspect;
+import models.partDescription;
+import utility.utils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -64,8 +65,8 @@ public class produce_more extends failure {
                 state = SM.WAITING;
             }
             case WAITING -> {
-                boolean sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().bit_offset()) == 1;
-                if (getUtility().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+                boolean sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().getBit_offset()) == 1;
+                if (utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                     int id = 0;
                     if (sfeiConveyor.getPartsATM().size() > 0) {
                         if (sfeiConveyor.getPartsATM().last().getId() >= sfeiConveyor.getnPiecesMoved()) {
@@ -74,12 +75,12 @@ public class produce_more extends failure {
                     } else
                         id = sfeiConveyor.getnPiecesMoved();
 
-                    part p = new part(id, new partsAspect(partsAspect.material.BLUE, partsAspect.form.RAW));
+                    part p = new part(id, new partDescription(partDescription.material.BLUE, partDescription.form.RAW));
 
                     // This operation of concat is faster than + operation
                     String itemName = sfeiConveyor.getName();
                     itemName = itemName.concat("-");
-                    itemName = itemName.concat(sfeiConveyor.getInSensor().name());
+                    itemName = itemName.concat(sfeiConveyor.getInSensor().getName());
 
                     p.addTimestamp(itemName);
                     sfeiConveyor.addNewPartATM(p);
@@ -108,13 +109,13 @@ public class produce_more extends failure {
             }
             case TURN_ON -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmitter().bit_offset(), 1);
+                    actuatorsState.set(sfeiConveyor.getaEmitter().getBit_offset(), 1);
                     System.out.println("P_More -> " + state);
                 }
             }
             case TURN_OFF -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmitter().bit_offset(), 0);
+                    actuatorsState.set(sfeiConveyor.getaEmitter().getBit_offset(), 0);
                     System.out.println("P_More -> " + state);
                 }
             }

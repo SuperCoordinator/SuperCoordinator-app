@@ -7,27 +7,19 @@ import models.base.SFEI;
 import models.base.SFEM;
 import models.part_prodTime;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
 
-public class SFEM_production extends SFEM implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(SFEEs);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        this.SFEEs = (TreeMap<Integer, SFEE>) in.readObject();
-    }
-
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+public class SFEM_production extends SFEM  {
+        @XmlElement
     private TreeMap<Integer, SFEE> SFEEs;
 
     public SFEM_production() {

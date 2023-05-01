@@ -1,7 +1,7 @@
 package viewers;
 
 import models.sensor_actuator;
-import utils.customCalculator;
+import utility.customCalculator;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -186,7 +186,7 @@ public class SFEE {
         System.out.println("SFEE Operation Time?");
         System.out.println("Valid variables: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
         System.out.println("Valid operator: + - * / % or gauss[ mean ; dev ] linear[ value ] ");
-        System.out.println("Please add a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]");
+        System.out.println("Please insert a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]");
         System.out.print("Enter expression:");
         do {
             if (retry)
@@ -250,7 +250,7 @@ public class SFEE {
         System.out.println("   -- prob   [ x ]    (op)  p => x is a number related to the variable [x] / op [>,=,<,<=,>=] / p [0, 100] ");
         System.out.println("   -- linear [ x ]            => x is a number related to the variable [x]");
         System.out.println("That example is interpreted as: the probability of failures after x units (parts or minutes ) is op than p");
-        System.out.println("Please add a space between each character/number (p.e: prob [ 20 ] >= 50 )");
+        System.out.println("Please insert a space between each character/number (p.e: prob [ 20 ] >= 50 )");
 
 
         System.out.println("BREAKDOWN WITH REPAIR ");

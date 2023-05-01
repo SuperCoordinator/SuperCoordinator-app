@@ -1,34 +1,17 @@
 package models;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public final class sensor_actuator implements Externalizable {
-
-    public static final long serialVersionUID = 1234L;
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
-        out.writeObject(type);
-        out.writeBoolean(invLogic);
-        out.writeObject(dataType);
-        out.writeObject(addressType);
-        out.writeInt(register);
-        out.writeInt(bit_offset);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.name = (String) in.readObject();
-        this.type = (Type) in.readObject();
-        this.invLogic = in.readBoolean();
-        this.dataType = (DataType) in.readObject();
-        this.addressType = (AddressType) in.readObject();
-        this.register = in.readInt();
-        this.bit_offset = in.readInt();
-    }
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+public final class sensor_actuator  {
 
     public enum Type {
         INPUT,
@@ -59,13 +42,19 @@ public final class sensor_actuator implements Externalizable {
          */
         HOLDING_REGISTER
     }
-
+    @XmlAttribute
     private String name;
+    @XmlAttribute
     private Type type;
+    @XmlAttribute
     private boolean invLogic;
+    @XmlAttribute
     private DataType dataType;
+    @XmlAttribute
     private AddressType addressType;
+    @XmlAttribute
     private int register;
+    @XmlAttribute
     private int bit_offset;
 
     public sensor_actuator() {
@@ -84,34 +73,35 @@ public final class sensor_actuator implements Externalizable {
     }
 
     public sensor_actuator changeInvLogic(boolean invLogic) {
-        return new sensor_actuator(name(), type(), invLogic, dataType(), addressType(), register(), bit_offset());
+        return new sensor_actuator(getName(), getType(), invLogic, getDataType(), getAddressType(), getRegister(), getBit_offset());
     }
 
-    public String name() {
+
+    public String getName() {
         return name;
     }
 
-    public Type type() {
+    public Type getType() {
         return type;
     }
 
-    public boolean invLogic() {
-        return invLogic;
-    }
-
-    public DataType dataType() {
+    public DataType getDataType() {
         return dataType;
     }
 
-    public AddressType addressType() {
+    public AddressType getAddressType() {
         return addressType;
     }
 
-    public int register() {
+    public boolean getInvLogic() {
+        return invLogic;
+    }
+
+    public int getRegister() {
         return register;
     }
 
-    public int bit_offset() {
+    public int getBit_offset() {
         return bit_offset;
     }
 
