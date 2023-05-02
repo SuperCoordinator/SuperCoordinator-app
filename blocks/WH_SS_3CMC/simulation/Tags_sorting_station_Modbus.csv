@@ -18,7 +18,7 @@ blue_conveyor,Output,Bool,Coil 0
 blue_remover,Output,Bool,Coil 1
 blue_sorter_belt,Output,Bool,Coil 2
 blue_sorter_turn,Output,Bool,Coil 3
-Emitter,Output,Bool,Coil 4
+emit_SS,Output,Bool,Coil 4
 entry_conveyor,Output,Bool,Coil 5
 exit_conveyor,Output,Bool,Coil 6
 FACTORY I/O (Pause),Output,Bool,Coil 7
@@ -45,3 +45,5 @@ counter_green,Output,Int,Holding Reg 1
 counter_blue,Output,Int,Holding Reg 2
 counter_faulty,Output,Int,Holding Reg 3
 FACTORY I/O (Camera Position),Output,Int,Holding Reg 4
+base_SS,Output,Int,Holding Reg 5
+part_SS,Output,Int,Holding Reg 6

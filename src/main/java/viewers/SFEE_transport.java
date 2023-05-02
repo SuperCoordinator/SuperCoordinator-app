@@ -22,7 +22,7 @@ public class SFEE_transport {
         } else if (repeat == 3) {
             System.out.println("What is the actuator for the " + sensorName + " sensor (Emit) ?");
             str[0] = in.nextLine();
-            System.out.println(" And for the part ? ");
+            System.out.println(" And for the db_part ? ");
             str[1] = in.nextLine();
             System.out.println(" And for the base ? ");
             str[2] = in.nextLine();

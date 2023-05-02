@@ -6,7 +6,16 @@ import java.time.Instant;
 import java.util.TreeMap;
 
 public class part {
+
+    public enum status {
+        IN_STOCK,
+        IN_PRODUCTION,
+        PRODUCED
+    }
+
     private int id;
+
+    private status state;
     private partDescription expectation;
     private TreeMap<String, Instant> itemTimestamps;
 
@@ -22,15 +31,30 @@ public class part {
     public part(int id, partDescription partAppearance) {
         this.id = id;
         this.reality = partAppearance;
-
+        this.state = status.IN_STOCK;
         this.itemTimestamps = new TreeMap<>();
         this.defect = false;
         this.waitTransport = false;
         this.produced = false;
     }
 
+    public part(int id, status status,partDescription partAppearance) {
+        this.id = id;
+        this.reality = partAppearance;
+        this.state = status;
+        this.itemTimestamps = new TreeMap<>();
+        this.defect = false;
+        this.waitTransport = false;
+        this.produced = false;
+    }
+
+
     public int getId() {
         return id;
+    }
+
+    public status getState() {
+        return state;
     }
 
     public TreeMap<String, Instant> getTimestamps() {
@@ -79,6 +103,6 @@ public class part {
 
     @Override
     public String toString() {
-        return "part [id=" + id + ", reality=" + reality.toString() + "]";
+        return "db_part [id=" + id + ", reality=" + reality.toString() + "]";
     }
 }

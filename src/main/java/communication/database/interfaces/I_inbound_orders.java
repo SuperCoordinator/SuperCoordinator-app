@@ -12,5 +12,5 @@ public interface I_inbound_orders {
 
     void update(int id,int metal_qty, int green_qty, int blue_qty );
 
-    List<inboundOrder> getAll_sf_configurations();
+    List<inboundOrder> getAll_inbound_orders();
 }

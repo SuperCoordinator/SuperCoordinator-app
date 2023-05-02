@@ -1,6 +1,6 @@
 package utility.serialize;
 
-import communication.database.sf_configuration;
+import communication.database.*;
 import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
@@ -9,12 +9,14 @@ import models.SFEx_particular.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
+import org.apache.ibatis.jdbc.ScriptRunner;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ public class serializer {
         CMC_connection,
         CMC2_con_individual,
         sorting_station,
-        SS_3CMC,
+        WH_SS_3CMC,
         MC_Staudinger,
         WH_SS
     }
@@ -51,6 +53,7 @@ public class serializer {
     public void setC_Warehouse(cSFEM_warehouse cSFEMWarehouse) {
         serializable.setC_Warehouse(cSFEMWarehouse);
     }
+
 
     public cSFEM_warehouse getC_Warehouse() {
         return serializable.getC_Warehouse();
@@ -82,14 +85,55 @@ public class serializer {
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             serializable = (utility.serialize.serializable) unmarshaller.unmarshal(new FileReader(filePath + ".xml"));
-            createDB_Instance();
+            createDB();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void createDB_Instance() {
-        sf_configuration.getInstance().insert(scene.name());
+    private void createDB() {
+        try {
+            String query = "CREATE DATABASE IF NOT EXISTS " + scene + ";";
+            dbConnection.getConnection().prepareStatement(query).executeUpdate();
+            dbConnection.setDatabase(scene.name());
+
+            // create tables
+            ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getConnection());
+            //Creating a reader object
+            Reader reader = new BufferedReader(new FileReader("src/main/resources/database/DDL.sql"));
+            scriptRunner.setLogWriter(null); // not print in terminal
+            //Running the script
+            scriptRunner.runScript(reader);
+
+        } catch (SQLException | FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void updateDB() {
+        db_sf_distribution.getInstance().insert(scene.name());
+        instantiateSFEx();
+    }
+
+    private void instantiateSFEx() {
+        getC_Production().forEach(cSFEMProduction -> {
+            db_sfem.getInstance().insert(cSFEMProduction.getSfem().getName(), scene.toString());
+
+            cSFEMProduction.getSfeeControllers().forEach(cSFEEProduction -> {
+                db_sfee.getInstance().insert(cSFEEProduction.getSFEE().getName(), cSFEMProduction.getSfem().getName());
+
+                cSFEEProduction.getSFEE().getSFEIs().forEach((key, sfei) -> {
+                    db_sfei.getInstance().insert(sfei.getName(), cSFEEProduction.getSFEE().getName());
+
+                    //inSensor
+                    db_sensor.getInstance().insert(sfei.getInSensor().getName(), sfei.getName(), true);
+
+                    //outSensor
+                    db_sensor.getInstance().insert(sfei.getOutSensor().getName(), sfei.getName(), false);
+                });
+            });
+        });
     }
 
     public void new_cSFEM_transport(ArrayList<Object> data, boolean isWH) {

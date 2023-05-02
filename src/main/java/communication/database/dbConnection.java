@@ -16,7 +16,9 @@ public class dbConnection {
 
     private static Connection con = null;
     @XmlElement
-    private static String url = "jdbc:mysql://localhost:3306/supercoordinator";
+    private static String url = "jdbc:mysql://localhost:3306/";
+    @XmlElement
+    private static String database = "";
     @XmlElement
     private static String user = "root";
     @XmlElement
@@ -35,15 +37,26 @@ public class dbConnection {
     public dbConnection() {
     }
 
+    public static void setDatabase(String database) {
+        try {
+            dbConnection.database = database;
+            DriverManager.getConnection(url + database, user, pass);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static Connection getConnection() {
 
         try {
             if (con == null) {
-                return DriverManager.getConnection(url, user, pass);
+                return DriverManager.getConnection(url + database, user, pass);
             }
             return con;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
+
 }

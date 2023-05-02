@@ -1,3 +1,4 @@
+import communication.database.db_part;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
@@ -29,7 +30,7 @@ public class App {
                 /* WAREHOUSE MODULE */
                 SFEM_warehouse sfemWarehouse = new SFEM_warehouse();
 
-                cSFEM_warehouse cSFEMWarehouse = new cSFEM_warehouse(sfemWarehouse);
+                cSFEM_warehouse cSFEMWarehouse = new cSFEM_warehouse(sfemWarehouse, 5);
 
                 cSFEMWarehouse.init("sfee_warehouse");
 
@@ -48,7 +49,7 @@ public class App {
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.sorting_station)) {
                     nModules = 1;
                     nSFEE = 3;
-                } else if (serializer.getInstance().scene.equals(serializer.scenes.SS_3CMC)) {
+                } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_3CMC)) {
                     nModules = 2;
                     nSFEE = 3;
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.MC_Staudinger)) {
@@ -82,6 +83,8 @@ public class App {
                     production.init_after_XML_loading();
                 }*/
 
+                //Intermediate save before Transport Modules setup
+                serializer.getInstance().saveXML();
 
                 /* TRANSPORT MODULES*/
 /*          System.out.println("How many Transport SFEModules ?");
@@ -89,7 +92,7 @@ public class App {
             int nModules = Integer.parseInt(str);*/
                 if (serializer.getInstance().scene.equals(serializer.scenes.sorting_station))
                     nModules = 0;
-                else if (serializer.getInstance().scene.equals(serializer.scenes.SS_3CMC)) {
+                else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_3CMC)) {
                     nModules = 3;
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.MC_Staudinger)) {
                     nModules = 0;
@@ -256,6 +259,12 @@ public class App {
 //                serializer.getInstance().saveXML();
 
             }
+
+            // DB
+            serializer.getInstance().updateDB();
+            // update index of partID in the warehouse
+//            System.out.println(db_part.getInstance().getAll_parts(serializer.getInstance().scene.toString()).size());
+            serializer.getInstance().getC_Warehouse().updatePartIdOffset(db_part.getInstance().getAll_parts(serializer.getInstance().scene.toString()).size());
 
             System.out.print("Press ENTER to start simulation");
             in.nextLine();

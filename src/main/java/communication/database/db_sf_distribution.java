@@ -1,34 +1,32 @@
 package communication.database;
 
-import communication.database.interfaces.I_sf_configuration;
-import utility.serialize.serializer;
+import communication.database.interfaces.I_sf_distribution;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class sf_configuration implements I_sf_configuration {
+public class db_sf_distribution implements I_sf_distribution {
 
     /**
      * Singleton pattern
      */
-    public sf_configuration() {
+    public db_sf_distribution() {
     }
 
-    public static sf_configuration getInstance() {
-        return sf_configuration.sf_configurationHolder.INSTANCE;
+    public static db_sf_distribution getInstance() {
+        return db_sf_distribution.sf_configurationHolder.INSTANCE;
     }
 
     private static class sf_configurationHolder {
-        private static final sf_configuration INSTANCE = new sf_configuration();
+        private static final db_sf_distribution INSTANCE = new db_sf_distribution();
     }
     @Override
-    public int insert(String sf_config_name) {
+    public int insert(String sf_distribution) {
         try {
-            String def_vars = "SET @name = '" + sf_config_name + "'," +
+            String def_vars = "SET @name = '" + sf_distribution + "'," +
                     " @time = current_timestamp();";
             String query = "INSERT INTO sf_distribution (name,time_stamp)" +
                     "VALUES (@name,@time)" +

@@ -1,10 +1,13 @@
 package monitor.transport;
 
+import communication.database.db_part;
+import communication.database.db_production_history;
 import models.SFEx_particular.SFEI_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;
 import models.sensor_actuator;
+import utility.serialize.serializer;
 import utility.utils;
 
 import java.util.ArrayList;
@@ -102,6 +105,7 @@ public class SFEE_transport_monitor {
                 if (previousSFEI.getPartsATM().size() > 0 && !b_outSensor) {
                     part p = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
                     p.setWaitTransport(false);
+
                     // This operation of concat is faster than + operation
                     String itemName = sfee.getName();
                     itemName = itemName.concat("-");
@@ -109,8 +113,9 @@ public class SFEE_transport_monitor {
                     itemName = itemName.concat("warehouse");
 
                     p.addTimestamp(itemName);
+
                     sfeiTransport.addNewPartATM(p);
-                    System.out.println(p);
+
                     sm_state = state.T2;
                 }
             }
@@ -121,12 +126,23 @@ public class SFEE_transport_monitor {
                         part p = Objects.requireNonNull(sfeiTransport.getPartsATM().pollFirst());
                         p.setProduced(false);
                         nextSFEI.getPartsATM().add(p);
+
+                        // Database space
+                        // update part status
+                        db_part.getInstance().update_status(p.getId(), serializer.getInstance().scene.toString(), part.status.IN_PRODUCTION.toString());
+                        // add production history
+                        db_production_history.getInstance().insert(
+                                p.getId(),
+                                sfeiTransport.getOutSensor().getName(),
+                                p.getReality().material().toString(),
+                                p.getReality().form().toString());
+
                         sm_state = state.T3;
                     }
                 }
             }
             case T3 -> {
-                if (waitNewPart )
+                if (waitNewPart)
                     sm_state = state.T1;
             }
         }
@@ -151,7 +167,7 @@ public class SFEE_transport_monitor {
                 boolean b_outSensor = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
 
                 // inSFEI
-                // SFEE entry, should get part object from inSFEI
+                // SFEE entry, should get db_part object from inSFEI
 
                 if (currPart != null) {
                     // It means that previously a part was detected but not had the isWaitTransport flag TRUE
@@ -186,6 +202,8 @@ public class SFEE_transport_monitor {
 
                             p.addTimestamp(itemName);
                             sfei.getValue().addNewPartATM(p);
+
+
                         } else {
                             currPart = previousSFEI.getPartsATM().first();
                         }
@@ -202,11 +220,13 @@ public class SFEE_transport_monitor {
                         String itemName = sfei.getValue().getName();
                         itemName = itemName.concat("-");
                         itemName = itemName.concat(sfei_outSensor.getName());
-
-                        if (sfei.getKey() == sfee.getSFEIs().size() - 1)
-                            sfei.getValue().getPartsATM().last().addTimestamp(itemName);
-                        else
-                            sfei.getValue().getPartsATM().first().addTimestamp(itemName);
+                        part p;
+                        if (sfei.getKey() == sfee.getSFEIs().size() - 1) {
+                            p = sfei.getValue().getPartsATM().last();
+                        } else {
+                            p = sfei.getValue().getPartsATM().first();
+                        }
+                        Objects.requireNonNull(p).addTimestamp(itemName);
 
                         sfei.getValue().setnPiecesMoved(sfei.getValue().getnPiecesMoved() + 1);
                     }
@@ -219,7 +239,7 @@ public class SFEE_transport_monitor {
                         part p = sfei.getValue().getPartsATM().first();
                         // setProduced(FALSE)
                         // before, setWaitTransport(FALSE)
-                        // So the SFEM_transport will be triggered and remove the part from the SFEI partsATM
+                        // So the SFEM_transport will be triggered and remove the db_part from the SFEI partsATM
                         p.setProduced(false);
                         nextSFEI.getPartsATM().add(p);
                     }

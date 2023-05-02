@@ -7,6 +7,7 @@ import models.SFEx_particular.SFEI_transport;
 import models.sensor_actuator;
 import org.apache.commons.math3.util.Pair;
 import utility.InstantAdapter;
+import utility.utils;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -88,6 +89,7 @@ public class SFEI {
         }
     }
 
+
     public String getName() {
         return name;
     }
@@ -119,6 +121,10 @@ public class SFEI {
 
     public synchronized TreeSet<part> getPartsATM() {
         return partsATM;
+    }
+
+    public void setPartsATM(TreeSet<part> partsATM) {
+        this.partsATM = partsATM;
     }
 
     public synchronized void addNewPartATM(part partATM) {

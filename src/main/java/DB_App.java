@@ -1,11 +1,8 @@
-import communication.database.inbound_orders;
-import communication.database.sf_configuration;
-import controllers.production.cSFEM_production;
+import communication.database.db_part;
+import communication.database.db_production_history;
 import controllers.warehouse.cSFEM_warehouse;
 import models.SFEx_particular.SFEM_warehouse;
-import utility.serialize.serializer;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -15,21 +12,24 @@ public class DB_App {
     public static void main(String[] args) {
 
         try {
-/*            sf_configuration sf_config = new sf_configuration();
-            System.out.println(sf_config.insert("test"));
-            System.out.println(sf_config.insert("test1"));
+//            db_sf_distribution sf_config = new db_sf_distribution();
+//            System.out.println(sf_config.insert("test"));
+//            System.out.println(sf_config.insert("test1"));
+//
+//            System.out.println(Arrays.toString(sf_config.getAll_inbound_orders().toArray()));
+//
+//            db_inbound_orders.getInstance().insert(4,5,6);
 
-            System.out.println(Arrays.toString(sf_config.getAll_sf_configurations().toArray()));*/
+//            SFEM_warehouse sfemWarehouse = new SFEM_warehouse();
+//
+//            cSFEM_warehouse cSFEMWarehouse = new cSFEM_warehouse(sfemWarehouse, 1);
+//            cSFEMWarehouse.init("sfee_warehouse");
+//
+//            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+//            scheduler.scheduleAtFixedRate(cSFEMWarehouse, 0, 100, TimeUnit.MILLISECONDS);
 
-//            inbound_orders.getInstance().insert(4,5,6);
+//            System.out.println(Arrays.toString(db_production_history.getInstance().getProduction_History_of(1).toArray()));
 
-            SFEM_warehouse sfemWarehouse = new SFEM_warehouse();
-
-            cSFEM_warehouse  cSFEMWarehouse = new cSFEM_warehouse(sfemWarehouse);
-            cSFEMWarehouse.init("sfee_warehouse");
-
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-            scheduler.scheduleAtFixedRate(cSFEMWarehouse, 0, 100, TimeUnit.MILLISECONDS);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -92,7 +92,7 @@ public class C_SFEI_transport {
         }
         if (emit_part_bit.getValue() == null) {
             error = true;
-            errorMsg = errorMsg.concat("  - Emitter part bit \n");
+            errorMsg = errorMsg.concat("  - Emitter db_part bit \n");
         }
         if (emit_base_bit.getValue() == null) {
             error = true;

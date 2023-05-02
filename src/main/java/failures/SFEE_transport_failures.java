@@ -88,7 +88,7 @@ public class SFEE_transport_failures {
 
                     stochasticTimeTask = new stochasticTime(
                             sfee.getSFEIbyIndex(0),
-                            /*new part(sfee.getSFEIbyIndex(0).getPartsATM().first()),*/
+                            /*new db_part(sfee.getSFEIbyIndex(0).getPartsATM().first()),*/
                             sfee.getSFEIbyIndex(0).getPartsATM().first(),
                             stochasticType,
                             stochasticFormulas,

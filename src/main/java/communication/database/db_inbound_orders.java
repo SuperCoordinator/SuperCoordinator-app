@@ -5,24 +5,23 @@ import models.inboundOrder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class inbound_orders implements I_inbound_orders {
+public class db_inbound_orders implements I_inbound_orders {
 
     /**
      * Singleton pattern
      */
-    public inbound_orders() {
+    public db_inbound_orders() {
     }
 
-    public static inbound_orders getInstance() {
-        return inbound_orders.inbound_ordersHolder.INSTANCE;
+    public static db_inbound_orders getInstance() {
+        return db_inbound_orders.inbound_ordersHolder.INSTANCE;
     }
 
     private static class inbound_ordersHolder {
-        private static final inbound_orders INSTANCE = new inbound_orders();
+        private static final db_inbound_orders INSTANCE = new db_inbound_orders();
     }
     @Override
     public int insert(int metal_qty, int green_qty, int blue_qty) {
@@ -62,7 +61,7 @@ public class inbound_orders implements I_inbound_orders {
     }
 
     @Override
-    public List<inboundOrder> getAll_sf_configurations() {
+    public List<inboundOrder> getAll_inbound_orders() {
         try {
             List<inboundOrder> list = new ArrayList<>();
             String query = "SELECT * FROM inbound_orders;";

@@ -5,14 +5,9 @@ import models.base.SFEI;
 import models.base.SFEM;
 import models.base.part;
 import models.part_prodTime;
-import monitor.base.SFEM_monitor;
+import monitor.SFEM_monitor;
 
 
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -49,9 +44,9 @@ public class SFEM_transport_monitor extends SFEM_monitor {
                         }
                     }
 
-                    updateGraphs();
-
-                    printStats(new ArrayList<>());
+//                    updateGraphs();
+//
+//                    printStats(new ArrayList<>());
                     setPrintedStats(true);
 
                 }

@@ -2,18 +2,15 @@ package controllers.warehouse;
 
 import models.SFEx_particular.SFEM_warehouse;
 import models.base.SFEE;
-import monitor.SFEM_warehouse_monitor;
+import monitor.warehouse.SFEM_warehouse_monitor;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class cSFEM_warehouse implements Runnable {
-
-
+    @XmlAttribute
+    private int checkOrders_period;
     @XmlElement
     private SFEM_warehouse sfem;
 
@@ -24,8 +21,9 @@ public class cSFEM_warehouse implements Runnable {
     public cSFEM_warehouse() {
     }
 
-    public cSFEM_warehouse(SFEM_warehouse sfem) {
+    public cSFEM_warehouse(SFEM_warehouse sfem, int checkOrders_period) {
         this.sfem = sfem;
+        this.checkOrders_period = checkOrders_period;
     }
 
     public SFEM_warehouse getSfem() {
@@ -43,7 +41,7 @@ public class cSFEM_warehouse implements Runnable {
         sfeeWarehouseController.init();
 
         // This part_id_offset should be a query in DB
-        sfemWarehouseMonitor = new SFEM_warehouse_monitor(0);
+        sfemWarehouseMonitor = new SFEM_warehouse_monitor(0,checkOrders_period);
     }
 
     public void init_afterLoad() {
@@ -51,7 +49,11 @@ public class cSFEM_warehouse implements Runnable {
         sfeeWarehouseController.init();
 
         // This part_id_offset should be a query in DB
-        sfemWarehouseMonitor = new SFEM_warehouse_monitor(0);
+        sfemWarehouseMonitor = new SFEM_warehouse_monitor(0,checkOrders_period);
+    }
+
+    public void updatePartIdOffset(int offset){
+        sfemWarehouseMonitor.setPart_id_offset(offset);
     }
 
     public cSFEE_warehouse getSfeeWarehouseController() {

@@ -139,7 +139,7 @@ public class SFEE_failures {
             int pickSFEI = pickSFEI(false);
 //                int pickSFEI = 0;
 
-            // The part is in the initial SFEI, so it is needed to select the partID and
+            // The db_part is in the initial SFEI, so it is needed to select the partID and
             // associate with the correct SFEI to manipulate the time
             if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
 
