@@ -78,45 +78,46 @@ public class cSFEE_production {
 
     public void init(int scene) {
         try {
+            String csv_path;
             switch (scene) {
                 case 0, -1 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC_connection\\simulation\\Tags_CMC-connection_Modbus.csv";
-                    importIO(csv_path, scene);
+                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC_connection\\simulation\\Tags_CMC-connection_Modbus.csv";
+                    importIO(csv_path,true);
                 }
                 case 3 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC1-connection_Modbus.csv";
-                    importIO(csv_path, scene);
+                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC1-connection_Modbus.csv";
+                    importIO(csv_path,true);
                 }
                 case 4 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC2-connection_Modbus.csv";
-                    importIO(csv_path, scene);
+                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC2-connection_Modbus.csv";
+                    importIO(csv_path,true);
                 }
                 case 5, 6, 7 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\simulation\\Tags_sorting_station_Modbus.csv";
-                    importIO(csv_path, scene);
+                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\simulation\\Tags_sorting_station_Modbus.csv";
+                    importIO(csv_path,true);
                 }
                 case 8 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_sorting_station_Modbus.csv";
-                    importIO(csv_path, scene);
+                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_sorting_station_Modbus.csv";
+                    importIO(csv_path,true);
                 }
                 case 9, 10, 11 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_3CMC_Modbus.csv";
-                    importIO(csv_path, scene);
+                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_3CMC_Modbus.csv";
+                    importIO(csv_path,true);
                 }
                 case 12 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\MC_Staudinger\\simulation\\Tags_MC_Staudinger.csv";
-                    importIO(csv_path, scene);
+                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\MC_Staudinger\\simulation\\Tags_MC_Staudinger.csv";
+                    importIO(csv_path,true);
                 }
                 case 13 -> {
-                    String csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\WH_SS\\simulation\\Tags_sorting_station_Modbus.csv";
-                    importIO(csv_path, scene);
+                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\WH_SS\\simulation\\Tags_sorting_station_Modbus.csv";
+                    importIO(csv_path,true);
                 }
                 default -> {
-                    String csv_path = viewer.readIOpath();
-                    importIO(csv_path, 0);
+                    csv_path = viewer.readIOpath();
+                    importIO(csv_path,true);
                 }
             }
-
+            sfee.setIO_path(csv_path);
 
             String mode = viewer.opMode();
             //String mode = "2";
@@ -570,8 +571,8 @@ public class cSFEE_production {
                     I/O
      ************************************ */
 
-    public void importIO(String file_path, int scene) {
-        sfee.setIo(utils.getInstance().getReader().readModbusTags(file_path, scene, true));
+    public void importIO(String file_path,boolean dbg) {
+        sfee.setIo(utils.getInstance().getReader().readModbusTags(file_path, dbg));
 //        printAllIO();
     }
 
@@ -655,7 +656,6 @@ public class cSFEE_production {
             for (Future<Long> future : futures) {
                 // Waits for all tasks to return
                 future.get();
-
             }
             executorService.shutdown();
 
@@ -706,7 +706,10 @@ public class cSFEE_production {
     }
 
     public void init_after_XML_load() {
-        // IF NULL, then is normal operation mode
+
+        // Load IO to the SFEE (from the path)
+        importIO(sfee.getIO_path(),false);
+
         if (opMode.equals(operationMode.PROG_FAILURES))
             sfeeFailures2.setSfee(sfee);
         sfeeMonitor.setSfee(sfee);

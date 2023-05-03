@@ -39,7 +39,10 @@ public class SFEE {
     private sensor_actuator inSensor;
     @XmlElement
     private sensor_actuator outSensor;
+
     @XmlElement
+    private String IO_path;
+//    @XmlElement
     private TreeMap<Integer, sensor_actuator> io;
     @XmlElement
     private TreeMap<Integer, SFEI> SFEIs;
@@ -76,6 +79,10 @@ public class SFEE {
         return com;
     }
 
+    public String getIO_path() {
+        return IO_path;
+    }
+
     public TreeMap<Integer, sensor_actuator> getIo() {
         return io;
     }
@@ -84,9 +91,12 @@ public class SFEE {
         return inSensor;
     }
 
-
     public sensor_actuator getOutSensor() {
         return outSensor;
+    }
+
+    public void setIO_path(String IO_path) {
+        this.IO_path = IO_path;
     }
 
     public void setIo(TreeMap<Integer, sensor_actuator> io) {

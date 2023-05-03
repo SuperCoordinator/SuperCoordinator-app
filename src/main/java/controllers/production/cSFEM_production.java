@@ -108,9 +108,9 @@ public class cSFEM_production implements Runnable {
                         sfeeController.init(scene + 6 + i);
                         firstRun(false, i);
                     }
-                }else if(scene == 4){
+                } else if (scene == 4) {
                     sfeeController.init(scene + 8);
-                }else if(scene == 5){
+                } else if (scene == 5) {
                     sfeeController.init(scene + 8);
                 }
 
@@ -141,11 +141,11 @@ public class cSFEM_production implements Runnable {
         try {
             // Open the first connection
             sfeeControllers.get(0).openCommunication();
-            System.out.println(" SFEE (" + 0 + ") mb:" + sfeeControllers.get(0).getMb());
+            System.out.println(" SFEE (" + 0 + ") IP:" + sfeeControllers.get(0).getMb().getIp() + " Port:" + sfeeControllers.get(0).getMb().getPort());
             // For the rest, first check if there are common connections
             for (int i = 1; i < sfeeControllers.size(); i++) {
                 cSFEE_production to_define = sfeeControllers.get(i);
-                System.out.println(" SFEE (" + i + ") mb:" + to_define.getMb());
+                System.out.println(" SFEE (" + i + ") IP:" + to_define.getMb().getIp() + " Port:" + to_define.getMb().getPort());
                 modbus found_mb = null;
 
                 for (int j = 0; j < sfeeControllers.size(); j++) {
@@ -156,7 +156,7 @@ public class cSFEM_production implements Runnable {
                         if (to_define.getMb().getIp().equals(temp.getMb().getIp()))
                             if (to_define.getMb().getPort() == temp.getMb().getPort()) {
                                 found_mb = temp.getMb();
-                                System.out.println(" FOUND for SFEE (" + j + ") mb:" + temp.getMb());
+                                System.out.println(" FOUND for SFEE (" + j + ") IP:" + temp.getMb().getIp() + " Port:" + temp.getMb().getPort());
                                 break;
                             }
                     }
@@ -169,7 +169,7 @@ public class cSFEM_production implements Runnable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
     }

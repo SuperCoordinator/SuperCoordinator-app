@@ -29,15 +29,15 @@ public class db_part implements I_part {
 
 
     @Override
-    public int insert(int id, String sf_distribution, String status, int inbound_order) {
+    public int insert(int id, String sf_configuration, String status, int inbound_order) {
         try {
             String def_vars = "SET @id = " + id + "," +
-                    " @fk_sf_distribution = '" + sf_distribution + "'," +
+                    " @fk_sf_configuration = '" + sf_configuration + "'," +
                     " @status = '" + status + "'," +
                     " @fk_inbound_order = " + inbound_order + ";";
 
-            String query = "INSERT INTO part (id,fk_sf_distribution,status,fk_inbound_orders) " +
-                    "VALUES (@id,@fk_sf_distribution,@status,@fk_inbound_order) " +
+            String query = "INSERT INTO part (id,fk_sf_configuration,status,fk_inbound_orders) " +
+                    "VALUES (@id,@fk_sf_configuration,@status,@fk_inbound_order) " +
                     "ON DUPLICATE KEY UPDATE" +
                     "   fk_inbound_orders = @fk_inbound_order;";
 
@@ -47,8 +47,8 @@ public class db_part implements I_part {
 
             return st.executeBatch()[1];
 
-/*            String query = "INSERT INTO part (id,fk_sf_distribution,status,fk_inbound_orders)" +
-                    "VALUES (" + id + ",'" + db_sf_distribution + "'," + "'" + status + "'," + inbound_order + ");";
+/*            String query = "INSERT INTO part (id,fk_sf_configuration,status,fk_inbound_orders)" +
+                    "VALUES (" + id + ",'" + db_sf_configuration + "'," + "'" + status + "'," + inbound_order + ");";
             return dbConnection.getConnection().prepareStatement(query).executeUpdate();*/
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -56,9 +56,9 @@ public class db_part implements I_part {
     }
 
     @Override
-    public void delete(int id, String sf_distribution) {
+    public void delete(int id, String sf_configuration) {
         try {
-            String query = "DELETE FROM part WHERE id =" + id + " AND fk_sf_distribution='" + sf_distribution + "';";
+            String query = "DELETE FROM part WHERE id =" + id + " AND fk_sf_configuration='" + sf_configuration + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -66,11 +66,11 @@ public class db_part implements I_part {
     }
 
     @Override
-    public void update_status(int id, String sf_distribution, String status) {
+    public void update_status(int id, String sf_configuration, String status) {
         try {
             String query = "UPDATE part " +
                     "SET status = '" + status + "'" +
-                    "WHERE id = " + id + " AND fk_sf_distribution='" + sf_distribution + "';";
+                    "WHERE id = " + id + " AND fk_sf_configuration='" + sf_configuration + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
@@ -79,11 +79,11 @@ public class db_part implements I_part {
     }
 
     @Override
-    public void update_outboundOrder(int id, String sf_distribution, int outbound_order) {
+    public void update_outboundOrder(int id, String sf_configuration, int outbound_order) {
         try {
             String query = "UPDATE part " +
                     "SET fk_outbound_orders = '" + outbound_order + "'" +
-                    "WHERE id = " + id + " AND fk_sf_distribution='" + sf_distribution + "';";
+                    "WHERE id = " + id + " AND fk_sf_configuration='" + sf_configuration + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
@@ -92,7 +92,7 @@ public class db_part implements I_part {
     }
 
     @Override
-    public List<models.base.part> getAll_parts(String sf_distribution) {
+    public List<models.base.part> getAll_parts(String sf_configuration) {
         try {
             List<models.base.part> list = new ArrayList<>();
             String query = "SELECT * FROM part;";
@@ -131,7 +131,8 @@ public class db_part implements I_part {
                 } else {
                     // Not found in query2, so the part was in the warehouse
                     // it is necessary more information to create the correct part
-                    list.add(new part());
+//                    list.add(new part());
+                    System.out.println("NOT SUPPOSED TO ENTER HERE! \nPart " + rs.getInt("id") + " do not have record in production_history table.");
                 }
 
             }

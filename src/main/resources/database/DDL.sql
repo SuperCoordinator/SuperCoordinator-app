@@ -2,7 +2,7 @@
    Create Tables
 */
 
-CREATE TABLE IF NOT EXISTS sf_distribution (
+CREATE TABLE IF NOT EXISTS sf_configuration (
     name VARCHAR(100) NOT NULL,
     time_stamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (name)
@@ -26,10 +26,10 @@ CREATE TABLE IF NOT EXISTS outbound_orders (
 CREATE TABLE IF NOT EXISTS part(
     id INT NOT NULL,
     status VARCHAR(100) NOT NULL,
-    fk_sf_distribution VARCHAR(100) NOT NULL,
+    fk_sf_configuration VARCHAR(100) NOT NULL,
     fk_inbound_orders MEDIUMINT NOT NULL,
     fk_outbound_orders INT,
-    PRIMARY KEY(id,fk_sf_distribution)
+    PRIMARY KEY(id,fk_sf_configuration)
 );
 
 CREATE TABLE IF NOT EXISTS production_history(
@@ -43,8 +43,8 @@ CREATE TABLE IF NOT EXISTS production_history(
 
 CREATE TABLE IF NOT EXISTS sfem (
     name VARCHAR(100) NOT NULL,
-    fk_sf_distribution VARCHAR(100) NOT NULL,
-    PRIMARY KEY(name,fk_sf_distribution)
+    fk_sf_configuration VARCHAR(100) NOT NULL,
+    PRIMARY KEY(name,fk_sf_configuration)
 );
 
 CREATE TABLE IF NOT EXISTS sfee (
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS sensor(
 
 
 ALTER TABLE part
-ADD FOREIGN KEY (fk_sf_distribution) REFERENCES sf_distribution(name) ON DELETE CASCADE ON UPDATE NO ACTION,
+ADD FOREIGN KEY (fk_sf_configuration) REFERENCES sf_configuration(name) ON DELETE CASCADE ON UPDATE NO ACTION,
 ADD FOREIGN KEY (fk_inbound_orders) REFERENCES inbound_orders(id) ON DELETE CASCADE ON UPDATE NO ACTION,
 ADD FOREIGN KEY (fk_outbound_orders) REFERENCES outbound_orders(id) ON DELETE CASCADE ON UPDATE NO ACTION;
 
@@ -81,7 +81,7 @@ ADD FOREIGN KEY (fk_part_id) REFERENCES part(id) ON DELETE CASCADE ON UPDATE NO 
 ADD FOREIGN KEY (fk_sensor_name) REFERENCES sensor(name) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 ALTER TABLE sfem
-ADD FOREIGN KEY (fk_sf_distribution) REFERENCES sf_distribution(name) ON DELETE CASCADE ON UPDATE NO ACTION;
+ADD FOREIGN KEY (fk_sf_configuration) REFERENCES sf_configuration(name) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 ALTER TABLE sfee
 ADD FOREIGN KEY (fk_sfem) REFERENCES sfem(name) ON DELETE CASCADE ON UPDATE NO ACTION;

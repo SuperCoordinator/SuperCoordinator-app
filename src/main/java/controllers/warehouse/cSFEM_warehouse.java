@@ -52,8 +52,10 @@ public class cSFEM_warehouse implements Runnable {
         sfemWarehouseMonitor = new SFEM_warehouse_monitor(0,checkOrders_period);
     }
 
-    public void updatePartIdOffset(int offset){
-        sfemWarehouseMonitor.setPart_id_offset(offset);
+
+    public void loadWHBasedOnPrevStock(){
+        sfemWarehouseMonitor.loadWHBasedOnPrevStock();
+        sfeeWarehouseController.storeParts(sfemWarehouseMonitor.getRecentArrivedParts());
     }
 
     public cSFEE_warehouse getSfeeWarehouseController() {

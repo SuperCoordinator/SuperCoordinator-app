@@ -66,7 +66,7 @@ public class db_sensor implements I_sensor {
         try {
             String query = "UPDATE sensor " +
                     "SET name = '" + new_name + "'" +
-                    "WHERE name = '" + old_name + "' AND fk_sf_distribution='" + fk_sfei + "';";
+                    "WHERE name = '" + old_name + "' AND fk_sf_configuration='" + fk_sfei + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {

@@ -48,7 +48,7 @@ public class db_sfee implements I_SFEx {
     @Override
     public void delete(String sfee_name, String fk_sfem) {
         try {
-            String query = "DELETE FROM sfee WHERE name ='" + sfee_name + "' AND fk_sf_distribution='" + fk_sfem + "';";
+            String query = "DELETE FROM sfee WHERE name ='" + sfee_name + "' AND fk_sf_configuration='" + fk_sfem + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -60,7 +60,7 @@ public class db_sfee implements I_SFEx {
         try {
             String query = "UPDATE sfee " +
                     "SET name = '" + new_sfee_name + "'" +
-                    "WHERE name = '" + old_sfee_name + "' AND fk_sf_distribution='" + fk_sfem + "';";
+                    "WHERE name = '" + old_sfee_name + "' AND fk_sf_configuration='" + fk_sfem + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {

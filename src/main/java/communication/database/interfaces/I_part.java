@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface I_part {
 
-    int insert(int id, String sf_distribution, String status, int inbound_order);
+    int insert(int id, String sf_configuration, String status, int inbound_order);
 
-    void delete(int id, String sf_distribution);
+    void delete(int id, String sf_configuration);
 
-    void update_status(int id, String sf_distribution, String status);
+    void update_status(int id, String sf_configuration, String status);
 
-    void update_outboundOrder(int id, String sf_distribution, int outbound_order);
+    void update_outboundOrder(int id, String sf_configuration, int outbound_order);
 
-    List<part> getAll_parts(String sf_distribution);
+    List<part> getAll_parts(String sf_configuration);
 }

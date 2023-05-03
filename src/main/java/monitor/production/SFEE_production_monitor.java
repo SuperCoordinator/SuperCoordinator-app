@@ -167,7 +167,7 @@ public class SFEE_production_monitor {
                             // add production history
                             db_production_history.getInstance().insert(
                                     p.getId(),
-                                    sfei.getOutSensor().getName(),
+                                    sfei.getInSensor().getName(),
                                     p.getReality().material().toString(),
                                     p.getReality().form().toString());
 

@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class SFEM_warehouse_monitor {
@@ -29,13 +30,9 @@ public class SFEM_warehouse_monitor {
     private int check_period;
 
     public SFEM_warehouse_monitor(int part_id_offset, int checkOrder_period_min) {
-        this.part_id = part_id_offset;
+        this.part_id = 0;
         this.check_period = checkOrder_period_min;
         old_t = Instant.parse("2023-04-01T12:00:00.840857500Z");
-    }
-
-    public void setPart_id_offset(int part_id) {
-        this.part_id = part_id;
     }
 
     public boolean loop() {
@@ -109,6 +106,12 @@ public class SFEM_warehouse_monitor {
                         Objects.requireNonNull(p).getState().toString(),
                         db_inbound_orders.getInstance().getAll_inbound_orders().size());
 
+                // register insertion in warehouse
+                db_production_history.getInstance().insert(Objects.requireNonNull(p).getId(),
+                        "warehouse_door",
+                        Objects.requireNonNull(p).getReality().material().toString(),
+                        Objects.requireNonNull(p).getReality().form().toString());
+
             }
 
         } catch (Exception e) {
@@ -118,5 +121,17 @@ public class SFEM_warehouse_monitor {
 
     public void clearStoredParts() {
         recentArrivedParts.clear();
+    }
+
+    public void loadWHBasedOnPrevStock() {
+        List<part> prevStock = db_part.getInstance().getAll_parts(serializer.getInstance().scene.toString());
+        part_id = prevStock.size();
+
+        // remove the parts that was in production, those aren't possible to re-use
+        // Only the one with IN_STOCK status
+        prevStock.removeIf(part -> !part.getState().equals(models.base.part.status.IN_STOCK));
+
+        recentArrivedParts.addAll(prevStock);
+
     }
 }

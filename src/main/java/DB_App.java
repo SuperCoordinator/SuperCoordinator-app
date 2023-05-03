@@ -12,7 +12,7 @@ public class DB_App {
     public static void main(String[] args) {
 
         try {
-//            db_sf_distribution sf_config = new db_sf_distribution();
+//            db_sf_configuration sf_config = new db_sf_configuration();
 //            System.out.println(sf_config.insert("test"));
 //            System.out.println(sf_config.insert("test1"));
 //

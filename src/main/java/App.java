@@ -215,11 +215,12 @@ public class App {
                 // Load Warehouse
                 serializer.getInstance().getC_Warehouse().init_afterLoad();
 
-                // Open communications
+
                 for (cSFEM_production production : serializer.getInstance().getC_Production()) {
                     production.init_after_XML_loading();
                 }
 
+                // Open communications
                 for (cSFEM_production production : serializer.getInstance().getC_Production()) {
                     production.openConnections();
 
@@ -262,9 +263,9 @@ public class App {
 
             // DB
             serializer.getInstance().updateDB();
-            // update index of partID in the warehouse
-//            System.out.println(db_part.getInstance().getAll_parts(serializer.getInstance().scene.toString()).size());
-            serializer.getInstance().getC_Warehouse().updatePartIdOffset(db_part.getInstance().getAll_parts(serializer.getInstance().scene.toString()).size());
+
+            // Load the warehouse with parts that was previously on it to be used, this also update index of partID in the warehouse
+            serializer.getInstance().getC_Warehouse().loadWHBasedOnPrevStock();
 
             System.out.print("Press ENTER to start simulation");
             in.nextLine();

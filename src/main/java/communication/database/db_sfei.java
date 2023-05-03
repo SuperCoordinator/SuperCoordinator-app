@@ -59,7 +59,7 @@ public class db_sfei implements I_SFEx {
         try {
             String query = "UPDATE sfei " +
                     "SET name = '" + new_sfei_name + "'" +
-                    "WHERE name = '" + old_sfei_name + "' AND fk_sf_distribution='" + fk_sfee + "';";
+                    "WHERE name = '" + old_sfei_name + "' AND fk_sf_configuration='" + fk_sfee + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {

@@ -25,11 +25,11 @@ public class db_sfem implements I_SFEx {
     }
 
     @Override
-    public int insert(String sfem_name, String sf_distribution) {
+    public int insert(String sfem_name, String sf_configuration) {
         try {
             String def_vars = "SET @name = '" + sfem_name + "'," +
-                    " @fk = '" + sf_distribution + "';";
-            String query = "INSERT INTO sfem (name,fk_sf_distribution)" +
+                    " @fk = '" + sf_configuration + "';";
+            String query = "INSERT INTO sfem (name,fk_sf_configuration)" +
                     "VALUES (@name,@fk)" +
                     "ON DUPLICATE KEY UPDATE" +
                     "   name = @name;";
@@ -46,9 +46,9 @@ public class db_sfem implements I_SFEx {
     }
 
     @Override
-    public void delete(String sfem_name, String sf_distribution) {
+    public void delete(String sfem_name, String sf_configuration) {
         try {
-            String query = "DELETE FROM sfem WHERE name ='" + sfem_name + "' AND fk_sf_distribution='" + sf_distribution + "';";
+            String query = "DELETE FROM sfem WHERE name ='" + sfem_name + "' AND fk_sf_configuration='" + sf_configuration + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -56,11 +56,11 @@ public class db_sfem implements I_SFEx {
     }
 
     @Override
-    public void update(String old_sfem_name, String new_sfem_name, String sf_distribution) {
+    public void update(String old_sfem_name, String new_sfem_name, String sf_configuration) {
         try {
             String query = "UPDATE sfem " +
                     "SET name = '" + new_sfem_name + "'" +
-                    "WHERE name = '" + old_sfem_name + "' AND fk_sf_distribution='" + sf_distribution + "';";
+                    "WHERE name = '" + old_sfem_name + "' AND fk_sf_configuration='" + sf_configuration + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class db_sfem implements I_SFEx {
             String query = "SELECT * FROM sfem;";
             ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
-                list.add(rs.getString("name") + " of" + rs.getString("fk_sf_distribution"));
+                list.add(rs.getString("name") + " of" + rs.getString("fk_sf_configuration"));
             }
             return list;
         } catch (SQLException e) {
@@ -84,13 +84,13 @@ public class db_sfem implements I_SFEx {
     }
 
     @Override
-    public List<String> getAll_SFExFrom(String sf_distribution) {
+    public List<String> getAll_SFExFrom(String sf_configuration) {
         try {
             List<String> list = new ArrayList<>();
-            String query = "SELECT * FROM sfem WHERE fk_sf_distribution='" + sf_distribution + "';";
+            String query = "SELECT * FROM sfem WHERE fk_sf_configuration='" + sf_configuration + "';";
             ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
-                list.add(rs.getString("name") + " of" + rs.getString("fk_sf_distribution"));
+                list.add(rs.getString("name") + " of" + rs.getString("fk_sf_configuration"));
             }
             return list;
         } catch (SQLException e) {

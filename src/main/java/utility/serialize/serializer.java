@@ -70,6 +70,7 @@ public class serializer {
     public void saveXML() {
 
         try {
+            createDB();
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -112,11 +113,28 @@ public class serializer {
 
 
     public void updateDB() {
-        db_sf_distribution.getInstance().insert(scene.name());
+        db_sf_configuration.getInstance().insert(scene.name());
         instantiateSFEx();
     }
 
     private void instantiateSFEx() {
+
+        // Instantiate IN-Warehouse
+        db_sfem.getInstance().insert(getC_Warehouse().getSfem().getName(), scene.toString());
+
+        db_sfee.getInstance().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getName(),
+                getC_Warehouse().getSfem().getName());
+
+        db_sfei.getInstance().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
+                getC_Warehouse().getSfeeWarehouseController().getSfee().getName());
+
+        // Invented in sensor -> warehouse_door
+        db_sensor.getInstance().insert("warehouse_door",
+                getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
+                true);
+
+
+        // Instantiate Production Elements (and their sensors)
         getC_Production().forEach(cSFEMProduction -> {
             db_sfem.getInstance().insert(cSFEMProduction.getSfem().getName(), scene.toString());
 
