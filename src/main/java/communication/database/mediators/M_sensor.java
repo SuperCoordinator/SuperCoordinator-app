@@ -1,6 +1,6 @@
-package communication.database;
+package communication.database.mediators;
 
-import communication.database.interfaces.I_sensor;
+import communication.database.dbConnection;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,20 +8,20 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class db_sensor implements I_sensor {
+public class M_sensor implements IM_sensor {
 
     /**
      * Singleton pattern
      */
-    public db_sensor() {
+    public M_sensor() {
     }
 
-    public static db_sensor getInstance() {
-        return db_sensor.db_sensorHolder.INSTANCE;
+    public static M_sensor getInstance() {
+        return M_sensor.db_sensorHolder.INSTANCE;
     }
 
     private static class db_sensorHolder {
-        private static final db_sensor INSTANCE = new db_sensor();
+        private static final M_sensor INSTANCE = new M_sensor();
     }
 
     @Override

@@ -282,7 +282,7 @@
         <sfeeTransportController prevSFEEName="sfee_warehouse" nextSFEEName="SortingStation" prevSFEIName="sfei_warehouse" nextSFEIName="parts_entry">
             <sfeeMonitor/>
             <sfeeFailures stochasticType="GAUSSIAN">
-                <stochasticFormulas>15 </stochasticFormulas>
+                <stochasticFormulas>30 </stochasticFormulas>
                 <stochasticFormulas>3 </stochasticFormulas>
             </sfeeFailures>
         </sfeeTransportController>

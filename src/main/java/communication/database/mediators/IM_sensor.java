@@ -1,8 +1,8 @@
-package communication.database.interfaces;
+package communication.database.mediators;
 
 import java.util.List;
 
-public interface I_sensor {
+public interface IM_sensor {
 
     int insert(String name, String fk_sfei, boolean inSensor);
 

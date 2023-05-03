@@ -1,28 +1,27 @@
-package communication.database;
+package communication.database.mediators;
 
-import communication.database.interfaces.I_production_history;
+import communication.database.dbConnection;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class db_production_history implements I_production_history {
+public class M_production_history implements IM_production_history {
 
     /**
      * Singleton pattern
      */
-    public db_production_history() {
+    public M_production_history() {
     }
 
-    public static db_production_history getInstance() {
-        return db_production_history.db_production_historyHolder.INSTANCE;
+    public static M_production_history getInstance() {
+        return M_production_history.db_production_historyHolder.INSTANCE;
     }
 
     private static class db_production_historyHolder {
-        private static final db_production_history INSTANCE = new db_production_history();
+        private static final M_production_history INSTANCE = new M_production_history();
     }
 
     @Override

@@ -1,6 +1,6 @@
-package communication.database;
+package communication.database.mediators;
 
-import communication.database.interfaces.I_part;
+import communication.database.dbConnection;
 import models.base.part;
 import models.partDescription;
 
@@ -11,20 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class db_part implements I_part {
+public class M_part implements IM_part {
 
     /**
      * Singleton pattern
      */
-    public db_part() {
+    public M_part() {
     }
 
-    public static db_part getInstance() {
-        return db_part.partHolder.INSTANCE;
+    public static M_part getInstance() {
+        return partHolder.INSTANCE;
     }
 
     private static class partHolder {
-        private static final db_part INSTANCE = new db_part();
+        private static final M_part INSTANCE = new M_part();
     }
 
 
@@ -48,7 +48,7 @@ public class db_part implements I_part {
             return st.executeBatch()[1];
 
 /*            String query = "INSERT INTO part (id,fk_sf_configuration,status,fk_inbound_orders)" +
-                    "VALUES (" + id + ",'" + db_sf_configuration + "'," + "'" + status + "'," + inbound_order + ");";
+                    "VALUES (" + id + ",'" + M_sf_configuration + "'," + "'" + status + "'," + inbound_order + ");";
             return dbConnection.getConnection().prepareStatement(query).executeUpdate();*/
         } catch (SQLException e) {
             throw new RuntimeException(e);

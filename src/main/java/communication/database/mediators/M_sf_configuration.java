@@ -1,30 +1,34 @@
-package communication.database;
+package communication.database.mediators;
 
-import communication.database.interfaces.I_sf_configuration;
+import communication.database.dbConnection;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class db_sf_configuration implements I_sf_configuration {
+public class M_sf_configuration extends queries_buffer implements IM_sf_configuration {
 
-    /**
-     * Singleton pattern
-     */
-    public db_sf_configuration() {
-    }
+//    /**
+//     * Singleton pattern
+//     */
+//    public M_sf_configuration() {
+//    }
+//
+//    public static M_sf_configuration getInstance() {
+//        return M_sf_configuration.sf_configurationHolder.INSTANCE;
+//    }
+//
+//
+//    private static class sf_configurationHolder {
+//        private static final M_sf_configuration INSTANCE = new M_sf_configuration();
+//    }
 
-    public static db_sf_configuration getInstance() {
-        return db_sf_configuration.sf_configurationHolder.INSTANCE;
-    }
 
-    private static class sf_configurationHolder {
-        private static final db_sf_configuration INSTANCE = new db_sf_configuration();
-    }
     @Override
-    public int insert(String sf_configuration) {
+    public void insert(String sf_configuration) {
         try {
             String def_vars = "SET @name = '" + sf_configuration + "'," +
                     " @time = current_timestamp();";
@@ -34,13 +38,14 @@ public class db_sf_configuration implements I_sf_configuration {
                     "   name = @name," +
                     "   time_stamp = @time;";
 
-            Statement st = dbConnection.getConnection().createStatement();
-            st.addBatch(def_vars);
-            st.addBatch(query);
+            getStoredQueries().add(new String[]{def_vars, query});
+//            Statement st = dbConnection.getConnection().createStatement();
+//            st.addBatch(def_vars);
+//            st.addBatch(query);
+//
+//            return st.executeBatch()[1];
 
-            return st.executeBatch()[1];
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -50,9 +55,9 @@ public class db_sf_configuration implements I_sf_configuration {
 
         try {
             String query = "DELETE FROM sf_configuration WHERE name ='" + sf_config_name + "';";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
-
-        } catch (SQLException e) {
+//            dbConnection.getConnection().prepareStatement(query).executeUpdate();
+            getStoredQueries().add(new String[]{query});
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -64,8 +69,8 @@ public class db_sf_configuration implements I_sf_configuration {
             String query = "UPDATE sf_configuration " +
                     "SET name = '" + new_sf_config_name + "' " +
                     "WHERE name = '" + old_sf_config_name + "';";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
-
+//            dbConnection.getConnection().prepareStatement(query).executeUpdate();
+            getStoredQueries().add(new String[]{query});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -74,11 +79,10 @@ public class db_sf_configuration implements I_sf_configuration {
     }
     @Override
     public List<String> getAll_sf_configurations() {
-
         try {
             List<String> list = new ArrayList<>();
             String query = "SELECT * FROM sf_configuration;";
-            ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
+            ResultSet rs = dbConnection.getInstance().getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
                 list.add(rs.getString("name"));
             }

@@ -1,6 +1,6 @@
-package communication.database;
+package communication.database.mediators;
 
-import communication.database.interfaces.I_SFEx;
+import communication.database.dbConnection;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,27 +8,28 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class db_sfei implements I_SFEx {
+public class M_sfem implements IM_SFEx {
 
     /**
      * Singleton pattern
      */
-    public db_sfei() {
+    public M_sfem() {
     }
 
-    public static db_sfei getInstance() {
-        return db_sfei.db_sfeiHolder.INSTANCE;
+    public static M_sfem getInstance() {
+        return M_sfem.db_sfemHolder.INSTANCE;
     }
 
-    private static class db_sfeiHolder {
-        private static final db_sfei INSTANCE = new db_sfei();
+    private static class db_sfemHolder {
+        private static final M_sfem INSTANCE = new M_sfem();
     }
+
     @Override
-    public int insert(String sfei_name, String fk_sfee) {
+    public int insert(String sfem_name, String sf_configuration) {
         try {
-            String def_vars = "SET @name = '" + sfei_name + "'," +
-                    " @fk = '" + fk_sfee + "';";
-            String query = "INSERT INTO sfei (name,fk_sfee)" +
+            String def_vars = "SET @name = '" + sfem_name + "'," +
+                    " @fk = '" + sf_configuration + "';";
+            String query = "INSERT INTO sfem (name,fk_sf_configuration)" +
                     "VALUES (@name,@fk)" +
                     "ON DUPLICATE KEY UPDATE" +
                     "   name = @name;";
@@ -45,9 +46,9 @@ public class db_sfei implements I_SFEx {
     }
 
     @Override
-    public void delete(String sfei_name, String fk_sfee) {
+    public void delete(String sfem_name, String sf_configuration) {
         try {
-            String query = "DELETE FROM sfei WHERE name ='" + sfei_name + "' AND fk_sfee='" + fk_sfee + "';";
+            String query = "DELETE FROM sfem WHERE name ='" + sfem_name + "' AND fk_sf_configuration='" + sf_configuration + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -55,11 +56,11 @@ public class db_sfei implements I_SFEx {
     }
 
     @Override
-    public void update(String old_sfei_name, String new_sfei_name, String fk_sfee) {
+    public void update(String old_sfem_name, String new_sfem_name, String sf_configuration) {
         try {
-            String query = "UPDATE sfei " +
-                    "SET name = '" + new_sfei_name + "'" +
-                    "WHERE name = '" + old_sfei_name + "' AND fk_sf_configuration='" + fk_sfee + "';";
+            String query = "UPDATE sfem " +
+                    "SET name = '" + new_sfem_name + "'" +
+                    "WHERE name = '" + old_sfem_name + "' AND fk_sf_configuration='" + sf_configuration + "';";
             dbConnection.getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
@@ -71,10 +72,10 @@ public class db_sfei implements I_SFEx {
     public List<String> getAll_SFEx() {
         try {
             List<String> list = new ArrayList<>();
-            String query = "SELECT * FROM sfei;";
+            String query = "SELECT * FROM sfem;";
             ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
-                list.add(rs.getString("name") + " of" + rs.getString("fk_sfee"));
+                list.add(rs.getString("name") + " of" + rs.getString("fk_sf_configuration"));
             }
             return list;
         } catch (SQLException e) {
@@ -83,13 +84,13 @@ public class db_sfei implements I_SFEx {
     }
 
     @Override
-    public List<String> getAll_SFExFrom(String fk_sfee) {
+    public List<String> getAll_SFExFrom(String sf_configuration) {
         try {
             List<String> list = new ArrayList<>();
-            String query = "SELECT * FROM sfei WHERE fk_sfee='" + fk_sfee + "';";
+            String query = "SELECT * FROM sfem WHERE fk_sf_configuration='" + sf_configuration + "';";
             ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
-                list.add(rs.getString("name") + " of" + rs.getString("fk_sfee"));
+                list.add(rs.getString("name") + " of" + rs.getString("fk_sf_configuration"));
             }
             return list;
         } catch (SQLException e) {

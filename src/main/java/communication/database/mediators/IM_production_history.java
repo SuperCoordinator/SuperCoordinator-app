@@ -1,8 +1,8 @@
-package communication.database.interfaces;
+package communication.database.mediators;
 
 import java.util.List;
 
-public interface I_production_history {
+public interface IM_production_history {
 
     int insert(int fk_part_id, String fk_sensor_name,String material, String form);
 

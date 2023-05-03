@@ -88,7 +88,7 @@ public class SFEE_transport_failures {
 
                     stochasticTimeTask = new stochasticTime(
                             sfee.getSFEIbyIndex(0),
-                            /*new db_part(sfee.getSFEIbyIndex(0).getPartsATM().first()),*/
+                            /*new M_part(sfee.getSFEIbyIndex(0).getPartsATM().first()),*/
                             sfee.getSFEIbyIndex(0).getPartsATM().first(),
                             stochasticType,
                             stochasticFormulas,
@@ -102,8 +102,8 @@ public class SFEE_transport_failures {
             }
         }
 
-        if (old_state != state)
-            System.out.println(state);
+/*        if (old_state != state)
+            System.out.println(state);*/
 
         old_state = state;
 

@@ -1,6 +1,6 @@
-package communication.database;
+package communication.database.mediators;
 
-import communication.database.interfaces.I_inbound_orders;
+import communication.database.dbConnection;
 import models.inboundOrder;
 
 import java.sql.ResultSet;
@@ -8,21 +8,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class db_inbound_orders implements I_inbound_orders {
+public class M_inbound_orders extends queries_buffer implements IM_inbound_orders {
 
     /**
      * Singleton pattern
      */
-    public db_inbound_orders() {
+    public M_inbound_orders() {
     }
 
-    public static db_inbound_orders getInstance() {
-        return db_inbound_orders.inbound_ordersHolder.INSTANCE;
+    public static M_inbound_orders getInstance() {
+        return M_inbound_orders.inbound_ordersHolder.INSTANCE;
     }
 
     private static class inbound_ordersHolder {
-        private static final db_inbound_orders INSTANCE = new db_inbound_orders();
+        private static final M_inbound_orders INSTANCE = new M_inbound_orders();
     }
+
     @Override
     public int insert(int metal_qty, int green_qty, int blue_qty) {
         try {

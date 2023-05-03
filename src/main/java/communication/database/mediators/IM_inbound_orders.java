@@ -1,10 +1,10 @@
-package communication.database.interfaces;
+package communication.database.mediators;
 
 import models.inboundOrder;
 
 import java.util.List;
 
-public interface I_inbound_orders {
+public interface IM_inbound_orders {
 
     int insert(int metal_qty, int green_qty, int blue_qty);
 

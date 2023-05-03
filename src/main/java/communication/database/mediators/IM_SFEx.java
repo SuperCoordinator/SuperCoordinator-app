@@ -1,8 +1,8 @@
-package communication.database.interfaces;
+package communication.database.mediators;
 
 import java.util.List;
 
-public interface I_SFEx {
+public interface IM_SFEx {
 
     int insert(String sfex_name, String fk);
 

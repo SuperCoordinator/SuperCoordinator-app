@@ -1,6 +1,8 @@
 package monitor.warehouse;
 
-import communication.database.*;
+import communication.database.mediators.M_part;
+import communication.database.mediators.M_production_history;
+import communication.database.mediators.M_inbound_orders;
 import models.base.part;
 import models.inboundOrder;
 import models.partDescription;
@@ -64,7 +66,7 @@ public class SFEM_warehouse_monitor {
             inboundOrder order = (inboundOrder) unmarshaller.unmarshal(new FileReader(f.getPath() + "/" + Objects.requireNonNull(f.list())[file_index]));
 
             // Register received order on DB
-            db_inbound_orders.getInstance().insert(order.getMetal_qty(), order.getGreen_qty(), order.getBlue_qty());
+            M_inbound_orders.getInstance().insert(order.getMetal_qty(), order.getGreen_qty(), order.getBlue_qty());
 
             createParts(order);
 
@@ -101,13 +103,13 @@ public class SFEM_warehouse_monitor {
                         b--;
                     }
                 }
-                db_part.getInstance().insert(Objects.requireNonNull(p).getId(),
+                M_part.getInstance().insert(Objects.requireNonNull(p).getId(),
                         serializer.getInstance().scene.toString(),
                         Objects.requireNonNull(p).getState().toString(),
-                        db_inbound_orders.getInstance().getAll_inbound_orders().size());
+                        M_inbound_orders.getInstance().getAll_inbound_orders().size());
 
                 // register insertion in warehouse
-                db_production_history.getInstance().insert(Objects.requireNonNull(p).getId(),
+                M_production_history.getInstance().insert(Objects.requireNonNull(p).getId(),
                         "warehouse_door",
                         Objects.requireNonNull(p).getReality().material().toString(),
                         Objects.requireNonNull(p).getReality().form().toString());
@@ -124,7 +126,7 @@ public class SFEM_warehouse_monitor {
     }
 
     public void loadWHBasedOnPrevStock() {
-        List<part> prevStock = db_part.getInstance().getAll_parts(serializer.getInstance().scene.toString());
+        List<part> prevStock = M_part.getInstance().getAll_parts(serializer.getInstance().scene.toString());
         part_id = prevStock.size();
 
         // remove the parts that was in production, those aren't possible to re-use

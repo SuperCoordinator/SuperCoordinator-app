@@ -294,7 +294,7 @@ public class cSFEE_production {
                 addNewSFEI_conveyor(
                         "parts_entry",
                         "s_emitter",
-                        "s_faulty",
+                        "none",
                         Instant.now(),
                         Instant.now(),
                         true,

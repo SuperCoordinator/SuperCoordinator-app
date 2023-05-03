@@ -1,10 +1,10 @@
-package communication.database.interfaces;
+package communication.database.mediators;
 
 import models.base.part;
 
 import java.util.List;
 
-public interface I_part {
+public interface IM_part {
 
     int insert(int id, String sf_configuration, String status, int inbound_order);
 

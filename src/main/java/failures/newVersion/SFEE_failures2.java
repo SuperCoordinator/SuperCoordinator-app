@@ -170,7 +170,7 @@ public class SFEE_failures2  {
             int pickSFEI = pickSFEI(false);
 //                int pickSFEI = 0;
 
-            // The db_part is in the initial SFEI, so it is needed to select the db_part and
+            // The M_part is in the initial SFEI, so it is needed to select the M_part and
             // associate with the correct SFEI to manipulate the time
             if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
                 int minSFEEminOperation_t = 0;

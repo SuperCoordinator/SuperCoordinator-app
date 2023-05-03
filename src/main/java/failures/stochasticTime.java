@@ -323,7 +323,7 @@ public class stochasticTime {
                         isRemoverON = true;
                         // PREPARE THE NEXT EMITTER for correct type
                         // +5 to ignore boxes [1;4] boxes, as well as 14
-//                        holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(db_part.getReality()) + 4 - 1));
+//                        holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(M_part.getReality()) + 4 - 1));
 
                     }
                     sensor = (int) discreteInputs_inMB.get(sfeiTransport.getInSensor().getBit_offset()) == 1;
@@ -355,13 +355,13 @@ public class stochasticTime {
                     }
                     sensor = (int) discreteInputs_outMB.get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
 /*                if (sfeiTransport.getPartsATM().size() > 0) {
-                    if (sfeiTransport.getPartsATM().last().getId() == db_part.getId() && utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+                    if (sfeiTransport.getPartsATM().last().getId() == M_part.getId() && utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                         coilsState_outMB.set(sfeiTransport.getaEmitter().bit_offset(), 0);
                         smTrans = SM_trans.END;
                     }
                 } else*/
                     if (/*sfeiTransport.getPartsATM().size() == 0 &&*/ utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
-                        // The db_part was removed in this cycle by the SFEM_monitor, by the SFEI outSensor Activation
+                        // The M_part was removed in this cycle by the SFEM_monitor, by the SFEI outSensor Activation
                         // To prove it, the execution of the following is done because the FE_detector
                         coilsState_outMB.set(sfeiTransport.getaEmitter().getBit_offset(), 0);
                         smTrans = SM_trans.END;

@@ -1,7 +1,7 @@
 package monitor.transport;
 
-import communication.database.db_part;
-import communication.database.db_production_history;
+import communication.database.mediators.M_part;
+import communication.database.mediators.M_production_history;
 import models.SFEx_particular.SFEI_transport;
 import models.base.SFEE;
 import models.base.SFEI;
@@ -129,9 +129,9 @@ public class SFEE_transport_monitor {
 
                         // Database space
                         // update part status
-                        db_part.getInstance().update_status(p.getId(), serializer.getInstance().scene.toString(), part.status.IN_PRODUCTION.toString());
+                        M_part.getInstance().update_status(p.getId(), serializer.getInstance().scene.toString(), part.status.IN_PRODUCTION.toString());
                         // add production history
-                        db_production_history.getInstance().insert(
+                        M_production_history.getInstance().insert(
                                 p.getId(),
                                 sfeiTransport.getOutSensor().getName(),
                                 p.getReality().material().toString(),
@@ -167,7 +167,7 @@ public class SFEE_transport_monitor {
                 boolean b_outSensor = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
 
                 // inSFEI
-                // SFEE entry, should get db_part object from inSFEI
+                // SFEE entry, should get M_part object from inSFEI
 
                 if (currPart != null) {
                     // It means that previously a part was detected but not had the isWaitTransport flag TRUE
@@ -239,7 +239,7 @@ public class SFEE_transport_monitor {
                         part p = sfei.getValue().getPartsATM().first();
                         // setProduced(FALSE)
                         // before, setWaitTransport(FALSE)
-                        // So the SFEM_transport will be triggered and remove the db_part from the SFEI partsATM
+                        // So the SFEM_transport will be triggered and remove the M_part from the SFEI partsATM
                         p.setProduced(false);
                         nextSFEI.getPartsATM().add(p);
                     }

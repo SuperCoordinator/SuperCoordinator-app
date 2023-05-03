@@ -1,6 +1,7 @@
 package utility.serialize;
 
 import communication.database.*;
+import communication.database.mediators.*;
 import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
@@ -45,7 +46,7 @@ public class serializer {
         WH_SS
     }
 
-    public final scenes scene = scenes.WH_SS;
+    public final scenes scene = scenes.WH_SS_3CMC;
     private final String filePath = "blocks/" + scene + "/saves/" + scene;
 
     private serializable serializable = new serializable();
@@ -95,11 +96,11 @@ public class serializer {
     private void createDB() {
         try {
             String query = "CREATE DATABASE IF NOT EXISTS " + scene + ";";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
-            dbConnection.setDatabase(scene.name());
+            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
+            dbConnection.getInstance().setDatabase(scene.name());
 
             // create tables
-            ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getConnection());
+            ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
             //Creating a reader object
             Reader reader = new BufferedReader(new FileReader("src/main/resources/database/DDL.sql"));
             scriptRunner.setLogWriter(null); // not print in terminal
@@ -113,42 +114,42 @@ public class serializer {
 
 
     public void updateDB() {
-        db_sf_configuration.getInstance().insert(scene.name());
+        dbConnection.getInstance().getSf_configuration().insert(scene.name());
         instantiateSFEx();
     }
 
     private void instantiateSFEx() {
 
         // Instantiate IN-Warehouse
-        db_sfem.getInstance().insert(getC_Warehouse().getSfem().getName(), scene.toString());
+        M_sfem.getInstance().insert(getC_Warehouse().getSfem().getName(), scene.toString());
 
-        db_sfee.getInstance().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getName(),
+        M_sfee.getInstance().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getName(),
                 getC_Warehouse().getSfem().getName());
 
-        db_sfei.getInstance().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
+        M_sfei.getInstance().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
                 getC_Warehouse().getSfeeWarehouseController().getSfee().getName());
 
         // Invented in sensor -> warehouse_door
-        db_sensor.getInstance().insert("warehouse_door",
+        M_sensor.getInstance().insert("warehouse_door",
                 getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
                 true);
 
 
         // Instantiate Production Elements (and their sensors)
         getC_Production().forEach(cSFEMProduction -> {
-            db_sfem.getInstance().insert(cSFEMProduction.getSfem().getName(), scene.toString());
+            M_sfem.getInstance().insert(cSFEMProduction.getSfem().getName(), scene.toString());
 
             cSFEMProduction.getSfeeControllers().forEach(cSFEEProduction -> {
-                db_sfee.getInstance().insert(cSFEEProduction.getSFEE().getName(), cSFEMProduction.getSfem().getName());
+                M_sfee.getInstance().insert(cSFEEProduction.getSFEE().getName(), cSFEMProduction.getSfem().getName());
 
                 cSFEEProduction.getSFEE().getSFEIs().forEach((key, sfei) -> {
-                    db_sfei.getInstance().insert(sfei.getName(), cSFEEProduction.getSFEE().getName());
+                    M_sfei.getInstance().insert(sfei.getName(), cSFEEProduction.getSFEE().getName());
 
                     //inSensor
-                    db_sensor.getInstance().insert(sfei.getInSensor().getName(), sfei.getName(), true);
+                    M_sensor.getInstance().insert(sfei.getInSensor().getName(), sfei.getName(), true);
 
                     //outSensor
-                    db_sensor.getInstance().insert(sfei.getOutSensor().getName(), sfei.getName(), false);
+                    M_sensor.getInstance().insert(sfei.getOutSensor().getName(), sfei.getName(), false);
                 });
             });
         });
