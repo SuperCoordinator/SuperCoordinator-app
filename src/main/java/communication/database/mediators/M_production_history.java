@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class M_production_history implements IM_production_history {
+public class M_production_history extends queries_buffer implements IM_production_history {
 
     /**
      * Singleton pattern
@@ -16,37 +16,38 @@ public class M_production_history implements IM_production_history {
     public M_production_history() {
     }
 
-    public static M_production_history getInstance() {
-        return M_production_history.db_production_historyHolder.INSTANCE;
-    }
-
-    private static class db_production_historyHolder {
-        private static final M_production_history INSTANCE = new M_production_history();
-    }
-
+    //
+//    public static M_production_history getInstance() {
+//        return M_production_history.db_production_historyHolder.INSTANCE;
+//    }
+//
+//    private static class db_production_historyHolder {
+//        private static final M_production_history INSTANCE = new M_production_history();
+//    }
     @Override
-    public int insert(int fk_part_id, String fk_sensor_name, String material, String form) {
+    public void insert(int fk_part_id, String fk_sensor_name, String material, String form) {
         try {
-            String def_vars = "SET @fk_part = " + fk_part_id + "," +
-                    "@fk_sensor = '" + fk_sensor_name + "'," +
-                    "@material = '" + material + "'," +
-                    "@form = '" + form + "'," +
-                    "@time = current_timestamp(); ";
+//            String def_vars = "SET @fk_part = " + fk_part_id + "," +
+//                    "@fk_sensor = '" + fk_sensor_name + "'," +
+//                    "@material = '" + material + "'," +
+//                    "@form = '" + form + "'," +
+//                    "@time = current_timestamp(); ";
 
             String query = "INSERT INTO production_history (fk_part_id,fk_sensor_name,material,form,time_stamp)" +
-                    "VALUES (@fk_part,@fk_sensor,@material,@form,@time)" +
+                    "VALUES (" + fk_part_id + ",'" + fk_sensor_name + "','" + material + "','" + form + "',current_timestamp())" +
                     "ON DUPLICATE KEY UPDATE" +
-                    " material = @material," +
-                    " form = @form," +
-                    " time_stamp=@time;";
+                    " material = '" + material + "'," +
+                    " form = '" + form + "'," +
+                    " time_stamp= current_timestamp();";
 
-            Statement st = dbConnection.getConnection().createStatement();
-            st.addBatch(def_vars);
-            st.addBatch(query);
+            getStoredQueries().add(query);
+//            Statement st = dbConnection.getConnection().createStatement();
+//            st.addBatch(def_vars);
+//            st.addBatch(query);
+//
+//            return st.executeBatch()[1];
 
-            return st.executeBatch()[1];
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -55,9 +56,10 @@ public class M_production_history implements IM_production_history {
     public void delete(int part_id) {
         try {
             String query = "DELETE FROM production_history WHERE fk_part_id = " + part_id + ";";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
+            getStoredQueries().add(query);
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -68,7 +70,7 @@ public class M_production_history implements IM_production_history {
 
             List<String> list = new ArrayList<>();
             String query = "SELECT * FROM production_history;";
-            ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
+            ResultSet rs = dbConnection.getInstance().getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
 /*                list.add(rs.getTimestamp("time_stamp").toString() + " " +
                         rs.getString("material") + " " +
@@ -93,7 +95,7 @@ public class M_production_history implements IM_production_history {
 
             List<String> list = new ArrayList<>();
             String query = "SELECT * FROM production_history WHERE fk_part_id= " + part_id + ";";
-            ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
+            ResultSet rs = dbConnection.getInstance().getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
                 String row = "";
                 for (int i = 0; i < 5; i++) {

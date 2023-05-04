@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class M_sfem implements IM_SFEx {
+public class M_sfem extends queries_buffer implements IM_SFEx {
 
     /**
      * Singleton pattern
@@ -16,31 +16,31 @@ public class M_sfem implements IM_SFEx {
     public M_sfem() {
     }
 
-    public static M_sfem getInstance() {
-        return M_sfem.db_sfemHolder.INSTANCE;
-    }
-
-    private static class db_sfemHolder {
-        private static final M_sfem INSTANCE = new M_sfem();
-    }
-
+    //
+//    public static M_sfem getInstance() {
+//        return M_sfem.db_sfemHolder.INSTANCE;
+//    }
+//
+//    private static class db_sfemHolder {
+//        private static final M_sfem INSTANCE = new M_sfem();
+//    }
     @Override
-    public int insert(String sfem_name, String sf_configuration) {
+    public void insert(String sfem_name, String sf_configuration) {
         try {
-            String def_vars = "SET @name = '" + sfem_name + "'," +
-                    " @fk = '" + sf_configuration + "';";
+//            String def_vars = "SET @name = '" + sfem_name + "'," +
+//                    " @fk = '" + sf_configuration + "';";
             String query = "INSERT INTO sfem (name,fk_sf_configuration)" +
-                    "VALUES (@name,@fk)" +
+                    "VALUES ('" + sfem_name + "','" + sf_configuration + "')" +
                     "ON DUPLICATE KEY UPDATE" +
-                    "   name = @name;";
+                    "   name = '" + sfem_name + "';";
+            getStoredQueries().add(query);
+//            Statement st = dbConnection.getConnection().createStatement();
+//            st.addBatch(def_vars);
+//            st.addBatch(query);
+//
+//            return st.executeBatch()[1];
 
-            Statement st = dbConnection.getConnection().createStatement();
-            st.addBatch(def_vars);
-            st.addBatch(query);
-
-            return st.executeBatch()[1];
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -49,8 +49,9 @@ public class M_sfem implements IM_SFEx {
     public void delete(String sfem_name, String sf_configuration) {
         try {
             String query = "DELETE FROM sfem WHERE name ='" + sfem_name + "' AND fk_sf_configuration='" + sf_configuration + "';";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
-        } catch (SQLException e) {
+            getStoredQueries().add(query);
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -61,7 +62,8 @@ public class M_sfem implements IM_SFEx {
             String query = "UPDATE sfem " +
                     "SET name = '" + new_sfem_name + "'" +
                     "WHERE name = '" + old_sfem_name + "' AND fk_sf_configuration='" + sf_configuration + "';";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
+            getStoredQueries().add(query);
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -73,7 +75,7 @@ public class M_sfem implements IM_SFEx {
         try {
             List<String> list = new ArrayList<>();
             String query = "SELECT * FROM sfem;";
-            ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
+            ResultSet rs = dbConnection.getInstance().getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
                 list.add(rs.getString("name") + " of" + rs.getString("fk_sf_configuration"));
             }
@@ -88,7 +90,7 @@ public class M_sfem implements IM_SFEx {
         try {
             List<String> list = new ArrayList<>();
             String query = "SELECT * FROM sfem WHERE fk_sf_configuration='" + sf_configuration + "';";
-            ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
+            ResultSet rs = dbConnection.getInstance().getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
                 list.add(rs.getString("name") + " of" + rs.getString("fk_sf_configuration"));
             }

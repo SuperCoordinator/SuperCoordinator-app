@@ -1,22 +1,30 @@
 package monitor.transport;
 
-import communication.database.mediators.M_part;
-import communication.database.mediators.M_production_history;
-import models.SFEx_particular.SFEI_transport;
+import communication.database.dbConnection;
+import models.SFEx.SFEI_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;
 import models.sensor_actuator;
 import utility.serialize.serializer;
 import utility.utils;
+import viewers.SFEE_transport;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 
 public class SFEE_transport_monitor {
+
+    private enum operation {
+        SFEI2SFEI,
+        WH2SFEI,
+        SFEI2WH
+    }
+
+    private operation operationMode;
+
     private SFEE sfee;
     private SFEI previousSFEI;
     private SFEI nextSFEI;
@@ -24,7 +32,7 @@ public class SFEE_transport_monitor {
     private boolean SFEI_old_inSensors = false;
     private boolean SFEI_old_outSensors = false;
 
-    private boolean setup_run = true;
+    private boolean firstRun = true;
     private part currPart = null;
 
     public SFEE_transport_monitor() {
@@ -41,19 +49,30 @@ public class SFEE_transport_monitor {
         return nextSFEI;
     }
 
-    private void init_oldSensorsValues(ArrayList<List<Object>> sensorsState, boolean isSFEI_warehouse) {
+    private void init_oldSensorsValues(ArrayList<List<Object>> sensorsState) {
 
-        if (!isSFEI_warehouse) {
-            sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
-            SFEI_old_inSensors = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
+        try {
+            switch (operationMode) {
+                case WH2SFEI -> {
+                    sensor_actuator sfei_outSensor = sfee.getSFEIbyIndex(0).getOutSensor();
+                    SFEI_old_outSensors = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
+                }
+                case SFEI2SFEI -> {
+                    sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
+                    SFEI_old_inSensors = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
+                    sensor_actuator sfei_outSensor = sfee.getSFEIbyIndex(0).getOutSensor();
+                    SFEI_old_outSensors = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
+                }
+                case SFEI2WH -> {
+                    sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
+                    SFEI_old_inSensors = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
+
+                }
+                default -> throw new RuntimeException(SFEE_transport.class + " operation mode not defined!");
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
-        sensor_actuator sfei_outSensor = sfee.getSFEIbyIndex(0).getOutSensor();
-        SFEI_old_outSensors = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
-
-/*        sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
-        boolean b_inSensor = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
-        SFEI_old_inSensors = b_inSensor;*/
-
     }
 
     public void setupPrevNextSFEI(SFEI previousSFEI, SFEI nextSFEI) {
@@ -61,198 +80,130 @@ public class SFEE_transport_monitor {
         this.nextSFEI = nextSFEI;
     }
 
-    public void loop(ArrayList<List<Object>> sensorsState, boolean waitNewPart) {
+    public void loop(ArrayList<List<Object>> sensorsState) {
         try {
-            if (previousSFEI.getSfeiType().equals(SFEI.SFEI_type.WAREHOUSE)) {
-                if (setup_run) {
-                    // If it is line start, then the connection is established with the warehouse
-                    init_oldSensorsValues(sensorsState, true);
-                    setup_run = false;
-                    sm_state = state.T1;
-                    old_sm_state = sm_state;
+            if (firstRun) {
+                if (previousSFEI.getSfeiType().equals(SFEI.SFEI_type.WAREHOUSE)) {
+                    operationMode = operation.WH2SFEI;
+                } else if (nextSFEI.getSfeiType().equals(SFEI.SFEI_type.WAREHOUSE)) {
+                    operationMode = operation.SFEI2WH;
+                } else {
+                    operationMode = operation.SFEI2SFEI;
                 }
-                placeNewParts(sensorsState, waitNewPart);
-            } else {
-                // Normal Transport between SFEIs
-                if (setup_run) {
-                    // If it is line start, then the connection is established with the warehouse
-                    init_oldSensorsValues(sensorsState, false);
-                    setup_run = false;
-                }
-                monitorPartsMovements(sensorsState);
+                init_oldSensorsValues(sensorsState);
+                firstRun = false;
+
+                sm_state = SFEE_transport_monitor.state.T1;
+            }
+
+            switch (operationMode) {
+                case SFEI2SFEI -> moveParts(sensorsState);
+                case WH2SFEI -> placeNewParts(sensorsState);
+                case SFEI2WH -> removeProducedParts(sensorsState);
             }
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
+    }
 
+    private void moveParts(ArrayList<List<Object>> sensorsState) {
+
+        SFEI_transport sfeiTransport = (SFEI_transport) sfee.getSFEIbyIndex(0);
+
+        boolean b_inSensor = (int) sensorsState.get(0).get(sfeiTransport.getInSensor().getBit_offset()) == 1;
+        boolean b_outSensor = (int) sensorsState.get(1).get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
+
+        if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEI_old_inSensors)) {
+            // Detect part from the inSFEI waiting for transport
+            if (previousSFEI.getPartsATM().size() > 0) {
+                // The first one is waiting for the most time
+                part movingPart = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
+                movingPart.setState(part.status.IN_TRANSPORT);
+                sfeiTransport.addNewPartATM(movingPart);
+            }
+        }
+
+        if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEI_old_inSensors)) {
+            // Detect part from the inSFEI waiting for transport
+            if (sfeiTransport.getPartsATM().size() > 0) {
+                // The first one is waiting for the most time
+                part movingPart = Objects.requireNonNull(sfeiTransport.getPartsATM().pollFirst());
+                movingPart.setState(part.status.IN_PRODUCTION);
+                nextSFEI.addNewPartATM(movingPart);
+
+                sfeiTransport.setnPiecesMoved(sfeiTransport.getnPiecesMoved() + 1);
+            }
+        }
+
+        // Only update in the end in order to all functions see the values at the read moment
+        SFEI_old_inSensors = b_inSensor;
+        SFEI_old_outSensors = b_outSensor;
     }
 
     private enum state {
         T1, T2, T3
     }
 
-    private state sm_state, old_sm_state;
+    private state sm_state;
 
-    private void placeNewParts(ArrayList<List<Object>> sensorsState, boolean waitNewPart) {
+    private void placeNewParts(ArrayList<List<Object>> sensorsState) {
         // Only have 1 SFEI
         SFEI_transport sfeiTransport = (SFEI_transport) sfee.getSFEIbyIndex(0);
 
         boolean b_outSensor = (int) sensorsState.get(1).get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
+
         switch (sm_state) {
             case T1 -> {
-                if (previousSFEI.getPartsATM().size() > 0 && !b_outSensor) {
-                    part p = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
-                    p.setWaitTransport(false);
-
-                    // This operation of concat is faster than + operation
-                    String itemName = sfee.getName();
-                    itemName = itemName.concat("-");
-//            itemName = itemName.concat(sfee.getInSensor().getName());
-                    itemName = itemName.concat("warehouse");
-
-                    p.addTimestamp(itemName);
-
-                    sfeiTransport.addNewPartATM(p);
-
-                    sm_state = state.T2;
-                }
-            }
-            case T2 -> {
-//                boolean sfee_outSensor = (int) sensorsState.get(1).get(sfee.getOutSensor().getBit_offset()) == 1;
-                if (utils.getInstance().getLogicalOperator().FE_detector(b_outSensor, SFEI_old_outSensors)) {
-                    if (sfeiTransport.getPartsATM().size() > 0) {
-                        part p = Objects.requireNonNull(sfeiTransport.getPartsATM().pollFirst());
-                        p.setProduced(false);
-                        nextSFEI.getPartsATM().add(p);
-
-                        // Database space
-                        // update part status
-                        M_part.getInstance().update_status(p.getId(), serializer.getInstance().scene.toString(), part.status.IN_PRODUCTION.toString());
-                        // add production history
-                        M_production_history.getInstance().insert(
-                                p.getId(),
-                                sfeiTransport.getOutSensor().getName(),
-                                p.getReality().material().toString(),
-                                p.getReality().form().toString());
-
-                        sm_state = state.T3;
+                if (sfeiTransport.getPartsATM().size() == 0) {
+                    if (previousSFEI.getPartsATM().size() > 0) {
+                        part movingPart = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
+                        movingPart.setState(part.status.IN_TRANSPORT);
+                        sfeiTransport.addNewPartATM(movingPart);
+                        sm_state = state.T2;
                     }
                 }
             }
-            case T3 -> {
-                if (waitNewPart)
-                    sm_state = state.T1;
+            case T2 -> {
+                if (utils.getInstance().getLogicalOperator().FE_detector(b_outSensor, SFEI_old_outSensors)) {
+                    if (sfeiTransport.getPartsATM().size() > 0) {
+                        part movingPart = Objects.requireNonNull(sfeiTransport.getPartsATM().pollFirst());
+                        movingPart.setState(part.status.IN_PRODUCTION);
+                        nextSFEI.getPartsATM().add(movingPart);
+
+                        updateDB(movingPart, sfeiTransport);
+
+                        sm_state = state.T1;
+                    }
+                }
             }
         }
 
-/*        if (old_sm_state != sm_state)
-            System.out.println("state: " + sm_state);*/
-
-        old_sm_state = sm_state;
         // Only update in the end in order to all functions see the values at the read moment
         SFEI_old_outSensors = b_outSensor;
 
     }
 
-    private void monitorPartsMovements(ArrayList<List<Object>> sensorsState) {
-        try {
-            for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
+    private void updateDB(part movingPart, SFEI_transport sfeiTransport) {
 
-                sensor_actuator sfei_inSensor = sfei.getValue().getInSensor();
-                sensor_actuator sfei_outSensor = sfei.getValue().getOutSensor();
+        // update part status
+        dbConnection.getInstance().getParts().update_status(
+                movingPart.getId(),
+                serializer.getInstance().scene.toString(),
+                movingPart.getState().toString());
 
-                boolean b_inSensor = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
-                boolean b_outSensor = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
-
-                // inSFEI
-                // SFEE entry, should get M_part object from inSFEI
-
-                if (currPart != null) {
-                    // It means that previously a part was detected but not had the isWaitTransport flag TRUE
-                    if (currPart.isWaitTransport() && currPart.isProduced()) {
-
-                        part p = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
-
-                        // setWaitTransport(FALSE), but the produced is TRUE
-                        p.setWaitTransport(false);
-                        // This operation of concat is faster than + operation
-                        String itemName = sfee.getName();
-                        itemName = itemName.concat("-");
-                        itemName = itemName.concat(sfee.getInSensor().getName());
-
-                        p.addTimestamp(itemName);
-                        sfei.getValue().addNewPartATM(p);
-
-                        currPart = null;
-                    }
-
-//                boolean sfee_inSensor = (int) sensorsState.get(sfee.getInSensor().bit_offset()) == 1;
-                } else if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEI_old_inSensors)) {
-                    if (previousSFEI.getPartsATM().size() > 0) {
-                        if (previousSFEI.getPartsATM().first().isWaitTransport() && previousSFEI.getPartsATM().first().isProduced()) {
-                            part p = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
-
-                            p.setWaitTransport(false);
-                            // This operation of concat is faster than + operation
-                            String itemName = sfee.getName();
-                            itemName = itemName.concat("-");
-                            itemName = itemName.concat(sfee.getInSensor().getName());
-
-                            p.addTimestamp(itemName);
-                            sfei.getValue().addNewPartATM(p);
-
-
-                        } else {
-                            currPart = previousSFEI.getPartsATM().first();
-                        }
-                    } else
-                        throw new RuntimeException(previousSFEI.getName() + " RE out_sensor but partsATM size is 0");
-
-                }
-
-                // Only register on the end (end of item[i-1] = start of item[i])
-                // If SFEIs outSensor RE, then timestamp that event
-                if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEI_old_outSensors)) {
-                    if (sfei.getValue().getPartsATM().size() > 0) {
-                        // This operation of concat is faster than + operation
-                        String itemName = sfei.getValue().getName();
-                        itemName = itemName.concat("-");
-                        itemName = itemName.concat(sfei_outSensor.getName());
-                        part p;
-                        if (sfei.getKey() == sfee.getSFEIs().size() - 1) {
-                            p = sfei.getValue().getPartsATM().last();
-                        } else {
-                            p = sfei.getValue().getPartsATM().first();
-                        }
-                        Objects.requireNonNull(p).addTimestamp(itemName);
-
-                        sfei.getValue().setnPiecesMoved(sfei.getValue().getnPiecesMoved() + 1);
-                    }
-                }
-
-
-                boolean sfee_outSensor = (int) sensorsState.get(1).get(sfee.getOutSensor().getBit_offset()) == 1;
-                if (utils.getInstance().getLogicalOperator().RE_detector(sfee_outSensor, SFEI_old_outSensors)) {
-                    if (sfei.getValue().getPartsATM().size() > 0) {
-                        part p = sfei.getValue().getPartsATM().first();
-                        // setProduced(FALSE)
-                        // before, setWaitTransport(FALSE)
-                        // So the SFEM_transport will be triggered and remove the M_part from the SFEI partsATM
-                        p.setProduced(false);
-                        nextSFEI.getPartsATM().add(p);
-                    }
-                }
-
-                // Only update in the end in order to all functions see the values at the read moment
-                SFEI_old_inSensors = b_inSensor;
-                SFEI_old_outSensors = b_outSensor;
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // new record in production_history
+        dbConnection.getInstance().getProduction_history().insert(
+                movingPart.getId(),
+                sfeiTransport.getOutSensor().getName(),
+                movingPart.getReality().material().toString(),
+                movingPart.getReality().form().toString());
     }
+
+    private void removeProducedParts(ArrayList<List<Object>> sensorsState) {
+
+    }
+
 
 }

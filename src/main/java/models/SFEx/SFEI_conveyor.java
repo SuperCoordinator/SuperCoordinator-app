@@ -1,13 +1,9 @@
-package models.SFEx_particular;
+package models.SFEx;
 
 import models.base.SFEI;
 import models.sensor_actuator;
 
 import javax.xml.bind.annotation.*;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Instant;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)

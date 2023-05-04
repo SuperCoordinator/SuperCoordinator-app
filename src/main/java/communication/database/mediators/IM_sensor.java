@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface IM_sensor {
 
-    int insert(String name, String fk_sfei, boolean inSensor);
+    void insert(String name, String fk_sfei, boolean inSensor);
 
     void delete(String name, String fk_sfei);
 

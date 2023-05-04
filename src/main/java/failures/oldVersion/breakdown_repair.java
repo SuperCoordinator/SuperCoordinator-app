@@ -1,6 +1,6 @@
 package failures.oldVersion;
 
-import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx.SFEI_conveyor;
 import org.apache.commons.math3.util.Pair;
 
 import java.time.Duration;

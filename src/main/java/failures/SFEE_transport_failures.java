@@ -53,10 +53,6 @@ public class SFEE_transport_failures {
         return stochasticFormulas;
     }
 
-    public boolean waitNewPart() {
-        return state.equals(SM.INIT);
-    }
-
     private boolean first_exe = true;
 
     public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
@@ -75,20 +71,17 @@ public class SFEE_transport_failures {
                 if (stochasticTimeTask.isTransportFinished())
                     state = SM.END;
             }
-            case END -> {
-                state = SM.INIT;
-            }
+            case END -> state = SM.INIT;
         }
+
         switch (state) {
             case INIT -> {
 
             }
             case PROCESS_STOCHASTIC -> {
                 if (old_state != state) {
-
                     stochasticTimeTask = new stochasticTime(
                             sfee.getSFEIbyIndex(0),
-                            /*new M_part(sfee.getSFEIbyIndex(0).getPartsATM().first()),*/
                             sfee.getSFEIbyIndex(0).getPartsATM().first(),
                             stochasticType,
                             stochasticFormulas,
@@ -119,8 +112,6 @@ public class SFEE_transport_failures {
             currID = sfee.getSFEIbyIndex(0).getPartsATM().first().getId();
         }
         if (currID != oldPartID) {
-
-
             oldPartID = currID;
             return true;
         }

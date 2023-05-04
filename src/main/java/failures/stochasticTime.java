@@ -1,9 +1,9 @@
 package failures;
 
-import models.SFEx_particular.SFEI_transport;
+import models.SFEx.SFEI_transport;
 import models.base.SFEI;
-import models.SFEx_particular.SFEI_conveyor;
-import models.SFEx_particular.SFEI_machine;
+import models.SFEx.SFEI_conveyor;
+import models.SFEx.SFEI_machine;
 import models.base.part;
 import models.partDescription;
 import utility.utils;
@@ -105,7 +105,6 @@ public class stochasticTime {
 
         // For the warehouse transport
         if (sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT)) {
-
             if (Objects.requireNonNull(sfeiTransport).getaRemover() == null) {
                 // If the aRemover == NULL then it is the WH-InSFEI case
                 initial_t = Instant.now();
@@ -129,26 +128,24 @@ public class stochasticTime {
 
     public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
         try {
-            if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
-
-                if (sfeiConveyor.isSimulation()) {
-                    // F_IO scene, so have REMOVER and EMITTER
-                    injectFailureF_IOConv(sensorsState.get(0), actuatorsState.get(0));
-                } else {
-                    // OTHER simulation, so have only a STOP bit
-                    injectFailureSimConv();
+            switch (sfeiType) {
+                case CONVEYOR -> {
+                    if (sfeiConveyor.isSimulation()) {
+                        // F_IO scene, so have REMOVER and EMITTER
+                        injectFailureF_IOConv(sensorsState.get(0), actuatorsState.get(0));
+                    } else {
+                        // OTHER simulation, so have only a STOP bit
+                        injectFailureSimConv();
+                    }
                 }
-
-            } else if (sfeiType.equals(SFEI.SFEI_type.MACHINE)) {
-                injectFailuresMach(sensorsState.get(0), actuatorsState.get(0));
-            } else if (sfeiType.equals(SFEI.SFEI_type.TRANSPORT)) {
-                transportBetweenSFEis(sensorsState.get(0), actuatorsState.get(0),
+                case MACHINE -> injectFailuresMach(sensorsState.get(0), actuatorsState.get(0));
+                case TRANSPORT -> transportBetweenSFEis(sensorsState.get(0), actuatorsState.get(0),
                         sensorsState.get(1), actuatorsState.get(1), actuatorsState.get(2));
             }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private boolean old_sRemover = false, old_sEmitter = false;
@@ -354,14 +351,9 @@ public class stochasticTime {
                         isEmitterON = true;
                     }
                     sensor = (int) discreteInputs_outMB.get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
-/*                if (sfeiTransport.getPartsATM().size() > 0) {
-                    if (sfeiTransport.getPartsATM().last().getId() == M_part.getId() && utility.getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
-                        coilsState_outMB.set(sfeiTransport.getaEmitter().bit_offset(), 0);
-                        smTrans = SM_trans.END;
-                    }
-                } else*/
-                    if (/*sfeiTransport.getPartsATM().size() == 0 &&*/ utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
-                        // The M_part was removed in this cycle by the SFEM_monitor, by the SFEI outSensor Activation
+
+                    if (utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
+                        // The part was removed in this cycle by the SFEM_monitor, by the SFEI outSensor Activation
                         // To prove it, the execution of the following is done because the FE_detector
                         coilsState_outMB.set(sfeiTransport.getaEmitter().getBit_offset(), 0);
                         smTrans = SM_trans.END;

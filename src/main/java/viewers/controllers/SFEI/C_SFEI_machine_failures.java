@@ -4,7 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import models.SFEx_particular.SFEI_machine;
+import models.SFEx.SFEI_machine;
 import models.sensor_actuator;
 import utility.utils;
 

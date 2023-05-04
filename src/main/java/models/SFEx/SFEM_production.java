@@ -1,18 +1,15 @@
-package models.SFEx_particular;
+package models.SFEx;
 
 //import monitor.stochasticTime.conveyor;
 
 import models.base.SFEE;
-import models.base.SFEI;
 import models.base.SFEM;
-import models.part_prodTime;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
 
@@ -27,7 +24,7 @@ public class SFEM_production extends SFEM  {
     }
 
     public SFEM_production(String name) {
-        super(name, SFEM_type.PRODUCTION);
+        super(name, SFEM_role.PRODUCTION);
         this.SFEEs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
     }
 

@@ -1,8 +1,7 @@
 package controllers.warehouse;
 
-import models.SFEx_particular.SFEM_warehouse;
+import models.SFEx.SFEM_warehouse;
 import models.base.SFEE;
-import monitor.warehouse.SFEM_warehouse_monitor;
 
 import javax.xml.bind.annotation.*;
 
@@ -13,9 +12,6 @@ public class cSFEM_warehouse implements Runnable {
     private int checkOrders_period;
     @XmlElement
     private SFEM_warehouse sfem;
-
-    private SFEM_warehouse_monitor sfemWarehouseMonitor;
-
     private cSFEE_warehouse sfeeWarehouseController;
 
     public cSFEM_warehouse() {
@@ -32,31 +28,23 @@ public class cSFEM_warehouse implements Runnable {
 
     public void init(String SFEE_warehouse_name) {
         SFEE sfeeWarehouse = new SFEE(SFEE_warehouse_name,
-                SFEE.SFEE_type.SIMULATION,
-                SFEE.SFEE_function.WAREHOUSE,
+                SFEE.SFEE_environment.SIMULATION,
+                SFEE.SFEE_role.WAREHOUSE,
                 SFEE.communicationOption.MODBUS);
         sfem.setSfeeWarehouse(sfeeWarehouse);
 
         sfeeWarehouseController = new cSFEE_warehouse(sfeeWarehouse);
-        sfeeWarehouseController.init();
+        sfeeWarehouseController.init(checkOrders_period);
 
-        // This part_id_offset should be a query in DB
-        sfemWarehouseMonitor = new SFEM_warehouse_monitor(0,checkOrders_period);
+
     }
 
     public void init_afterLoad() {
         sfeeWarehouseController = new cSFEE_warehouse(sfem.getSfeeWarehouse());
-        sfeeWarehouseController.init();
+        sfeeWarehouseController.init(checkOrders_period);
 
-        // This part_id_offset should be a query in DB
-        sfemWarehouseMonitor = new SFEM_warehouse_monitor(0,checkOrders_period);
     }
 
-
-    public void loadWHBasedOnPrevStock(){
-        sfemWarehouseMonitor.loadWHBasedOnPrevStock();
-        sfeeWarehouseController.storeParts(sfemWarehouseMonitor.getRecentArrivedParts());
-    }
 
     public cSFEE_warehouse getSfeeWarehouseController() {
         return sfeeWarehouseController;
@@ -67,13 +55,11 @@ public class cSFEM_warehouse implements Runnable {
         try {
             sfeeWarehouseController.loop();
 
-            if (sfemWarehouseMonitor.loop()) {
-                sfeeWarehouseController.storeParts(sfemWarehouseMonitor.getRecentArrivedParts());
-                sfemWarehouseMonitor.clearStoredParts();
-            }
+
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
+            e.printStackTrace();
         }
     }
 }

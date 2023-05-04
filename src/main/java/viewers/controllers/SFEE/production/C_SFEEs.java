@@ -13,8 +13,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import models.SFEx_particular.SFEI_conveyor;
-import models.SFEx_particular.SFEI_machine;
+import models.SFEx.SFEI_conveyor;
+import models.SFEx.SFEI_machine;
 import models.base.SFEE;
 import models.base.SFEI;
 import viewers.controllers.C_ShopFloor;
@@ -239,7 +239,7 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
                 case "Properties" -> {
                     if (getProperties().validateMoveOn()) {
                         getProperties().setSaveValues();
-                        getFailure().setSfeeType(getProperties().getEnvironment().equalsIgnoreCase("simulation") ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL);
+                        getFailure().setSfeeType(getProperties().getEnvironment().equalsIgnoreCase("simulation") ? SFEE.SFEE_environment.SIMULATION : SFEE.SFEE_environment.REAL);
                         activePane = Panes.COMMUNICATION;
                         toggleCommunication.setDisable(false);
                         bar.selectToggle(toggleCommunication);
@@ -359,7 +359,7 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
                     loader.setController(getCommunication());
                 }
                 case ITEMS -> {
-                    getItems().setIo(getCommunication().getIo(), getProperties().getEnvironment().equalsIgnoreCase("simulation") ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL);
+                    getItems().setIo(getCommunication().getIo(), getProperties().getEnvironment().equalsIgnoreCase("simulation") ? SFEE.SFEE_environment.SIMULATION : SFEE.SFEE_environment.REAL);
                     loader.setController(getItems());
                 }
                 case FAILURE -> {

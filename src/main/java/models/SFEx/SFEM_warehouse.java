@@ -1,4 +1,4 @@
-package models.SFEx_particular;
+package models.SFEx;
 
 import models.base.SFEE;
 import models.base.SFEM;
@@ -16,7 +16,7 @@ public class SFEM_warehouse extends SFEM {
     private SFEE sfeeWarehouse;
 
     public SFEM_warehouse() {
-        super("sfem_warehouse", SFEM_type.WAREHOUSE);
+        super("sfem_warehouse", SFEM_role.WAREHOUSE);
     }
 
     public void setSfeeWarehouse(SFEE sfeeWarehouse) {

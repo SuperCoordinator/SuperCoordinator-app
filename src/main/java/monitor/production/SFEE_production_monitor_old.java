@@ -1,8 +1,8 @@
 package monitor.production;
 
-import communication.database.mediators.M_production_history;
-import models.SFEx_particular.SFEI_conveyor;
-import models.SFEx_particular.SFEI_machine;
+import communication.database.dbConnection;
+import models.SFEx.SFEI_conveyor;
+import models.SFEx.SFEI_machine;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;
@@ -74,7 +74,7 @@ public class SFEE_production_monitor_old {
         // default -> LID
         default_partForm = partDescription.form.LID;
 
-        if (sfee.getSFEE_function().equals(SFEE.SFEE_function.PRODUCTION)) {
+        if (sfee.getSFEE_function().equals(SFEE.SFEE_role.PRODUCTION)) {
             for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet())
                 if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
                     SFEI_machine temp = (SFEI_machine) sfeiEntry.getValue();
@@ -121,7 +121,7 @@ public class SFEE_production_monitor_old {
                 boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
 
 
-                if (sfee.getSFEE_function().equals(SFEE.SFEE_function.SORTING_STATION)) {
+                if (sfee.getSFEE_function().equals(SFEE.SFEE_role.SORTING_STATION)) {
                     if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
                         // New part arriving at specific conveyor -> result of separation
 
@@ -142,7 +142,7 @@ public class SFEE_production_monitor_old {
 
                             // Database space
                             // add production history
-                            M_production_history.getInstance().insert(
+                            dbConnection.getInstance().getProduction_history().insert(
                                     p.getId(),
                                     sfei.getInSensor().getName(),
                                     p.getReality().material().toString(),
@@ -186,7 +186,7 @@ public class SFEE_production_monitor_old {
 
                         // Database space
                         // add production history
-                        M_production_history.getInstance().insert(
+                        dbConnection.getInstance().getProduction_history().insert(
                                 oldest_part.getId(),
                                 sfei.getOutSensor().getName(),
                                 oldest_part.getReality().material().toString(),
@@ -269,7 +269,7 @@ public class SFEE_production_monitor_old {
     private void updateSFEI_machinePartType(List<Object> actuatorsState) {
         for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet()) {
 
-            if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE) && sfee.getSFEE_type().equals(SFEE.SFEE_type.SIMULATION)) {
+            if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE) && sfee.getSFEE_type().equals(SFEE.SFEE_environment.SIMULATION)) {
 
                 SFEI_machine sfei = (SFEI_machine) sfeiEntry.getValue();
 

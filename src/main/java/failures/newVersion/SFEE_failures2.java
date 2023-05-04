@@ -3,14 +3,10 @@ package failures.newVersion;
 import failures.*;
 import models.base.SFEE;
 import models.base.SFEI;
-import models.SFEx_particular.SFEI_conveyor;
-import models.SFEx_particular.SFEI_machine;
+import models.SFEx.SFEI_conveyor;
+import models.SFEx.SFEI_machine;
 
 import javax.xml.bind.annotation.*;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.*;
 
 @XmlRootElement
@@ -174,7 +170,7 @@ public class SFEE_failures2  {
             // associate with the correct SFEI to manipulate the time
             if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
                 int minSFEEminOperation_t = 0;
-                if (sfee.getSFEE_function().equals(SFEE.SFEE_function.PRODUCTION)) {
+                if (sfee.getSFEE_function().equals(SFEE.SFEE_role.PRODUCTION)) {
                     minSFEEminOperation_t = calculateSFEEMinOperationTime();
                 }
 

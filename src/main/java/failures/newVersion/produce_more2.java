@@ -1,6 +1,6 @@
 package failures.newVersion;
 
-import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx.SFEI_conveyor;
 import models.base.part;
 import models.partDescription;
 import utility.utils;

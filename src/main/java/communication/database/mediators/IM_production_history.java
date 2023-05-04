@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface IM_production_history {
 
-    int insert(int fk_part_id, String fk_sensor_name,String material, String form);
+    void insert(int fk_part_id, String fk_sensor_name,String material, String form);
 
     void delete(int part_id);
 

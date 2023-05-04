@@ -1,8 +1,9 @@
+import communication.database.dbConnection;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
-import models.SFEx_particular.SFEM_production;
-import models.SFEx_particular.SFEM_warehouse;
+import models.SFEx.SFEM_production;
+import models.SFEx.SFEM_warehouse;
 import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
@@ -260,11 +261,18 @@ public class App {
 
             }
 
-            // DB
+            int poolsize = serializer.getInstance().getC_Production().size() + serializer.getInstance().getC_Transport().size() + 2;
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(poolsize);
+
+            /* ---- DATABASE  ---- */
+            scheduler.scheduleAtFixedRate(dbConnection.getInstance(), 0, 1, TimeUnit.SECONDS);
+
             serializer.getInstance().updateDB();
 
             // Load the warehouse with parts that was previously on it to be used, this also update index of partID in the warehouse
-            serializer.getInstance().getC_Warehouse().loadWHBasedOnPrevStock();
+            serializer.getInstance().getC_Warehouse().getSfeeWarehouseController().loadWHBasedOnPrevStock();
+
+            /* ------------------- */
 
             System.out.print("Press ENTER to start simulation");
             in.nextLine();
@@ -276,11 +284,7 @@ public class App {
 
 //        exit(0);
 
-
-            int poolsize = serializer.getInstance().getC_Production().size() + serializer.getInstance().getC_Transport().size() + 1;
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(poolsize);
-
-            scheduler.scheduleAtFixedRate(serializer.getInstance().getC_Warehouse(), 0, 100, TimeUnit.MILLISECONDS);
+            scheduler.scheduleAtFixedRate(serializer.getInstance().getC_Warehouse(), 0, 1, TimeUnit.SECONDS);
 
             for (cSFEM_production production : serializer.getInstance().getC_Production()) {
                 scheduler.scheduleAtFixedRate(production, 0, 100, TimeUnit.MILLISECONDS);

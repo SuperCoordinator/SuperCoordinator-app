@@ -2,20 +2,15 @@ package controllers.production;
 
 import communication.modbus;
 import models.base.SFEE;
-import models.SFEx_particular.SFEM_production;
+import models.SFEx.SFEM_production;
 import monitor.production.SFEM_production_monitor;
 
 import javax.xml.bind.annotation.*;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -58,8 +53,8 @@ public class cSFEM_production implements Runnable {
 
                 SFEE sfee = new SFEE(
                         inputs[0],
-                        Integer.parseInt(inputs[2]) == 1 ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL,
-                        SFEE.SFEE_function.PRODUCTION,
+                        Integer.parseInt(inputs[2]) == 1 ? SFEE.SFEE_environment.SIMULATION : SFEE.SFEE_environment.REAL,
+                        SFEE.SFEE_role.PRODUCTION,
                         Integer.parseInt(inputs[1]) == 1 ? SFEE.communicationOption.MODBUS : SFEE.communicationOption.OPC_UA);
 
                 sfem.addNewSFEE(sfee);
@@ -244,6 +239,7 @@ public class cSFEM_production implements Runnable {
 
             runtime.add(Duration.between(start_t, Instant.now()).toMillis());
         } catch (Exception e) {
+            // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();
         }
     }

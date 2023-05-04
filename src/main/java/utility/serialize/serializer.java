@@ -1,12 +1,11 @@
 package utility.serialize;
 
 import communication.database.*;
-import communication.database.mediators.*;
 import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
-import models.SFEx_particular.SFEM_transport;
+import models.SFEx.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
@@ -121,35 +120,35 @@ public class serializer {
     private void instantiateSFEx() {
 
         // Instantiate IN-Warehouse
-        M_sfem.getInstance().insert(getC_Warehouse().getSfem().getName(), scene.toString());
+        dbConnection.getInstance().getSfems().insert(getC_Warehouse().getSfem().getName(), scene.toString());
 
-        M_sfee.getInstance().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getName(),
+        dbConnection.getInstance().getSfees().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getName(),
                 getC_Warehouse().getSfem().getName());
 
-        M_sfei.getInstance().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
+        dbConnection.getInstance().getSfeis().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
                 getC_Warehouse().getSfeeWarehouseController().getSfee().getName());
 
         // Invented in sensor -> warehouse_door
-        M_sensor.getInstance().insert("warehouse_door",
+        dbConnection.getInstance().getSensors().insert("warehouse_door",
                 getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
                 true);
 
 
         // Instantiate Production Elements (and their sensors)
         getC_Production().forEach(cSFEMProduction -> {
-            M_sfem.getInstance().insert(cSFEMProduction.getSfem().getName(), scene.toString());
+            dbConnection.getInstance().getSfems().insert(cSFEMProduction.getSfem().getName(), scene.toString());
 
             cSFEMProduction.getSfeeControllers().forEach(cSFEEProduction -> {
-                M_sfee.getInstance().insert(cSFEEProduction.getSFEE().getName(), cSFEMProduction.getSfem().getName());
+                dbConnection.getInstance().getSfees().insert(cSFEEProduction.getSFEE().getName(), cSFEMProduction.getSfem().getName());
 
                 cSFEEProduction.getSFEE().getSFEIs().forEach((key, sfei) -> {
-                    M_sfei.getInstance().insert(sfei.getName(), cSFEEProduction.getSFEE().getName());
+                    dbConnection.getInstance().getSfeis().insert(sfei.getName(), cSFEEProduction.getSFEE().getName());
 
                     //inSensor
-                    M_sensor.getInstance().insert(sfei.getInSensor().getName(), sfei.getName(), true);
+                    dbConnection.getInstance().getSensors().insert(sfei.getInSensor().getName(), sfei.getName(), true);
 
                     //outSensor
-                    M_sensor.getInstance().insert(sfei.getOutSensor().getName(), sfei.getName(), false);
+                    dbConnection.getInstance().getSensors().insert(sfei.getOutSensor().getName(), sfei.getName(), false);
                 });
             });
         });

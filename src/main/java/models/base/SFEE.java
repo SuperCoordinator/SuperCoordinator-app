@@ -10,14 +10,14 @@ import java.util.*;
 @XmlAccessorType(XmlAccessType.NONE)
 public class SFEE {
 
-    public enum SFEE_type {
+    public enum SFEE_environment {
         SIMULATION, REAL
     }
 
     @XmlAttribute
-    private SFEE_type SFEE_type;
+    private SFEE_environment SFEE_environment;
 
-    public enum SFEE_function {
+    public enum SFEE_role {
         PRODUCTION,
         SORTING_STATION,
         TRANSPORT,
@@ -25,7 +25,7 @@ public class SFEE {
     }
 
     @XmlAttribute
-    private SFEE_function SFEE_function;
+    private SFEE_role sfeeRole;
 
     public enum communicationOption {
         MODBUS, OPC_UA, MIXED
@@ -50,10 +50,10 @@ public class SFEE {
     public SFEE() {
     }
 
-    public SFEE(String name, SFEE_type SFEE_type, SFEE_function sfeeFunction, communicationOption com) {
+    public SFEE(String name, SFEE_environment sfee_environment, SFEE_role sfeeFunction, communicationOption com) {
         this.name = name;
-        this.SFEE_type = SFEE_type;
-        this.SFEE_function = sfeeFunction;
+        this.SFEE_environment = sfee_environment;
+        this.sfeeRole = sfeeFunction;
         this.com = com;
         this.io = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
         this.SFEIs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
@@ -63,16 +63,16 @@ public class SFEE {
         return name;
     }
 
-    public SFEE.SFEE_type getSFEE_type() {
-        return SFEE_type;
+    public SFEE_environment getSFEE_type() {
+        return SFEE_environment;
     }
 
-    public SFEE_function getSFEE_function() {
-        return SFEE_function;
+    public SFEE_role getSFEE_function() {
+        return sfeeRole;
     }
 
-    public void setSFEE_function(SFEE.SFEE_function SFEE_function) {
-        this.SFEE_function = SFEE_function;
+    public void setSFEE_function(SFEE_role SFEE_role) {
+        this.sfeeRole = SFEE_role;
     }
 
     public communicationOption getCom() {

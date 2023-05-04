@@ -1,4 +1,4 @@
-package models.SFEx_particular;
+package models.SFEx;
 
 import models.base.SFEI;
 import models.partDescription;

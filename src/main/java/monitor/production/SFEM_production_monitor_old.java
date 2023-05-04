@@ -1,6 +1,6 @@
 package monitor.production;
 
-import models.SFEx_particular.SFEM_production;
+import models.SFEx.SFEM_production;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.SFEM;

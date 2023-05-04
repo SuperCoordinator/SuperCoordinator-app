@@ -11,11 +11,11 @@ import java.util.List;
 
 public class M_sf_configuration extends queries_buffer implements IM_sf_configuration {
 
-//    /**
+    //    /**
 //     * Singleton pattern
 //     */
-//    public M_sf_configuration() {
-//    }
+    public M_sf_configuration() {
+    }
 //
 //    public static M_sf_configuration getInstance() {
 //        return M_sf_configuration.sf_configurationHolder.INSTANCE;
@@ -30,15 +30,15 @@ public class M_sf_configuration extends queries_buffer implements IM_sf_configur
     @Override
     public void insert(String sf_configuration) {
         try {
-            String def_vars = "SET @name = '" + sf_configuration + "'," +
-                    " @time = current_timestamp();";
+//            String def_vars = "SET @name = '" + sf_configuration + "'," +
+//                    " @time = current_timestamp();";
             String query = "INSERT INTO sf_configuration (name,time_stamp)" +
-                    "VALUES (@name,@time)" +
+                    "VALUES ('" + sf_configuration + "',current_timestamp())" +
                     "ON DUPLICATE KEY UPDATE" +
-                    "   name = @name," +
-                    "   time_stamp = @time;";
+                    "   name = '" + sf_configuration + "'," +
+                    "   time_stamp = current_timestamp();";
 
-            getStoredQueries().add(new String[]{def_vars, query});
+            getStoredQueries().add(query);
 //            Statement st = dbConnection.getConnection().createStatement();
 //            st.addBatch(def_vars);
 //            st.addBatch(query);
@@ -56,7 +56,7 @@ public class M_sf_configuration extends queries_buffer implements IM_sf_configur
         try {
             String query = "DELETE FROM sf_configuration WHERE name ='" + sf_config_name + "';";
 //            dbConnection.getConnection().prepareStatement(query).executeUpdate();
-            getStoredQueries().add(new String[]{query});
+            getStoredQueries().add(query);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -70,13 +70,14 @@ public class M_sf_configuration extends queries_buffer implements IM_sf_configur
                     "SET name = '" + new_sf_config_name + "' " +
                     "WHERE name = '" + old_sf_config_name + "';";
 //            dbConnection.getConnection().prepareStatement(query).executeUpdate();
-            getStoredQueries().add(new String[]{query});
+            getStoredQueries().add(query);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
 
     }
+
     @Override
     public List<String> getAll_sf_configurations() {
         try {

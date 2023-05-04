@@ -1,8 +1,6 @@
 package monitor.warehouse;
 
-import communication.database.mediators.M_part;
-import communication.database.mediators.M_production_history;
-import communication.database.mediators.M_inbound_orders;
+import communication.database.dbConnection;
 import models.base.part;
 import models.inboundOrder;
 import models.partDescription;
@@ -18,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SFEM_warehouse_monitor {
+public class SFEE_warehouse_monitor {
 
     private ArrayList<part> recentArrivedParts = new ArrayList<>();
 
@@ -28,11 +26,12 @@ public class SFEM_warehouse_monitor {
 
     private Instant old_t;
 
-    private int part_id;
+    private int part_id, inbound_order_id;
     private int check_period;
 
-    public SFEM_warehouse_monitor(int part_id_offset, int checkOrder_period_min) {
+    public SFEE_warehouse_monitor(int part_id_offset, int checkOrder_period_min) {
         this.part_id = 0;
+        this.inbound_order_id = 0;
         this.check_period = checkOrder_period_min;
         old_t = Instant.parse("2023-04-01T12:00:00.840857500Z");
     }
@@ -66,17 +65,18 @@ public class SFEM_warehouse_monitor {
             inboundOrder order = (inboundOrder) unmarshaller.unmarshal(new FileReader(f.getPath() + "/" + Objects.requireNonNull(f.list())[file_index]));
 
             // Register received order on DB
-            M_inbound_orders.getInstance().insert(order.getMetal_qty(), order.getGreen_qty(), order.getBlue_qty());
-
-            createParts(order);
-
+//            dbConnection.getInstance().getInbound_orders().insert(inbound_order_id, order.getMetal_qty(), order.getGreen_qty(), order.getBlue_qty());
+//            createParts(order, inbound_order_id);
+//            inbound_order_id++;
+            dbConnection.getInstance().getInbound_orders().insert(order.getMetal_qty(), order.getGreen_qty(), order.getBlue_qty());
+            createParts(order, dbConnection.getInstance().getInbound_orders().getAll_inbound_orders().size() + 1);
             file_index++;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void createParts(inboundOrder order) {
+    private void createParts(inboundOrder order, int inboundOrder_id) {
         try {
             recentArrivedParts.clear();
             int m = order.getMetal_qty(), g = order.getGreen_qty(), b = order.getBlue_qty();
@@ -103,13 +103,13 @@ public class SFEM_warehouse_monitor {
                         b--;
                     }
                 }
-                M_part.getInstance().insert(Objects.requireNonNull(p).getId(),
+                dbConnection.getInstance().getParts().insert(Objects.requireNonNull(p).getId(),
                         serializer.getInstance().scene.toString(),
                         Objects.requireNonNull(p).getState().toString(),
-                        M_inbound_orders.getInstance().getAll_inbound_orders().size());
+                        inboundOrder_id);
 
                 // register insertion in warehouse
-                M_production_history.getInstance().insert(Objects.requireNonNull(p).getId(),
+                dbConnection.getInstance().getProduction_history().insert(Objects.requireNonNull(p).getId(),
                         "warehouse_door",
                         Objects.requireNonNull(p).getReality().material().toString(),
                         Objects.requireNonNull(p).getReality().form().toString());
@@ -126,7 +126,10 @@ public class SFEM_warehouse_monitor {
     }
 
     public void loadWHBasedOnPrevStock() {
-        List<part> prevStock = M_part.getInstance().getAll_parts(serializer.getInstance().scene.toString());
+        // Establish the inbound order id
+//        inbound_order_id = dbConnection.getInstance().getInbound_orders().getAll_inbound_orders().size();
+
+        List<part> prevStock = dbConnection.getInstance().getParts().getAll_parts(serializer.getInstance().scene.toString());
         part_id = prevStock.size();
 
         // remove the parts that was in production, those aren't possible to re-use

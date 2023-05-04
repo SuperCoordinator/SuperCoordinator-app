@@ -11,6 +11,7 @@ public class part {
         IN_STOCK,
         IN_PRODUCTION,
         WAIT_TRANSPORT,
+        IN_TRANSPORT,
         PRODUCED
     }
 
@@ -91,6 +92,6 @@ public class part {
 
     @Override
     public String toString() {
-        return "M_part [id=" + id + ", reality=" + reality.toString() + "]";
+        return "part [id=" + id + ", reality=" + reality.toString() + ", status=" + state + "]";
     }
 }

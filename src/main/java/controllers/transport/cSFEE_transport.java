@@ -3,7 +3,7 @@ package controllers.transport;
 import communication.modbus;
 import failures.SFEE_transport_failures;
 import failures.stochasticTime;
-import models.SFEx_particular.SFEI_transport;
+import models.SFEx.SFEI_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
@@ -174,6 +174,7 @@ public class cSFEE_transport {
         // Monitor -> Move parts between inSFEI -> buffer -> outSFEI
         // based on the state of FAILURES, Monitor moves
         try {
+
             List<Object> discreteInputsState_inMB = new ArrayList<>();
             List<Object> coilsState_inMB = new ArrayList<>();
             if (!sfeeMonitor.getNextSFEI().isLine_start()) {
@@ -201,7 +202,7 @@ public class cSFEE_transport {
             outputs.add(holdRegsValues_outMB);
 
             sfeeFailures.loop(inputs, outputs);
-            sfeeMonitor.loop(inputs,sfeeFailures.waitNewPart());
+            sfeeMonitor.loop(inputs);
 
             if (!sfeeMonitor.getNextSFEI().isLine_start()) {
                 inMB.writeCoils(coilsState_inMB);

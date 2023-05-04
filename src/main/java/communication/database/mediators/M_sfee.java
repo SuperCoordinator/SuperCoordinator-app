@@ -8,39 +8,39 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class M_sfee implements IM_SFEx {
+public class M_sfee extends queries_buffer implements IM_SFEx {
 
     /**
      * Singleton pattern
      */
     public M_sfee() {
     }
-
-    public static M_sfee getInstance() {
-        return M_sfee.db_sfeeHolder.INSTANCE;
-    }
-
-    private static class db_sfeeHolder {
-        private static final M_sfee INSTANCE = new M_sfee();
-    }
+//
+//    public static M_sfee getInstance() {
+//        return M_sfee.db_sfeeHolder.INSTANCE;
+//    }
+//
+//    private static class db_sfeeHolder {
+//        private static final M_sfee INSTANCE = new M_sfee();
+//    }
 
     @Override
-    public int insert(String sfee_name, String fk_sfem) {
+    public void insert(String sfee_name, String fk_sfem) {
         try {
-            String def_vars = "SET @name = '" + sfee_name + "'," +
-                    " @fk = '" + fk_sfem + "';";
+//            String def_vars = "SET @name = '" + sfee_name + "'," +
+//                    " @fk = '" + fk_sfem + "';";
             String query = "INSERT INTO sfee (name,fk_sfem)" +
-                    "VALUES (@name,@fk)" +
+                    "VALUES ('" + sfee_name + "','" + fk_sfem + "')" +
                     "ON DUPLICATE KEY UPDATE" +
-                    "   name = @name;";
+                    "   name = '" + sfee_name + "';";
+            getStoredQueries().add(query);
+//            Statement st = dbConnection.getConnection().createStatement();
+//            st.addBatch(def_vars);
+//            st.addBatch(query);
+//
+//            return st.executeBatch()[1];
 
-            Statement st = dbConnection.getConnection().createStatement();
-            st.addBatch(def_vars);
-            st.addBatch(query);
-
-            return st.executeBatch()[1];
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -49,8 +49,9 @@ public class M_sfee implements IM_SFEx {
     public void delete(String sfee_name, String fk_sfem) {
         try {
             String query = "DELETE FROM sfee WHERE name ='" + sfee_name + "' AND fk_sf_configuration='" + fk_sfem + "';";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
-        } catch (SQLException e) {
+            getStoredQueries().add(query);
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -61,7 +62,8 @@ public class M_sfee implements IM_SFEx {
             String query = "UPDATE sfee " +
                     "SET name = '" + new_sfee_name + "'" +
                     "WHERE name = '" + old_sfee_name + "' AND fk_sf_configuration='" + fk_sfem + "';";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
+            getStoredQueries().add(query);
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -73,7 +75,7 @@ public class M_sfee implements IM_SFEx {
         try {
             List<String> list = new ArrayList<>();
             String query = "SELECT * FROM sfee;";
-            ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
+            ResultSet rs = dbConnection.getInstance().getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
                 list.add(rs.getString("name") + " of" + rs.getString("fk_sfem"));
             }
@@ -88,7 +90,7 @@ public class M_sfee implements IM_SFEx {
         try {
             List<String> list = new ArrayList<>();
             String query = "SELECT * FROM sfee WHERE fk_sfem='" + fk_sfem + "';";
-            ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
+            ResultSet rs = dbConnection.getInstance().getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
                 list.add(rs.getString("name") + " of" + rs.getString("fk_sfem"));
             }

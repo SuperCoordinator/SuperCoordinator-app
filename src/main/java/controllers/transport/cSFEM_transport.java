@@ -1,7 +1,7 @@
 package controllers.transport;
 
 import communication.modbus;
-import models.SFEx_particular.SFEM_transport;
+import models.SFEx.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import monitor.transport.SFEM_transport_monitor;
@@ -9,7 +9,6 @@ import org.apache.commons.math3.util.Pair;
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
-import java.util.List;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -51,8 +50,8 @@ public class cSFEM_transport implements Runnable {
             }
 
             SFEE sfeeTransp = new SFEE(input[0],
-                    Integer.parseInt(input[1]) == 1 ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL,
-                    SFEE.SFEE_function.TRANSPORT,
+                    Integer.parseInt(input[1]) == 1 ? SFEE.SFEE_environment.SIMULATION : SFEE.SFEE_environment.REAL,
+                    SFEE.SFEE_role.TRANSPORT,
                     com);
 
             sfem.setSfeeTransport(sfeeTransp);
@@ -67,8 +66,8 @@ public class cSFEM_transport implements Runnable {
     public void init_SFEE_transport(String SFEE_transport_name) {
         try {
             SFEE sfeeTransp = new SFEE(SFEE_transport_name,
-                    SFEE.SFEE_type.SIMULATION,
-                    SFEE.SFEE_function.TRANSPORT,
+                    SFEE.SFEE_environment.SIMULATION,
+                    SFEE.SFEE_role.TRANSPORT,
                     SFEE.communicationOption.MODBUS);
             sfem.setSfeeTransport(sfeeTransp);
             sfemTransportMonitor = new SFEM_transport_monitor(sfem);
@@ -102,8 +101,6 @@ public class cSFEM_transport implements Runnable {
 
     public void setupSFEETransportController(modbus inMB, modbus outMB, SFEI inSFEI, SFEI outSFEI) {
         sfeeTransportController.cSFEE_transport_setup(inSFEI, outSFEI, inMB, outMB);
-
-
     }
 
     @Override
@@ -112,7 +109,8 @@ public class cSFEM_transport implements Runnable {
             sfeeTransportController.loop();
             sfemTransportMonitor.loop();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
+            e.printStackTrace();
         }
 
     }

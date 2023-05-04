@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface IM_SFEx {
 
-    int insert(String sfex_name, String fk);
+    void insert(String sfex_name, String fk);
 
     void delete(String sfex_name, String fk);
 

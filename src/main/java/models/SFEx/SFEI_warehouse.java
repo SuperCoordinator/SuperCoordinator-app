@@ -1,8 +1,7 @@
-package models.SFEx_particular;
+package models.SFEx;
 
 import models.base.SFEI;
 import models.base.part;
-import models.sensor_actuator;
 
 import java.time.Instant;
 import java.util.TreeSet;

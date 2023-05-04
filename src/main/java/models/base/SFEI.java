@@ -1,13 +1,12 @@
 package models.base;
 
 import failures.newVersion.failure_occurrence;
-import models.SFEx_particular.SFEI_conveyor;
-import models.SFEx_particular.SFEI_machine;
-import models.SFEx_particular.SFEI_transport;
+import models.SFEx.SFEI_conveyor;
+import models.SFEx.SFEI_machine;
+import models.SFEx.SFEI_transport;
 import models.sensor_actuator;
 import org.apache.commons.math3.util.Pair;
 import utility.InstantAdapter;
-import utility.utils;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

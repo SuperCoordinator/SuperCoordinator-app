@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class M_part implements IM_part {
+public class M_part extends queries_buffer implements IM_part {
 
     /**
      * Singleton pattern
@@ -19,48 +19,49 @@ public class M_part implements IM_part {
     public M_part() {
     }
 
-    public static M_part getInstance() {
-        return partHolder.INSTANCE;
-    }
-
-    private static class partHolder {
-        private static final M_part INSTANCE = new M_part();
-    }
-
-
+    //
+//    public static M_part getInstance() {
+//        return partHolder.INSTANCE;
+//    }
+//
+//    private static class partHolder {
+//        private static final M_part INSTANCE = new M_part();
+//    }
     @Override
-    public int insert(int id, String sf_configuration, String status, int inbound_order) {
+    public void insert(int id, String sf_configuration, String status, int inbound_order) {
         try {
-            String def_vars = "SET @id = " + id + "," +
-                    " @fk_sf_configuration = '" + sf_configuration + "'," +
-                    " @status = '" + status + "'," +
-                    " @fk_inbound_order = " + inbound_order + ";";
+//            String def_vars = "SET @id = " + id + "," +
+//                    " @fk_sf_configuration = '" + sf_configuration + "'," +
+//                    " @status = '" + status + "'," +
+//                    " @fk_inbound_order = " + inbound_order + ";";
 
             String query = "INSERT INTO part (id,fk_sf_configuration,status,fk_inbound_orders) " +
-                    "VALUES (@id,@fk_sf_configuration,@status,@fk_inbound_order) " +
-                    "ON DUPLICATE KEY UPDATE" +
-                    "   fk_inbound_orders = @fk_inbound_order;";
-
-            Statement st = dbConnection.getConnection().createStatement();
-            st.addBatch(def_vars);
-            st.addBatch(query);
-
-            return st.executeBatch()[1];
-
-/*            String query = "INSERT INTO part (id,fk_sf_configuration,status,fk_inbound_orders)" +
-                    "VALUES (" + id + ",'" + M_sf_configuration + "'," + "'" + status + "'," + inbound_order + ");";
-            return dbConnection.getConnection().prepareStatement(query).executeUpdate();*/
-        } catch (SQLException e) {
+                    "SELECT part_id, sf_config, st, in_order " +
+                    "FROM (SELECT '" + id + "' as part_id, '" + sf_configuration + "' as sf_config, '" + status + "' as st, '" + inbound_order + "' as in_order) temp " +
+                    "WHERE EXISTS(SELECT id FROM inbound_orders WHERE id = " + inbound_order + ") " +
+//                    "VALUES (@id,@fk_sf_configuration,@status,@fk_inbound_order) " +
+                    "ON DUPLICATE KEY UPDATE " +
+                    " fk_inbound_orders = " + inbound_order + ";";
+            getStoredQueries().add(query);
+//            Statement st = dbConnection.getConnection().createStatement();
+//            st.addBatch(def_vars);
+//            st.addBatch(query);
+//
+//            return st.executeBatch()[1];
+        } catch (
+                Exception e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @Override
     public void delete(int id, String sf_configuration) {
         try {
             String query = "DELETE FROM part WHERE id =" + id + " AND fk_sf_configuration='" + sf_configuration + "';";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
-        } catch (SQLException e) {
+            getStoredQueries().add(query);
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -71,7 +72,8 @@ public class M_part implements IM_part {
             String query = "UPDATE part " +
                     "SET status = '" + status + "'" +
                     "WHERE id = " + id + " AND fk_sf_configuration='" + sf_configuration + "';";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
+            getStoredQueries().add(query);
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -84,7 +86,8 @@ public class M_part implements IM_part {
             String query = "UPDATE part " +
                     "SET fk_outbound_orders = '" + outbound_order + "'" +
                     "WHERE id = " + id + " AND fk_sf_configuration='" + sf_configuration + "';";
-            dbConnection.getConnection().prepareStatement(query).executeUpdate();
+            getStoredQueries().add(query);
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -96,7 +99,7 @@ public class M_part implements IM_part {
         try {
             List<models.base.part> list = new ArrayList<>();
             String query = "SELECT * FROM part;";
-            ResultSet rs = dbConnection.getConnection().prepareStatement(query).executeQuery();
+            ResultSet rs = dbConnection.getInstance().getConnection().prepareStatement(query).executeQuery();
             while (rs.next()) {
                 part.status st = null;
                 for (part.status s : part.status.values()) {
@@ -106,8 +109,12 @@ public class M_part implements IM_part {
                     }
                 }
                 // In order to have the last partDescription
-                String query2 = "SELECT * FROM part INNER JOIN production_history WHERE part.id = " + rs.getInt("id") + " AND production_history.fk_part_id = part.id ORDER BY time_stamp DESC LIMIT 1;";
-                ResultSet rs2 = dbConnection.getConnection().prepareStatement(query2).executeQuery();
+                String query2 = "SELECT * FROM part " +
+                        "INNER JOIN production_history " +
+                        "WHERE part.id = " + rs.getInt("id") + " " +
+                        "AND production_history.fk_part_id = part.id " +
+                        "ORDER BY time_stamp DESC LIMIT 1;";
+                ResultSet rs2 = dbConnection.getInstance().getConnection().prepareStatement(query2).executeQuery();
                 if (rs2.next()) {
                     partDescription.material mat = null;
                     for (partDescription.material m : partDescription.material.values()) {

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IM_part {
 
-    int insert(int id, String sf_configuration, String status, int inbound_order);
+    void insert(int id, String sf_configuration, String status, int inbound_order);
 
     void delete(int id, String sf_configuration);
 

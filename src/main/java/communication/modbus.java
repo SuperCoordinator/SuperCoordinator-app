@@ -221,6 +221,7 @@ public class modbus implements Runnable {
             runLoop++;
 
         } catch (Exception e) {
+            // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();
         }
 
