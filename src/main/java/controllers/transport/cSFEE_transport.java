@@ -4,6 +4,7 @@ import communication.modbus;
 import failures.SFEE_transport_failures;
 import failures.stochasticTime;
 import models.SFEx.SFEI_transport;
+import models.SFEx.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
@@ -29,6 +30,8 @@ public class cSFEE_transport {
 
     private modbus inMB;
     private modbus outMB;
+
+    private SFEM_transport.configuration configuration;
     @XmlAttribute
     private String prevSFEE_name;
     @XmlAttribute
@@ -43,12 +46,17 @@ public class cSFEE_transport {
     public cSFEE_transport() {
     }
 
-    public cSFEE_transport(SFEE sfee) {
+    public cSFEE_transport(SFEE sfee, SFEM_transport.configuration configuration) {
         this.sfee = sfee;
+        this.configuration = configuration;
     }
 
     public void setSfee(SFEE sfee) {
         this.sfee = sfee;
+    }
+
+    public void setConfiguration(SFEM_transport.configuration configuration) {
+        this.configuration = configuration;
     }
 
     public SFEE getSfee() {
@@ -77,8 +85,9 @@ public class cSFEE_transport {
     public void init(ArrayList<Object> data) {
 
         SFEE inSFEE = (SFEE) data.get(3);
-        SFEE outSFEE = (SFEE) data.get(4);
-        SFEI inSFEI = (SFEI) data.get(5);
+        SFEI inSFEI = (SFEI) data.get(4);
+
+        SFEE outSFEE = (SFEE) data.get(5);
         SFEI outSFEI = (SFEI) data.get(6);
 
         this.inMB = (modbus) data.get(1);
@@ -94,13 +103,11 @@ public class cSFEE_transport {
         TreeMap<Integer, sensor_actuator> io = new TreeMap<>();
 
         // The inSens is the sensor place in the remover (actuator) of last SFEE (SFEI to be more precise)
-//        String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEI.getOutSensor().getName());
         io.put(0, inSFEI.getOutSensor());
         io.put(1, inSFEE.getIObyName((String) data.get(7)));
 
         // ESTA VERIFICAÇÃO TEM DE DEPENDER DO TIPO DE SFEE, SIM OU REAL
         // The outSens is the sensor place on the controller-defined emitter of next SFEE (SFEI to be more precise)
-//        String[] out_SensAct = viewer.associateSensor2Actuator(3, outSFEE.getInSensor().getName());
         io.put(2, outSFEI.getInSensor());
         io.put(3, outSFEE.getIObyName((String) data.get(8)));
         io.put(4, outSFEE.getIObyName((String) data.get(9)));
@@ -123,7 +130,7 @@ public class cSFEE_transport {
         sfee.getSFEIs().put(0, sfeiTransport);
         autoSetSFEE_InOut();
         // Initialize SFEE_transport_module
-        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEI, outSFEI);
+        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEI, outSFEI, configuration);
 
     }
 
@@ -134,8 +141,9 @@ public class cSFEE_transport {
     public void cSFEE_transport_setup(SFEI inSFEI, SFEI outSFEI, modbus inMB, modbus outMB) {
         this.inMB = inMB;
         this.outMB = outMB;
-        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEI, outSFEI);
+        sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEI, outSFEI, configuration);
         sfeeFailures.setSfee(sfee);
+        sfeeFailures.setConfiguration(configuration);
 
     }
 
@@ -145,6 +153,7 @@ public class cSFEE_transport {
     }
 
     public void init_OperationMode(ArrayList<Object> data) {
+
 
 //        String[] sfeeTime = viewer.SFEE_stochasticTime();
         String operator = (String) data.get(0);
@@ -159,14 +168,14 @@ public class cSFEE_transport {
             sfeeFailures = new SFEE_transport_failures(
                     sfee,
                     stochasticTime.timeOptions.GAUSSIAN,
-                    new String[]{mean, dev});
+                    new String[]{mean, dev},configuration);
 
         } else if (operator.contains("linear")) {
             // Linear Time
             sfeeFailures = new SFEE_transport_failures(
                     sfee,
                     stochasticTime.timeOptions.LINEAR,
-                    new String[]{mean, dev});
+                    new String[]{mean, dev},configuration);
         }
     }
 
@@ -175,22 +184,37 @@ public class cSFEE_transport {
         // based on the state of FAILURES, Monitor moves
         try {
 
+
             List<Object> discreteInputsState_inMB = new ArrayList<>();
             List<Object> coilsState_inMB = new ArrayList<>();
-            if (!sfeeMonitor.getNextSFEI().isLine_start()) {
-                discreteInputsState_inMB = new ArrayList<>(inMB.readDiscreteInputs());
-                coilsState_inMB = new ArrayList<>(inMB.readCoils());
-                coilsState_inMB = new ArrayList<>(Collections.nCopies(coilsState_inMB.size(), -1));
+
+            List<Object> discreteInputsState_outMB = new ArrayList<>();
+            List<Object> holdRegsValues_outMB = new ArrayList<>();
+            List<Object> coilsState_outMB = new ArrayList<>();
+
+            switch (configuration) {
+                case WH2SFEI -> {
+                    discreteInputsState_outMB = new ArrayList<>(outMB.readDiscreteInputs());
+                    coilsState_outMB = new ArrayList<>(outMB.readCoils());
+                    coilsState_outMB = new ArrayList<>(Collections.nCopies(coilsState_outMB.size(), -1));
+                    holdRegsValues_outMB = new ArrayList<>(outMB.readHoldingRegisters());
+                }
+                case SFEI2WH -> {
+                    discreteInputsState_inMB = new ArrayList<>(inMB.readDiscreteInputs());
+                    coilsState_inMB = new ArrayList<>(inMB.readCoils());
+                    coilsState_inMB = new ArrayList<>(Collections.nCopies(coilsState_inMB.size(), -1));
+                }
+                default -> {
+                    discreteInputsState_inMB = new ArrayList<>(inMB.readDiscreteInputs());
+                    coilsState_inMB = new ArrayList<>(inMB.readCoils());
+                    coilsState_inMB = new ArrayList<>(Collections.nCopies(coilsState_inMB.size(), -1));
+
+                    discreteInputsState_outMB = new ArrayList<>(outMB.readDiscreteInputs());
+                    coilsState_outMB = new ArrayList<>(outMB.readCoils());
+                    coilsState_outMB = new ArrayList<>(Collections.nCopies(coilsState_outMB.size(), -1));
+                    holdRegsValues_outMB = new ArrayList<>(outMB.readHoldingRegisters());
+                }
             }
-
-
-            List<Object> discreteInputsState_outMB = new ArrayList<>(outMB.readDiscreteInputs());
-
-            List<Object> coilsState_outMB = new ArrayList<>(outMB.readCoils());
-            coilsState_outMB = new ArrayList<>(Collections.nCopies(coilsState_outMB.size(), -1));
-            List<Object> holdRegsValues_outMB = new ArrayList<>(outMB.readHoldingRegisters());
-            holdRegsValues_outMB = new ArrayList<>(Collections.nCopies(holdRegsValues_outMB.size(), -1));
-
 
             ArrayList<List<Object>> inputs = new ArrayList<>();
             inputs.add(discreteInputsState_inMB);
@@ -204,12 +228,20 @@ public class cSFEE_transport {
             sfeeFailures.loop(inputs, outputs);
             sfeeMonitor.loop(inputs);
 
-            if (!sfeeMonitor.getNextSFEI().isLine_start()) {
-                inMB.writeCoils(coilsState_inMB);
+            switch (configuration) {
+                case WH2SFEI -> {
+                    outMB.writeCoils(coilsState_outMB);
+                    outMB.writeRegisters(holdRegsValues_outMB);
+                }
+                case SFEI2WH -> {
+                    inMB.writeCoils(coilsState_inMB);
+                }
+                default -> {
+                    inMB.writeCoils(coilsState_inMB);
+                    outMB.writeCoils(coilsState_outMB);
+                    outMB.writeRegisters(holdRegsValues_outMB);
+                }
             }
-
-            outMB.writeCoils(coilsState_outMB);
-            outMB.writeRegisters(holdRegsValues_outMB);
 
         } catch (Exception e) {
             e.printStackTrace();

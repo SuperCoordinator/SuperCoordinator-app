@@ -142,7 +142,7 @@ public class SFEE_production_monitor {
                      * so SFEI with idx == 1 will accept the part from this one. */
 
                     if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
-                        /* Remove the part from the previous SFEI and place on the next one */
+                        /* Remove the part from the previous SFEI and place on the next one. */
                         movePart(sfei_idx, sfei_idx + 1, sfei.getOutSensor().getName());
                     }
 
@@ -152,18 +152,18 @@ public class SFEE_production_monitor {
 
                     if (isLineStart) {
                         if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
-                            /* Remove the part from the first SFEI */
+                            /* Remove the part from the first SFEI. */
                             movePart(0, sfei_idx, sfei.getInSensor().getName());
                         }
                         if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
-                            /* Increment the number of parts moved by the SFEI sfei_idx */
+                            /* Increment the number of parts moved by the SFEI sfei_idx. */
                             sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
                             markPartForTransport(sfei_idx);
 
                         }
                     } else {
                         if (utils.getInstance().getLogicalOperator().FE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
-                            /* Remove the part from the previous SFEI and place on the next one */
+                            /* Remove the part from the previous SFEI and place on the next one. */
                             movePart(sfei_idx, sfei_idx + 1, sfei.getOutSensor().getName());
                         }
                     }
@@ -219,12 +219,12 @@ public class SFEE_production_monitor {
             if (sfei.getPartsATM().size() > 0) {
                 // In the case of Transport, the most recent part that arrives in the out sensor is the last()
                 part movingPart = Objects.requireNonNull(sfei.getPartsATM().last());
-                if (sfei.isLine_end()) {
-                    movingPart.setState(part.status.PRODUCED);
-                } else {
-                    movingPart.setState(part.status.WAIT_TRANSPORT);
-                }
-
+//                if (sfei.isLine_end()) {
+//                    movingPart.setState(part.status.PRODUCED);
+//                } else {
+//                    movingPart.setState(part.status.WAIT_TRANSPORT);
+//                }
+                movingPart.setState(part.status.WAIT_TRANSPORT);
 
                 /* DATABASE save -> production_history table */
                 dbConnection.getInstance().getProduction_history().insert(

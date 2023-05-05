@@ -26,8 +26,8 @@ public class cSFEM_warehouse implements Runnable {
         return sfem;
     }
 
-    public void init(String SFEE_warehouse_name) {
-        SFEE sfeeWarehouse = new SFEE(SFEE_warehouse_name,
+    public void init() {
+        SFEE sfeeWarehouse = new SFEE("sfee_warehouse",
                 SFEE.SFEE_environment.SIMULATION,
                 SFEE.SFEE_role.WAREHOUSE,
                 SFEE.communicationOption.MODBUS);
@@ -35,16 +35,13 @@ public class cSFEM_warehouse implements Runnable {
 
         sfeeWarehouseController = new cSFEE_warehouse(sfeeWarehouse);
         sfeeWarehouseController.init(checkOrders_period);
-
-
     }
 
     public void init_afterLoad() {
         sfeeWarehouseController = new cSFEE_warehouse(sfem.getSfeeWarehouse());
         sfeeWarehouseController.init(checkOrders_period);
-
+        sfeeWarehouseController.loadWHBasedOnPrevStock();
     }
-
 
     public cSFEE_warehouse getSfeeWarehouseController() {
         return sfeeWarehouseController;
@@ -54,9 +51,6 @@ public class cSFEM_warehouse implements Runnable {
     public void run() {
         try {
             sfeeWarehouseController.loop();
-
-
-
         } catch (Exception e) {
             // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();

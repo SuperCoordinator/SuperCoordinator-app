@@ -42,7 +42,7 @@ public class SFEM_production_monitor extends SFEM_monitor  {
                         while (iterator.hasNext()) {
                             part p = iterator.next();
                             if (p.isProduced()) {
-                                int prod_t = calculateProductionTime(p);
+                                int prod_t = /*calculateProductionTime(p);*/0;
                                 if (prod_t == -1)
                                     continue;
                                 part_prodTime pp = new part_prodTime(p, prod_t);

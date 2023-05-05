@@ -42,10 +42,10 @@ public class serializer {
         sorting_station,
         WH_SS_3CMC,
         MC_Staudinger,
-        WH_SS
+        WH_SS_WH
     }
 
-    public final scenes scene = scenes.WH_SS_3CMC;
+    public final scenes scene = scenes.WH_SS_WH;
     private final String filePath = "blocks/" + scene + "/saves/" + scene;
 
     private serializable serializable = new serializable();
@@ -125,14 +125,24 @@ public class serializer {
         dbConnection.getInstance().getSfees().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getName(),
                 getC_Warehouse().getSfem().getName());
 
-        dbConnection.getInstance().getSfeis().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
-                getC_Warehouse().getSfeeWarehouseController().getSfee().getName());
+        getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIs().forEach((key, value) -> {
+            dbConnection.getInstance().getSfeis().insert(
+                    value.getName(),
+                    getC_Warehouse().getSfeeWarehouseController().getSfee().getName());
+        });
 
-        // Invented in sensor -> warehouse_door
-        dbConnection.getInstance().getSensors().insert("warehouse_door",
+/*        dbConnection.getInstance().getSfeis().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
+                getC_Warehouse().getSfeeWarehouseController().getSfee().getName());*/
+
+        // Invented in sensor -> warehouse_entryDoor
+        dbConnection.getInstance().getSensors().insert("warehouse_entryDoor",
                 getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
                 true);
 
+        // Invented out sensor -> warehouse_expeditionDoor
+        dbConnection.getInstance().getSensors().insert("warehouse_expeditionDoor",
+                getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(1).getName(),
+                false);
 
         // Instantiate Production Elements (and their sensors)
         getC_Production().forEach(cSFEMProduction -> {
@@ -145,42 +155,53 @@ public class serializer {
                     dbConnection.getInstance().getSfeis().insert(sfei.getName(), cSFEEProduction.getSFEE().getName());
 
                     //inSensor
+                    if (sfei.getInSensor()!= null)
                     dbConnection.getInstance().getSensors().insert(sfei.getInSensor().getName(), sfei.getName(), true);
 
                     //outSensor
-                    dbConnection.getInstance().getSensors().insert(sfei.getOutSensor().getName(), sfei.getName(), false);
+                    if (sfei.getOutSensor() != null)
+                        dbConnection.getInstance().getSensors().insert(sfei.getOutSensor().getName(), sfei.getName(), false);
                 });
             });
         });
     }
 
-    public void new_cSFEM_transport(ArrayList<Object> data, boolean isWH) {
+    public void new_cSFEM_transport(SFEM_transport.configuration configuration, ArrayList<Object> names, ArrayList<Object> transportControllers, ArrayList<Object> opMode) {
         try {
-            SFEM_transport sfemTransport = new SFEM_transport((String) data.get(0));
+            SFEM_transport sfemTransport = new SFEM_transport((String) names.get(0), configuration);
             cSFEM_transport sfemController = new cSFEM_transport(sfemTransport);
 
-            sfemController.init_SFEE_transport((String) data.get(1));
+            sfemController.init_SFEE_transport((String) names.get(1));
 
             // Perform searches for SFEIs and SFEEs objects based on the elements name
-            Pair<SFEE, SFEI> in;
-            if (!isWH) {
-                in = searchSFEE_SFEIbySFEI_name((String) data.get(7));
-            } else {
-                in = new Pair<>((SFEE) data.get(5), (SFEI) data.get(7));
+            Pair<SFEE, SFEI> in, out;
+
+            switch (configuration) {
+                case WH2SFEI -> {
+                    in = new Pair<>((SFEE) transportControllers.get(3), (SFEI) transportControllers.get(5));
+                    out = searchSFEE_SFEIbySFEI_name((String) transportControllers.get(6));
+                }
+                case SFEI2WH -> {
+                    in = searchSFEE_SFEIbySFEI_name((String) transportControllers.get(5));
+                    out = new Pair<>((SFEE) transportControllers.get(4), (SFEI) transportControllers.get(6));
+                }
+                default -> {
+                    in = searchSFEE_SFEIbySFEI_name((String) transportControllers.get(5));
+                    out = searchSFEE_SFEIbySFEI_name((String) transportControllers.get(6));
+                }
             }
-            Pair<SFEE, SFEI> out = searchSFEE_SFEIbySFEI_name((String) data.get(8));
 
-            data.set(5, in.getFirst());
-            data.set(6, out.getFirst());
-            data.set(7, in.getSecond());
-            data.set(8, out.getSecond());
+            transportControllers.set(3, in.getFirst());
+            transportControllers.set(4, in.getSecond());
+            transportControllers.set(5, out.getFirst());
+            transportControllers.set(6, out.getSecond());
 
-            sfemController.init_cSFEETransport(new ArrayList<>(data.subList(2, 13)), new ArrayList<>(data.subList(13, data.size())));
+            sfemController.init_cSFEETransport(configuration, transportControllers, opMode);
 
             // Add if not exist or update if exists
             int i;
             for (i = 0; i < serializer.getInstance().getC_Transport().size(); i++) {
-                if (serializer.getInstance().getC_Transport().removeIf(next -> next.getSfem().getName().equals(data.get(0)))) {
+                if (serializer.getInstance().getC_Transport().removeIf(next -> next.getSfem().getName().equals(names.get(0)))) {
                     serializer.getInstance().getC_Transport().add(i, sfemController);
                     System.out.println("Updated C_Transport");
                     break;
@@ -190,9 +211,7 @@ public class serializer {
             if (i == serializer.getInstance().getC_Transport().size() /*&& i > 0*/) {
                 serializer.getInstance().getC_Transport().add(/*serializer.getInstance().getC_Transport().size() - 1,*/ sfemController);
                 System.out.println("Created new C_Transport");
-            } /*else {
-                serializer.getInstance().getC_Transport().add(serializer.getInstance().getC_Transport().size(), sfemController);
-            }*/
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

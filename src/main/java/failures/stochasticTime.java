@@ -1,6 +1,7 @@
 package failures;
 
 import models.SFEx.SFEI_transport;
+import models.SFEx.SFEM_transport;
 import models.base.SFEI;
 import models.SFEx.SFEI_conveyor;
 import models.SFEx.SFEI_machine;
@@ -57,8 +58,8 @@ public class stochasticTime {
 
     private final SFEI_conveyor sfeiConveyor;
     private final SFEI_machine sfeiMachine;
-
     private final SFEI_transport sfeiTransport;
+    private SFEM_transport.configuration transportConfiguration;
     private final SFEI.SFEI_type sfeiType;
     private final part part;
     private final long delay;
@@ -103,14 +104,6 @@ public class stochasticTime {
         this.smMach = SM_mach.WAITING;
         this.smTrans = SM_trans.INIT;
 
-        // For the warehouse transport
-        if (sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT)) {
-            if (Objects.requireNonNull(sfeiTransport).getaRemover() == null) {
-                // If the aRemover == NULL then it is the WH-InSFEI case
-                initial_t = Instant.now();
-                this.smTrans = SM_trans.WAITING;
-            }
-        }
     }
 
 
@@ -124,6 +117,17 @@ public class stochasticTime {
 
     public boolean isTransportFinished() {
         return smTrans.equals(SM_trans.END);
+    }
+
+    public void setTransportConfiguration(SFEM_transport.configuration configuration) {
+
+        this.transportConfiguration = configuration;
+
+        if (Objects.requireNonNull(transportConfiguration).equals(SFEM_transport.configuration.WH2SFEI)) {
+            initial_t = Instant.now();
+            this.smTrans = SM_trans.WAITING;
+        }
+
     }
 
     public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
@@ -333,11 +337,17 @@ public class stochasticTime {
                 }
                 case WAITING -> {
                     if (Duration.between(initial_t, Instant.now()).toSeconds() >= delay) {
-                        smTrans = SM_trans.EMITTING;
+                        if (transportConfiguration.equals(SFEM_transport.configuration.SFEI2WH)) {
+                            part.setState(models.base.part.status.PRODUCED);
+                            smTrans = SM_trans.END;
+                        } else {
+                            smTrans = SM_trans.EMITTING;
+                        }
                     } else {
                         // PREPARE THE NEXT EMITTER for correct type
                         // +5 to ignore boxes [1;4] boxes, as well as 14
-                        holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
+                        if (!transportConfiguration.equals(SFEM_transport.configuration.WH2SFEI))
+                            holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
                     }
                 }
                 case EMITTING -> {
@@ -360,11 +370,9 @@ public class stochasticTime {
                     }
                     old_sEmitter = sensor;
                 }
-                default -> {
-                }
             }
-/*        if (old_state != smTrans)
-            System.out.println(smTrans);*/
+        if (old_state != smTrans)
+            System.out.println(smTrans);
 
             old_state = smTrans;
         } catch (Exception e) {

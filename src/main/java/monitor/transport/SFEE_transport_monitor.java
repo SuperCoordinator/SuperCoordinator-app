@@ -2,6 +2,7 @@ package monitor.transport;
 
 import communication.database.dbConnection;
 import models.SFEx.SFEI_transport;
+import models.SFEx.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;
@@ -11,20 +12,14 @@ import utility.utils;
 import viewers.SFEE_transport;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 
 public class SFEE_transport_monitor {
 
-    private enum operation {
-        SFEI2SFEI,
-        WH2SFEI,
-        SFEI2WH
-    }
-
-    private operation operationMode;
-
+    private SFEM_transport.configuration operationMode;
     private SFEE sfee;
     private SFEI previousSFEI;
     private SFEI nextSFEI;
@@ -33,20 +28,16 @@ public class SFEE_transport_monitor {
     private boolean SFEI_old_outSensors = false;
 
     private boolean firstRun = true;
-    private part currPart = null;
 
     public SFEE_transport_monitor() {
     }
 
-    public SFEE_transport_monitor(SFEE sfee, SFEI previousSFEI, SFEI nextSFEI) {
+    public SFEE_transport_monitor(SFEE sfee, SFEI previousSFEI, SFEI nextSFEI, SFEM_transport.configuration configuration) {
         this.sfee = sfee;
         this.previousSFEI = previousSFEI;
         this.nextSFEI = nextSFEI;
+        this.operationMode = configuration;
 
-    }
-
-    public SFEI getNextSFEI() {
-        return nextSFEI;
     }
 
     private void init_oldSensorsValues(ArrayList<List<Object>> sensorsState) {
@@ -83,22 +74,14 @@ public class SFEE_transport_monitor {
     public void loop(ArrayList<List<Object>> sensorsState) {
         try {
             if (firstRun) {
-                if (previousSFEI.getSfeiType().equals(SFEI.SFEI_type.WAREHOUSE)) {
-                    operationMode = operation.WH2SFEI;
-                } else if (nextSFEI.getSfeiType().equals(SFEI.SFEI_type.WAREHOUSE)) {
-                    operationMode = operation.SFEI2WH;
-                } else {
-                    operationMode = operation.SFEI2SFEI;
-                }
                 init_oldSensorsValues(sensorsState);
                 firstRun = false;
-
                 sm_state = SFEE_transport_monitor.state.T1;
             }
 
             switch (operationMode) {
-                case SFEI2SFEI -> moveParts(sensorsState);
                 case WH2SFEI -> placeNewParts(sensorsState);
+                case SFEI2SFEI -> moveParts(sensorsState);
                 case SFEI2WH -> removeProducedParts(sensorsState);
             }
 
@@ -116,25 +99,52 @@ public class SFEE_transport_monitor {
         boolean b_outSensor = (int) sensorsState.get(1).get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
 
         if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEI_old_inSensors)) {
+
+            // The first one is waiting for the most time
+            Iterator<part> iterator = previousSFEI.getPartsATM().iterator();
+            while (iterator.hasNext()) {
+                part movingPart = iterator.next();
+                if (movingPart.getState().equals(part.status.WAIT_TRANSPORT)) {
+                    movingPart.setState(part.status.IN_TRANSPORT);
+                    sfeiTransport.addNewPartATM(movingPart);
+                    iterator.remove();
+                    break;
+                }
+            }
             // Detect part from the inSFEI waiting for transport
-            if (previousSFEI.getPartsATM().size() > 0) {
-                // The first one is waiting for the most time
+/*            if (previousSFEI.getPartsATM().size() > 0) {
                 part movingPart = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
                 movingPart.setState(part.status.IN_TRANSPORT);
                 sfeiTransport.addNewPartATM(movingPart);
-            }
+            }*/
         }
 
         if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEI_old_inSensors)) {
+
+            Iterator<part> iterator = sfeiTransport.getPartsATM().iterator();
+            while (iterator.hasNext()) {
+                part movingPart = iterator.next();
+                if (movingPart.getState().equals(part.status.IN_TRANSPORT)) {
+                    movingPart.setState(part.status.IN_PRODUCTION);
+                    nextSFEI.addNewPartATM(movingPart);
+
+                    sfeiTransport.setnPiecesMoved(sfeiTransport.getnPiecesMoved() + 1);
+
+                    iterator.remove();
+                    sm_state = state.T2;
+                    break;
+                }
+            }
+
             // Detect part from the inSFEI waiting for transport
-            if (sfeiTransport.getPartsATM().size() > 0) {
+/*            if (sfeiTransport.getPartsATM().size() > 0) {
                 // The first one is waiting for the most time
                 part movingPart = Objects.requireNonNull(sfeiTransport.getPartsATM().pollFirst());
                 movingPart.setState(part.status.IN_PRODUCTION);
                 nextSFEI.addNewPartATM(movingPart);
 
                 sfeiTransport.setnPiecesMoved(sfeiTransport.getnPiecesMoved() + 1);
-            }
+            }*/
         }
 
         // Only update in the end in order to all functions see the values at the read moment
@@ -143,31 +153,57 @@ public class SFEE_transport_monitor {
     }
 
     private enum state {
-        T1, T2, T3
+        T1, T2
     }
 
     private state sm_state;
 
     private void placeNewParts(ArrayList<List<Object>> sensorsState) {
-        // Only have 1 SFEI
+        // SFEI 0 : entry WH
         SFEI_transport sfeiTransport = (SFEI_transport) sfee.getSFEIbyIndex(0);
 
         boolean b_outSensor = (int) sensorsState.get(1).get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
 
         switch (sm_state) {
             case T1 -> {
+//                System.out.println("sfei transport partsATM " + sfeiTransport.getPartsATM().size());
                 if (sfeiTransport.getPartsATM().size() == 0) {
-                    if (previousSFEI.getPartsATM().size() > 0) {
+                    Iterator<part> iterator = previousSFEI.getPartsATM().iterator();
+                    while (iterator.hasNext()) {
+                        part movingPart = iterator.next();
+                        if (movingPart.getState().equals(part.status.IN_STOCK)) {
+                            movingPart.setState(part.status.WAIT_TRANSPORT);
+                            sfeiTransport.addNewPartATM(movingPart);
+                            iterator.remove();
+                            sm_state = state.T2;
+                            break;
+                        }
+                    }
+/*                    if (previousSFEI.getPartsATM().size() > 0) {
                         part movingPart = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
                         movingPart.setState(part.status.IN_TRANSPORT);
                         sfeiTransport.addNewPartATM(movingPart);
                         sm_state = state.T2;
-                    }
+                    }*/
                 }
             }
             case T2 -> {
                 if (utils.getInstance().getLogicalOperator().FE_detector(b_outSensor, SFEI_old_outSensors)) {
-                    if (sfeiTransport.getPartsATM().size() > 0) {
+                    Iterator<part> iterator = sfeiTransport.getPartsATM().iterator();
+                    while (iterator.hasNext()) {
+                        part movingPart = iterator.next();
+                        if (movingPart.getState().equals(part.status.IN_TRANSPORT)) {
+                            movingPart.setState(part.status.IN_PRODUCTION);
+                            nextSFEI.addNewPartATM(movingPart);
+                            updateDB(movingPart, sfeiTransport);
+
+                            iterator.remove();
+                            sm_state = state.T1;
+                            break;
+                        }
+                    }
+
+/*                    if (sfeiTransport.getPartsATM().size() > 0) {
                         part movingPart = Objects.requireNonNull(sfeiTransport.getPartsATM().pollFirst());
                         movingPart.setState(part.status.IN_PRODUCTION);
                         nextSFEI.getPartsATM().add(movingPart);
@@ -175,7 +211,7 @@ public class SFEE_transport_monitor {
                         updateDB(movingPart, sfeiTransport);
 
                         sm_state = state.T1;
-                    }
+                    }*/
                 }
             }
         }
@@ -183,6 +219,42 @@ public class SFEE_transport_monitor {
         // Only update in the end in order to all functions see the values at the read moment
         SFEI_old_outSensors = b_outSensor;
 
+    }
+
+    private void removeProducedParts(ArrayList<List<Object>> sensorsState) {
+        // SFEI 1 : exit warehouse
+        SFEI_transport sfeiTransport = (SFEI_transport) sfee.getSFEIbyIndex(0);
+
+        boolean b_inSensor = (int) sensorsState.get(0).get(sfeiTransport.getInSensor().getBit_offset()) == 1;
+
+        if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEI_old_inSensors)) {
+            Iterator<part> iterator = previousSFEI.getPartsATM().iterator();
+            while (iterator.hasNext()) {
+                part movingPart = iterator.next();
+                if (movingPart.getState().equals(part.status.WAIT_TRANSPORT)) {
+                    movingPart.setState(part.status.IN_TRANSPORT);
+                    sfeiTransport.addNewPartATM(movingPart);
+                    iterator.remove();
+                    break;
+                }
+            }
+/*                    if (previousSFEI.getPartsATM().size() > 0) {
+                        part movingPart = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
+                        movingPart.setState(part.status.IN_TRANSPORT);
+                        sfeiTransport.addNewPartATM(movingPart);
+                        sm_state = state.T2;
+                    }*/
+        }
+
+        Iterator<part> iterator = sfeiTransport.getPartsATM().iterator();
+        while (iterator.hasNext()) {
+            part movingPart = iterator.next();
+            if (movingPart.getState().equals(part.status.PRODUCED)) {
+                nextSFEI.addNewPartATM(movingPart);
+                iterator.remove();
+                break;
+            }
+        }
     }
 
     private void updateDB(part movingPart, SFEI_transport sfeiTransport) {
@@ -199,10 +271,6 @@ public class SFEE_transport_monitor {
                 sfeiTransport.getOutSensor().getName(),
                 movingPart.getReality().material().toString(),
                 movingPart.getReality().form().toString());
-    }
-
-    private void removeProducedParts(ArrayList<List<Object>> sensorsState) {
-
     }
 
 

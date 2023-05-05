@@ -29,7 +29,7 @@ public class SFEM_transport_monitor extends SFEM_monitor {
                     while (iterator.hasNext()) {
                         part p = iterator.next();
                         if (!p.isProduced() && !p.isWaitTransport()) {
-                            int prod_t = calculateProductionTime(p);
+                            int prod_t = /*calculateProductionTime(p);*/0;
                             if (prod_t == -1)
                                 continue;
                             part_prodTime pp = new part_prodTime(p, prod_t);
@@ -65,7 +65,7 @@ public class SFEM_transport_monitor extends SFEM_monitor {
 
         // search for inOut sensor of SFEM : in from SFEE(0) / out from SFEE(size-1) ;
         String inSFEM_sensor = "none";
-        if (!sfem.getSfeeTransport().getSFEIbyIndex(0).getSfeiType().equals(SFEI.SFEI_type.TRANSPORT)){
+        if (!sfem.getSfeeTransport().getSFEIbyIndex(0).getSfeiType().equals(SFEI.SFEI_type.TRANSPORT)) {
             inSFEM_sensor = sfem.getSfeeTransport().getInSensor().getName();
         }
 

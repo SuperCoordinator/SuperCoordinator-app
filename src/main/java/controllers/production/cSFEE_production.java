@@ -109,7 +109,7 @@ public class cSFEE_production {
                     importIO(csv_path,true);
                 }
                 case 13 -> {
-                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\WH_SS\\simulation\\Tags_sorting_station_Modbus.csv";
+                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\WH_SS_WH\\simulation\\Tags_sorting_station_Modbus.csv";
                     importIO(csv_path,true);
                 }
                 default -> {
@@ -294,7 +294,7 @@ public class cSFEE_production {
                 addNewSFEI_conveyor(
                         "parts_entry",
                         "s_emitter",
-                        "none",
+                        "s_exit",
                         Instant.now(),
                         Instant.now(),
                         true,
@@ -406,7 +406,7 @@ public class cSFEE_production {
             }
 
 
-            autoSetSFEE_InOut();
+//            autoSetSFEE_InOut();
             autoSetSFEE_function();
 
             // Initialize SFEE_production_monitor
@@ -552,7 +552,6 @@ public class cSFEE_production {
                 if (sfee.getCom() == SFEE.communicationOption.MODBUS) {
                     mb.openConnection(/*ip, port, slaveID,*/ sfee.getIo());
                     scheduler.scheduleAtFixedRate(mb, 0, 50, TimeUnit.MILLISECONDS);
-
                 }
             } else {
                 scheduler.close();
@@ -628,12 +627,12 @@ public class cSFEE_production {
     private void autoSetSFEE_function() {
 
         // Detect if it is the starting of the line, so it is the Sorting Station case!
-        for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
-            if (entry.getValue().isLine_start() && sfee.getSFEE_type().equals(SFEE.SFEE_environment.SIMULATION)) {
-                sfee.setSFEE_function(SFEE.SFEE_role.SORTING_STATION);
-                break;
-            }
-        }
+//        for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
+//            if (entry.getValue().isLine_start() && sfee.getSFEE_type().equals(SFEE.SFEE_environment.SIMULATION)) {
+//                sfee.setSFEE_function(SFEE.SFEE_role.SORTING_STATION);
+//                break;
+//            }
+//        }
     }
 
 

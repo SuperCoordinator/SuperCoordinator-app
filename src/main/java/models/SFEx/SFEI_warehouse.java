@@ -7,8 +7,8 @@ import java.time.Instant;
 import java.util.TreeSet;
 
 public class SFEI_warehouse extends SFEI {
-    public SFEI_warehouse() {
-        super("sfei_warehouse", SFEI_type.WAREHOUSE, null, null, Instant.now(), Instant.now(), true, false, false, false);
+    public SFEI_warehouse(String name) {
+        super(name, SFEI_type.WAREHOUSE, null, null, Instant.now(), Instant.now(), true, false, false, false);
     }
 
     @Override

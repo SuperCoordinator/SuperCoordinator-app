@@ -1,6 +1,7 @@
 package monitor.warehouse;
 
 import communication.database.dbConnection;
+import models.base.SFEE;
 import models.base.part;
 import models.inboundOrder;
 import models.partDescription;
@@ -13,11 +14,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 public class SFEE_warehouse_monitor {
 
+    private SFEE sfee;
     private ArrayList<part> recentArrivedParts = new ArrayList<>();
 
     public ArrayList<part> getRecentArrivedParts() {
@@ -26,12 +29,14 @@ public class SFEE_warehouse_monitor {
 
     private Instant old_t;
 
-    private int part_id, inbound_order_id;
+    private int part_id, inbound_order_id, outbound_order_id;
     private int check_period;
 
-    public SFEE_warehouse_monitor(int part_id_offset, int checkOrder_period_min) {
+    public SFEE_warehouse_monitor(SFEE sfee, int checkOrder_period_min) {
+        this.sfee = sfee;
         this.part_id = 0;
         this.inbound_order_id = 0;
+        this.outbound_order_id = 0;
         this.check_period = checkOrder_period_min;
         old_t = Instant.parse("2023-04-01T12:00:00.840857500Z");
     }
@@ -41,12 +46,42 @@ public class SFEE_warehouse_monitor {
         try {
             if (Duration.between(old_t, Instant.now()).toMinutes() >= check_period) {
                 receiveOrders();
+                dispatchOrders();
                 old_t = Instant.now();
                 return true;
             }
             return false;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void dispatchOrders() {
+
+        if (sfee.getSFEIbyIndex(1).getPartsATM().size() > 0) {
+            // create outbound order
+            dbConnection.getInstance().getOutbound_orders().insert();
+            Iterator<part> iterator = sfee.getSFEIbyIndex(1).getPartsATM().iterator();
+            while (iterator.hasNext()) {
+                part p = iterator.next();
+                if (p.getState().equals(part.status.PRODUCED)) {
+                    //update in db fk to outbound order
+                    dbConnection.getInstance().getParts().update_outboundOrder(
+                            Objects.requireNonNull(p).getId(),
+                            serializer.getInstance().scene.toString(),
+                            outbound_order_id);
+
+                    // register insertion in warehouse
+                    dbConnection.getInstance().getProduction_history().insert(
+                            Objects.requireNonNull(p).getId(),
+                            "warehouse_expeditionDoor",
+                            Objects.requireNonNull(p).getReality().material().toString(),
+                            Objects.requireNonNull(p).getReality().form().toString());
+                } else
+                    throw new RuntimeException("This part is in the exit warehouse but is not produced");
+                iterator.remove();
+            }
+            outbound_order_id++;
         }
 
     }
@@ -69,7 +104,8 @@ public class SFEE_warehouse_monitor {
 //            createParts(order, inbound_order_id);
 //            inbound_order_id++;
             dbConnection.getInstance().getInbound_orders().insert(order.getMetal_qty(), order.getGreen_qty(), order.getBlue_qty());
-            createParts(order, dbConnection.getInstance().getInbound_orders().getAll_inbound_orders().size() + 1);
+            createParts(order, inbound_order_id);
+            inbound_order_id++;
             file_index++;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -110,7 +146,7 @@ public class SFEE_warehouse_monitor {
 
                 // register insertion in warehouse
                 dbConnection.getInstance().getProduction_history().insert(Objects.requireNonNull(p).getId(),
-                        "warehouse_door",
+                        "warehouse_entryDoor",
                         Objects.requireNonNull(p).getReality().material().toString(),
                         Objects.requireNonNull(p).getReality().form().toString());
 
@@ -121,22 +157,31 @@ public class SFEE_warehouse_monitor {
         }
     }
 
-    public void clearStoredParts() {
-        recentArrivedParts.clear();
-    }
 
     public void loadWHBasedOnPrevStock() {
-        // Establish the inbound order id
-//        inbound_order_id = dbConnection.getInstance().getInbound_orders().getAll_inbound_orders().size();
+        try {
+            // Establish the inbound order id
+            inbound_order_id = Objects.requireNonNull(dbConnection.getInstance()).getInbound_orders().getAll_inbound_orders().size();
 
-        List<part> prevStock = dbConnection.getInstance().getParts().getAll_parts(serializer.getInstance().scene.toString());
-        part_id = prevStock.size();
+            // Establish the outbound order id
+            outbound_order_id = Objects.requireNonNull(dbConnection.getInstance()).getOutbound_orders().getAll_outbound_orders().size();
 
-        // remove the parts that was in production, those aren't possible to re-use
-        // Only the one with IN_STOCK status
-        prevStock.removeIf(part -> !part.getState().equals(models.base.part.status.IN_STOCK));
 
-        recentArrivedParts.addAll(prevStock);
+            List<part> prevStock = Objects.requireNonNull(dbConnection.getInstance()).getParts().getAll_parts(serializer.getInstance().scene.toString());
+            part_id = prevStock.size();
+
+            // remove the parts that was in production, those aren't possible to re-use
+            // Only the one with IN_STOCK status
+            prevStock.removeIf(part -> !part.getState().equals(models.base.part.status.IN_STOCK));
+
+            recentArrivedParts.addAll(prevStock);
+
+            sfee.getSFEIs().get(0).getPartsATM().addAll(recentArrivedParts);
+            System.out.println("#parts in the warehouse: " + sfee.getSFEIs().get(0).getPartsATM().size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
+
 }

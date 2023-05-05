@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS inbound_orders (
 );
 
 CREATE TABLE IF NOT EXISTS outbound_orders (
-    id INT NOT NULL,
+     id MEDIUMINT NOT NULL AUTO_INCREMENT,
     order_date TIMESTAMP NOT NULL,
     PRIMARY KEY (id)
 );
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS part(
     status VARCHAR(100) NOT NULL,
     fk_sf_configuration VARCHAR(100) NOT NULL,
     fk_inbound_orders MEDIUMINT NOT NULL,
-    fk_outbound_orders INT,
+    fk_outbound_orders MEDIUMINT,
     PRIMARY KEY(id,fk_sf_configuration)
 );
 

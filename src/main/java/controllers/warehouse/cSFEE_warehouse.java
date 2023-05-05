@@ -2,6 +2,7 @@ package controllers.warehouse;
 
 import models.SFEx.SFEI_warehouse;
 import models.base.SFEE;
+import models.base.SFEI;
 import models.base.part;
 import monitor.warehouse.SFEE_warehouse_monitor;
 
@@ -10,13 +11,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.NONE)
 public class cSFEE_warehouse {
 
-
     private SFEE sfee;
-
     private SFEE_warehouse_monitor sfeeWarehouseMonitor;
 
     public cSFEE_warehouse() {
@@ -31,29 +28,34 @@ public class cSFEE_warehouse {
     }
 
     public void init(int checkOrders_period) {
-        // Create SFEI
-        SFEI_warehouse sfeiWarehouse = new SFEI_warehouse();
-        sfee.getSFEIs().put(0, sfeiWarehouse);
+        try {
+            // Entry SFEI
+            sfee.getSFEIs().put(0, new SFEI_warehouse("sfei_entryWarehouse"));
+            // Exit SFEI
+            sfee.getSFEIs().put(1, new SFEI_warehouse("sfei_exitWarehouse"));
 
-        // This part_id_offset should be a query in DB
-        sfeeWarehouseMonitor = new SFEE_warehouse_monitor(0, checkOrders_period);
+            // Load the warehouse with parts that was previously on it to be used, this also update index of partID in the warehouse
+            sfeeWarehouseMonitor = new SFEE_warehouse_monitor(sfee, checkOrders_period);
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
     }
 
     public void loadWHBasedOnPrevStock() {
-        sfeeWarehouseMonitor.loadWHBasedOnPrevStock();
-        storeParts(sfeeWarehouseMonitor.getRecentArrivedParts());
-    }
-
-    public void storeParts(ArrayList<part> recentArrivedParts) {
-        sfee.getSFEIs().get(0).getPartsATM().addAll(recentArrivedParts);
-        System.out.println("#parts in the warehouse: " + sfee.getSFEIs().get(0).getPartsATM().size());
+        try {
+            sfeeWarehouseMonitor.loadWHBasedOnPrevStock();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void loop() {
-        if (sfeeWarehouseMonitor.loop()) {
-            storeParts(sfeeWarehouseMonitor.getRecentArrivedParts());
-            sfeeWarehouseMonitor.clearStoredParts();
+        try {
+            sfeeWarehouseMonitor.loop();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
 

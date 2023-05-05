@@ -14,6 +14,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
+import models.SFEx.SFEM_transport;
+import models.base.SFEE;
 import org.apache.commons.math3.util.Pair;
 import utility.serialize.serializer;
 import viewers.controllers.C_ShopFloor;
@@ -286,26 +288,23 @@ public class C_SFEM_connection {
         data.add(0, sfem_transport_name.getText());  // SFEM_transport name
         data.add(1, cSfemTransport.getcSfeeTransport().getSfee_transport_name().getText()); // SFEE_transport name
 
-        ArrayList<Object> initController_data = new ArrayList<>();
-        initController_data.add(0, "sfei_of_" + cSfemTransport.getcSfeeTransport().getSfee_transport_name().getText()); // SFEI_transport name
-        initController_data.add(1, null);   // inSFEE modbus connection
-        initController_data.add(2, null);   // outSFEE modbus connection
-        initController_data.add(3, null);   // inSFEE  -> TO BE FOUND in serializer class
-        initController_data.add(4, null);   // outSFEE -> TO BE FOUND in serializer class
-        initController_data.add(5, cSfemTransport.getcSfeeTransport().getInSFEI());     // string value -> search in serializer class
-        initController_data.add(6, cSfemTransport.getcSfeeTransport().getOutSFEI());    // string value -> search in serializer class
+        ArrayList<Object> controllerData = new ArrayList<>();
+        controllerData.add(0, "sfei_of_" + cSfemTransport.getcSfeeTransport().getSfee_transport_name().getText()); // SFEI_transport name
+        controllerData.add(1, null);   // inSFEE modbus connection
+        controllerData.add(2, null);   // outSFEE modbus connection
+        controllerData.add(3, null);   // inSFEE  -> TO BE FOUND in serializer class
+        controllerData.add(4, null);   // outSFEE -> TO BE FOUND in serializer class
+        controllerData.add(5, cSfemTransport.getcSfeeTransport().getInSFEI());     // string value -> search in serializer class
+        controllerData.add(6, cSfemTransport.getcSfeeTransport().getOutSFEI());    // string value -> search in serializer class
 
-        initController_data.addAll(cSfemTransport.getcSfeeTransport().getC_SFEI_Transport().getSensAct());
+        controllerData.addAll(cSfemTransport.getcSfeeTransport().getC_SFEI_Transport().getSensAct());
 
-        ArrayList<Object> init_OperationMode_data = new ArrayList<>(cSfemTransport.getcSfeeTransport().getFormulaSplit());
-
-        data.addAll(initController_data);
-        data.addAll(init_OperationMode_data);
+        ArrayList<Object> operationModeData = new ArrayList<>(cSfemTransport.getcSfeeTransport().getFormulaSplit());
 
 /*        System.out.println("Before update data: C_ShopFloor - " + C_ShopFloor.getInstance().getcSfemTransports().size()
                 + " serializer - " + serializer.getInstance().getC_Transport().size());*/
 
-        serializer.getInstance().new_cSFEM_transport(data, false);
+        serializer.getInstance().new_cSFEM_transport(SFEM_transport.configuration.SFEI2SFEI, data, controllerData, operationModeData);
         // Update C_ShopFloor singleton with the new C_SFEM_transport
         C_ShopFloor.getInstance().updateData(serializer.getInstance().getC_Production(), serializer.getInstance().getC_Transport());
 

@@ -4,6 +4,7 @@ import communication.modbus;
 import models.SFEx.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
+import models.base.SFEM;
 import monitor.transport.SFEM_transport_monitor;
 import org.apache.commons.math3.util.Pair;
 
@@ -78,13 +79,14 @@ public class cSFEM_transport implements Runnable {
 
     public void init_after_XML_load() {
         sfeeTransportController.setSfee(sfem.getSfeeTransport());
+        sfeeTransportController.setConfiguration(sfem.getTransport_configuration());
         sfemTransportMonitor = new SFEM_transport_monitor(sfem);
     }
 
-    public void init_cSFEETransport(ArrayList<Object> initController_data, ArrayList<Object> initOperationMode_data) {
+    public void init_cSFEETransport(SFEM_transport.configuration configuration, ArrayList<Object> initController_data, ArrayList<Object> initOperationMode_data) {
         try {
             // Create new SFEE_tranport controller instance
-            sfeeTransportController = new cSFEE_transport(sfem.getSfeeTransport());
+            sfeeTransportController = new cSFEE_transport(sfem.getSfeeTransport(), configuration);
 
             // init that instance
             sfeeTransportController.init(initController_data);

@@ -48,9 +48,9 @@ public class dbConnection implements Runnable {
             throw new RuntimeException(e);
         }
     }
-
     public synchronized Connection getConnection() {
         try {
+
             if (con == null) {
                 return DriverManager.getConnection(url + database, user, pass);
             }
