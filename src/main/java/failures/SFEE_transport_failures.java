@@ -1,6 +1,7 @@
 package failures;
 
 import communication.modbus;
+import models.SFEx.SFEI_transport;
 import models.SFEx.SFEM_transport;
 import models.base.SFEE;
 import models.base.part;
@@ -75,7 +76,6 @@ public class SFEE_transport_failures {
             case INIT -> {
                 if (checkNewPiece()) {
                     state = SM.PROCESS_STOCHASTIC;
-                    System.out.println("new piece detected");
                 }
             }
             case PROCESS_STOCHASTIC -> {
@@ -95,8 +95,8 @@ public class SFEE_transport_failures {
             case PROCESS_STOCHASTIC -> {
                 if (old_state != state) {
                     for (part movingPart : sfee.getSFEIbyIndex(0).getPartsATM()) {
-                        System.out.println(movingPart);
                         if (movingPart.getState().equals(part.status.WAIT_TRANSPORT)) {
+                            movingPart.setState(part.status.IN_TRANSPORT);
                             stochasticTimeTask = new stochasticTime(
                                     sfee.getSFEIbyIndex(0),
                                     movingPart,
@@ -114,18 +114,19 @@ public class SFEE_transport_failures {
                             stochasticFormulas,
                             0);*/
                 }
-                if (stochasticTimeTask != null)
+                if (stochasticTimeTask != null) {
                     stochasticTimeTask.loop(sensorsState, actuatorsState);
+
+                }
             }
             case END -> {
                 stochasticTimeTask = null;
             }
         }
 
-/*        if (old_state != state)
-            System.out.println(state);*/
-
-        old_state = state;
+        if (old_state != state) {
+            old_state = state;
+        }
 
     }
 
@@ -133,8 +134,8 @@ public class SFEE_transport_failures {
 
     private boolean checkNewPiece() {
         int currID = oldPartID;
-/*        System.out.println("[" + SFEE_transport_failures.class + "]  partsATM size:" + sfee.getSFEIbyIndex(0).getPartsATM().size());
-        sfee.getSFEIbyIndex(0).getPartsATM().forEach(System.out::println);*/
+//        System.out.println("[" + SFEE_transport_failures.class + "]  partsATM size:" + sfee.getSFEIbyIndex(0).getPartsATM().size());
+//        sfee.getSFEIbyIndex(0).getPartsATM().forEach(System.out::println);
         if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
             currID = sfee.getSFEIbyIndex(0).getPartsATM().first().getId();
         }

@@ -1,6 +1,7 @@
 package monitor.transport;
 
 import communication.database.dbConnection;
+import failures.SFEE_transport_failures;
 import models.SFEx.SFEI_transport;
 import models.SFEx.SFEM_transport;
 import models.base.SFEE;
@@ -80,10 +81,14 @@ public class SFEE_transport_monitor {
             }
 
             switch (operationMode) {
-                case WH2SFEI -> placeNewParts(sensorsState);
+                case WH2SFEI -> {
+                    placeNewParts(sensorsState);
+//                    System.out.println("SFEE_transport_monitor loop partsATM size: " + sfee.getSFEIbyIndex(0).getPartsATM().size());
+                }
                 case SFEI2SFEI -> moveParts(sensorsState);
                 case SFEI2WH -> removeProducedParts(sensorsState);
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,7 +164,7 @@ public class SFEE_transport_monitor {
     private state sm_state;
 
     private void placeNewParts(ArrayList<List<Object>> sensorsState) {
-        // SFEI 0 : entry WH
+
         SFEI_transport sfeiTransport = (SFEI_transport) sfee.getSFEIbyIndex(0);
 
         boolean b_outSensor = (int) sensorsState.get(1).get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
@@ -168,27 +173,45 @@ public class SFEE_transport_monitor {
             case T1 -> {
 //                System.out.println("sfei transport partsATM " + sfeiTransport.getPartsATM().size());
                 if (sfeiTransport.getPartsATM().size() == 0) {
-                    Iterator<part> iterator = previousSFEI.getPartsATM().iterator();
-                    while (iterator.hasNext()) {
-                        part movingPart = iterator.next();
+                    for (part movingPart : previousSFEI.getPartsATM()) {
                         if (movingPart.getState().equals(part.status.IN_STOCK)) {
                             movingPart.setState(part.status.WAIT_TRANSPORT);
                             sfeiTransport.addNewPartATM(movingPart);
-                            iterator.remove();
+                            previousSFEI.getPartsATM().remove(movingPart);
                             sm_state = state.T2;
                             break;
                         }
                     }
-/*                    if (previousSFEI.getPartsATM().size() > 0) {
+                }
+
+
+/*                if (sfeiTransport.getPartsATM().size() == 0) {
+                    Iterator<part> iterator = previousSFEI.getPartsATM().iterator();
+                    while (iterator.hasNext()) {
+                        part movingPart = iterator.next();
+                        System.out.println(sm_state + " " + movingPart);
+                        if (movingPart.getState().equals(part.status.IN_STOCK)) {
+                            movingPart.setState(part.status.WAIT_TRANSPORT);
+                            System.out.println("before add: " + sfeiTransport.getPartsATM().size());
+                            sfeiTransport.addNewPartATM(movingPart);
+                            System.out.println("after add: " + sfeiTransport.getPartsATM().size());
+                            iterator.remove();
+                            System.out.println("after iterator remove: " + sfeiTransport.getPartsATM().size());
+                            sm_state = state.T2;
+                            break;
+                        }
+                    }
+*//*                    if (previousSFEI.getPartsATM().size() > 0) {
                         part movingPart = Objects.requireNonNull(previousSFEI.getPartsATM().pollFirst());
                         movingPart.setState(part.status.IN_TRANSPORT);
                         sfeiTransport.addNewPartATM(movingPart);
                         sm_state = state.T2;
-                    }*/
-                }
+                    }*//*
+                }*/
             }
             case T2 -> {
                 if (utils.getInstance().getLogicalOperator().FE_detector(b_outSensor, SFEI_old_outSensors)) {
+
                     Iterator<part> iterator = sfeiTransport.getPartsATM().iterator();
                     while (iterator.hasNext()) {
                         part movingPart = iterator.next();
@@ -222,7 +245,7 @@ public class SFEE_transport_monitor {
     }
 
     private void removeProducedParts(ArrayList<List<Object>> sensorsState) {
-        // SFEI 1 : exit warehouse
+
         SFEI_transport sfeiTransport = (SFEI_transport) sfee.getSFEIbyIndex(0);
 
         boolean b_inSensor = (int) sensorsState.get(0).get(sfeiTransport.getInSensor().getBit_offset()) == 1;
@@ -231,8 +254,9 @@ public class SFEE_transport_monitor {
             Iterator<part> iterator = previousSFEI.getPartsATM().iterator();
             while (iterator.hasNext()) {
                 part movingPart = iterator.next();
+//                System.out.println(SFEE_transport_monitor.class + " " + operationMode + " " + movingPart);
                 if (movingPart.getState().equals(part.status.WAIT_TRANSPORT)) {
-                    movingPart.setState(part.status.IN_TRANSPORT);
+//                    movingPart.setState(part.status.IN_TRANSPORT);
                     sfeiTransport.addNewPartATM(movingPart);
                     iterator.remove();
                     break;
@@ -251,6 +275,12 @@ public class SFEE_transport_monitor {
             part movingPart = iterator.next();
             if (movingPart.getState().equals(part.status.PRODUCED)) {
                 nextSFEI.addNewPartATM(movingPart);
+                // update part status
+                dbConnection.getInstance().getParts().update_status(
+                        movingPart.getId(),
+                        serializer.getInstance().scene.toString(),
+                        movingPart.getState().toString());
+
                 iterator.remove();
                 break;
             }

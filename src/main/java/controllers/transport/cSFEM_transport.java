@@ -5,6 +5,7 @@ import models.SFEx.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.SFEM;
+import models.base.part;
 import monitor.transport.SFEM_transport_monitor;
 import org.apache.commons.math3.util.Pair;
 
@@ -110,11 +111,21 @@ public class cSFEM_transport implements Runnable {
         try {
             sfeeTransportController.loop();
             sfemTransportMonitor.loop();
+//            printDBG();
         } catch (Exception e) {
             // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();
         }
 
+    }
+
+    private void printDBG() {
+        for (SFEI sfei : sfeeTransportController.getSfee().getSFEIs().values()) {
+            System.out.println(sfei.getName());
+            for (part movingPart : sfei.getPartsATM()) {
+                System.out.println(movingPart);
+            }
+        }
     }
 
 

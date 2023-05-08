@@ -309,8 +309,8 @@ public class App {
             case SFEI2WH -> {
                 // Special Transport Module: in SFEI -> warehouse
 
-                data.add(0, "SFEM_T_WH2IN");
-                data.add(1, "SFEE_T_WH2IN");
+                data.add(0, "SFEM_T_SFEM2WH");
+                data.add(1, "SFEE_T_SFEE2WH");
 
                 System.out.println("SFEE name to connect with SFEM_T_SFEI2WH ?");
                 Pair<SFEE, cSFEM_production> conSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());

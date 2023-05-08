@@ -19,7 +19,7 @@ public class queries_buffer {
         return storedQueries;
     }
 
-    public void runQueries(Connection con, boolean print) {
+    public void runQueries(Connection con) {
         try {
             Iterator<String> iterator = storedQueries.iterator();
             while (iterator.hasNext()) {

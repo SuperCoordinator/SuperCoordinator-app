@@ -21,11 +21,7 @@ import java.util.Objects;
 public class SFEE_warehouse_monitor {
 
     private SFEE sfee;
-    private ArrayList<part> recentArrivedParts = new ArrayList<>();
 
-    public ArrayList<part> getRecentArrivedParts() {
-        return recentArrivedParts;
-    }
 
     private Instant old_t;
 
@@ -50,38 +46,47 @@ public class SFEE_warehouse_monitor {
                 old_t = Instant.now();
                 return true;
             }
-            return false;
+
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        return false;
     }
 
     private void dispatchOrders() {
 
-        if (sfee.getSFEIbyIndex(1).getPartsATM().size() > 0) {
-            // create outbound order
-            dbConnection.getInstance().getOutbound_orders().insert();
-            Iterator<part> iterator = sfee.getSFEIbyIndex(1).getPartsATM().iterator();
-            while (iterator.hasNext()) {
-                part p = iterator.next();
-                if (p.getState().equals(part.status.PRODUCED)) {
-                    //update in db fk to outbound order
-                    dbConnection.getInstance().getParts().update_outboundOrder(
-                            Objects.requireNonNull(p).getId(),
-                            serializer.getInstance().scene.toString(),
-                            outbound_order_id);
+        try {
+            if (sfee.getSFEIbyIndex(1).getPartsATM().size() > 0) {
+                // create outbound order
+                dbConnection.getInstance().getOutbound_orders().insert();
+                outbound_order_id++;
+                Iterator<part> iterator = sfee.getSFEIbyIndex(1).getPartsATM().iterator();
+                while (iterator.hasNext()) {
+                    part movingPart = iterator.next();
+                    if (movingPart.getState().equals(part.status.PRODUCED)) {
 
-                    // register insertion in warehouse
-                    dbConnection.getInstance().getProduction_history().insert(
-                            Objects.requireNonNull(p).getId(),
-                            "warehouse_expeditionDoor",
-                            Objects.requireNonNull(p).getReality().material().toString(),
-                            Objects.requireNonNull(p).getReality().form().toString());
-                } else
-                    throw new RuntimeException("This part is in the exit warehouse but is not produced");
-                iterator.remove();
+                        //update in db fk to outbound order
+                        dbConnection.getInstance().getParts().update_outboundOrder(
+                                Objects.requireNonNull(movingPart).getId(),
+                                serializer.getInstance().scene.toString(),
+                                outbound_order_id);
+
+                        // register insertion in warehouse
+                        dbConnection.getInstance().getProduction_history().insert(
+                                Objects.requireNonNull(movingPart).getId(),
+                                "warehouse_expeditionDoor",
+                                Objects.requireNonNull(movingPart).getReality().material().toString(),
+                                Objects.requireNonNull(movingPart).getReality().form().toString());
+
+                        iterator.remove();
+                    } else
+                        throw new RuntimeException("This part is in the exit warehouse but is not produced");
+
+                }
+
             }
-            outbound_order_id++;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
 
     }
@@ -104,8 +109,8 @@ public class SFEE_warehouse_monitor {
 //            createParts(order, inbound_order_id);
 //            inbound_order_id++;
             dbConnection.getInstance().getInbound_orders().insert(order.getMetal_qty(), order.getGreen_qty(), order.getBlue_qty());
-            createParts(order, inbound_order_id);
             inbound_order_id++;
+            createParts(order, inbound_order_id);
             file_index++;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -114,7 +119,7 @@ public class SFEE_warehouse_monitor {
 
     private void createParts(inboundOrder order, int inboundOrder_id) {
         try {
-            recentArrivedParts.clear();
+            ArrayList<part> recentArrivedParts = new ArrayList<>();
             int m = order.getMetal_qty(), g = order.getGreen_qty(), b = order.getBlue_qty();
             while (m + g + b > 0) {
                 int color = utils.getInstance().getRandom().nextInt(0, 3);
@@ -152,6 +157,9 @@ public class SFEE_warehouse_monitor {
 
             }
 
+            sfee.getSFEIs().get(0).getPartsATM().addAll(recentArrivedParts);
+            System.out.println("#parts in the warehouse: " + sfee.getSFEIs().get(0).getPartsATM().size());
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -166,18 +174,22 @@ public class SFEE_warehouse_monitor {
             // Establish the outbound order id
             outbound_order_id = Objects.requireNonNull(dbConnection.getInstance()).getOutbound_orders().getAll_outbound_orders().size();
 
-
             List<part> prevStock = Objects.requireNonNull(dbConnection.getInstance()).getParts().getAll_parts(serializer.getInstance().scene.toString());
             part_id = prevStock.size();
 
             // remove the parts that was in production, those aren't possible to re-use
             // Only the one with IN_STOCK status
             prevStock.removeIf(part -> !part.getState().equals(models.base.part.status.IN_STOCK));
+            sfee.getSFEIs().get(0).getPartsATM().addAll(prevStock);
 
-            recentArrivedParts.addAll(prevStock);
+            // Get the parts that are not shipped
+            List<part> partsNotShipped = Objects.requireNonNull(dbConnection.getInstance()).getParts().getAllPartsNotShipped(serializer.getInstance().scene.toString());
+            // Remove the parts that are not PRODUCED
+            partsNotShipped.removeIf(part -> !part.getState().equals(models.base.part.status.PRODUCED));
+            sfee.getSFEIs().get(1).getPartsATM().addAll(partsNotShipped);
 
-            sfee.getSFEIs().get(0).getPartsATM().addAll(recentArrivedParts);
-            System.out.println("#parts in the warehouse: " + sfee.getSFEIs().get(0).getPartsATM().size());
+            System.out.println("#parts in the entry warehouse: " + sfee.getSFEIs().get(0).getPartsATM().size());
+            System.out.println("#parts in the exit warehouse: " + sfee.getSFEIs().get(1).getPartsATM().size());
         } catch (Exception e) {
             e.printStackTrace();
         }

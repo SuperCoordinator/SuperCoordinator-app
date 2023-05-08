@@ -20,7 +20,7 @@ public class SFEM_transport_monitor extends SFEM_monitor {
 
     public void loop() {
         try {
-            if (Duration.between(getInit_t(), Instant.now()).toSeconds() % 5 == 0) {
+            if (/*Duration.between(getInit_t(), Instant.now()).toSeconds() % 5 == 0*/false) {
                 if (!isPrintedStats()) {
                     // will check the parts from the SFEE and save them into history
                     SFEM_transport sfem = (SFEM_transport) getSfem();
@@ -40,7 +40,7 @@ public class SFEM_transport_monitor extends SFEM_monitor {
                             } else {
                                 getProductionTime_cnt().put(pp.production_time(), 1);
                             }
-                            iterator.remove();
+//                            iterator.remove();
                         }
                     }
 

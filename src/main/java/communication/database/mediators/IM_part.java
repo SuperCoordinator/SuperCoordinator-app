@@ -15,4 +15,6 @@ public interface IM_part {
     void update_outboundOrder(int id, String sf_configuration, int outbound_order);
 
     List<part> getAll_parts(String sf_configuration);
+
+    List<models.base.part> getAllPartsNotShipped(String sf_configuration);
 }

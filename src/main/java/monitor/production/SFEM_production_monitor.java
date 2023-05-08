@@ -32,7 +32,7 @@ public class SFEM_production_monitor extends SFEM_monitor  {
 
     public void loop(List<Long> runtime) {
         try {
-            if (Duration.between(getInit_t(), Instant.now()).toSeconds() % 5 == 0) {
+            if (/*Duration.between(getInit_t(), Instant.now()).toSeconds() % 5 == 0*/false) {
                 if (!isPrintedStats()) {
                     SFEM_production sfem = (SFEM_production) getSfem();
                     // will check the parts from the SFEE and save them into history

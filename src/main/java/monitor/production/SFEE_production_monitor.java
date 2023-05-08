@@ -192,7 +192,6 @@ public class SFEE_production_monitor {
         try {
             if (sfee.getSFEIbyIndex(origin_sfei).getPartsATM().size() > 0) {
                 part movingPart = Objects.requireNonNull(sfee.getSFEIbyIndex(origin_sfei).getPartsATM().pollFirst());
-
                 sfee.getSFEIbyIndex(destination_sfei).addNewPartATM(movingPart);
 
                 /* Increment the number of parts moved by the SFEI sfei_idx */

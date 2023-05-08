@@ -68,12 +68,12 @@
         </sfeeControllers>
     </c_Production>
     <c_Transport>
-        <sfem sfemRole="TRANSPORT" name="SFEM_T_WH2SFEI">
-            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_WH2SFEI">
+        <sfem sfemRole="TRANSPORT" name="SFEM_T1_WH2SFEI">
+            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T1_WH2SFEI">
                 <SFEIs>
                     <entry>
                         <key>0</key>
-                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T_WH2SFEI" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-05T15:29:10.988707200Z" last_maintenance="2023-05-05T15:29:10.988707200Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
+                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T1_WH2SFEI" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-05T15:29:10.988707200Z" last_maintenance="2023-05-05T15:29:10.988707200Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
                             <outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="8"/>
                             <aEmitter name="emit_SS" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="4"/>
                             <aEmitterPart name="part_SS" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="6"/>
@@ -93,8 +93,8 @@
         </sfeeTransportController>
     </c_Transport>
     <c_Transport>
-        <sfem sfemRole="TRANSPORT" name="SFEM_T_WH2IN">
-            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_WH2IN">
+        <sfem sfemRole="TRANSPORT" name="SFEM_T_SFEI2WH">
+            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_SFEI2WH">
                 <SFEIs>
                     <entry>
                         <key>0</key>
@@ -115,7 +115,53 @@
             </sfeeFailures>
         </sfeeTransportController>
     </c_Transport>
-    <c_Warehouse checkOrdersPeriod="5">
+    <c_Transport>
+        <sfem sfemRole="TRANSPORT" name="SFEM_T2_SFEI2WH">
+            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T2_SFEI2WH">
+                <SFEIs>
+                    <entry>
+                        <key>0</key>
+                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T2_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-05T15:29:43.194541300Z" last_maintenance="2023-05-05T15:29:43.194541300Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
+                            <inSensor name="s_green_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                            <aRemover name="green_remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="13"/>
+                        </value>
+                    </entry>
+                </SFEIs>
+            </sfeeTransport>
+            <transport_configuration>SFEI2WH</transport_configuration>
+        </sfem>
+        <sfeeTransportController prevSFEEName="SortingStation" nextSFEEName="sfee_warehouse" prevSFEIName="green_entry" nextSFEIName="sfei_exitWarehouse">
+            <sfeeMonitor/>
+            <sfeeFailures stochasticType="LINEAR">
+                <stochasticFormulas>5 </stochasticFormulas>
+                <stochasticFormulas> </stochasticFormulas>
+            </sfeeFailures>
+        </sfeeTransportController>
+    </c_Transport>
+    <c_Transport>
+        <sfem sfemRole="TRANSPORT" name="SFEM_T3_SFEI2WH">
+            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T3_SFEI2WH">
+                <SFEIs>
+                    <entry>
+                        <key>0</key>
+                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T3_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-05T15:29:43.194541300Z" last_maintenance="2023-05-05T15:29:43.194541300Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
+                            <inSensor name="s_blue_remover" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="7"/>
+                            <aRemover name="blue_remover" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="1"/>
+                        </value>
+                    </entry>
+                </SFEIs>
+            </sfeeTransport>
+            <transport_configuration>SFEI2WH</transport_configuration>
+        </sfem>
+        <sfeeTransportController prevSFEEName="SortingStation" nextSFEEName="sfee_warehouse" prevSFEIName="blue_entry" nextSFEIName="sfei_exitWarehouse">
+            <sfeeMonitor/>
+            <sfeeFailures stochasticType="LINEAR">
+                <stochasticFormulas>5 </stochasticFormulas>
+                <stochasticFormulas> </stochasticFormulas>
+            </sfeeFailures>
+        </sfeeTransportController>
+    </c_Transport>
+    <c_Warehouse checkOrdersPeriod="1">
         <sfem sfemRole="WAREHOUSE" name="sfem_warehouse">
             <sfeeWarehouse sfeeEnvironment="SIMULATION" sfeeRole="WAREHOUSE" com="MODBUS" name="sfee_warehouse">
                 <SFEIs>

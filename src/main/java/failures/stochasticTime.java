@@ -121,11 +121,14 @@ public class stochasticTime {
 
     public void setTransportConfiguration(SFEM_transport.configuration configuration) {
 
-        this.transportConfiguration = configuration;
-
-        if (Objects.requireNonNull(transportConfiguration).equals(SFEM_transport.configuration.WH2SFEI)) {
-            initial_t = Instant.now();
-            this.smTrans = SM_trans.WAITING;
+        try {
+            this.transportConfiguration = configuration;
+            if (Objects.requireNonNull(transportConfiguration).equals(SFEM_transport.configuration.WH2SFEI)) {
+                initial_t = Instant.now();
+                this.smTrans = SM_trans.WAITING;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -148,7 +151,7 @@ public class stochasticTime {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -263,43 +266,48 @@ public class stochasticTime {
 
     private int calculateDelay(int sumSFEEminOperationTime) {
 
-        SFEI sfei;
-        if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
-            sfei = sfeiConveyor;
-        } else if (sfeiType.equals(SFEI.SFEI_type.MACHINE)) {
-            sfei = sfeiMachine;
-        } else {
-            sfei = sfeiTransport;
-        }
+        try {
+            SFEI sfei;
+            if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
+                sfei = sfeiConveyor;
+            } else if (sfeiType.equals(SFEI.SFEI_type.MACHINE)) {
+                sfei = sfeiMachine;
+            } else {
+                sfei = sfeiTransport;
+            }
 
-        double m = utils.getInstance().getCustomCalculator().calcExpression(mean,
-                sfei.getnPiecesMoved(),
-                (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
-                (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
-
-        double total_Time;
-        if (timeType.equals(timeOptions.GAUSSIAN)) {
-
-            double dev = utils.getInstance().getCustomCalculator().calcExpression(std_dev,
+            double m = utils.getInstance().getCustomCalculator().calcExpression(mean,
                     sfei.getnPiecesMoved(),
                     (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
                     (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
 
-//            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
-            total_Time = utils.getInstance().getRandom().nextGaussian() * dev + m;
-            System.out.println("Calculated Mean: " + m + " and dev:" + dev + " with total time of: " + total_Time);
-        } else {
-            total_Time = m;
-            System.out.println("Calculated Mean: " + m + " with total time of: " + total_Time);
-        }
+            double total_Time;
+            if (timeType.equals(timeOptions.GAUSSIAN)) {
 
-        total_Time = total_Time - sumSFEEminOperationTime;
+                double dev = utils.getInstance().getCustomCalculator().calcExpression(std_dev,
+                        sfei.getnPiecesMoved(),
+                        (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
+                        (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
 
-        System.out.println("Delay " + total_Time + " on SFEI:" + sfei.getName());
-        if (total_Time < 0)
+                //            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
+                total_Time = utils.getInstance().getRandom().nextGaussian() * dev + m;
+                System.out.println("Calculated Mean: " + m + " and dev:" + dev + " with total time of: " + total_Time);
+            } else {
+                total_Time = m;
+                System.out.println("Calculated Mean: " + m + " with total time of: " + total_Time);
+            }
+
+            total_Time = total_Time - sumSFEEminOperationTime;
+
+            System.out.println("Delay " + total_Time + " on SFEI:" + sfei.getName());
+            if (total_Time < 0)
+                return 0;
+
+            return (int) Math.round(total_Time);
+        } catch (Exception e) {
+            e.printStackTrace();
             return 0;
-
-        return (int) Math.round(total_Time);
+        }
     }
 
     private SM_trans old_state = smTrans;
@@ -346,7 +354,7 @@ public class stochasticTime {
                     } else {
                         // PREPARE THE NEXT EMITTER for correct type
                         // +5 to ignore boxes [1;4] boxes, as well as 14
-                        if (!transportConfiguration.equals(SFEM_transport.configuration.WH2SFEI))
+                        if (!transportConfiguration.equals(SFEM_transport.configuration.SFEI2WH))
                             holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
                     }
                 }
@@ -371,8 +379,10 @@ public class stochasticTime {
                     old_sEmitter = sensor;
                 }
             }
-        if (old_state != smTrans)
-            System.out.println(smTrans);
+/*
+            if (old_state != smTrans)
+                System.out.println("[" + stochasticTime.class + "] state: " + smTrans);
+*/
 
             old_state = smTrans;
         } catch (Exception e) {

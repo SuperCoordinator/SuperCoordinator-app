@@ -48,6 +48,7 @@ public class dbConnection implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
     public synchronized Connection getConnection() {
         try {
 
@@ -153,9 +154,8 @@ public class dbConnection implements Runnable {
 //                        for (String str_vec : buffer.getStoredQueries()) {
 //                            System.out.println(str_vec);
 //                        }
-//                        buffer.runQueries(getConnection(), true);
 //                    }
-                    buffer.runQueries(getConnection(), true);
+                    buffer.runQueries(getConnection());
                 }
                 i++;
             }
