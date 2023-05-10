@@ -42,10 +42,11 @@ public class serializer {
         sorting_station,
         WH_SS_3CMC,
         MC_Staudinger,
-        WH_SS_WH
+        WH_SS_WH,
+        WH_SS_3CMC_WH
     }
 
-    public final scenes scene = scenes.WH_SS_WH;
+    public final scenes scene = scenes.WH_SS_3CMC_WH;
     private final String filePath = "blocks/" + scene + "/saves/" + scene;
 
     private serializable serializable = new serializable();
@@ -219,7 +220,6 @@ public class serializer {
     }
 
     public Pair<SFEE, cSFEM_production> searchSFEEbyName(String name) {
-
 
         Pair<SFEE, cSFEM_production> sfee = null;
         for (cSFEM_production sfemController : serializable.getC_Production()) {

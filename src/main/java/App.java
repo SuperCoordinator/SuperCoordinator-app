@@ -57,13 +57,17 @@ public class App {
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_WH)) {
                     nModules = 1;
                     nSFEE = 1;
+                } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_3CMC_WH)) {
+                    nModules = 1;
+                    nSFEE = 4;
                 }
 
                 for (int i = 0; i < nModules; i++) {
-                    SFEM_production sfemProduction = new SFEM_production("SFEM_Prod#" + i);
+                    System.out.println("SFEM Production " + i + " name ?");
+                    SFEM_production sfemProduction = new SFEM_production(in.nextLine());
 
                     cSFEM_production sfemController = new cSFEM_production(sfemProduction);
-                    System.out.println("How many SFEE for this Module " + i + "?");
+                    System.out.println("How many SFEEs Production for " + sfemProduction.getName() + " ?");
                     sfemController.init_SFEEs(Integer.parseInt(in.nextLine()));
                     sfemController.init_SFEE_controllers(serializer.getInstance().scene.ordinal(), i);
 
@@ -97,6 +101,8 @@ public class App {
                     nModules = 0;
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_WH)) {
                     nModules = 0;
+                } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_3CMC_WH)) {
+                    nModules = 3;
                 } else
                     nModules = 1;
 
@@ -212,8 +218,6 @@ public class App {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     private static void initializeTransport(cSFEM_warehouse cSFEMWarehouse, SFEM_transport.configuration transportConfig) {
@@ -231,7 +235,7 @@ public class App {
                 System.out.print("SFEE transport name ? ");
                 String sfee_transport_name = in.nextLine();
 
-                System.out.println("Output SFEE name to connect with " + sfem_transport_name + " ?");
+                System.out.println("Input SFEE name to connect with " + sfem_transport_name + " ?");
                 Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
                 System.out.println("Connection Input SFEI?");
                 int index = 0;

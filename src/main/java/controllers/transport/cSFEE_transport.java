@@ -168,14 +168,14 @@ public class cSFEE_transport {
             sfeeFailures = new SFEE_transport_failures(
                     sfee,
                     stochasticTime.timeOptions.GAUSSIAN,
-                    new String[]{mean, dev},configuration);
+                    new String[]{mean, dev}, configuration);
 
         } else if (operator.contains("linear")) {
             // Linear Time
             sfeeFailures = new SFEE_transport_failures(
                     sfee,
                     stochasticTime.timeOptions.LINEAR,
-                    new String[]{mean, dev},configuration);
+                    new String[]{mean, dev}, configuration);
         }
     }
 
@@ -183,7 +183,6 @@ public class cSFEE_transport {
         // Monitor -> Move parts between inSFEI -> buffer -> outSFEI
         // based on the state of FAILURES, Monitor moves
         try {
-
 
             List<Object> discreteInputsState_inMB = new ArrayList<>();
             List<Object> coilsState_inMB = new ArrayList<>();
@@ -198,6 +197,7 @@ public class cSFEE_transport {
                     coilsState_outMB = new ArrayList<>(outMB.readCoils());
                     coilsState_outMB = new ArrayList<>(Collections.nCopies(coilsState_outMB.size(), -1));
                     holdRegsValues_outMB = new ArrayList<>(outMB.readHoldingRegisters());
+                    holdRegsValues_outMB = new ArrayList<>(Collections.nCopies(holdRegsValues_outMB.size(), -1));
                 }
                 case SFEI2WH -> {
                     discreteInputsState_inMB = new ArrayList<>(inMB.readDiscreteInputs());
@@ -213,6 +213,7 @@ public class cSFEE_transport {
                     coilsState_outMB = new ArrayList<>(outMB.readCoils());
                     coilsState_outMB = new ArrayList<>(Collections.nCopies(coilsState_outMB.size(), -1));
                     holdRegsValues_outMB = new ArrayList<>(outMB.readHoldingRegisters());
+                    holdRegsValues_outMB = new ArrayList<>(Collections.nCopies(holdRegsValues_outMB.size(), -1));
                 }
             }
 

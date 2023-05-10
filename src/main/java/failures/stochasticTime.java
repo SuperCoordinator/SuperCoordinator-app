@@ -126,6 +126,7 @@ public class stochasticTime {
             if (Objects.requireNonNull(transportConfiguration).equals(SFEM_transport.configuration.WH2SFEI)) {
                 initial_t = Instant.now();
                 this.smTrans = SM_trans.WAITING;
+                this.old_state = SM_trans.INIT;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -327,12 +328,13 @@ public class stochasticTime {
                 }
                 case REMOVING -> {
                     if (!isRemoverON) {
+//                        System.out.println(smTrans + " aRemover: " + sfeiTransport.getaRemover().getName() + " offset: " + sfeiTransport.getaRemover().getBit_offset());
                         coils_inMB.set(sfeiTransport.getaRemover().getBit_offset(), 1);
                         initial_t = Instant.now();
                         isRemoverON = true;
                         // PREPARE THE NEXT EMITTER for correct type
-                        // +5 to ignore boxes [1;4] boxes, as well as 14
-//                        holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(M_part.getReality()) + 4 - 1));
+                        if (transportConfiguration.equals(SFEM_transport.configuration.SFEI2SFEI))
+                            holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
 
                     }
                     sensor = (int) discreteInputs_inMB.get(sfeiTransport.getInSensor().getBit_offset()) == 1;
@@ -352,19 +354,27 @@ public class stochasticTime {
                             smTrans = SM_trans.EMITTING;
                         }
                     } else {
-                        // PREPARE THE NEXT EMITTER for correct type
-                        // +5 to ignore boxes [1;4] boxes, as well as 14
-                        if (!transportConfiguration.equals(SFEM_transport.configuration.SFEI2WH))
-                            holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
+                        if (transportConfiguration.equals(SFEM_transport.configuration.WH2SFEI)) {
+                            // It will execute only once !
+                            if (old_state.equals(SM_trans.INIT)) {
+//                            holdRegs_outMB.set(sfeiTransport.getaEmitterBase().getBit_offset(), 0);
+                                holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
+//                                System.out.println(sfeiTransport.getaEmitterPart().getName() +
+//                                        " with offset: " + sfeiTransport.getaEmitterPart().getBit_offset() +
+//                                        " value:" + holdRegs_outMB.get(sfeiTransport.getaEmitterPart().getBit_offset()));
+                            }
+                        }
                     }
                 }
                 case EMITTING -> {
                     if (!isEmitterON) {
                         // NO BASE -> testing if 0 works....
-                        holdRegs_outMB.set(sfeiTransport.getaEmitterBase().getBit_offset(), 0);
+//                        holdRegs_outMB.set(sfeiTransport.getaEmitterBase().getBit_offset(), 0);
                         // +5 to ignore boxes [1;4] boxes, as well as 14
-                        holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
-
+//                        holdRegs_outMB.set(sfeiTransport.getaEmitterPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(part.getReality()) + 4 - 1));
+//                        System.out.println(sfeiTransport.getaEmitterPart().getName() +
+//                                " with offset: " + sfeiTransport.getaEmitterPart().getBit_offset() +
+//                                " value:" + holdRegs_outMB.get(sfeiTransport.getaEmitterPart().getBit_offset()));
                         coilsState_outMB.set(sfeiTransport.getaEmitter().getBit_offset(), 1);
                         isEmitterON = true;
                     }
@@ -393,23 +403,25 @@ public class stochasticTime {
 
     private int getNumberbyPartAspect(partDescription aspect) {
 
-        int num;
+        int num = -1;
 
         if (aspect.form().equals(partDescription.form.RAW)) {
             num = 0;
         } else if (aspect.form().equals(partDescription.form.BASE)) {
             num = 3;
-        } else {
+        } else if (aspect.form().equals(partDescription.form.LID)) {
             num = 6;
         }
         if (aspect.material().equals(partDescription.material.BLUE))
             num++;
         else if (aspect.material().equals(partDescription.material.GREEN)) {
             num += 2;
-        } else {
+        } else if (aspect.material().equals(partDescription.material.METAL)) {
             num += 3;
         }
 
+        if (num == -1)
+            throw new RuntimeException("Part Description == -1");
         return num;
 
     }

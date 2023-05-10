@@ -112,6 +112,10 @@ public class cSFEE_production {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\WH_SS_WH\\simulation\\Tags_sorting_station_Modbus.csv";
                     importIO(csv_path,true);
                 }
+                case 14,15,16,17 -> {
+                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\WH_SS_3CMC_WH\\simulation\\Tags_SS_3CMC_Modbus.csv";
+                    importIO(csv_path,true);
+                }
                 default -> {
                     csv_path = viewer.readIOpath();
                     importIO(csv_path,true);
@@ -290,7 +294,7 @@ public class cSFEE_production {
                         false,
                         false);
             }
-            if (scene == 8 || scene == 13) {
+            if (scene == 8 || scene == 13 || scene == 14) {
                 addNewSFEI_conveyor(
                         "parts_entry",
                         "s_emitter",
@@ -372,6 +376,10 @@ public class cSFEE_production {
             switch (scene) {
                 case 9, 10, 11 -> {
                     int index = scene - 9;
+                    add_CMC_block(index);
+                }
+                case 15, 16, 17 -> {
+                    int index = scene - 15;
                     add_CMC_block(index);
                 }
             }

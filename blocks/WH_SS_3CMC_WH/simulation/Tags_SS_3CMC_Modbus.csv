@@ -1,0 +1,128 @@
+﻿Name,Type,Data Type,Address
+FACTORY I/O (Paused),Input,Bool,Input 0
+FACTORY I/O (Reset),Input,Bool,Input 1
+FACTORY I/O (Running),Input,Bool,Input 2
+MC0_has_error,Input,Bool,Input 3
+MC0_busy,Input,Bool,Input 4
+MC0_opened,Input,Bool,Input 5
+s_E0,Input,Bool,Input 6
+s_entry_E0,Input,Bool,Input 7
+s_entry_R0,Input,Bool,Input 8
+s_exit_E0,Input,Bool,Input 9
+s_exit_R0,Input,Bool,Input 10
+s_entryMC0,Input,Bool,Input 11
+s_exitMC0,Input,Bool,Input 12
+s_R0,Input,Bool,Input 13
+MC1_has_error,Input,Bool,Input 14
+MC1_busy,Input,Bool,Input 15
+MC1_opened,Input,Bool,Input 16
+s_E1,Input,Bool,Input 17
+s_entry_E1,Input,Bool,Input 18
+s_entry_R1,Input,Bool,Input 19
+s_exit_E1,Input,Bool,Input 20
+s_exit_R1,Input,Bool,Input 21
+s_entryMC1,Input,Bool,Input 22
+s_exitMC1,Input,Bool,Input 23
+s_R1,Input,Bool,Input 24
+MC2_has_error,Input,Bool,Input 25
+MC2_busy,Input,Bool,Input 26
+MC2_opened,Input,Bool,Input 27
+s_E2,Input,Bool,Input 28
+s_entry_E2,Input,Bool,Input 29
+s_entry_R2,Input,Bool,Input 30
+s_exit_E2,Input,Bool,Input 31
+s_exit_R2,Input,Bool,Input 32
+s_entryMC2,Input,Bool,Input 33
+s_exitMC2,Input,Bool,Input 34
+s_R2,Input,Bool,Input 35
+s_blue,Input,Bool,Input 36
+s_blue_remover,Input,Bool,Input 37
+s_emitter,Input,Bool,Input 38
+s_exit,Input,Bool,Input 39
+s_faulty,Input,Bool,Input 40
+s_faulty_remover,Input,Bool,Input 41
+s_green,Input,Bool,Input 42
+s_green_remover,Input,Bool,Input 43
+s_metal,Input,Bool,Input 44
+s_metal_remover,Input,Bool,Input 45
+emit_E0,Output,Bool,Coil 0
+entry_C0,Output,Bool,Coil 1
+entry_E0,Output,Bool,Coil 2
+entry_R0,Output,Bool,Coil 3
+exit_C0,Output,Bool,Coil 4
+exit_E0,Output,Bool,Coil 5
+exit_R0,Output,Bool,Coil 6
+FACTORY I/O (Pause),Output,Bool,Coil 7
+FACTORY I/O (Reset),Output,Bool,Coil 8
+FACTORY I/O (Run),Output,Bool,Coil 9
+MC0_reset,Output,Bool,Coil 10
+MC0_produce,Output,Bool,Coil 11
+MC0_start,Output,Bool,Coil 12
+MC0_stop,Output,Bool,Coil 13
+R0,Output,Bool,Coil 14
+emit_E1,Output,Bool,Coil 15
+entry_C1,Output,Bool,Coil 16
+entry_E1,Output,Bool,Coil 17
+entry_R1,Output,Bool,Coil 18
+exit_C1,Output,Bool,Coil 19
+exit_E1,Output,Bool,Coil 20
+exit_R1,Output,Bool,Coil 21
+MC1_reset,Output,Bool,Coil 22
+MC1_produce,Output,Bool,Coil 23
+MC1_start,Output,Bool,Coil 24
+MC1_stop,Output,Bool,Coil 25
+R1,Output,Bool,Coil 26
+emit_E2,Output,Bool,Coil 27
+entry_C2,Output,Bool,Coil 28
+entry_E2,Output,Bool,Coil 29
+entry_R2,Output,Bool,Coil 30
+exit_C2,Output,Bool,Coil 31
+exit_E2,Output,Bool,Coil 32
+exit_R2,Output,Bool,Coil 33
+MC2_reset,Output,Bool,Coil 34
+MC2_produce,Output,Bool,Coil 35
+MC2_start,Output,Bool,Coil 36
+MC2_stop,Output,Bool,Coil 37
+R2,Output,Bool,Coil 38
+blue_conveyor,Output,Bool,Coil 39
+blue_remover,Output,Bool,Coil 40
+blue_sorter_belt,Output,Bool,Coil 41
+blue_sorter_turn,Output,Bool,Coil 42
+emit_SS,Output,Bool,Coil 43
+entry_conveyor,Output,Bool,Coil 44
+exit_conveyor,Output,Bool,Coil 45
+faulty_conveyor,Output,Bool,Coil 46
+faulty_remover,Output,Bool,Coil 47
+green_conveyor,Output,Bool,Coil 48
+green_remover,Output,Bool,Coil 49
+green_sorter_belt,Output,Bool,Coil 50
+green_sorter_turn,Output,Bool,Coil 51
+metal_conveyor,Output,Bool,Coil 52
+metal_remover,Output,Bool,Coil 53
+metal_sorter_belt,Output,Bool,Coil 54
+metal_sorter_turn,Output,Bool,Coil 55
+stop_blade,Output,Bool,Coil 56
+FACTORY I/O (Time Scale),Input,Real,Input Reg 0
+MC0_progress,Input,Int,Input Reg 1
+vs_C0,Input,Int,Input Reg 2
+MC1_progress,Input,Int,Input Reg 3
+vs_C1,Input,Int,Input Reg 4
+MC2_progress,Input,Int,Input Reg 5
+vs_C2,Input,Int,Input Reg 6
+s_vision,Input,Int,Input Reg 7
+FACTORY I/O (Camera Position),Output,Int,Holding Reg 0
+part_E0,Output,Int,Holding Reg 1
+base_E0,Output,Int,Holding Reg 2
+MC0_counter,Output,Int,Holding Reg 3
+part_E1,Output,Int,Holding Reg 4
+base_E1,Output,Int,Holding Reg 5
+MC1_counter,Output,Int,Holding Reg 6
+part_E2,Output,Int,Holding Reg 7
+base_E2,Output,Int,Holding Reg 8
+MC2_counter,Output,Int,Holding Reg 9
+counter_metal,Output,Int,Holding Reg 10
+counter_green,Output,Int,Holding Reg 11
+counter_blue,Output,Int,Holding Reg 12
+counter_faulty,Output,Int,Holding Reg 13
+part_SS,Output,Int,Holding Reg 14
+base_SS,Output,Int,Holding Reg 15

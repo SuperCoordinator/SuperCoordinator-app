@@ -107,6 +107,13 @@ public class cSFEM_production implements Runnable {
                     sfeeController.init(scene + 8);
                 } else if (scene == 5) {
                     sfeeController.init(scene + 8);
+                } else if (scene == 6) {
+                    if (SFEM_idx == 0)
+                        sfeeController.init(scene + 8);
+                    else if (SFEM_idx == 1) {
+                        sfeeController.init(scene + 9 + i);
+                        firstRun(false, i);
+                    }
                 }
 
                 sfeeController.initFailures();
@@ -136,11 +143,11 @@ public class cSFEM_production implements Runnable {
         try {
             // Open the first connection
             sfeeControllers.get(0).openCommunication();
-            System.out.println(" SFEE (" + 0 + ") IP:" + sfeeControllers.get(0).getMb().getIp() + " Port:" + sfeeControllers.get(0).getMb().getPort());
+            System.out.println(sfeeControllers.get(0).getSFEE().getName() + " IP:" + sfeeControllers.get(0).getMb().getIp() + " Port:" + sfeeControllers.get(0).getMb().getPort());
             // For the rest, first check if there are common connections
             for (int i = 1; i < sfeeControllers.size(); i++) {
                 cSFEE_production to_define = sfeeControllers.get(i);
-                System.out.println(" SFEE (" + i + ") IP:" + to_define.getMb().getIp() + " Port:" + to_define.getMb().getPort());
+                System.out.println(to_define.getSFEE().getName() + " IP:" + to_define.getMb().getIp() + " Port:" + to_define.getMb().getPort());
                 modbus found_mb = null;
 
                 for (int j = 0; j < sfeeControllers.size(); j++) {
@@ -151,7 +158,9 @@ public class cSFEM_production implements Runnable {
                         if (to_define.getMb().getIp().equals(temp.getMb().getIp()))
                             if (to_define.getMb().getPort() == temp.getMb().getPort()) {
                                 found_mb = temp.getMb();
-                                System.out.println(" FOUND for SFEE (" + j + ") IP:" + temp.getMb().getIp() + " Port:" + temp.getMb().getPort());
+                                System.out.println(" Found for " + to_define.getSFEE().getName() +
+                                        " IP:" + temp.getMb().getIp() + " Port:" + temp.getMb().getPort() +
+                                        " of " + temp.getSFEE().getName());
                                 break;
                             }
                     }

@@ -321,14 +321,16 @@ public class SFEE_production_monitor {
             if (Duration.between(sfee.getSFEIbyIndex(0).getDayOfBirth(), Instant.now()).toSeconds() % 5 == 0) {
                 if (!printedDBG) {
                     for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
-                        System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPiecesMoved() + " parts");
-                        for (part p : sfei.getValue().getPartsATM()) {
-                            System.out.println(p);
-                            p.getTimestamps().forEach((key, value) -> {
-                                System.out.println("  -> " + key + " " + value.toString());
-                            });
+                        if (sfei.getValue().getPartsATM().size() > 0) {
+                            System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPiecesMoved() + " parts");
+                            for (part p : sfei.getValue().getPartsATM()) {
+                                System.out.println(p);
+//                                p.getTimestamps().forEach((key, value) -> {
+//                                    System.out.println("  -> " + key + " " + value.toString());
+//                                });
+                            }
+                            System.out.println();
                         }
-                        System.out.println();
                     }
                     printedDBG = true;
                 }
@@ -336,7 +338,7 @@ public class SFEE_production_monitor {
                 printedDBG = false;
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     }

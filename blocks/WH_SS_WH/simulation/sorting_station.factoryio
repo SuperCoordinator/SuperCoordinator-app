@@ -1,4 +1,5 @@
-﻿<FactoryIO Type="MySavedScene" Year="2023" Month="5" Day="5" Hour="17" Minute="23" Second="45" Version="2.5.4" GUID="00000000-0000-0000-0000-000000000000">
+﻿
+<FactoryIO Type="MySavedScene" Year="2023" Month="5" Day="5" Hour="17" Minute="23" Second="45" Version="2.5.4" GUID="00000000-0000-0000-0000-000000000000">
   <Description Data="Separate green and blue items using a vision sensor." />
   <Camera>
     <CameraPosition Name="Electric Board" Type="OrbitCamera">
