@@ -25,18 +25,18 @@ public class produce_more2 extends failures_conditions {
 
     private final SFEI_conveyor sfeiConveyor;
     private boolean old_sEmitter = false;
-
+    private partDescription.material material;
     private int faulty_partID = -1;
 
-    public produce_more2(String[] formulas, SFEI_conveyor sfeiConveyor) {
+    public produce_more2(String[] formulas, SFEI_conveyor sfeiConveyor, partDescription.material mat) {
         super(formulas, type.PRODUCE_MORE);
         this.sfeiConveyor = sfeiConveyor;
-
+        this.material = mat;
 
         this.state = SM.WORKING;
         this.old_state = state;
 
-        System.out.println("Will PMore on -> " + sfeiConveyor.getName());
+        System.out.println("Produce More on -> " + sfeiConveyor.getName());
     }
 
     public boolean isActive() {
@@ -45,7 +45,7 @@ public class produce_more2 extends failures_conditions {
 
     private failure_occurrence newOccurrence = new failure_occurrence();
 
-    public void loop(List<Object> sensorsState, List<Object> actuatorsState) {
+    public void loop(List<Object> sensorsState, List<Object> actuatorsState,List<Object> holdRegs) {
 
         int nParts = 0, age = 0, maintenance = 0;
         if (state == SM.WORKING || state == SM.TURN_OFF) {
@@ -87,18 +87,14 @@ public class produce_more2 extends failures_conditions {
                     } else
                         id = sfeiConveyor.getnPiecesMoved();*/
 
-                    part p = new part(faulty_partID, new partDescription(partDescription.material.BLUE, partDescription.form.RAW));
-                    faulty_partID--;
-                    // For the overflow, just in case
-                    if (faulty_partID > 0)
-                        faulty_partID = -1;
+
                     // This operation of concat is faster than + operation
 /*                    String itemName = sfeiConveyor.getName();
                     itemName = itemName.concat("-");
                     itemName = itemName.concat(sfeiConveyor.getInSensor().getName());
 
                     p.addTimestamp(itemName);*/
-                    sfeiConveyor.addNewPartATM(p);
+
 
                     state = SM.TURN_OFF;
 
@@ -121,7 +117,18 @@ public class produce_more2 extends failures_conditions {
             }
             case TURN_ON -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmitter().getBit_offset(), 1);
+
+                    part newPart = new part(faulty_partID, new partDescription(material, partDescription.form.RAW));
+                    faulty_partID--;
+                    sfeiConveyor.addNewPartATM(newPart);
+
+                    // For the overflow, just in case
+                    if (faulty_partID > 0)
+                        faulty_partID = -1;
+
+                    holdRegs.set(sfeiConveyor.getaEmitPart().getBit_offset(),(int) Math.pow(2, getNumberbyPartAspect(newPart.getReality()) + 4 - 1));
+                    actuatorsState.set(sfeiConveyor.getaEmit().getBit_offset(), 1);
+
 
                     failure_occurrence.activationVariable actVar = null;
                     if (wasActivated_by_N()) {
@@ -142,7 +149,7 @@ public class produce_more2 extends failures_conditions {
             }
             case TURN_OFF -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmitter().getBit_offset(), 0);
+                    actuatorsState.set(sfeiConveyor.getaEmit().getBit_offset(), 0);
 
                     Instant t = Instant.now();
                     newOccurrence.setEnd_t(t);
@@ -158,6 +165,31 @@ public class produce_more2 extends failures_conditions {
 
         old_state = state;
 //        return state != SM.WORKING;
+    }
+
+    private int getNumberbyPartAspect(partDescription aspect) {
+
+        int num = -1;
+
+        if (aspect.form().equals(partDescription.form.RAW)) {
+            num = 0;
+        } else if (aspect.form().equals(partDescription.form.BASE)) {
+            num = 3;
+        } else if (aspect.form().equals(partDescription.form.LID)) {
+            num = 6;
+        }
+        if (aspect.material().equals(partDescription.material.BLUE))
+            num++;
+        else if (aspect.material().equals(partDescription.material.GREEN)) {
+            num += 2;
+        } else if (aspect.material().equals(partDescription.material.METAL)) {
+            num += 3;
+        }
+
+        if (num == -1)
+            throw new RuntimeException("Part Description == -1");
+        return num;
+
     }
 
 }

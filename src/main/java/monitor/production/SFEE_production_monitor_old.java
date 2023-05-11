@@ -78,7 +78,7 @@ public class SFEE_production_monitor_old {
             for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet())
                 if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
                     SFEI_machine temp = (SFEI_machine) sfeiEntry.getValue();
-                    default_partForm = temp.getPartForm();
+                    default_partForm = temp.getPartDescription().form();
                     break;
                 }
         }

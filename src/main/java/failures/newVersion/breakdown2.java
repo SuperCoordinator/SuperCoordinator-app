@@ -30,7 +30,7 @@ public class breakdown2 extends failures_conditions {
         this.state = SM.WORKING;
         this.old_state = state;
 
-        System.out.println("Will BD on -> " + sfeiConveyor.getName());
+        System.out.println("BreakDown on -> " + sfeiConveyor.getName());
     }
 
     public void setResume(boolean resume) {

@@ -5,14 +5,19 @@ import models.sensor_actuator;
 
 import javax.xml.bind.annotation.*;
 import java.time.Instant;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 
-public class SFEI_conveyor extends SFEI  {
+public class SFEI_conveyor extends SFEI {
     @XmlElement
     private sensor_actuator aRemover;
     @XmlElement
-    private sensor_actuator aEmitter;
+    private sensor_actuator aEmit;
+    @XmlElement
+    private sensor_actuator aEmitPart;
+    @XmlElement
+    private sensor_actuator aEmitBase;
     @XmlElement
     private sensor_actuator sRemover;
     @XmlElement
@@ -32,12 +37,14 @@ public class SFEI_conveyor extends SFEI  {
 
         if (supportsFailures && isSimulation) {
             this.aRemover = sensorActuators[0];
-            this.aEmitter = sensorActuators[1];
-            this.sRemover = sensorActuators[2];
-            this.sEmitter = sensorActuators[3];
+            this.aEmit = sensorActuators[1];
+            this.aEmitPart = sensorActuators[2];
+            this.aEmitBase = sensorActuators[3];
+            this.sRemover = sensorActuators[4];
+            this.sEmitter = sensorActuators[5];
 
         }
-        this.aConveyorMotor = sensorActuators[4];
+        this.aConveyorMotor = sensorActuators[6];
 
     }
 
@@ -45,10 +52,17 @@ public class SFEI_conveyor extends SFEI  {
         return aRemover;
     }
 
-    public sensor_actuator getaEmitter() {
-        return aEmitter;
+    public sensor_actuator getaEmit() {
+        return aEmit;
     }
 
+    public sensor_actuator getaEmitPart() {
+        return aEmitPart;
+    }
+
+    public sensor_actuator getaEmitBase() {
+        return aEmitBase;
+    }
 
     public sensor_actuator getsRemover() {
         return sRemover;

@@ -2,7 +2,7 @@ package controllers.production;
 
 import communication.modbus;
 //import failures.oldVersion.SFEE_failures;
-import failures.newVersion.SFEE_failures2;
+import failures.newVersion.SFEE_production_failures2;
 import failures.stochasticTime;
 import models.base.SFEE;
 import models.base.SFEI;
@@ -35,7 +35,7 @@ public class cSFEE_production {
     @XmlElement
     private SFEE_production_monitor sfeeMonitor;
     @XmlElement
-    private SFEE_failures2 sfeeFailures2;
+    private SFEE_production_failures2 sfeeFailures2;
 
     private viewers.SFEE viewer = new viewers.SFEE();
 
@@ -64,7 +64,7 @@ public class cSFEE_production {
         this.mb = mb;
     }
 
-    public SFEE_failures2 getSfeeFailures2() {
+    public SFEE_production_failures2 getSfeeFailures2() {
         return sfeeFailures2;
     }
 
@@ -82,43 +82,43 @@ public class cSFEE_production {
             switch (scene) {
                 case 0, -1 -> {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC_connection\\simulation\\Tags_CMC-connection_Modbus.csv";
-                    importIO(csv_path,true);
+                    importIO(csv_path, true);
                 }
                 case 3 -> {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC1-connection_Modbus.csv";
-                    importIO(csv_path,true);
+                    importIO(csv_path, true);
                 }
                 case 4 -> {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC2-connection_Modbus.csv";
-                    importIO(csv_path,true);
+                    importIO(csv_path, true);
                 }
                 case 5, 6, 7 -> {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\simulation\\Tags_sorting_station_Modbus.csv";
-                    importIO(csv_path,true);
+                    importIO(csv_path, true);
                 }
                 case 8 -> {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_sorting_station_Modbus.csv";
-                    importIO(csv_path,true);
+                    importIO(csv_path, true);
                 }
                 case 9, 10, 11 -> {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_3CMC_Modbus.csv";
-                    importIO(csv_path,true);
+                    importIO(csv_path, true);
                 }
                 case 12 -> {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\MC_Staudinger\\simulation\\Tags_MC_Staudinger.csv";
-                    importIO(csv_path,true);
+                    importIO(csv_path, true);
                 }
                 case 13 -> {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\WH_SS_WH\\simulation\\Tags_sorting_station_Modbus.csv";
-                    importIO(csv_path,true);
+                    importIO(csv_path, true);
                 }
-                case 14,15,16,17 -> {
+                case 14, 15, 16, 17 -> {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\WH_SS_3CMC_WH\\simulation\\Tags_SS_3CMC_Modbus.csv";
-                    importIO(csv_path,true);
+                    importIO(csv_path, true);
                 }
                 default -> {
                     csv_path = viewer.readIOpath();
-                    importIO(csv_path,true);
+                    importIO(csv_path, true);
                 }
             }
             sfee.setIO_path(csv_path);
@@ -132,7 +132,7 @@ public class cSFEE_production {
             }
 
 
-            if (scene == 3 || scene == 0) {
+/*            if (scene == 3 || scene == 0) {
                 addNewSFEI_conveyor(
                         "entry_conveyor",
                         "s_emitter",
@@ -293,7 +293,7 @@ public class cSFEE_production {
                         "blue_conveyor",
                         false,
                         false);
-            }
+            }*/
             if (scene == 8 || scene == 13 || scene == 14) {
                 addNewSFEI_conveyor(
                         "parts_entry",
@@ -303,6 +303,8 @@ public class cSFEE_production {
                         Instant.now(),
                         true,
                         true,
+                        "none",
+                        "none",
                         "none",
                         "none",
                         "none",
@@ -323,6 +325,8 @@ public class cSFEE_production {
                         "none",
                         "none",
                         "none",
+                        "none",
+                        "none",
                         "metal_conveyor",
                         false,
                         false);
@@ -334,6 +338,8 @@ public class cSFEE_production {
                         Instant.now(),
                         true,
                         false,
+                        "none",
+                        "none",
                         "none",
                         "none",
                         "none",
@@ -353,6 +359,8 @@ public class cSFEE_production {
                         "none",
                         "none",
                         "none",
+                        "none",
+                        "none",
                         "blue_conveyor",
                         false,
                         false);
@@ -364,6 +372,8 @@ public class cSFEE_production {
                         Instant.now(),
                         true,
                         false,
+                        "none",
+                        "none",
                         "none",
                         "none",
                         "none",
@@ -386,7 +396,7 @@ public class cSFEE_production {
 
             if (scene == 12) {
                 addNewSFEI_machine("MCS_MC1",
-                        partDescription.form.UNKNOWN,
+                        new partDescription(partDescription.material.UNKNOWN, partDescription.form.UNKNOWN),
                         "s_pusher_forward",
                         "s_conveyor2",
                         Instant.now(),
@@ -399,7 +409,7 @@ public class cSFEE_production {
                         true,
                         false);
                 addNewSFEI_machine("MCS_MC2",
-                        partDescription.form.UNKNOWN,
+                        new partDescription(partDescription.material.UNKNOWN, partDescription.form.UNKNOWN),
                         "s_conveyor2",
                         "sw_endLine",
                         Instant.now(),
@@ -454,6 +464,14 @@ public class cSFEE_production {
 
 
     private void add_CMC_block(int index) {
+        partDescription partDescription;
+        if (index == 0)
+            partDescription = new partDescription(models.partDescription.material.METAL, models.partDescription.form.BASE);
+        else if (index == 1) {
+            partDescription = new partDescription(models.partDescription.material.GREEN, models.partDescription.form.LID);
+        } else {
+            partDescription = new partDescription(models.partDescription.material.BLUE, models.partDescription.form.LID);
+        }
         addNewSFEI_conveyor(
                 "EntryConveyor_" + index,
                 "s_E" + index,
@@ -464,6 +482,8 @@ public class cSFEE_production {
                 true,
                 "entry_R" + index,
                 "entry_E" + index,
+                "entry_EP" + index,
+                "entry_EB" + index,
                 "s_entry_R" + index,
                 "s_entry_E" + index,
                 "entry_C" + index,
@@ -471,7 +491,7 @@ public class cSFEE_production {
                 false);
         addNewSFEI_machine(
                 "MachineCenter_" + index,
-                partDescription.form.LID,
+                partDescription,
                 "s_entryMC" + index,
                 "s_exitMC" + index,
                 Instant.now(),
@@ -493,6 +513,8 @@ public class cSFEE_production {
                 true,
                 "exit_R" + index,
                 "exit_E" + index,
+                "exit_EP" + index,
+                "exit_EB" + index,
                 "s_exit_R" + index,
                 "s_exit_E" + index,
                 "exit_C" + index,
@@ -578,7 +600,7 @@ public class cSFEE_production {
                     I/O
      ************************************ */
 
-    public void importIO(String file_path,boolean dbg) {
+    public void importIO(String file_path, boolean dbg) {
         sfee.setIo(utils.getInstance().getReader().readModbusTags(file_path, dbg));
 //        printAllIO();
     }
@@ -590,14 +612,18 @@ public class cSFEE_production {
     /* ***********************************
                     SFEI
     ************************************ */
-    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportFailures, String aRemover, String aEmitter, String sRemover, String sEmitter, String aConveyorMotor, boolean is_line_start, boolean is_line_end) {
+    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
+                                    boolean isSimulation, boolean supportFailures, String aRemover, String aEmit, String aEmitPart, String aEmitBase,
+                                    String sRemover, String sEmitter, String aConveyorMotor, boolean is_line_start, boolean is_line_end) {
 
-        sensor_actuator[] vector = new sensor_actuator[5];
+        sensor_actuator[] vector = new sensor_actuator[7];
         vector[0] = sfee.getIObyName(aRemover);
-        vector[1] = sfee.getIObyName(aEmitter);
-        vector[2] = sfee.getIObyName(sRemover);
-        vector[3] = sfee.getIObyName(sEmitter);
-        vector[4] = sfee.getIObyName(aConveyorMotor);
+        vector[1] = sfee.getIObyName(aEmit);
+        vector[2] = sfee.getIObyName(aEmitPart);
+        vector[3] = sfee.getIObyName(aEmitBase);
+        vector[4] = sfee.getIObyName(sRemover);
+        vector[5] = sfee.getIObyName(sEmitter);
+        vector[6] = sfee.getIObyName(aConveyorMotor);
         SFEI_conveyor newObj = new SFEI_conveyor(
                 name,
                 SFEI.SFEI_type.CONVEYOR,
@@ -616,12 +642,12 @@ public class cSFEE_production {
         return newObj;
     }*/
 
-    public void addNewSFEI_machine(String name, partDescription.form partForm, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportsFailures, String aProduce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
+    public void addNewSFEI_machine(String name, partDescription partDescription, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportsFailures, String aProduce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
         sensor_actuator[] vector = new sensor_actuator[3];
         vector[0] = sfee.getIObyName(aProduce);
         vector[1] = sfee.getIObyName(sDoor);
         vector[2] = sfee.getIObyName(aStop);
-        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, partForm, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, isSimulation, supportsFailures, is_line_start, is_line_end, vector);
+        SFEI_machine newObj = new SFEI_machine(name, SFEI.SFEI_type.MACHINE, partDescription, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, isSimulation, supportsFailures, is_line_start, is_line_end, vector);
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
 
     }
@@ -685,7 +711,7 @@ public class cSFEE_production {
             for (Long value : opTimes)
                 totalTime = totalTime + value;
 
-            System.out.println("Before start notice that SFEE " + sfee.getName() + " has " + totalTime);
+            System.out.println("Before start notice that SFEE " + sfee.getName() + " has a minimum operation time of " + totalTime + " seconds");
 
             // Not needed to explicit every SFEI because de firstRun() print that!
 
@@ -696,7 +722,7 @@ public class cSFEE_production {
 
             if (sfeeTime[0].contains("gauss")) {
                 // Stochastic Time
-                sfeeFailures2 = new SFEE_failures2(
+                sfeeFailures2 = new SFEE_production_failures2(
                         sfee,
                         stochasticTime.timeOptions.GAUSSIAN,
                         new String[]{sfeeTime[1], sfeeTime[2]},
@@ -704,7 +730,7 @@ public class cSFEE_production {
 
             } else if (sfeeTime[0].contains("linear")) {
                 // Linear Time
-                sfeeFailures2 = new SFEE_failures2(sfee,
+                sfeeFailures2 = new SFEE_production_failures2(sfee,
                         stochasticTime.timeOptions.LINEAR,
                         new String[]{sfeeTime[1], sfeeTime[2]},
                         failures_f);
@@ -715,7 +741,7 @@ public class cSFEE_production {
     public void init_after_XML_load() {
 
         // Load IO to the SFEE (from the path)
-        importIO(sfee.getIO_path(),false);
+        importIO(sfee.getIO_path(), true);
 
         if (opMode.equals(operationMode.PROG_FAILURES))
             sfeeFailures2.setSfee(sfee);
@@ -732,9 +758,13 @@ public class cSFEE_production {
             List<Object> actuatorsState = new ArrayList<>(mb.readCoils());
             actuatorsState = new ArrayList<>(Collections.nCopies(actuatorsState.size(), -1));
 
+
             sfeeMonitor.loop(discreteInputsState, inputRegsValue, actuatorsState);
 
             if (opMode.equals(operationMode.PROG_FAILURES)) {
+
+                List<Object> holdRegsValues = new ArrayList<>(mb.readHoldingRegisters());
+                holdRegsValues = new ArrayList<>(Collections.nCopies(holdRegsValues.size(), -1));
 
                 // The function mb.readCoils() is only to initialize the list elements with a given size
                 ArrayList<List<Object>> inputs = new ArrayList<>();
@@ -742,8 +772,12 @@ public class cSFEE_production {
 
                 ArrayList<List<Object>> outputs = new ArrayList<>();
                 outputs.add(actuatorsState);
+                outputs.add(holdRegsValues);
 
                 sfeeFailures2.loop(inputs, outputs);
+
+                mb.writeRegisters(holdRegsValues);
+
             }
             mb.writeCoils(actuatorsState);
         } catch (Exception e) {

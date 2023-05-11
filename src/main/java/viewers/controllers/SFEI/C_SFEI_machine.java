@@ -58,13 +58,13 @@ public class C_SFEI_machine implements Initializable {
             aProduce.setValue(sfeiMachine.getaProduce().getName());
 
             if (((RadioButton) part_type.getToggles().get(0)).getText().equalsIgnoreCase("lid")) {
-                if (sfeiMachine.getPartForm().equals(partDescription.form.LID)) {
+                if (sfeiMachine.getPartDescription().equals(partDescription.form.LID)) {
                     part_type.selectToggle(part_type.getToggles().get(0));
                 } else {
                     part_type.selectToggle(part_type.getToggles().get(1));
                 }
             } else {
-                if (sfeiMachine.getPartForm().equals(partDescription.form.BASE)) {
+                if (sfeiMachine.getPartDescription().equals(partDescription.form.BASE)) {
                     part_type.selectToggle(part_type.getToggles().get(0));
                 } else {
                     part_type.selectToggle(part_type.getToggles().get(1));

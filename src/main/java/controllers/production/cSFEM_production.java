@@ -76,7 +76,7 @@ public class cSFEM_production implements Runnable {
             int i = 0;
             for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
                 /* QUESTAO DO SLAVE ID*/
-                String[] comConfig = viewer.communicationParams(0);
+                String[] comConfig = viewer.communicationParams(0, sfee.getValue());
 
                 modbus mb = new modbus(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]));
                 cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
@@ -108,10 +108,10 @@ public class cSFEM_production implements Runnable {
                 } else if (scene == 5) {
                     sfeeController.init(scene + 8);
                 } else if (scene == 6) {
-                    if (SFEM_idx == 0)
+                    if (i == 0) {
                         sfeeController.init(scene + 8);
-                    else if (SFEM_idx == 1) {
-                        sfeeController.init(scene + 9 + i);
+                    } else {
+                        sfeeController.init(scene + 8 + i);
                         firstRun(false, i);
                     }
                 }

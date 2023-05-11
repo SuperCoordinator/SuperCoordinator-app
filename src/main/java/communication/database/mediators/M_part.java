@@ -35,6 +35,9 @@ public class M_part extends queries_buffer implements IM_part {
 //                    " @status = '" + status + "'," +
 //                    " @fk_inbound_order = " + inbound_order + ";";
 
+            if (id < 0)
+                return;
+
             String query = "INSERT INTO part (id,fk_sf_configuration,status,fk_inbound_orders) " +
                     "SELECT part_id, sf_config, st, in_order " +
                     "FROM (SELECT '" + id + "' as part_id, '" + sf_configuration + "' as sf_config, '" + status + "' as st, '" + inbound_order + "' as in_order) temp " +
@@ -58,6 +61,8 @@ public class M_part extends queries_buffer implements IM_part {
     @Override
     public void delete(int id, String sf_configuration) {
         try {
+            if (id < 0)
+                return;
             String query = "DELETE FROM part WHERE id =" + id + " AND fk_sf_configuration='" + sf_configuration + "';";
             getStoredQueries().add(query);
 //            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
@@ -69,8 +74,10 @@ public class M_part extends queries_buffer implements IM_part {
     @Override
     public void update_status(int id, String sf_configuration, String status) {
         try {
+            if (id < 0)
+                return;
             String query = "UPDATE part " +
-                    "SET status = '" + status + "'" +
+                    "SET status = '" + status + "' " +
                     "WHERE id = " + id + " AND fk_sf_configuration='" + sf_configuration + "';";
             getStoredQueries().add(query);
 //            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
@@ -83,9 +90,11 @@ public class M_part extends queries_buffer implements IM_part {
     @Override
     public void update_outboundOrder(int id, String sf_configuration, int outbound_order) {
         try {
+            if(id < 0)
+                return;
             String query = "UPDATE part " +
                     "SET fk_outbound_orders = " +
-                    "(SELECT id FROM outbound_orders WHERE id = " + outbound_order + ")" +
+                    "(SELECT id FROM outbound_orders WHERE id = " + outbound_order + ") " +
                     "WHERE part.id = " + id + " AND part.fk_sf_configuration = '" + sf_configuration + "';";
             getStoredQueries().add(query);
 //            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
@@ -149,6 +158,7 @@ public class M_part extends queries_buffer implements IM_part {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public List<models.base.part> getAllPartsNotShipped(String sf_configuration) {
         try {

@@ -22,17 +22,31 @@ public class queries_buffer {
     public void runQueries(Connection con) {
         try {
             Iterator<String> iterator = storedQueries.iterator();
+            Statement statement = con.createStatement();
             while (iterator.hasNext()) {
-                String query = iterator.next();
-                int affectedRows = con.prepareStatement(query).executeUpdate();
-                if (affectedRows > 0) {
-                    // Query successfully executed
-                    iterator.remove();
+                statement.addBatch(iterator.next());
+            }
+            int[] affectedRows = statement.executeBatch();
+            for (int i = 0; i < affectedRows.length; i++) {
+                if (affectedRows[i] > 0) {
+                    storedQueries.set(i, "");
                 } else {
                     System.out.println("Affected 0 rows!");
-                    System.out.println(query);
+                    System.out.println(storedQueries.get(i));
                 }
             }
+            storedQueries.removeIf(String::isEmpty);
+//            while (iterator.hasNext()) {
+//                String query = iterator.next();
+//                int affectedRows = con.prepareStatement(query).executeUpdate();
+//                if (affectedRows > 0) {
+//                    // Query successfully executed
+//                    iterator.remove();
+//                } else {
+//                    System.out.println("Affected 0 rows!");
+//                    System.out.println(query);
+//                }
+//            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

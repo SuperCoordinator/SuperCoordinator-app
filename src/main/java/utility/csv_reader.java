@@ -50,10 +50,11 @@ public class csv_reader {
 //            String input = "12";
 
                 System.out.println(input);
-
-                for (String str : input.split(",")) {
-                    int key = Integer.parseInt(str);
-                    treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
+                if (!input.isEmpty()) {
+                    for (String str : input.split(",")) {
+                        int key = Integer.parseInt(str);
+                        treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
+                    }
                 }
             }
         } catch (Exception e) {

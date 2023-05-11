@@ -119,31 +119,52 @@ public class dbConnection implements Runnable {
     private ArrayList<queries_buffer> tables = new ArrayList<>();
     private int table_idx = 0;
 
+    public void initializeDB() {
+        try {
+            // The order is important, mainly in the first execution as the static tables (until sensors, including)
+            tables.add(sf_configuration);
+            tables.add(sfems);
+            tables.add(sfees);
+            tables.add(sfeis);
+            tables.add(sensors);
+            tables.add(inbound_orders);
+            tables.add(outbound_orders);
+            tables.add(parts);
+            tables.add(production_history);
+            int i = 0;
+            for (queries_buffer buffer : tables) {
+                if (buffer.getStoredQueries().size() > 0) {
+                    if (i == 6) {
+                        // Sleep between outbound -> parts
+                        Thread.sleep(100);
+                    }
+                    buffer.runQueries(getConnection());
+                }
+                i++;
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     public void run() {
         try {
-            if (firstRun) {
-                // The order is important, mainly in the first execution as the static tables (until sensors, including)
-                tables.add(sf_configuration);
-                tables.add(sfems);
-                tables.add(sfees);
-                tables.add(sfeis);
-                tables.add(sensors);
-                tables.add(inbound_orders);
-                tables.add(outbound_orders);
-                tables.add(parts);
-                tables.add(production_history);
-                firstRun = false;
-            }
-//            if (table_idx == tables.size()) {
-//                // reset value
-//                table_idx = 0;
+//            if (firstRun) {
+//                // The order is important, mainly in the first execution as the static tables (until sensors, including)
+//                tables.add(sf_configuration);
+//                tables.add(sfems);
+//                tables.add(sfees);
+//                tables.add(sfeis);
+//                tables.add(sensors);
+//                tables.add(inbound_orders);
+//                tables.add(outbound_orders);
+//                tables.add(parts);
+//                tables.add(production_history);
+//                firstRun = false;
 //            }
-
-//            System.out.println("table index:" + table_idx);
-//            if (tables.get(table_idx).getStoredQueries().size() > 0)
-//                tables.get(table_idx).runQueries(getConnection(), true);
-//            table_idx++;
 
             int i = 0;
 //            System.out.print("buffer sizes: ");
@@ -163,7 +184,6 @@ public class dbConnection implements Runnable {
         } catch (Exception e) {
             // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();
-//            table_idx++;
         }
     }
 

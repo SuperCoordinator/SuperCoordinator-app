@@ -16,10 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -84,7 +81,7 @@ public class SFEE_production_monitor {
                 for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet())
                     if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
                         SFEI_machine temp = (SFEI_machine) sfeiEntry.getValue();
-                        default_partForm = temp.getPartForm();
+                        default_partForm = temp.getPartDescription().form();
                         break;
                     }
             }
@@ -110,7 +107,7 @@ public class SFEE_production_monitor {
             if (visionSensorLocation != null)
                 updatePartDescription(inputRegsValue);
 
-            printDBG();
+//            printDBG();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -140,6 +137,18 @@ public class SFEE_production_monitor {
                 } else if (sfei_idx == 0) {
                     /* It is not the start of the line,
                      * so SFEI with idx == 1 will accept the part from this one. */
+                    if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx]) || b_inSensor) {
+                        Iterator<part> iterator = sfee.getSFEIbyIndex(sfei_idx).getPartsATM().iterator();
+                        if (iterator.hasNext()) {
+                            part movingPart = iterator.next();
+                            /* DATABASE save -> production_history table */
+                            dbConnection.getInstance().getProduction_history().insert(
+                                    movingPart.getId(),
+                                    sfei.getInSensor().getName(),
+                                    movingPart.getReality().material().toString(),
+                                    movingPart.getReality().form().toString());
+                        }
+                    }
 
                     if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
                         /* Remove the part from the previous SFEI and place on the next one. */

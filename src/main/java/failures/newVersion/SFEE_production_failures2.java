@@ -5,13 +5,14 @@ import models.base.SFEE;
 import models.base.SFEI;
 import models.SFEx.SFEI_conveyor;
 import models.SFEx.SFEI_machine;
+import utility.utils;
 
 import javax.xml.bind.annotation.*;
 import java.util.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEE_failures2  {
+public class SFEE_production_failures2 {
     private enum SM {
         STOCHASTIC,
         BREAKDOWN,
@@ -20,7 +21,7 @@ public class SFEE_failures2  {
         PRODUCE_MORE
     }
 
-    private SM state;
+    private SM sm_state;
     private SFEE sfee;
     private LinkedList<stochasticTime> stochasticTimeTasks = new LinkedList<>();
     @XmlElement
@@ -36,12 +37,11 @@ public class SFEE_failures2  {
     private produce_more2 produceMore2;
 
     private int oldPartID = -1;
-    private final Random random = new Random();
 
-    public SFEE_failures2() {
+    public SFEE_production_failures2() {
     }
 
-    public SFEE_failures2(SFEE sfee, stochasticTime.timeOptions stochasticType, String[] stochasticTime_f, ArrayList<String[]> failures_f) {
+    public SFEE_production_failures2(SFEE sfee, stochasticTime.timeOptions stochasticType, String[] stochasticTime_f, ArrayList<String[]> failures_f) {
         this.sfee = sfee;
         this.stochasticType = stochasticType;
         this.stochasticFormulas = stochasticTime_f;
@@ -65,11 +65,11 @@ public class SFEE_failures2  {
         return failuresFormulas;
     }
 
-    private void init_() {
-        int sfeiConveyor_idx_failures = /*pickSFEI(false)*/ 2;
+    private void init() {
+        int sfeiConveyor_idx_failures = pickSFEI(false);
         int sfeiMachine_idx_failures = pickSFEIMachine();
 
-        random.setSeed(3587214);
+        System.out.println("*** Failures Information in " + sfee.getName() + "***");
         this.breakdownRepair2 = new breakdown_repair2(
                 failuresFormulas.get(0),
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
@@ -85,37 +85,40 @@ public class SFEE_failures2  {
 
         this.produceMore2 = new produce_more2(
                 failuresFormulas.get(4),
-                (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
+                (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
+                ((SFEI_machine) sfee.getSFEIbyIndex(sfeiMachine_idx_failures)).getPartDescription().material());
 
-        this.state = SM.STOCHASTIC;
+        System.out.println("************************");
+
+        this.sm_state = SM.STOCHASTIC;
     }
 
     private boolean first_run = true;
 
     public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
         if (first_run) {
-            init_();
+            init();
             first_run = false;
         }
         try {
             // Evaluate of the transitions
-            switch (state) {
+            switch (sm_state) {
                 case STOCHASTIC -> {
                     breakdownRepair2.loop(sensorsState.get(0), actuatorsState.get(0));
                     if (breakdownRepair2.isActive()) {
-                        state = SM.BREAKDOWN_WITH_REPAIR;
+                        sm_state = SM.BREAKDOWN_WITH_REPAIR;
                     } else {
                         breakdown2.loop(sensorsState.get(0), actuatorsState.get(0));
                         if (breakdown2.isActive()) {
-                            state = SM.BREAKDOWN;
+                            sm_state = SM.BREAKDOWN;
                         } else {
                             produceFaulty2.loop(sensorsState.get(0), actuatorsState.get(0));
                             if (produceFaulty2.isActive()) {
-                                state = SM.PRODUCE_FAULTY;
+                                sm_state = SM.PRODUCE_FAULTY;
                             } else {
-                                produceMore2.loop(sensorsState.get(0), actuatorsState.get(0));
+                                produceMore2.loop(sensorsState.get(0), actuatorsState.get(0), actuatorsState.get(1));
                                 if (produceMore2.isActive()) {
-                                    state = SM.PRODUCE_MORE;
+                                    sm_state = SM.PRODUCE_MORE;
                                 } /*ELSE state = SM.STOCHASTIC; */
                             }
                         }
@@ -123,37 +126,37 @@ public class SFEE_failures2  {
                 }
                 case BREAKDOWN_WITH_REPAIR -> {
                     if (!breakdownRepair2.isActive()) {
-                        state = SM.STOCHASTIC;
+                        sm_state = SM.STOCHASTIC;
                     }
                 }
                 case BREAKDOWN -> {
                     if (!breakdown2.isActive()) {
-                        state = SM.STOCHASTIC;
+                        sm_state = SM.STOCHASTIC;
                     }
                 }
                 case PRODUCE_FAULTY -> {
                     if (!produceFaulty2.isActive()) {
-                        state = SM.STOCHASTIC;
+                        sm_state = SM.STOCHASTIC;
                     }
                 }
                 case PRODUCE_MORE -> {
                     if (!produceMore2.isActive()) {
-                        state = SM.STOCHASTIC;
+                        sm_state = SM.STOCHASTIC;
                     }
                 }
             }
 
             // Execute tasks
-            switch (state) {
+            switch (sm_state) {
                 case BREAKDOWN_WITH_REPAIR -> breakdownRepair2.loop(sensorsState.get(0), actuatorsState.get(0));
                 case BREAKDOWN -> breakdown2.loop(sensorsState.get(0), actuatorsState.get(0));
                 case PRODUCE_FAULTY -> produceFaulty2.loop(sensorsState.get(0), actuatorsState.get(0));
-                case PRODUCE_MORE -> produceMore2.loop(sensorsState.get(0), actuatorsState.get(0));
+                case PRODUCE_MORE ->
+                        produceMore2.loop(sensorsState.get(0), actuatorsState.get(0), actuatorsState.get(1));
                 case STOCHASTIC -> stochasticTimeMode(sensorsState, actuatorsState);
             }
 
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -224,7 +227,7 @@ public class SFEE_failures2  {
 
         OptionalInt optionalInt;
         do {
-            optionalInt = random.ints(0, sfee.getSFEIs().size()).findAny();
+            optionalInt = utils.getInstance().getRandom().ints(0, sfee.getSFEIs().size()).findAny();
         }
         while (optionalInt.isEmpty());
 
@@ -241,7 +244,7 @@ public class SFEE_failures2  {
     private int pickSFEIMachine() {
         OptionalInt optionalInt;
         do {
-            optionalInt = random.ints(0, sfee.getSFEIs().size()).findAny();
+            optionalInt = utils.getInstance().getRandom().ints(0, sfee.getSFEIs().size()).findAny();
         }
         while (optionalInt.isEmpty());
 

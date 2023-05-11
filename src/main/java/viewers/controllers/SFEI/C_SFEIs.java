@@ -13,6 +13,7 @@ import models.SFEx.SFEI_conveyor;
 import models.SFEx.SFEI_machine;
 import models.base.SFEE;
 import models.base.SFEI;
+import models.partDescription;
 import models.sensor_actuator;
 import viewers.controllers.C_ShopFloor;
 import viewers.mediators.CM_SFEI;
@@ -252,7 +253,7 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
             if (sfei_type.getValue().equalsIgnoreCase("conveyor")) {
 
                 sensor_actuator[] vect = cSfeiConveyor.getSensAct();
-                if (vect[4] == null) {
+                if (vect[6] == null) {
                     error = true;
                     errorMsg = errorMsg.concat("  - Conveyor Motor \n");
                 }
@@ -264,13 +265,21 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
                     }
                     if (vect[1] == null) {
                         error = true;
-                        errorMsg = errorMsg.concat("  - Emitter \n");
+                        errorMsg = errorMsg.concat("  - Emit \n");
                     }
                     if (vect[2] == null) {
                         error = true;
-                        errorMsg = errorMsg.concat("  - Remover sensor \n");
+                        errorMsg = errorMsg.concat("  - Emit Part \n");
                     }
                     if (vect[3] == null) {
+                        error = true;
+                        errorMsg = errorMsg.concat("  - Emit Base \n");
+                    }
+                    if (vect[4] == null) {
+                        error = true;
+                        errorMsg = errorMsg.concat("  - Remover sensor \n");
+                    }
+                    if (vect[5] == null) {
                         error = true;
                         errorMsg = errorMsg.concat("  - Emitter sensor \n");
                     }
@@ -347,7 +356,7 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
                 SFEI_machine newObj = new SFEI_machine(
                         sfeiName.getText(),
                         SFEI.SFEI_type.MACHINE,
-                        cSfeiMachine.getPart_type(),
+                        new partDescription(partDescription.material.UNKNOWN, cSfeiMachine.getPart_type()),
                         utils.getInstance().getSearch().getIObyName(input_sensor.getValue(), io),
                         utils.getInstance().getSearch().getIObyName(output_sensor.getValue(), io),
                         Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),

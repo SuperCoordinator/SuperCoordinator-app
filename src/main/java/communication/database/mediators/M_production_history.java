@@ -32,6 +32,8 @@ public class M_production_history extends queries_buffer implements IM_productio
 //                    "@material = '" + material + "'," +
 //                    "@form = '" + form + "'," +
 //                    "@time = current_timestamp(); ";
+            if (fk_part_id < 0)
+                return;
 
             String query = "INSERT INTO production_history (fk_part_id,fk_sensor_name,material,form,time_stamp)" +
                     "VALUES (" + fk_part_id + ",'" + fk_sensor_name + "','" + material + "','" + form + "',current_timestamp())" +

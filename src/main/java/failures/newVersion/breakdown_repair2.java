@@ -28,7 +28,7 @@ public class breakdown_repair2 extends failures_conditions {
         this.state = SM.WORKING;
         this.old_state = state;
 
-        System.out.println("Will BDwR on -> " + sfeiConveyor.getName());
+        System.out.println("BreakDown with Repair on -> " + sfeiConveyor.getName());
     }
 
     public boolean isActive() {

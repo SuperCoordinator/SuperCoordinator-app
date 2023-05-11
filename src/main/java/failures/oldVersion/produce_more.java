@@ -109,13 +109,13 @@ public class produce_more extends failure {
             }
             case TURN_ON -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmitter().getBit_offset(), 1);
+                    actuatorsState.set(sfeiConveyor.getaEmit().getBit_offset(), 1);
                     System.out.println("P_More -> " + state);
                 }
             }
             case TURN_OFF -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmitter().getBit_offset(), 0);
+                    actuatorsState.set(sfeiConveyor.getaEmit().getBit_offset(), 0);
                     System.out.println("P_More -> " + state);
                 }
             }

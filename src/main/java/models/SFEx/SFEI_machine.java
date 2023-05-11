@@ -12,8 +12,8 @@ import java.time.Instant;
 @XmlAccessorType(XmlAccessType.NONE)
 public class SFEI_machine extends SFEI {
 
-    @XmlAttribute
-    private partDescription.form partForm;
+    @XmlElement
+    private partDescription partDescription;
     @XmlElement
     private sensor_actuator aProduce;
     @XmlElement
@@ -24,11 +24,11 @@ public class SFEI_machine extends SFEI {
     public SFEI_machine() {
     }
 
-    public SFEI_machine(String name, SFEI_type sfeiType, partDescription.form partForm, sensor_actuator inSensor, sensor_actuator outSensor,
+    public SFEI_machine(String name, SFEI_type sfeiType, partDescription partForm, sensor_actuator inSensor, sensor_actuator outSensor,
                         Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportsFailures,
                         boolean line_start, boolean line_end, sensor_actuator[] sensorActuators) {
         super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, isSimulation, supportsFailures, line_start, line_end);
-        this.partForm = partForm;
+        this.partDescription = partForm;
         if (isSimulation) {
             this.aProduce = sensorActuators[0];
             if (supportsFailures) {
@@ -40,8 +40,8 @@ public class SFEI_machine extends SFEI {
         }
     }
 
-    public partDescription.form getPartForm() {
-        return partForm;
+    public partDescription getPartDescription() {
+        return partDescription;
     }
 
     public sensor_actuator getaProduce() {

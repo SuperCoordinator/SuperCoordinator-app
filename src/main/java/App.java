@@ -111,10 +111,10 @@ public class App {
 
 
                 for (int i = 0; i < nModules; i++) {
-/*                    SFEM_transport sfemTransport = new SFEM_transport("SFEM_Trans#" + i);
-                    cSFEM_transport sfemController = new cSFEM_transport(sfemTransport);
-
-                    sfemController.initSFEE_transport_FromTerminal();*/
+//                    SFEM_transport sfemTransport = new SFEM_transport("SFEM_Trans#" + i);
+//                    cSFEM_transport sfemController = new cSFEM_transport(sfemTransport);
+//
+//                    sfemController.initSFEE_transport_FromTerminal();
                     initializeTransport(null, SFEM_transport.configuration.SFEI2SFEI);
 
                 }
@@ -189,10 +189,9 @@ public class App {
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(poolsize);
 
             /* ---- DATABASE  ---- */
+            dbConnection.getInstance().initializeDB();
             scheduler.scheduleAtFixedRate(dbConnection.getInstance(), 0, 1, TimeUnit.SECONDS);
-
             serializer.getInstance().updateDB();
-
             /* ------------------- */
 
             System.out.print("Press ENTER to start simulation");

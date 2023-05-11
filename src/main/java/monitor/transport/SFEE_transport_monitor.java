@@ -84,7 +84,7 @@ public class SFEE_transport_monitor {
                 case SFEI2WH -> removeProducedParts(sensorsState);
             }
 
-            printDBG();
+//            printDBG();
 
 
         } catch (Exception e) {
@@ -104,12 +104,12 @@ public class SFEE_transport_monitor {
         switch (sm_state) {
             case T1 -> {
                 if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEI_old_inSensors) || b_inSensor) {
-                    System.out.println("SFEE_transport_monitor RE on " + sfeiTransport.getInSensor().getName() + " with " + previousSFEI.getPartsATM().size() + " parts on previous SFEI");
+//                    System.out.println("SFEE_transport_monitor RE on " + sfeiTransport.getInSensor().getName() + " with " + previousSFEI.getPartsATM().size() + " parts on previous SFEI");
                     // The first one is waiting for the most time
                     Iterator<part> iterator = previousSFEI.getPartsATM().iterator();
                     while (iterator.hasNext()) {
                         part movingPart = iterator.next();
-                        System.out.println(movingPart);
+//                        System.out.println(movingPart);
                         if (movingPart.getState().equals(part.status.WAIT_TRANSPORT)) {
 //                    movingPart.setState(part.status.IN_TRANSPORT);
                             sfeiTransport.addNewPartATM(movingPart);

@@ -52,7 +52,7 @@ public class C_SFEI_conveyor_failures implements Initializable {
         } else {
             sEmitter.setValue(sfeiConveyor.getsEmitter().getName());
             sRemover.setValue(sfeiConveyor.getsRemover().getName());
-            aEmitter.setValue(sfeiConveyor.getaEmitter().getName());
+            aEmitter.setValue(sfeiConveyor.getaEmit().getName());
             aRemover.setValue(sfeiConveyor.getaRemover().getName());
 
         }

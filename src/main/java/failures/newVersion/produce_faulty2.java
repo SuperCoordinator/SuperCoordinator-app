@@ -32,7 +32,7 @@ public class produce_faulty2 extends failures_conditions {
         this.state = SM.WORKING;
         this.old_state = state;
 
-        System.out.println("Will PFaulty on -> " + sfeiMachine.getName());
+        System.out.println("Produce Faulty on -> " + sfeiMachine.getName());
     }
 
     public boolean isActive() {

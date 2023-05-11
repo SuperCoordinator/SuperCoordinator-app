@@ -156,8 +156,8 @@ public class serializer {
                     dbConnection.getInstance().getSfeis().insert(sfei.getName(), cSFEEProduction.getSFEE().getName());
 
                     //inSensor
-                    if (sfei.getInSensor()!= null)
-                    dbConnection.getInstance().getSensors().insert(sfei.getInSensor().getName(), sfei.getName(), true);
+                    if (sfei.getInSensor() != null)
+                        dbConnection.getInstance().getSensors().insert(sfei.getInSensor().getName(), sfei.getName(), true);
 
                     //outSensor
                     if (sfei.getOutSensor() != null)
@@ -243,7 +243,7 @@ public class serializer {
                 sfei = entry.getValue();
         }
         if (sfei == null)
-            throw new RuntimeException("(" + serializer.class + ") SFEI not found");
+            throw new RuntimeException("(" + serializer.class + ") SFEI with name " + SFEI_name + " not found");
 
         return sfei;
 
