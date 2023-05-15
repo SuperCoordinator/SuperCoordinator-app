@@ -9,6 +9,7 @@ import models.sensor_actuator;
 import utility.serialize.serializer;
 import utility.utils;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +135,8 @@ public class SFEE_transport_monitor_old {
                                 p.getId(),
                                 sfeiTransport.getOutSensor().getName(),
                                 p.getReality().material().toString(),
-                                p.getReality().form().toString());
+                                p.getReality().form().toString(),
+                                Instant.now());
 
                         sm_state = state.T3;
                     }

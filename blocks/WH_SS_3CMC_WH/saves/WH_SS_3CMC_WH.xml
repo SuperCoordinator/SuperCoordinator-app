@@ -207,7 +207,14 @@
         </sfeeControllers>
         <sfeeControllers opMode="PROG_FAILURES">
             <mb ip="127.0.0.1" port="35502" slaveID="1"/>
-            <sfeeMonitor/>
+            <sfeeMonitor>
+                <visionSensorLocation>
+                    <entry>
+                        <key>2</key>
+                        <value name="vs_C0" type="INPUT" invLogic="false" dataType="INT" addressType="INPUT_REGISTER" register="0" bitOffset="2"/>
+                    </entry>
+                </visionSensorLocation>
+            </sfeeMonitor>
             <sfeeFailures2>
                 <stochasticType>GAUSSIAN</stochasticType>
                 <stochasticFormulas>60 </stochasticFormulas>
@@ -239,7 +246,14 @@
         </sfeeControllers>
         <sfeeControllers opMode="PROG_FAILURES">
             <mb ip="127.0.0.1" port="35502" slaveID="1"/>
-            <sfeeMonitor/>
+            <sfeeMonitor>
+                <visionSensorLocation>
+                    <entry>
+                        <key>2</key>
+                        <value name="vs_C1" type="INPUT" invLogic="false" dataType="INT" addressType="INPUT_REGISTER" register="0" bitOffset="4"/>
+                    </entry>
+                </visionSensorLocation>
+            </sfeeMonitor>
             <sfeeFailures2>
                 <stochasticType>GAUSSIAN</stochasticType>
                 <stochasticFormulas>65 </stochasticFormulas>
@@ -271,7 +285,14 @@
         </sfeeControllers>
         <sfeeControllers opMode="PROG_FAILURES">
             <mb ip="127.0.0.1" port="35502" slaveID="1"/>
-            <sfeeMonitor/>
+            <sfeeMonitor>
+                <visionSensorLocation>
+                    <entry>
+                        <key>2</key>
+                        <value name="vs_C2" type="INPUT" invLogic="false" dataType="INT" addressType="INPUT_REGISTER" register="0" bitOffset="6"/>
+                    </entry>
+                </visionSensorLocation>
+            </sfeeMonitor>
             <sfeeFailures2>
                 <stochasticType>GAUSSIAN</stochasticType>
                 <stochasticFormulas>70 </stochasticFormulas>

@@ -336,15 +336,18 @@ public class stochasticTime {
 
                 //            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
                 total_Time = utils.getInstance().getRandom().nextGaussian() * dev + m;
-                System.out.println("Calculated Mean: " + m + " and dev:" + dev + " with total time of: " + total_Time);
+//                if (!sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT))
+//                    System.out.println("Calculated Mean: " + m + " and dev:" + dev + " with total time of: " + total_Time);
             } else {
                 total_Time = m;
-                System.out.println("Calculated Mean: " + m + " with total time of: " + total_Time);
+//                if (!sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT))
+//                    System.out.println("Calculated Mean: " + m + " with total time of: " + total_Time);
             }
 
             total_Time = total_Time - sumSFEEminOperationTime;
 
-            System.out.println("Delay " + total_Time + " on SFEI:" + sfei.getName());
+            if (!sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT))
+                System.out.println(part + " delay " + total_Time + " on SFEI:" + sfei.getName());
             if (total_Time < 0)
                 return 0;
 

@@ -41,4 +41,6 @@ public final class partDescription {
     public String toString() {
         return "partDescription=[material=" + material + ", form=" + form + "]";
     }
+
+
 }

@@ -76,7 +76,8 @@ public class SFEE_warehouse_monitor {
                                 Objects.requireNonNull(movingPart).getId(),
                                 "warehouse_expeditionDoor",
                                 Objects.requireNonNull(movingPart).getReality().material().toString(),
-                                Objects.requireNonNull(movingPart).getReality().form().toString());
+                                Objects.requireNonNull(movingPart).getReality().form().toString(),
+                                Instant.now());
 
                         iterator.remove();
                     } else
@@ -150,10 +151,12 @@ public class SFEE_warehouse_monitor {
                         inboundOrder_id);
 
                 // register insertion in warehouse
-                dbConnection.getInstance().getProduction_history().insert(Objects.requireNonNull(p).getId(),
+                dbConnection.getInstance().getProduction_history().insert(
+                        Objects.requireNonNull(p).getId(),
                         "warehouse_entryDoor",
                         Objects.requireNonNull(p).getReality().material().toString(),
-                        Objects.requireNonNull(p).getReality().form().toString());
+                        Objects.requireNonNull(p).getReality().form().toString(),
+                        Instant.now());
 
             }
 

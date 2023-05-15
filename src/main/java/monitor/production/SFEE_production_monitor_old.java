@@ -146,7 +146,8 @@ public class SFEE_production_monitor_old {
                                     p.getId(),
                                     sfei.getInSensor().getName(),
                                     p.getReality().material().toString(),
-                                    p.getReality().form().toString());
+                                    p.getReality().form().toString(),
+                                    Instant.now());
 
                         }
 
@@ -190,7 +191,8 @@ public class SFEE_production_monitor_old {
                                 oldest_part.getId(),
                                 sfei.getOutSensor().getName(),
                                 oldest_part.getReality().material().toString(),
-                                oldest_part.getReality().form().toString());
+                                oldest_part.getReality().form().toString(),
+                                Instant.now());
 
                         sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
                     }

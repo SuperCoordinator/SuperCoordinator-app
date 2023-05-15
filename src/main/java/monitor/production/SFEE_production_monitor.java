@@ -107,7 +107,7 @@ public class SFEE_production_monitor {
             if (visionSensorLocation != null)
                 updatePartDescription(inputRegsValue);
 
-//            printDBG();
+            printDBG();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -146,7 +146,8 @@ public class SFEE_production_monitor {
                                     movingPart.getId(),
                                     sfei.getInSensor().getName(),
                                     movingPart.getReality().material().toString(),
-                                    movingPart.getReality().form().toString());
+                                    movingPart.getReality().form().toString(),
+                                    Instant.now());
                         }
                     }
 
@@ -211,7 +212,8 @@ public class SFEE_production_monitor {
                         movingPart.getId(),
                         sensor_name,
                         movingPart.getReality().material().toString(),
-                        movingPart.getReality().form().toString());
+                        movingPart.getReality().form().toString(),
+                        Instant.now());
 
             }
         } catch (Exception e) {
@@ -239,7 +241,8 @@ public class SFEE_production_monitor {
                         movingPart.getId(),
                         sfei.getOutSensor().getName(),
                         movingPart.getReality().material().toString(),
-                        movingPart.getReality().form().toString());
+                        movingPart.getReality().form().toString(),
+                        Instant.now());
             }
 
         } catch (Exception e) {
@@ -275,13 +278,18 @@ public class SFEE_production_monitor {
                 if (sfee.getSFEIbyIndex(entry.getKey()).getSfeiType().equals(SFEI.SFEI_type.CONVEYOR)) {
 
                     SFEI_conveyor sfeiConveyor = (SFEI_conveyor) sfee.getSFEIbyIndex(entry.getKey());
-                    // Verify if there is M_part in vision sensor range
+                    // Verify if there is a part in the vision sensor range
                     int visionSensor_number = (int) inputRegsValue.get(entry.getValue().getBit_offset());
 
                     if (visionSensor_number > 0) {
                         if (sfeiConveyor.getPartsATM().size() > 0) {
-                            partDescription actualDescription = getPartsAspectByNumber(visionSensor_number);
-                            Objects.requireNonNull(sfeiConveyor.getPartsATM().first()).setReality(actualDescription);
+                            partDescription actualDescription = Objects.requireNonNull(getPartsAspectByNumber(visionSensor_number));
+//                            Objects.requireNonNull(sfeiConveyor.getPartsATM().first()).setReality(actualDescription);
+                            part p = Objects.requireNonNull(sfeiConveyor.getPartsATM().last());
+                            if (!p.getReality().form().equals(actualDescription.form())) {
+                                p.setReality(actualDescription);
+                                System.out.println("[" + entry.getValue().getName() + "] " + p);
+                            }
                         }
                     }
                 } else {

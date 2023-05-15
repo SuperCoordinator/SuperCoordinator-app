@@ -45,6 +45,7 @@ s_green,Input,Bool,Input 42
 s_green_remover,Input,Bool,Input 43
 s_metal,Input,Bool,Input 44
 s_metal_remover,Input,Bool,Input 45
+s_stop_blade,Input,Bool,Input 46
 emit_E0,Output,Bool,Coil 0
 entry_C0,Output,Bool,Coil 1
 entry_E0,Output,Bool,Coil 2

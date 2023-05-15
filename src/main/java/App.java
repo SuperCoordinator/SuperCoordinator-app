@@ -189,9 +189,10 @@ public class App {
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(poolsize);
 
             /* ---- DATABASE  ---- */
+            serializer.getInstance().updateDB();
             dbConnection.getInstance().initializeDB();
             scheduler.scheduleAtFixedRate(dbConnection.getInstance(), 0, 1, TimeUnit.SECONDS);
-            serializer.getInstance().updateDB();
+
             /* ------------------- */
 
             System.out.print("Press ENTER to start simulation");

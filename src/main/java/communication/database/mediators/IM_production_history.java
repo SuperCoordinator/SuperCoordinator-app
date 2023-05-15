@@ -1,10 +1,11 @@
 package communication.database.mediators;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface IM_production_history {
 
-    void insert(int fk_part_id, String fk_sensor_name,String material, String form);
+    void insert(int fk_part_id, String fk_sensor_name, String material, String form, Instant timestamp);
 
     void delete(int part_id);
 

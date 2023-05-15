@@ -305,7 +305,8 @@ public class SFEE_transport_monitor {
                 movingPart.getId(),
                 sfeiTransport.getOutSensor().getName(),
                 movingPart.getReality().material().toString(),
-                movingPart.getReality().form().toString());
+                movingPart.getReality().form().toString(),
+                Instant.now());
     }
 
     private void printDBG() {

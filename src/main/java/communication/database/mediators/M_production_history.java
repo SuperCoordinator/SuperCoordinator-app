@@ -5,6 +5,8 @@ import communication.database.dbConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class M_production_history extends queries_buffer implements IM_productio
 //        private static final M_production_history INSTANCE = new M_production_history();
 //    }
     @Override
-    public void insert(int fk_part_id, String fk_sensor_name, String material, String form) {
+    public void insert(int fk_part_id, String fk_sensor_name, String material, String form, Instant timestamp) {
         try {
 //            String def_vars = "SET @fk_part = " + fk_part_id + "," +
 //                    "@fk_sensor = '" + fk_sensor_name + "'," +
@@ -36,11 +38,11 @@ public class M_production_history extends queries_buffer implements IM_productio
                 return;
 
             String query = "INSERT INTO production_history (fk_part_id,fk_sensor_name,material,form,time_stamp)" +
-                    "VALUES (" + fk_part_id + ",'" + fk_sensor_name + "','" + material + "','" + form + "',current_timestamp())" +
+                    "VALUES (" + fk_part_id + ",'" + fk_sensor_name + "','" + material + "','" + form + "','" + Timestamp.from(timestamp) + "') " +
                     "ON DUPLICATE KEY UPDATE" +
                     " material = '" + material + "'," +
                     " form = '" + form + "'," +
-                    " time_stamp= current_timestamp();";
+                    " time_stamp = '" + Timestamp.from(timestamp) + "';";
 
             getStoredQueries().add(query);
 //            Statement st = dbConnection.getConnection().createStatement();
