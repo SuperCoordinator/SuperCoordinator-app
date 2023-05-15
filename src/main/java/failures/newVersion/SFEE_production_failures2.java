@@ -216,8 +216,10 @@ public class SFEE_production_failures2 {
             currID = sfee.getSFEIbyIndex(0).getPartsATM().first().getId();
         }
         if (currID != oldPartID) {
-            oldPartID = currID;
-            return true;
+            if (currID > 0) {
+                oldPartID = currID;
+                return true;
+            }
         }
         return false;
     }

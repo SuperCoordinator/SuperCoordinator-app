@@ -97,7 +97,7 @@ public class produce_faulty2 extends failures_conditions {
         switch (state) {
             case WORKING, WAITING_PART_POSITIONING -> {
                 if (state != old_state) {
-                    System.out.println("P_Faulty -> " + state);
+//                    System.out.println("P_Faulty -> " + state);
                 }
             }
             case INJECT_FAILURE -> {
@@ -116,10 +116,10 @@ public class produce_faulty2 extends failures_conditions {
                     if (actVar != null)
                         newOccurrence = new failure_occurrence(type.PRODUCE_FAULTY, actVar, sfeiMachine.getnPiecesMoved(), Instant.now());
                     else
-                        throw new RuntimeException("(breakdown) Activation Variable null but evalConditions was TRUE");
+                        throw new RuntimeException("(Produce Faulty) Activation Variable null but evalConditions was TRUE");
 
 
-                    System.out.println("P_Faulty -> " + state);
+//                    System.out.println("P_Faulty -> " + state);
                 }
 
             }
@@ -134,11 +134,13 @@ public class produce_faulty2 extends failures_conditions {
 
                     newOccurrence = new failure_occurrence();
 
-                    System.out.println("P_Faulty -> " + state);
+//                    System.out.println("P_Faulty -> " + state);
                 }
             }
         }
-
+        if (old_state != state) {
+            System.out.println("*** Produce Faulty on " + sfeiMachine.getName() + " -> [" + state + "]");
+        }
         old_state = state;
 
 //        return state != SM.WORKING;

@@ -106,7 +106,6 @@ public class breakdown2 extends failures_conditions {
             case WORKING -> {
                 if (state != old_state) {
 //                    sfeiConveyor.setDayOfLastMaintenance(Instant.now());
-                    System.out.println("BD -> " + state);
                 }
             }
             case DISABLED -> {
@@ -125,10 +124,9 @@ public class breakdown2 extends failures_conditions {
                     if (actVar != null)
                         newOccurrence = new failure_occurrence(type.BREAKDOWN, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
                     else
-                        throw new RuntimeException("(breakdown) Activation Variable null but evalConditions was TRUE");
+                        throw new RuntimeException("(Breakdown) Activation Variable null but evalConditions was TRUE");
 
                     //sfeiConveyor.addBreakdown(new Pair<>(sfeiConveyor.getnPiecesMoved(), Instant.now()));
-                    System.out.println("BD -> " + state);
                 }
             }
             case RESUMING -> {
@@ -142,10 +140,13 @@ public class breakdown2 extends failures_conditions {
 
                     newOccurrence = new failure_occurrence();
 
-                    System.out.println("BD -> " + state);
+
                 }
             }
 
+        }
+        if (old_state != state) {
+            System.out.println("*** BREAKDOWN on " + sfeiConveyor.getName() + " -> [" + state + "]");
         }
 
         old_state = state;

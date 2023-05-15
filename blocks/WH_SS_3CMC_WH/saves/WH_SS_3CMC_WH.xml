@@ -233,12 +233,12 @@
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>prob [ 10 ] &gt;= 90</item>
+                    <item>prob [ 2 ] &gt;= 90</item>
                     <item>gauss [ 10 ; 5 ]</item>
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>linear [ 13 ]</item>
+                    <item>det [ 13 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
@@ -261,7 +261,7 @@
                 <failuresFormulas>
                     <item>gauss [ 20 ; 2 ]</item>
                     <item>no</item>
-                    <item>linear [ 10 ]</item>
+                    <item>det [ 10 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>gauss [ 1 ; 0 ]</item>
@@ -311,7 +311,7 @@
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>linear [ 18 ]</item>
+                    <item>det [ 18 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>

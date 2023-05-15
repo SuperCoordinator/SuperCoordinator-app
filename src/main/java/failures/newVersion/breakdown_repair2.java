@@ -94,7 +94,7 @@ public class breakdown_repair2 extends failures_conditions {
             case WORKING -> {
                 if (state != old_state) {
 //                        sfeiConveyor.setDayOfLastMaintenance(Instant.now());
-                    System.out.println("BDwR -> " + state);
+//                    System.out.println("BDwR -> " + state);
                 }
             }
             case DISABLED -> {
@@ -113,9 +113,9 @@ public class breakdown_repair2 extends failures_conditions {
                     if (actVar != null)
                         newOccurrence = new failure_occurrence(type.BREAKDOWN_WITH_REPAIR, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
                     else
-                        throw new RuntimeException("(breakdown) Activation Variable null but evalConditions was TRUE");
+                        throw new RuntimeException("(Breakdown w/ Repair) Activation Variable null but evalConditions was TRUE");
 
-                    System.out.println("BDwR -> " + state);
+//                    System.out.println("BDwR -> " + state);
                 }
 
             }
@@ -130,9 +130,13 @@ public class breakdown_repair2 extends failures_conditions {
 
                     newOccurrence = new failure_occurrence();
 
-                    System.out.println("BDwR -> " + state);
+//                    System.out.println("BDwR -> " + state);
                 }
             }
+        }
+
+        if (old_state != state) {
+            System.out.println("*** BREAKDOWN w/ Repair on " + sfeiConveyor.getName() + " -> [" + state + "]");
         }
 
         old_state = state;

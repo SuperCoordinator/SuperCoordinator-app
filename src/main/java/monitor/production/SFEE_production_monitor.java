@@ -184,6 +184,7 @@ public class SFEE_production_monitor {
                      *      2 - NO. Wait for the transport. It will remove the part from SFEI partsATM. */
 
                     if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                        sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
                         markPartForTransport(sfei_idx);
                     }
                 }
@@ -225,7 +226,6 @@ public class SFEE_production_monitor {
 
         try {
             SFEI sfei = sfee.getSFEIbyIndex(sfei_idx);
-
             if (sfei.getPartsATM().size() > 0) {
                 // In the case of Transport, the most recent part that arrives in the out sensor is the last()
                 part movingPart = Objects.requireNonNull(sfei.getPartsATM().last());
@@ -234,6 +234,7 @@ public class SFEE_production_monitor {
 //                } else {
 //                    movingPart.setState(part.status.WAIT_TRANSPORT);
 //                }
+
                 movingPart.setState(part.status.WAIT_TRANSPORT);
 
                 /* DATABASE save -> production_history table */

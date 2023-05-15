@@ -112,7 +112,7 @@ public class produce_more2 extends failures_conditions {
         switch (state) {
             case WORKING, WAITING -> {
                 if (state != old_state) {
-                    System.out.println("P_More -> " + state);
+//                    System.out.println("P_More -> " + state);
                 }
             }
             case TURN_ON -> {
@@ -141,10 +141,10 @@ public class produce_more2 extends failures_conditions {
                     if (actVar != null)
                         newOccurrence = new failure_occurrence(type.PRODUCE_MORE, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
                     else
-                        throw new RuntimeException("(breakdown) Activation Variable null but evalConditions was TRUE");
+                        throw new RuntimeException("(Produce More) Activation Variable null but evalConditions was TRUE");
 
 
-                    System.out.println("P_More -> " + state);
+//                    System.out.println("P_More -> " + state);
                 }
             }
             case TURN_OFF -> {
@@ -158,11 +158,13 @@ public class produce_more2 extends failures_conditions {
 
                     newOccurrence = new failure_occurrence();
 
-                    System.out.println("P_More -> " + state);
+//                    System.out.println("P_More -> " + state);
                 }
             }
         }
-
+        if (old_state != state) {
+            System.out.println("*** Produce More on " + sfeiConveyor.getName() + " -> [" + state + "]");
+        }
         old_state = state;
 //        return state != SM.WORKING;
     }

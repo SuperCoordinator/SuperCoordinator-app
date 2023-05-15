@@ -1,7 +1,7 @@
 package failures.newVersion;
 
 import failures.newVersion.formulas.gaussFormula;
-import failures.newVersion.formulas.linearFormula;
+import failures.newVersion.formulas.deterministicFormula;
 import failures.newVersion.formulas.probFormula;
 
 import java.time.Duration;
@@ -18,15 +18,15 @@ public class validation {
 
     private enum formulaType {
         GAUSSIAN,
-        LINEAR,
+        DETERMINISTIC,
         PROBABILITY
     }
 
     private final formulaType formulaPrefix;
 
-    private final failures.newVersion.formulas.gaussFormula gaussFormula;
-    private final failures.newVersion.formulas.linearFormula linearFormula;
-    private final failures.newVersion.formulas.probFormula probFormula;
+    private final gaussFormula gaussFormula;
+    private final deterministicFormula deterministicFormula;
+    private final probFormula probFormula;
 
 
     public validation(gaussFormula gaussFormula, method validationMethod) {
@@ -34,14 +34,14 @@ public class validation {
         this.gaussFormula = gaussFormula;
         this.formulaPrefix = formulaType.GAUSSIAN;
 
-        this.linearFormula = new linearFormula();
+        this.deterministicFormula = new deterministicFormula();
         this.probFormula = new probFormula();
     }
 
-    public validation(linearFormula linearFormula, method validationMethod) {
+    public validation(deterministicFormula deterministicFormula, method validationMethod) {
         this.validationMethod = validationMethod;
-        this.linearFormula = linearFormula;
-        this.formulaPrefix = formulaType.LINEAR;
+        this.deterministicFormula = deterministicFormula;
+        this.formulaPrefix = formulaType.DETERMINISTIC;
 
         this.gaussFormula = new gaussFormula();
         this.probFormula = new probFormula();
@@ -53,7 +53,7 @@ public class validation {
         this.formulaPrefix = formulaType.PROBABILITY;
 
         this.gaussFormula = new gaussFormula();
-        this.linearFormula = new linearFormula();
+        this.deterministicFormula = new deterministicFormula();
     }
 
 
@@ -67,16 +67,20 @@ public class validation {
                 (Duration.between(start_t, Instant.now()).toMinutes() >= 1 && validationMethod.equals(method.TIME))) {
 
             if (formulaPrefix.equals(formulaType.GAUSSIAN)) {
-                System.out.println(formulaPrefix + "currVal: " + gaussFormula.getCurrentValue() + " var: " + var);
+                System.out.println(formulaPrefix + " currValue: " + gaussFormula.getCurrentValue() + " var: " + var);
                 res = gaussFormula.getCurrentValue() == var;
+                if (var > 0)
+                    res = res || var % gaussFormula.getCurrentValue() == 0;
                 if (res) {
                     gaussFormula.setNextValue();
                     System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
                 }
-            } else if (formulaPrefix.equals(formulaType.LINEAR)) {
+            } else if (formulaPrefix.equals(formulaType.DETERMINISTIC)) {
 
-                // Verification of linear formula
-                res = linearFormula.getCurrentValue() == var;
+                // Verification of deterministic formula
+                res = deterministicFormula.getCurrentValue() == var;
+                if (var > 0)
+                    res = res || var % deterministicFormula.getCurrentValue() == 0;
                 if (res)
                     System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
 
@@ -85,11 +89,14 @@ public class validation {
                 //    Verificate the condition, that is, the variable with the threshold
                 //    IF true -> return the currentValue and calculate another one
                 //    ELSE -> return false
-                if (var == probFormula.getCurrentValue()) {
+
+                if ((var == probFormula.getCurrentValue() || var > 0) && var % probFormula.getCurrentValue() == 0) {
                     res = probFormula.getState();
                     if (res)
                         System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
                 }
+
+
             }
 
             if (validationMethod.equals(method.TIME))

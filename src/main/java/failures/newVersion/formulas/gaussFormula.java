@@ -34,13 +34,15 @@ public class gaussFormula extends formula {
     private int array_index = -1;
 
     public void setNextValue() {
-        if (array_index < array.size())
-            array_index++;
-        else
-            array_index = 0;
+        do {
+            if (array_index < array.size())
+                array_index++;
+            else
+                array_index = 0;
 
-        System.out.println("GAUSS currentValue: " + array.get(array_index).intValue());
-        setCurrentValue(array.get(array_index).intValue());
+            System.out.println("GAUSSIAN nextValue: " + array.get(array_index).intValue());
+            setCurrentValue(array.get(array_index).intValue());
+        } while (getCurrentValue() == 0);
     }
 
 

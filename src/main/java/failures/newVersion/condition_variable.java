@@ -1,7 +1,7 @@
 package failures.newVersion;
 
 import failures.newVersion.formulas.gaussFormula;
-import failures.newVersion.formulas.linearFormula;
+import failures.newVersion.formulas.deterministicFormula;
 import failures.newVersion.formulas.probFormula;
 
 public class condition_variable {
@@ -21,8 +21,8 @@ public class condition_variable {
         if (condition.contains("gauss")) {
             this.validation = new validation(newGaussFormula(condition), method);
 
-        } else if (condition.contains("linear")) {
-            this.validation = new validation(newLinearFormula(condition), method);
+        } else if (condition.contains("det")) {
+            this.validation = new validation(newDeterministicFormula(condition), method);
 
         } else if (condition.contains("prob")) {
             this.validation = new validation(newProbFormula(condition), method);
@@ -38,9 +38,9 @@ public class condition_variable {
         return new gaussFormula(removeSpaces(mean), removeSpaces(dev));
     }
 
-    private linearFormula newLinearFormula(String condition) {
+    private deterministicFormula newDeterministicFormula(String condition) {
         String value = condition.substring(condition.indexOf('[') + 1, condition.indexOf(']'));
-        return new linearFormula(removeSpaces(value));
+        return new deterministicFormula(removeSpaces(value));
     }
 
     private probFormula newProbFormula(String condition) {

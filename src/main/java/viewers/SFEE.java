@@ -185,7 +185,7 @@ public class SFEE {
 
         System.out.println("SFEE Operation Time?");
         System.out.println("Valid variables: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
-        System.out.println("Valid operator: + - * / % or gauss[ mean ; dev ] linear[ value ] ");
+        System.out.println("Valid operator: + - * / % or gauss [ mean ; dev ] linear [ value ] ");
         System.out.println("Please insert a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]");
         System.out.print("Enter expression:");
         do {
@@ -247,11 +247,11 @@ public class SFEE {
         System.out.println("Defined variables x[ n, a, m]: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
         System.out.println("Valid operations");
         System.out.println("   -- gauss  [ x ; y ]        => x,y are the numbers related to mean and dev, respectively ");
-        System.out.println("   -- prob   [ x ]    (op)  p => x is a number related to the variable [x] / op [>,=,<,<=,>=] / p [0, 100] ");
-        System.out.println("   -- linear [ x ]            => x is a number related to the variable [x]");
+        System.out.println("   -- prob   [ x ] (op) p     => x is a number related to the variable [x] / op [>,=,<,<=,>=] / p [0, 100] ");
+        System.out.println("   -- det [ x ]               => x is a number related to the variable [x]");
         System.out.println("That example is interpreted as: the probability of failures after x units (parts or minutes ) is op than p");
         System.out.println("Please insert a space between each character/number (p.e: prob [ 20 ] >= 50 )");
-
+        System.out.println("Write 'no' for pass to next expression!");
 
         System.out.println("BREAKDOWN WITH REPAIR ");
         System.out.println("   BREAK ");
