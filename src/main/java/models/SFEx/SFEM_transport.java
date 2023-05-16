@@ -15,7 +15,9 @@ public class SFEM_transport extends SFEM {
     public enum configuration {
         SFEI2SFEI,
         WH2SFEI,
-        SFEI2WH
+        SFEI2WH,
+        WH2RealSFEI,
+        RealSFEI2WH
     }
 
     @XmlElement

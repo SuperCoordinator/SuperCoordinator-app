@@ -4,6 +4,7 @@ import communication.modbus;
 //import failures.oldVersion.SFEE_failures;
 import failures.newVersion.SFEE_production_failures2;
 import failures.stochasticTime;
+import models.SFEx.SFEI_pusher;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.SFEx.SFEI_conveyor;
@@ -395,6 +396,17 @@ public class cSFEE_production {
             }
 
             if (scene == 12) {
+                addNewSFEI_pusher("MCS_Pusher",
+                        "s_pusher_back",
+                        "s_pusher_forward",
+                        Instant.now(),
+                        Instant.now(),
+                        false,
+                        false,
+                        "pusher_back",
+                        "pusher_forward",
+                        true,
+                        false);
                 addNewSFEI_machine("MCS_MC1",
                         new partDescription(partDescription.material.UNKNOWN, partDescription.form.UNKNOWN),
                         "s_pusher_forward",
@@ -404,9 +416,9 @@ public class cSFEE_production {
                         false,
                         false,
                         "none",
-                        "none",
+                        "s_conveyor1",
                         "machine1_tool",
-                        true,
+                        false,
                         false);
                 addNewSFEI_machine("MCS_MC2",
                         new partDescription(partDescription.material.UNKNOWN, partDescription.form.UNKNOWN),
@@ -417,7 +429,7 @@ public class cSFEE_production {
                         false,
                         false,
                         "none",
-                        "none",
+                        "s_conveyor2",
                         "machine2_tool",
                         false,
                         true);
@@ -529,7 +541,7 @@ public class cSFEE_production {
             int sfeiType = Integer.parseInt(viewer.SFEI_type());
             String[] inputs = viewer.SFEI_params(i, sfeiType, viewer.isSFEI_simulated());
             if (sfeiType == 1) {
-                if (sfee.getSFEE_type().equals(SFEE.SFEE_environment.SIMULATION)) {
+                if (sfee.getSFEE_environment().equals(SFEE.SFEE_environment.SIMULATION)) {
 
 /*
                     addNewSFEI_conveyor(
@@ -626,7 +638,6 @@ public class cSFEE_production {
         vector[6] = sfee.getIObyName(aConveyorMotor);
         SFEI_conveyor newObj = new SFEI_conveyor(
                 name,
-                SFEI.SFEI_type.CONVEYOR,
                 sfee.getIObyName(inSensor),
                 sfee.getIObyName(outSensor),
                 dayOfBirth, dayOfLastMaintenance,
@@ -636,11 +647,21 @@ public class cSFEE_production {
 
     }
 
-/*    public SFEI_conveyor addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, String conveyorMotor, boolean is_line_start, boolean is_line_end) {
-        SFEI_conveyor newObj = new SFEI_conveyor(name, SFEI.SFEI_type.CONVEYOR, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, is_line_start, is_line_end, sfee.getIObyName(conveyorMotor));
+    private void addNewSFEI_pusher(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
+                                   boolean isSimulation, boolean supportFailures, String aBackMotor, String aForwardMotor,
+                                   boolean is_line_start, boolean is_line_end) {
+
+        SFEI_pusher newObj = new SFEI_pusher(
+                name,
+                sfee.getIObyName(inSensor),
+                sfee.getIObyName(outSensor),
+                dayOfBirth, dayOfLastMaintenance,
+                isSimulation, supportFailures, is_line_start, is_line_end,
+                sfee.getIObyName(aBackMotor), sfee.getIObyName(aForwardMotor));
+
         sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
-        return newObj;
-    }*/
+
+    }
 
     public void addNewSFEI_machine(String name, partDescription partDescription, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportsFailures, String aProduce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
         sensor_actuator[] vector = new sensor_actuator[3];
@@ -662,7 +683,7 @@ public class cSFEE_production {
 
         // Detect if it is the starting of the line, so it is the Sorting Station case!
 //        for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
-//            if (entry.getValue().isLine_start() && sfee.getSFEE_type().equals(SFEE.SFEE_environment.SIMULATION)) {
+//            if (entry.getValue().isLine_start() && sfee.getSFEE_environment().equals(SFEE.SFEE_environment.SIMULATION)) {
 //                sfee.setSFEE_function(SFEE.SFEE_role.SORTING_STATION);
 //                break;
 //            }
@@ -786,7 +807,7 @@ public class cSFEE_production {
     }
 
     public void launchSimulation() {
-        if (sfee.getSFEE_type().equals(SFEE.SFEE_environment.SIMULATION))
+        if (sfee.getSFEE_environment().equals(SFEE.SFEE_environment.SIMULATION))
             mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Run)").getBit_offset(), 1);
         else
             mb.writeSingleCoil(sfee.getIObyName("start_module").getBit_offset(), 1);

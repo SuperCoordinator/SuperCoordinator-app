@@ -323,7 +323,6 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
 
                 SFEI_conveyor newObj = new SFEI_conveyor(
                         sfeiName.getText(),
-                        SFEI.SFEI_type.CONVEYOR,
                         utils.getInstance().getSearch().getIObyName(input_sensor.getValue(), io),
                         utils.getInstance().getSearch().getIObyName(output_sensor.getValue(), io),
                         Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),

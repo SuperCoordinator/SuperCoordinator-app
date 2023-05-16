@@ -77,7 +77,7 @@ public class SFEE_production_monitor {
             // default -> LID
             default_partForm = partDescription.form.LID;
 
-            if (sfee.getSFEE_function().equals(SFEE.SFEE_role.PRODUCTION)) {
+            if (sfee.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION)) {
                 for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet())
                     if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
                         SFEI_machine temp = (SFEI_machine) sfeiEntry.getValue();
@@ -101,20 +101,23 @@ public class SFEE_production_monitor {
                 updateSFEI_machinePartType(actuatorsState);
                 firstRun = false;
             }
-
-            productionMonitor(sensorsState);
+            switch (sfee.getSFEE_environment()) {
+                case SIMULATION -> simulationProductionMonitor(sensorsState);
+                case REAL -> realProductionMonitor(sensorsState);
+            }
 
             if (visionSensorLocation != null)
                 updatePartDescription(inputRegsValue);
 
-            printDBG();
+//            printDBG();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void productionMonitor(List<Object> sensorsState) {
+
+    private void simulationProductionMonitor(List<Object> sensorsState) {
 
         try {
             boolean isLineStart = false;
@@ -197,6 +200,70 @@ public class SFEE_production_monitor {
         }
     }
 
+    private void realProductionMonitor(List<Object> sensorsState) {
+        try {
+            for (int sfei_idx = 0; sfei_idx < sfee.getSFEIs().size(); sfei_idx++) {
+                SFEI sfei = sfee.getSFEIbyIndex(sfei_idx);
+
+                sensor_actuator sfei_inSensor = sfei.getInSensor();
+                sensor_actuator sfei_outSensor = sfei.getOutSensor();
+
+                boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
+                boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
+
+                if (sfei_idx == 0) {
+                    /* Can be or not the startLine,
+                     * so SFEI with idx == 1 will accept the part from this one. */
+                    if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx]) || b_inSensor) {
+//                        System.out.println(sfei_inSensor.getName() + " is ON");
+                        Iterator<part> iterator = sfee.getSFEIbyIndex(sfei_idx).getPartsATM().iterator();
+//                        System.out.println(sfee.getSFEIbyIndex(sfei_idx).getPartsATM().size());
+                        if (iterator.hasNext()) {
+                            part movingPart = iterator.next();
+                            /* DATABASE save -> production_history table */
+                            dbConnection.getInstance().getProduction_history().insert(
+                                    movingPart.getId(),
+                                    sfei.getInSensor().getName(),
+                                    movingPart.getReality().material().toString(),
+                                    movingPart.getReality().form().toString(),
+                                    Instant.now());
+                        }
+                    }
+
+                    if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+//                        System.out.println(sfei_outSensor.getName() + " is ON");
+                        /* Remove the part from the previous SFEI and place on the next one. */
+                        movePart(sfei_idx, sfei_idx + 1, sfei.getOutSensor().getName());
+                    }
+
+                } else if (sfei_idx < sfee.getSFEIs().size() - 1) {
+                    /* Intermediate SFEIs, only move part between them
+                     * Move part to the next SFEI. */
+
+                    if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                        /* Remove the part from the previous SFEI and place on the next one. */
+                        movePart(sfei_idx, sfei_idx + 1, sfei.getOutSensor().getName());
+                    }
+
+
+                } else if (sfei_idx == sfee.getSFEIs().size() - 1) {
+                    /* This is the last SFEI of this SFEE ?:
+                     *      1 - YES. It is line end, so part is PRODUCED (wait for the transport to be shipped)
+                     *      2 - NO. Wait for the transport. It will remove the part from SFEI partsATM. */
+
+                    if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
+                        sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
+                        markPartForTransport(sfei_idx);
+                    }
+                }
+                // Only update in the end in order to all functions see the values at the read moment
+                SFEIs_old_inSensors[sfei_idx] = b_inSensor;
+                SFEIs_old_outSensors[sfei_idx] = b_outSensor;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void movePart(int origin_sfei, int destination_sfei, String sensor_name) {
 
@@ -207,6 +274,10 @@ public class SFEE_production_monitor {
 
                 /* Increment the number of parts moved by the SFEI sfei_idx */
                 sfee.getSFEIbyIndex(origin_sfei).setnPiecesMoved(sfee.getSFEIbyIndex(origin_sfei).getnPiecesMoved() + 1);
+
+//                System.out.println("MOVED " + movingPart +
+//                        " from: " + sfee.getSFEIbyIndex(origin_sfei).getName() +
+//                        " to: " + sfee.getSFEIbyIndex(destination_sfei).getName());
 
                 /* DATABASE save -> production_history table */
                 dbConnection.getInstance().getProduction_history().insert(
@@ -234,8 +305,8 @@ public class SFEE_production_monitor {
 //                } else {
 //                    movingPart.setState(part.status.WAIT_TRANSPORT);
 //                }
-
                 movingPart.setState(part.status.WAIT_TRANSPORT);
+//                System.out.println("MARKED " + movingPart + " FOR TRANSPORT");
 
                 /* DATABASE save -> production_history table */
                 dbConnection.getInstance().getProduction_history().insert(
@@ -256,7 +327,7 @@ public class SFEE_production_monitor {
         try {
             for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet()) {
 
-                if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE) && sfee.getSFEE_type().equals(SFEE.SFEE_environment.SIMULATION)) {
+                if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE) && sfee.getSFEE_environment().equals(SFEE.SFEE_environment.SIMULATION)) {
 
                     SFEI_machine sfei = (SFEI_machine) sfeiEntry.getValue();
 
@@ -289,7 +360,7 @@ public class SFEE_production_monitor {
                             part p = Objects.requireNonNull(sfeiConveyor.getPartsATM().last());
                             if (!p.getReality().form().equals(actualDescription.form())) {
                                 p.setReality(actualDescription);
-                                System.out.println("[" + entry.getValue().getName() + "] " + p);
+//                                System.out.println("[" + entry.getValue().getName() + "] " + p);
                             }
                         }
                     }

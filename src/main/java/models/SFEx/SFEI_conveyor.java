@@ -30,10 +30,10 @@ public class SFEI_conveyor extends SFEI {
         super();
     }
 
-    public SFEI_conveyor(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
+    public SFEI_conveyor(String name, sensor_actuator inSensor, sensor_actuator outSensor,
                          Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation,
                          boolean supportsFailures, boolean line_start, boolean line_end, sensor_actuator[] sensorActuators) {
-        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, isSimulation, supportsFailures, line_start, line_end);
+        super(name, SFEI_type.CONVEYOR, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, isSimulation, supportsFailures, line_start, line_end);
 
         if (supportsFailures && isSimulation) {
             this.aRemover = sensorActuators[0];

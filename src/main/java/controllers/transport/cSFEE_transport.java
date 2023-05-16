@@ -192,14 +192,14 @@ public class cSFEE_transport {
             List<Object> coilsState_outMB = new ArrayList<>();
 
             switch (configuration) {
-                case WH2SFEI -> {
+                case WH2SFEI,WH2RealSFEI -> {
                     discreteInputsState_outMB = new ArrayList<>(outMB.readDiscreteInputs());
                     coilsState_outMB = new ArrayList<>(outMB.readCoils());
                     coilsState_outMB = new ArrayList<>(Collections.nCopies(coilsState_outMB.size(), -1));
                     holdRegsValues_outMB = new ArrayList<>(outMB.readHoldingRegisters());
                     holdRegsValues_outMB = new ArrayList<>(Collections.nCopies(holdRegsValues_outMB.size(), -1));
                 }
-                case SFEI2WH -> {
+                case SFEI2WH,RealSFEI2WH -> {
                     discreteInputsState_inMB = new ArrayList<>(inMB.readDiscreteInputs());
                     coilsState_inMB = new ArrayList<>(inMB.readCoils());
                     coilsState_inMB = new ArrayList<>(Collections.nCopies(coilsState_inMB.size(), -1));
@@ -230,11 +230,11 @@ public class cSFEE_transport {
             sfeeMonitor.loop(inputs);
 
             switch (configuration) {
-                case WH2SFEI -> {
+                case WH2SFEI,WH2RealSFEI -> {
                     outMB.writeCoils(coilsState_outMB);
                     outMB.writeRegisters(holdRegsValues_outMB);
                 }
-                case SFEI2WH -> {
+                case SFEI2WH,RealSFEI2WH -> {
                     inMB.writeCoils(coilsState_inMB);
                 }
                 default -> {

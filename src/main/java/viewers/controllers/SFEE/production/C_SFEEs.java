@@ -113,7 +113,7 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
 
         // Only executed when C_ShopFloor.getInstance().isLoadedConfig() == TRUE
         C_SFEE_properties cSfeeProperties = new C_SFEE_properties();
-        cSfeeProperties.loadData(cSFEEProduction.getSFEE().getSFEE_type(), cSFEEProduction.getSFEE().getSFEE_function());
+        cSfeeProperties.loadData(cSFEEProduction.getSFEE().getSFEE_environment(), cSFEEProduction.getSFEE().getSFEE_role());
 
         C_SFEE_communication cSfeeCommunication = new C_SFEE_communication();
         String[] comsFields = {cSFEEProduction.getMb().getIp(), String.valueOf(cSFEEProduction.getMb().getPort()), String.valueOf(cSFEEProduction.getMb().getSlaveID())};
@@ -121,7 +121,7 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
 
         C_SFEE_items cSfeeItems = new C_SFEE_items();
         // setIo() by default create new sfeisController instance
-        cSfeeItems.setIo(cSFEEProduction.getSFEE().getIo(), cSFEEProduction.getSFEE().getSFEE_type());
+        cSfeeItems.setIo(cSFEEProduction.getSFEE().getIo(), cSFEEProduction.getSFEE().getSFEE_environment());
 
         for (Map.Entry<Integer, SFEI> entry : cSFEEProduction.getSFEE().getSFEIs().entrySet()) {
             switch (entry.getValue().getSfeiType()) {

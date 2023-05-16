@@ -173,7 +173,7 @@ public class SFEE_production_failures2 {
             // associate with the correct SFEI to manipulate the time
             if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
                 int minSFEEminOperation_t = 0;
-                if (sfee.getSFEE_function().equals(SFEE.SFEE_role.PRODUCTION)) {
+                if (sfee.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION)) {
                     minSFEEminOperation_t = calculateSFEEMinOperationTime();
                 }
 
@@ -195,7 +195,7 @@ public class SFEE_production_failures2 {
         }
 
         // Delete the completed tasks
-        stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isMachineFinished());
+        stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isPusherFinished() || object.isMachineFinished());
 
     }
 

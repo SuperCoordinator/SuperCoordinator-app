@@ -63,17 +63,14 @@ public class SFEE {
         return name;
     }
 
-    public SFEE_environment getSFEE_type() {
+    public SFEE_environment getSFEE_environment() {
         return SFEE_environment;
     }
 
-    public SFEE_role getSFEE_function() {
+    public SFEE_role getSFEE_role() {
         return sfeeRole;
     }
 
-    public void setSFEE_function(SFEE_role SFEE_role) {
-        this.sfeeRole = SFEE_role;
-    }
 
     public communicationOption getCom() {
         return com;

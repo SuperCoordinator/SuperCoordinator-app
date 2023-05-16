@@ -74,7 +74,7 @@ public class SFEE_production_monitor_old {
         // default -> LID
         default_partForm = partDescription.form.LID;
 
-        if (sfee.getSFEE_function().equals(SFEE.SFEE_role.PRODUCTION)) {
+        if (sfee.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION)) {
             for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet())
                 if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
                     SFEI_machine temp = (SFEI_machine) sfeiEntry.getValue();
@@ -121,7 +121,7 @@ public class SFEE_production_monitor_old {
                 boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
 
 
-                if (sfee.getSFEE_function().equals(SFEE.SFEE_role.SORTING_STATION)) {
+                if (sfee.getSFEE_role().equals(SFEE.SFEE_role.SORTING_STATION)) {
                     if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx])) {
                         // New part arriving at specific conveyor -> result of separation
 
@@ -271,7 +271,7 @@ public class SFEE_production_monitor_old {
     private void updateSFEI_machinePartType(List<Object> actuatorsState) {
         for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet()) {
 
-            if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE) && sfee.getSFEE_type().equals(SFEE.SFEE_environment.SIMULATION)) {
+            if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE) && sfee.getSFEE_environment().equals(SFEE.SFEE_environment.SIMULATION)) {
 
                 SFEI_machine sfei = (SFEI_machine) sfeiEntry.getValue();
 

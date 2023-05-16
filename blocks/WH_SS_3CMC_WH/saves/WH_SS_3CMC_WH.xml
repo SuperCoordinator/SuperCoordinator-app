@@ -424,6 +424,7 @@
         </sfeeTransportController>
     </c_Transport>
     <!--  Transport between SFEIs -->
+    <!-- metal_entry -> metalPL   -->
     <c_Transport>
         <sfem sfemRole="TRANSPORT" name="SFEM_T1_metal_entry2metalPL">
             <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T1_metal_entry2metalPL">
@@ -453,6 +454,7 @@
             </sfeeFailures>
         </sfeeTransportController>
     </c_Transport>
+    <!-- green_entry -> greenPL   -->
     <c_Transport>
         <sfem sfemRole="TRANSPORT" name="SFEM_T2_green_entry2greenPL">
             <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T2_green_entry2greenPL">
@@ -482,6 +484,7 @@
             </sfeeFailures>
         </sfeeTransportController>
     </c_Transport>
+    <!-- blue_entry -> bluePL   -->
     <c_Transport>
         <sfem sfemRole="TRANSPORT" name="SFEM_T3_blue_entry2bluePL">
             <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T3_blue_entry2bluePL">

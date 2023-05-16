@@ -46,7 +46,7 @@ public class serializer {
         WH_SS_3CMC_WH
     }
 
-    public final scenes scene = scenes.WH_SS_3CMC_WH;
+    public final scenes scene = scenes.MC_Staudinger;
     private final String filePath = "blocks/" + scene + "/saves/" + scene;
 
     private serializable serializable = new serializable();
@@ -178,11 +178,11 @@ public class serializer {
             Pair<SFEE, SFEI> in, out;
 
             switch (configuration) {
-                case WH2SFEI -> {
+                case WH2SFEI,WH2RealSFEI -> {
                     in = new Pair<>((SFEE) transportControllers.get(3), (SFEI) transportControllers.get(5));
                     out = searchSFEE_SFEIbySFEI_name((String) transportControllers.get(6));
                 }
-                case SFEI2WH -> {
+                case SFEI2WH,RealSFEI2WH -> {
                     in = searchSFEE_SFEIbySFEI_name((String) transportControllers.get(5));
                     out = new Pair<>((SFEE) transportControllers.get(4), (SFEI) transportControllers.get(6));
                 }

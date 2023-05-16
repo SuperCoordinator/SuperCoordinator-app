@@ -3,6 +3,7 @@ package models.base;
 import failures.newVersion.failure_occurrence;
 import models.SFEx.SFEI_conveyor;
 import models.SFEx.SFEI_machine;
+import models.SFEx.SFEI_pusher;
 import models.SFEx.SFEI_transport;
 import models.sensor_actuator;
 import org.apache.commons.math3.util.Pair;
@@ -18,10 +19,12 @@ import java.util.TreeSet;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlSeeAlso({SFEI_conveyor.class, SFEI_machine.class, SFEI_transport.class})
+@XmlSeeAlso({SFEI_conveyor.class, SFEI_machine.class, SFEI_transport.class, SFEI_pusher.class})
 public class SFEI {
+
     public enum SFEI_type {
         CONVEYOR,
+        PUSHER,
         MACHINE,
         TRANSPORT,
         WAREHOUSE
@@ -175,7 +178,6 @@ public class SFEI {
     public boolean isSupportsFailures() {
         return supportsFailures;
     }
-
 
     public boolean isLine_start() {
         return line_start;
