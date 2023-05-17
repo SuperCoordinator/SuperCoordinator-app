@@ -1,7 +1,9 @@
+
 import communication.database.dbConnection;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
+
 import models.SFEx.SFEM_production;
 import models.SFEx.SFEM_transport;
 import models.SFEx.SFEM_warehouse;
@@ -158,7 +160,7 @@ public class App {
                     Pair<Pair<String, String>, Pair<String, String>> names = transport.getPrevNext_SFEE_SFEI_names();
 
                     switch (transport.getSfem().getTransport_configuration()) {
-                        case SFEI2SFEI -> {
+                        case SFEI2SFEI,SFEI2RealSFEI,RealSFEI2SFEI -> {
                             Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(names.getFirst().getFirst());
                             Pair<SFEE, cSFEM_production> outSFEE = serializer.getInstance().searchSFEEbyName(names.getSecond().getFirst());
 
@@ -168,7 +170,7 @@ public class App {
                                     serializer.getInstance().searchSFEIbySFEE(inSFEE.getFirst(), names.getFirst().getSecond()),
                                     serializer.getInstance().searchSFEIbySFEE(outSFEE.getFirst(), names.getSecond().getSecond()));
                         }
-                        case WH2SFEI,WH2RealSFEI -> {
+                        case WH2SFEI, WH2RealSFEI -> {
                             Pair<SFEE, cSFEM_production> conSFEE = serializer.getInstance().searchSFEEbyName(names.getSecond().getFirst());
                             transport.setupSFEETransportController(
                                     null,
@@ -176,7 +178,7 @@ public class App {
                                     serializer.getInstance().getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0),
                                     serializer.getInstance().searchSFEIbySFEE(conSFEE.getFirst(), names.getSecond().getSecond()));
                         }
-                        case SFEI2WH,RealSFEI2WH -> {
+                        case SFEI2WH, RealSFEI2WH -> {
                             Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(names.getFirst().getFirst());
                             transport.setupSFEETransportController(
                                     inSFEE.getSecond().searchMBbySFEE(inSFEE.getFirst().getName()),
@@ -195,7 +197,7 @@ public class App {
 
             /* ---- DATABASE  ---- */
             serializer.getInstance().updateDB();
-            dbConnection.getInstance().initializeDB();
+//            dbConnection.getInstance().initializeDB();
             scheduler.scheduleAtFixedRate(dbConnection.getInstance(), 0, 1, TimeUnit.SECONDS);
 
             /* ------------------- */
@@ -232,6 +234,8 @@ public class App {
         ArrayList<Object> controllerData = new ArrayList<>();
         ArrayList<Object> operationModeData = new ArrayList<>();
 
+        SFEM_transport.configuration configuration = transportConfig;
+
         switch (transportConfig) {
             case SFEI2SFEI -> {
                 System.out.print("SFEM transport name ? ");
@@ -242,6 +246,9 @@ public class App {
 
                 System.out.println("Input SFEE name to connect with " + sfem_transport_name + " ?");
                 Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
+                if (inSFEE.getFirst().getSFEE_environment().equals(SFEE.SFEE_environment.REAL))
+                    configuration = SFEM_transport.configuration.RealSFEI2SFEI;
+
                 System.out.println("Connection Input SFEI?");
                 int index = 0;
                 for (Map.Entry<Integer, SFEI> entry : inSFEE.getFirst().getSFEIs().entrySet()) {
@@ -252,6 +259,9 @@ public class App {
 
                 System.out.println("Output SFEE name to connect with " + sfem_transport_name + " ?");
                 Pair<SFEE, cSFEM_production> outSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
+                if (outSFEE.getFirst().getSFEE_environment().equals(SFEE.SFEE_environment.REAL))
+                    configuration = SFEM_transport.configuration.SFEI2RealSFEI;
+
                 System.out.println("Connection Output SFEI?");
                 index = 0;
                 for (Map.Entry<Integer, SFEI> entry : outSFEE.getFirst().getSFEIs().entrySet()) {
@@ -280,7 +290,7 @@ public class App {
                 data.add(1, sfee_transport_name);
 
             }
-            case WH2SFEI,WH2RealSFEI -> {
+            case WH2SFEI, WH2RealSFEI -> {
                 // Special Transport Module: warehouse -> in SFEI
 
                 data.add(0, "SFEM_T_WH2SFEI");
@@ -315,7 +325,7 @@ public class App {
 
                 operationModeData = new ArrayList<>(List.of(viewer.SFEE_stochasticTime()));
             }
-            case SFEI2WH,RealSFEI2WH -> {
+            case SFEI2WH, RealSFEI2WH -> {
                 // Special Transport Module: in SFEI -> warehouse
 
                 data.add(0, "SFEM_T_SFEM2WH");
@@ -354,7 +364,8 @@ public class App {
             }
         }
 
-        serializer.getInstance().new_cSFEM_transport(transportConfig, data, controllerData, operationModeData);
+
+        serializer.getInstance().new_cSFEM_transport(configuration, data, controllerData, operationModeData);
 
     }
 }

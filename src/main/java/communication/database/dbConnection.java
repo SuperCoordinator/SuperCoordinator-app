@@ -1,11 +1,16 @@
 package communication.database;
 
 import communication.database.mediators.*;
+import org.apache.ibatis.jdbc.ScriptRunner;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -42,18 +47,18 @@ public class dbConnection implements Runnable {
     public void setDatabase(String database) {
         try {
             this.database = database;
-            DriverManager.getConnection(url + database, user, pass);
-
+            this.con.setCatalog(database);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
     public synchronized Connection getConnection() {
         try {
 
-            if (con == null) {
-                return DriverManager.getConnection(url + database, user, pass);
+            if (con == null || con.isClosed()) {
+                con = DriverManager.getConnection(url, user, pass);
+                con.setAutoCommit(true);
             }
             return con;
         } catch (SQLException e) {
@@ -119,52 +124,42 @@ public class dbConnection implements Runnable {
     private ArrayList<queries_buffer> tables = new ArrayList<>();
     private int table_idx = 0;
 
-    public void initializeDB() {
-        try {
-            // The order is important, mainly in the first execution as the static tables (until sensors, including)
-            tables.add(sf_configuration);
-            tables.add(sfems);
-            tables.add(sfees);
-            tables.add(sfeis);
-            tables.add(sensors);
-            tables.add(inbound_orders);
-            tables.add(outbound_orders);
-            tables.add(parts);
-            tables.add(production_history);
-            int i = 0;
-            for (queries_buffer buffer : tables) {
-                if (buffer.getStoredQueries().size() > 0) {
-                    if (i == 6) {
-                        // Sleep between outbound -> parts
-                        Thread.sleep(100);
-                    }
-                    buffer.runQueries(getConnection());
-                }
-                i++;
-            }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-    }
+//    public void initializeDB() {
+//        // The order is important, mainly in the first execution as the static tables (until sensors, including)
+//        tables.add(sf_configuration);
+//        tables.add(sfems);
+//        tables.add(sfees);
+//        tables.add(sfeis);
+//        tables.add(sensors);
+//        tables.add(inbound_orders);
+//        tables.add(outbound_orders);
+//        tables.add(parts);
+//        tables.add(production_history);
+//
+//        for (queries_buffer buffer : tables) {
+//            if (buffer.getStoredQueries().size() > 0) {
+//                buffer.runQueries(getConnection());
+//            }
+//        }
+//
+//    }
 
     @Override
     public void run() {
         try {
-//            if (firstRun) {
-//                // The order is important, mainly in the first execution as the static tables (until sensors, including)
-//                tables.add(sf_configuration);
-//                tables.add(sfems);
-//                tables.add(sfees);
-//                tables.add(sfeis);
-//                tables.add(sensors);
-//                tables.add(inbound_orders);
-//                tables.add(outbound_orders);
-//                tables.add(parts);
-//                tables.add(production_history);
-//                firstRun = false;
-//            }
+            if (firstRun) {
+                // The order is important, mainly in the first execution as the static tables (until sensors, including)
+                tables.add(sf_configuration);
+                tables.add(sfems);
+                tables.add(sfees);
+                tables.add(sfeis);
+                tables.add(sensors);
+                tables.add(inbound_orders);
+                tables.add(outbound_orders);
+                tables.add(parts);
+                tables.add(production_history);
+                firstRun = false;
+            }
 
             int i = 0;
 //            System.out.print("buffer sizes: ");
@@ -176,7 +171,7 @@ public class dbConnection implements Runnable {
 //                            System.out.println(str_vec);
 //                        }
 //                    }
-                    buffer.runQueries(getConnection());
+                    buffer.runQueries(con);
                 }
                 i++;
             }

@@ -27,6 +27,7 @@ public class queries_buffer {
                 statement.addBatch(iterator.next());
             }
             int[] affectedRows = statement.executeBatch();
+            con.commit();
             for (int i = 0; i < affectedRows.length; i++) {
                 if (affectedRows[i] > 0) {
                     storedQueries.set(i, "");

@@ -46,7 +46,7 @@ public class M_part extends queries_buffer implements IM_part {
                     "ON DUPLICATE KEY UPDATE " +
                     " fk_inbound_orders = " + inbound_order + ";";
             getStoredQueries().add(query);
-//            Statement st = dbConnection.getConnection().createStatement();
+//            Statement st = dbConnection.getInstance().getConnection().createStatement();
 //            st.addBatch(def_vars);
 //            st.addBatch(query);
 //

@@ -11,6 +11,7 @@ import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -43,10 +44,11 @@ public class serializer {
         WH_SS_3CMC,
         MC_Staudinger,
         WH_SS_WH,
-        WH_SS_3CMC_WH
+        WH_SS_3CMC_WH,
+        WH_SS_3CMC_MCS_WH
     }
 
-    public final scenes scene = scenes.MC_Staudinger;
+    public final scenes scene = scenes.WH_SS_3CMC_WH;
     private final String filePath = "blocks/" + scene + "/saves/" + scene;
 
     private serializable serializable = new serializable();
@@ -71,7 +73,9 @@ public class serializer {
     public void saveXML() {
 
         try {
+            dbConnection.getInstance().getConnection();
             createDB();
+
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -87,6 +91,7 @@ public class serializer {
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             serializable = (utility.serialize.serializable) unmarshaller.unmarshal(new FileReader(filePath + ".xml"));
+            dbConnection.getInstance().getConnection();
             createDB();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -95,10 +100,9 @@ public class serializer {
 
     private void createDB() {
         try {
-            String query = "CREATE DATABASE IF NOT EXISTS " + scene + ";";
+            String query = "CREATE DATABASE IF NOT EXISTS " + scene.name() + ";";
             dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
             dbConnection.getInstance().setDatabase(scene.name());
-
             // create tables
             ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
             //Creating a reader object
@@ -106,12 +110,10 @@ public class serializer {
             scriptRunner.setLogWriter(null); // not print in terminal
             //Running the script
             scriptRunner.runScript(reader);
-
         } catch (SQLException | FileNotFoundException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
-
 
     public void updateDB() {
         dbConnection.getInstance().getSf_configuration().insert(scene.name());
@@ -132,7 +134,7 @@ public class serializer {
                     getC_Warehouse().getSfeeWarehouseController().getSfee().getName());
         });
 
-/*        dbConnection.getInstance().getSfeis().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
+/*       dbConnection.getInstance().getSfeis().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
                 getC_Warehouse().getSfeeWarehouseController().getSfee().getName());*/
 
         // Invented in sensor -> warehouse_entryDoor
@@ -178,11 +180,11 @@ public class serializer {
             Pair<SFEE, SFEI> in, out;
 
             switch (configuration) {
-                case WH2SFEI,WH2RealSFEI -> {
+                case WH2SFEI, WH2RealSFEI -> {
                     in = new Pair<>((SFEE) transportControllers.get(3), (SFEI) transportControllers.get(5));
                     out = searchSFEE_SFEIbySFEI_name((String) transportControllers.get(6));
                 }
-                case SFEI2WH,RealSFEI2WH -> {
+                case SFEI2WH, RealSFEI2WH -> {
                     in = searchSFEE_SFEIbySFEI_name((String) transportControllers.get(5));
                     out = new Pair<>((SFEE) transportControllers.get(4), (SFEI) transportControllers.get(6));
                 }

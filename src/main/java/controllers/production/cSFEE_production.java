@@ -81,28 +81,8 @@ public class cSFEE_production {
         try {
             String csv_path;
             switch (scene) {
-                case 0, -1 -> {
-                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC_connection\\simulation\\Tags_CMC-connection_Modbus.csv";
-                    importIO(csv_path, true);
-                }
-                case 3 -> {
-                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC1-connection_Modbus.csv";
-                    importIO(csv_path, true);
-                }
-                case 4 -> {
-                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\CMC2_con_individual\\simulation\\Tags_CMC2-connection_Modbus.csv";
-                    importIO(csv_path, true);
-                }
                 case 5, 6, 7 -> {
                     csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\sorting_station\\simulation\\Tags_sorting_station_Modbus.csv";
-                    importIO(csv_path, true);
-                }
-                case 8 -> {
-                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_sorting_station_Modbus.csv";
-                    importIO(csv_path, true);
-                }
-                case 9, 10, 11 -> {
-                    csv_path = "C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\blocks\\SS_3CMC\\simulation\\Tags_3CMC_Modbus.csv";
                     importIO(csv_path, true);
                 }
                 case 12 -> {

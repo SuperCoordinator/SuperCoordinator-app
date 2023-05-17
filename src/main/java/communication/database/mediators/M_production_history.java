@@ -45,7 +45,7 @@ public class M_production_history extends queries_buffer implements IM_productio
                     " time_stamp = '" + Timestamp.from(timestamp) + "';";
 
             getStoredQueries().add(query);
-//            Statement st = dbConnection.getConnection().createStatement();
+//            Statement st = dbConnection.getInstance().getConnection().createStatement();
 //            st.addBatch(def_vars);
 //            st.addBatch(query);
 //

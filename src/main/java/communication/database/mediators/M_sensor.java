@@ -37,7 +37,7 @@ public class M_sensor extends queries_buffer implements IM_sensor {
                     "   fk_sfei = '" + fk_sfei + "'," +
                     "   in_sensor = " + inSensor + ";";
             getStoredQueries().add(query);
-//            Statement st = dbConnection.getConnection().createStatement();
+//            Statement st = dbConnection.getInstance().getConnection().createStatement();
 //            st.addBatch(def_vars);
 //            st.addBatch(query);
 //

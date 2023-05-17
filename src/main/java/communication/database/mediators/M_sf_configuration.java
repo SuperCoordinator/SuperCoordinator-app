@@ -39,7 +39,7 @@ public class M_sf_configuration extends queries_buffer implements IM_sf_configur
                     "   time_stamp = current_timestamp();";
 
             getStoredQueries().add(query);
-//            Statement st = dbConnection.getConnection().createStatement();
+//            Statement st = dbConnection.getInstance().getConnection().createStatement();
 //            st.addBatch(def_vars);
 //            st.addBatch(query);
 //
@@ -55,7 +55,7 @@ public class M_sf_configuration extends queries_buffer implements IM_sf_configur
 
         try {
             String query = "DELETE FROM sf_configuration WHERE name ='" + sf_config_name + "';";
-//            dbConnection.getConnection().prepareStatement(query).executeUpdate();
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
             getStoredQueries().add(query);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -69,7 +69,7 @@ public class M_sf_configuration extends queries_buffer implements IM_sf_configur
             String query = "UPDATE sf_configuration " +
                     "SET name = '" + new_sf_config_name + "' " +
                     "WHERE name = '" + old_sf_config_name + "';";
-//            dbConnection.getConnection().prepareStatement(query).executeUpdate();
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
             getStoredQueries().add(query);
         } catch (Exception e) {
             throw new RuntimeException(e);

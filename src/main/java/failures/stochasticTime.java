@@ -407,8 +407,10 @@ public class stochasticTime {
                 case REMOVING -> {
                     if (!isRemoverON) {
 //                        System.out.println(smTrans + " aRemover: " + sfeiTransport.getaRemover().getName() + " offset: " + sfeiTransport.getaRemover().getBit_offset());
-                        if (!transportConfiguration.equals(SFEM_transport.configuration.RealSFEI2WH))
+                        if (!transportConfiguration.equals(SFEM_transport.configuration.RealSFEI2WH)
+                                && !transportConfiguration.equals(SFEM_transport.configuration.RealSFEI2SFEI)) {
                             coils_inMB.set(sfeiTransport.getaRemover().getBit_offset(), 1);
+                        }
                         initial_t = Instant.now();
                         isRemoverON = true;
                         // PREPARE THE NEXT EMITTER for correct type
@@ -417,9 +419,12 @@ public class stochasticTime {
 
                     }
                     sensor = (int) discreteInputs_inMB.get(sfeiTransport.getInSensor().getBit_offset()) == 1;
+
                     if (utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sRemover)) {
-                        if (!transportConfiguration.equals(SFEM_transport.configuration.RealSFEI2WH))
+                        if (!transportConfiguration.equals(SFEM_transport.configuration.RealSFEI2WH)
+                                && !transportConfiguration.equals(SFEM_transport.configuration.RealSFEI2SFEI)) {
                             coils_inMB.set(sfeiTransport.getaRemover().getBit_offset(), 0);
+                        }
                         isRemoverON = false;
                         smTrans = SM_trans.WAITING;
                     }
@@ -460,7 +465,8 @@ public class stochasticTime {
                         isEmitterON = true;
                     }
                     sensor = (int) discreteInputs_outMB.get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
-                    if (transportConfiguration.equals(SFEM_transport.configuration.WH2RealSFEI)) {
+                    if (transportConfiguration.equals(SFEM_transport.configuration.WH2RealSFEI)
+                            || transportConfiguration.equals(SFEM_transport.configuration.SFEI2RealSFEI)) {
                         if (utils.getInstance().getLogicalOperator().RE_detector(sensor, old_sEmitter)) {
                             coilsState_outMB.set(sfeiTransport.getaEmitter().getBit_offset(), 0);
                             smTrans = SM_trans.END;

@@ -16,8 +16,11 @@ public class SFEM_transport extends SFEM {
         SFEI2SFEI,
         WH2SFEI,
         SFEI2WH,
+        SFEI2RealSFEI,
+        RealSFEI2SFEI,
         WH2RealSFEI,
         RealSFEI2WH
+
     }
 
     @XmlElement

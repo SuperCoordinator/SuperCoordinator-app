@@ -34,7 +34,7 @@ public class M_sfei extends queries_buffer implements IM_SFEx {
                     "ON DUPLICATE KEY UPDATE" +
                     "   name = '" + sfei_name + "';";
             getStoredQueries().add(query);
-//            Statement st = dbConnection.getConnection().createStatement();
+//            Statement st = dbConnection.getInstance().getConnection().createStatement();
 //            st.addBatch(def_vars);
 //            st.addBatch(query);
 //

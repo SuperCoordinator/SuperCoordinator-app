@@ -45,17 +45,17 @@ public class SFEE_transport_monitor {
 
         try {
             switch (operationMode) {
-                case WH2SFEI,WH2RealSFEI -> {
+                case WH2SFEI, WH2RealSFEI -> {
                     sensor_actuator sfei_outSensor = sfee.getSFEIbyIndex(0).getOutSensor();
                     SFEI_old_outSensors = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
                 }
-                case SFEI2SFEI -> {
+                case SFEI2SFEI, SFEI2RealSFEI, RealSFEI2SFEI -> {
                     sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
                     SFEI_old_inSensors = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
                     sensor_actuator sfei_outSensor = sfee.getSFEIbyIndex(0).getOutSensor();
                     SFEI_old_outSensors = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
                 }
-                case SFEI2WH,RealSFEI2WH -> {
+                case SFEI2WH, RealSFEI2WH -> {
                     sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
                     SFEI_old_inSensors = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
 
@@ -76,12 +76,12 @@ public class SFEE_transport_monitor {
             }
 
             switch (operationMode) {
-                case WH2SFEI,WH2RealSFEI -> {
+                case WH2SFEI, WH2RealSFEI -> {
                     placeNewParts(sensorsState);
 //                    System.out.println("SFEE_transport_monitor loop partsATM size: " + sfee.getSFEIbyIndex(0).getPartsATM().size());
                 }
-                case SFEI2SFEI -> moveParts(sensorsState);
-                case SFEI2WH,RealSFEI2WH -> removeProducedParts(sensorsState);
+                case SFEI2SFEI, SFEI2RealSFEI, RealSFEI2SFEI -> moveParts(sensorsState);
+                case SFEI2WH, RealSFEI2WH -> removeProducedParts(sensorsState);
             }
 
 //            printDBG();
