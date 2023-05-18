@@ -1,4 +1,4 @@
-package failures.newVersion.formulas;
+package failures.formulas;
 
 public class deterministicFormula extends formula {
 

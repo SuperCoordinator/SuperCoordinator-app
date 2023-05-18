@@ -134,7 +134,6 @@ public class SFEE_production_monitor {
                 if (sfei_idx == 0 && sfei.isLine_start()) {
                     /* First conveyor of the Shop Floor.
                      * All the next SFEIs is remove parts from this one. */
-
                     isLineStart = true;
 
                 } else if (sfei_idx == 0) {
@@ -169,10 +168,7 @@ public class SFEE_production_monitor {
                             movePart(0, sfei_idx, sfei.getInSensor().getName());
                         }
                         if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
-                            /* Increment the number of parts moved by the SFEI sfei_idx. */
-                            sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
                             markPartForTransport(sfei_idx);
-
                         }
                     } else {
                         if (utils.getInstance().getLogicalOperator().FE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
@@ -187,7 +183,6 @@ public class SFEE_production_monitor {
                      *      2 - NO. Wait for the transport. It will remove the part from SFEI partsATM. */
 
                     if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
-                        sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
                         markPartForTransport(sfei_idx);
                     }
                 }
@@ -252,7 +247,6 @@ public class SFEE_production_monitor {
                      *      2 - NO. Wait for the transport. It will remove the part from SFEI partsATM. */
 
                     if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
-                        sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
                         markPartForTransport(sfei_idx);
                     }
                 }
@@ -272,9 +266,6 @@ public class SFEE_production_monitor {
                 part movingPart = Objects.requireNonNull(sfee.getSFEIbyIndex(origin_sfei).getPartsATM().pollFirst());
                 sfee.getSFEIbyIndex(destination_sfei).addNewPartATM(movingPart);
 
-                /* Increment the number of parts moved by the SFEI sfei_idx */
-                sfee.getSFEIbyIndex(origin_sfei).setnPiecesMoved(sfee.getSFEIbyIndex(origin_sfei).getnPiecesMoved() + 1);
-
 //                System.out.println("MOVED " + movingPart +
 //                        " from: " + sfee.getSFEIbyIndex(origin_sfei).getName() +
 //                        " to: " + sfee.getSFEIbyIndex(destination_sfei).getName());
@@ -286,6 +277,15 @@ public class SFEE_production_monitor {
                         movingPart.getReality().material().toString(),
                         movingPart.getReality().form().toString(),
                         Instant.now());
+
+                /* Increment the number of parts moved by the SFEI sfei_idx */
+                sfee.getSFEIbyIndex(origin_sfei).setnPiecesMoved(sfee.getSFEIbyIndex(origin_sfei).getnPiecesMoved() + 1);
+
+                /* DATABASE update nParts -> sfei table */
+                dbConnection.getInstance().getSfeis().update_nMovedParts(
+                        sfee.getSFEIbyIndex(origin_sfei).getName(),
+                        sfee.getName(),
+                        sfee.getSFEIbyIndex(origin_sfei).getnPiecesMoved());
 
             }
         } catch (Exception e) {
@@ -315,6 +315,15 @@ public class SFEE_production_monitor {
                         movingPart.getReality().material().toString(),
                         movingPart.getReality().form().toString(),
                         Instant.now());
+
+                /* Increment the number of parts moved by the SFEI sfei_idx. */
+                sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
+                /* DATABASE update nParts -> sfei table */
+                dbConnection.getInstance().getSfeis().update_nMovedParts(
+                        sfei.getName(),
+                        sfee.getName(),
+                        sfei.getnPiecesMoved());
+
             }
 
         } catch (Exception e) {

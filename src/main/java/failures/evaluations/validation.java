@@ -1,8 +1,8 @@
-package failures.newVersion;
+package failures.evaluations;
 
-import failures.newVersion.formulas.gaussFormula;
-import failures.newVersion.formulas.deterministicFormula;
-import failures.newVersion.formulas.probFormula;
+import failures.formulas.gaussFormula;
+import failures.formulas.deterministicFormula;
+import failures.formulas.probFormula;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -67,13 +67,13 @@ public class validation {
                 (Duration.between(start_t, Instant.now()).toMinutes() >= 1 && validationMethod.equals(method.TIME))) {
 
             if (formulaPrefix.equals(formulaType.GAUSSIAN)) {
-                System.out.println(formulaPrefix + " currValue: " + gaussFormula.getCurrentValue() + " var: " + var);
+//                System.out.println(formulaPrefix + " currValue: " + gaussFormula.getCurrentValue() + " var: " + var);
                 res = gaussFormula.getCurrentValue() == var;
                 if (var > 0)
                     res = res || var % gaussFormula.getCurrentValue() == 0;
                 if (res) {
                     gaussFormula.setNextValue();
-                    System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
+//                    System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
                 }
             } else if (formulaPrefix.equals(formulaType.DETERMINISTIC)) {
 
@@ -81,8 +81,8 @@ public class validation {
                 res = deterministicFormula.getCurrentValue() == var;
                 if (var > 0)
                     res = res || var % deterministicFormula.getCurrentValue() == 0;
-                if (res)
-                    System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
+//                if (res)
+//                    System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
 
             } else if (formulaPrefix.equals(formulaType.PROBABILITY)) {
                 // verification of prob formula - 2 steps
@@ -92,8 +92,8 @@ public class validation {
 
                 if ((var == probFormula.getCurrentValue() || var > 0) && var % probFormula.getCurrentValue() == 0) {
                     res = probFormula.getState();
-                    if (res)
-                        System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
+//                    if (res)
+//                        System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
                 }
 
 

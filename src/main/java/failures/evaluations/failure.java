@@ -1,13 +1,12 @@
-package failures.newVersion;
+package failures.evaluations;
 
 import models.base.SFEI;
-import utility.utils;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 
-public class failure2 {
+public class failure {
 
     public enum type {
         BREAKDOWN,
@@ -18,11 +17,11 @@ public class failure2 {
 
     private final type type;
 
-    public failure2(failure2.type type) {
+    public failure(failure.type type) {
         this.type = type;
     }
 
-    public failure2.type getType() {
+    public failure.type getType() {
         return type;
     }
 

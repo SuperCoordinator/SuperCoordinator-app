@@ -1,6 +1,7 @@
 package controllers.warehouse;
 
 import models.SFEx.SFEI_warehouse;
+import models.SFEx.SFEM_warehouse;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;
@@ -27,7 +28,7 @@ public class cSFEE_warehouse {
         return sfee;
     }
 
-    public void init(int checkOrders_period) {
+    public void init(int checkOrders_period, SFEM_warehouse.warehouseOrganization warehouseOrganization) {
         try {
             // Entry SFEI
             sfee.getSFEIs().put(0, new SFEI_warehouse("sfei_entryWarehouse"));
@@ -35,7 +36,7 @@ public class cSFEE_warehouse {
             sfee.getSFEIs().put(1, new SFEI_warehouse("sfei_exitWarehouse"));
 
             // Load the warehouse with parts that was previously on it to be used, this also update index of partID in the warehouse
-            sfeeWarehouseMonitor = new SFEE_warehouse_monitor(sfee, checkOrders_period);
+            sfeeWarehouseMonitor = new SFEE_warehouse_monitor(sfee, checkOrders_period,warehouseOrganization);
         } catch (Exception e) {
            e.printStackTrace();
         }

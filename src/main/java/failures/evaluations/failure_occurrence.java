@@ -1,4 +1,4 @@
-package failures.newVersion;
+package failures.evaluations;
 
 import java.time.Instant;
 
@@ -11,7 +11,7 @@ public class failure_occurrence {
     }
 
     private activationVariable actVariable;
-    private failure2.type failureType;
+    private failure.type failureType;
 
     private int nPartsMoved_at_time;
     private Instant start_t;
@@ -20,7 +20,7 @@ public class failure_occurrence {
     public failure_occurrence() {
     }
 
-    public failure_occurrence(failure2.type failureType, activationVariable activationVariable, int part_id, Instant start_t) {
+    public failure_occurrence(failure.type failureType, activationVariable activationVariable, int part_id, Instant start_t) {
         super();
         this.failureType = failureType;
         this.actVariable = activationVariable;
@@ -46,5 +46,10 @@ public class failure_occurrence {
 
     public activationVariable getActVariable() {
         return actVariable;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + failureType + " activated by " + actVariable + " at " + start_t + " when item was moved " + nPartsMoved_at_time + " parts]";
     }
 }

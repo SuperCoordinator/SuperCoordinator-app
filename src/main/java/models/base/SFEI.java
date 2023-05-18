@@ -1,6 +1,6 @@
 package models.base;
 
-import failures.newVersion.failure_occurrence;
+import failures.evaluations.failure_occurrence;
 import models.SFEx.SFEI_conveyor;
 import models.SFEx.SFEI_machine;
 import models.SFEx.SFEI_pusher;

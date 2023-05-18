@@ -31,7 +31,7 @@ public class App {
             if (newConfig) {
 
                 /* WAREHOUSE MODULE */
-                SFEM_warehouse sfemWarehouse = new SFEM_warehouse();
+                SFEM_warehouse sfemWarehouse = new SFEM_warehouse(SFEM_warehouse.warehouseOrganization.RANDOM);
                 cSFEM_warehouse cSFEMWarehouse = new cSFEM_warehouse(sfemWarehouse, 5);
                 cSFEMWarehouse.init();
 
@@ -160,7 +160,7 @@ public class App {
                     Pair<Pair<String, String>, Pair<String, String>> names = transport.getPrevNext_SFEE_SFEI_names();
 
                     switch (transport.getSfem().getTransport_configuration()) {
-                        case SFEI2SFEI,SFEI2RealSFEI,RealSFEI2SFEI -> {
+                        case SFEI2SFEI, SFEI2RealSFEI, RealSFEI2SFEI -> {
                             Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(names.getFirst().getFirst());
                             Pair<SFEE, cSFEM_production> outSFEE = serializer.getInstance().searchSFEEbyName(names.getSecond().getFirst());
 
@@ -204,6 +204,7 @@ public class App {
 
             System.out.print("Press ENTER to start simulation");
             in.nextLine();
+            System.out.println();
             // Function for start all simulations
             // 1 SFEM -> having 1SFEE or nSFEEs, is the same because the modbus connection is only 1 per simulation
             for (cSFEM_production production : serializer.getInstance().getC_Production()) {

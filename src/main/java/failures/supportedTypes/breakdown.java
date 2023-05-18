@@ -1,12 +1,14 @@
-package failures.newVersion;
+package failures.supportedTypes;
 
+import failures.evaluations.failure_occurrence;
+import failures.evaluations.failures_conditions;
 import models.SFEx.SFEI_conveyor;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-public class breakdown2 extends failures_conditions {
+public class breakdown extends failures_conditions {
 
     private enum SM {
         WORKING,
@@ -22,7 +24,7 @@ public class breakdown2 extends failures_conditions {
     // For now, support only breakdown with repair on the conveyors
     private final SFEI_conveyor sfeiConveyor;
 
-    public breakdown2(String[] formulas, SFEI_conveyor sfeiConveyor) {
+    public breakdown(String[] formulas, SFEI_conveyor sfeiConveyor) {
         super(formulas, type.BREAKDOWN);
         this.sfeiConveyor = sfeiConveyor;
 
@@ -30,6 +32,9 @@ public class breakdown2 extends failures_conditions {
         this.state = SM.WORKING;
         this.old_state = state;
 
+        if (getnCondition() == null && getaCondition() == null && getmCondition() == null) {
+            return;
+        }
         System.out.println("BreakDown on -> " + sfeiConveyor.getName());
     }
 
@@ -66,21 +71,10 @@ public class breakdown2 extends failures_conditions {
         // Evaluate transitions
         switch (state) {
             case WORKING -> {
-/*                if (evalFormula(sfeiConveyor.getnPiecesMoved(),
-                        (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
-                        (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes()))
-                    state = SM.DISABLED;*/
-
-                // Os valores tem de ser sempre calculados conforme os mais recentes
-
-
-//                System.out.println("nParts: " + nParts + " age: " + age + " maintenance: " + maitenance);
-
                 if (evalConditions(nParts, age, maintenance)) {
                     state = SM.DISABLED;
                 }
             }
-
             case DISABLED -> {
                 if (resume) {
                     state = SM.RESUMING;
@@ -88,16 +82,9 @@ public class breakdown2 extends failures_conditions {
                 }
             }
             case RESUMING -> {
-                // WAIT until the condition is not verified again
-/*                if (!evalFormula(sfeiConveyor.getnPiecesMoved(),
-                        (int) Duration.between(sfeiConveyor.getDayOfBirth(), Instant.now()).toMinutes(),
-                        (int) Duration.between(sfeiConveyor.getDayOfLastMaintenance(), Instant.now()).toMinutes())) {
-                    state = SM.WORKING;*/
-
                 if (!evalConditions(nParts, age, maintenance)) {
                     state = SM.WORKING;
                 }
-
             }
         }
 
@@ -105,7 +92,6 @@ public class breakdown2 extends failures_conditions {
         switch (state) {
             case WORKING -> {
                 if (state != old_state) {
-//                    sfeiConveyor.setDayOfLastMaintenance(Instant.now());
                 }
             }
             case DISABLED -> {
@@ -126,7 +112,10 @@ public class breakdown2 extends failures_conditions {
                     else
                         throw new RuntimeException("(Breakdown) Activation Variable null but evalConditions was TRUE");
 
-                    //sfeiConveyor.addBreakdown(new Pair<>(sfeiConveyor.getnPiecesMoved(), Instant.now()));
+                    // Breakdown happened
+                    System.out.println("********************");
+                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
+                    System.out.println("********************");
                 }
             }
             case RESUMING -> {
@@ -138,20 +127,23 @@ public class breakdown2 extends failures_conditions {
                     sfeiConveyor.setDayOfLastMaintenance(t);
                     sfeiConveyor.addNewFailureOccurrence(newOccurrence);
 
-                    newOccurrence = new failure_occurrence();
+                    // Breakdown  Solved
+                    System.out.println("********************");
+                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
+                    System.out.println("********************");
 
+                    newOccurrence = new failure_occurrence();
 
                 }
             }
 
         }
-        if (old_state != state) {
-            System.out.println("*** BREAKDOWN on " + sfeiConveyor.getName() + " -> [" + state + "]");
-        }
+//        if (old_state != state) {
+//            System.out.println("*** BREAKDOWN on " + sfeiConveyor.getName() + " -> [" + state + "]");
+//        }
 
         old_state = state;
 
-//        return state != SM.WORKING;
     }
 
 

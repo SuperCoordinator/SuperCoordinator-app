@@ -1,4 +1,4 @@
-package failures.newVersion.formulas;
+package failures.formulas;
 
 import utility.utils;
 
@@ -40,7 +40,7 @@ public class gaussFormula extends formula {
             else
                 array_index = 0;
 
-            System.out.println("GAUSSIAN nextValue: " + array.get(array_index).intValue());
+//            System.out.println("GAUSSIAN nextValue: " + array.get(array_index).intValue());
             setCurrentValue(array.get(array_index).intValue());
         } while (getCurrentValue() == 0);
     }

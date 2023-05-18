@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS sfee (
 
 CREATE TABLE IF NOT EXISTS sfei (
     name VARCHAR(100) NOT NULL,
+    moved_parts INT,
     fk_sfee VARCHAR(100) NOT NULL,
     PRIMARY KEY(name)
 );

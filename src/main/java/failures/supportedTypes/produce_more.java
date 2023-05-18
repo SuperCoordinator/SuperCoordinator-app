@@ -1,5 +1,7 @@
-package failures.newVersion;
+package failures.supportedTypes;
 
+import failures.evaluations.failure_occurrence;
+import failures.evaluations.failures_conditions;
 import models.SFEx.SFEI_conveyor;
 import models.base.part;
 import models.partDescription;
@@ -10,7 +12,7 @@ import java.time.Instant;
 import java.util.List;
 
 
-public class produce_more2 extends failures_conditions {
+public class produce_more extends failures_conditions {
 
     private enum SM {
         WORKING,
@@ -28,7 +30,7 @@ public class produce_more2 extends failures_conditions {
     private partDescription.material material;
     private int faulty_partID = -1;
 
-    public produce_more2(String[] formulas, SFEI_conveyor sfeiConveyor, partDescription.material mat) {
+    public produce_more(String[] formulas, SFEI_conveyor sfeiConveyor, partDescription.material mat) {
         super(formulas, type.PRODUCE_MORE);
         this.sfeiConveyor = sfeiConveyor;
         this.material = mat;
@@ -36,6 +38,9 @@ public class produce_more2 extends failures_conditions {
         this.state = SM.WORKING;
         this.old_state = state;
 
+        if (getnCondition() == null && getaCondition() == null && getmCondition() == null) {
+            return;
+        }
         System.out.println("Produce More on -> " + sfeiConveyor.getName());
     }
 
@@ -45,7 +50,7 @@ public class produce_more2 extends failures_conditions {
 
     private failure_occurrence newOccurrence = new failure_occurrence();
 
-    public void loop(List<Object> sensorsState, List<Object> actuatorsState,List<Object> holdRegs) {
+    public void loop(List<Object> sensorsState, List<Object> actuatorsState, List<Object> holdRegs) {
 
         int nParts = 0, age = 0, maintenance = 0;
         if (state == SM.WORKING || state == SM.TURN_OFF) {
@@ -79,25 +84,7 @@ public class produce_more2 extends failures_conditions {
             case WAITING -> {
                 boolean sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().getBit_offset()) == 1;
                 if (utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
-                    int id = 0;
-/*                    if (sfeiConveyor.getPartsATM().size() > 0) {
-                        if (sfeiConveyor.getPartsATM().last().getId() >= sfeiConveyor.getnPiecesMoved()) {
-                            id = sfeiConveyor.getPartsATM().last().getId() + 1;
-                        }
-                    } else
-                        id = sfeiConveyor.getnPiecesMoved();*/
-
-
-                    // This operation of concat is faster than + operation
-/*                    String itemName = sfeiConveyor.getName();
-                    itemName = itemName.concat("-");
-                    itemName = itemName.concat(sfeiConveyor.getInSensor().getName());
-
-                    p.addTimestamp(itemName);*/
-
-
                     state = SM.TURN_OFF;
-
                 }
                 old_sEmitter = sensor;
             }
@@ -110,11 +97,14 @@ public class produce_more2 extends failures_conditions {
 
         // Execute actions
         switch (state) {
-            case WORKING, WAITING -> {
+            case WORKING -> {
                 if (state != old_state) {
-//                    System.out.println("P_More -> " + state);
                 }
             }
+            case WAITING -> {
+                holdRegs.set(sfeiConveyor.getaEmitPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(new partDescription(material, partDescription.form.RAW)) + 4 - 1));
+            }
+
             case TURN_ON -> {
                 if (state != old_state) {
 
@@ -126,9 +116,8 @@ public class produce_more2 extends failures_conditions {
                     if (faulty_partID > 0)
                         faulty_partID = -1;
 
-                    holdRegs.set(sfeiConveyor.getaEmitPart().getBit_offset(),(int) Math.pow(2, getNumberbyPartAspect(newPart.getReality()) + 4 - 1));
+                    holdRegs.set(sfeiConveyor.getaEmitPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(newPart.getReality()) + 4 - 1));
                     actuatorsState.set(sfeiConveyor.getaEmit().getBit_offset(), 1);
-
 
                     failure_occurrence.activationVariable actVar = null;
                     if (wasActivated_by_N()) {
@@ -143,8 +132,10 @@ public class produce_more2 extends failures_conditions {
                     else
                         throw new RuntimeException("(Produce More) Activation Variable null but evalConditions was TRUE");
 
-
-//                    System.out.println("P_More -> " + state);
+                    // Produce More happened
+                    System.out.println("********************");
+                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
+                    System.out.println("********************");
                 }
             }
             case TURN_OFF -> {
@@ -155,18 +146,19 @@ public class produce_more2 extends failures_conditions {
                     newOccurrence.setEnd_t(t);
 
                     sfeiConveyor.addNewFailureOccurrence(newOccurrence);
-
+                    // Produce More happened
+                    System.out.println("********************");
+                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
+                    System.out.println("********************");
                     newOccurrence = new failure_occurrence();
 
-//                    System.out.println("P_More -> " + state);
                 }
             }
         }
-        if (old_state != state) {
-            System.out.println("*** Produce More on " + sfeiConveyor.getName() + " -> [" + state + "]");
-        }
+//        if (old_state != state) {
+//            System.out.println("*** Produce More on " + sfeiConveyor.getName() + " -> [" + state + "]");
+//        }
         old_state = state;
-//        return state != SM.WORKING;
     }
 
     private int getNumberbyPartAspect(partDescription aspect) {

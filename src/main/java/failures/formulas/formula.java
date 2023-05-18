@@ -1,6 +1,4 @@
-package failures.newVersion.formulas;
-
-import java.util.Random;
+package failures.formulas;
 
 public class formula {
 

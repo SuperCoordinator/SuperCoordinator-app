@@ -10,6 +10,7 @@ import models.base.SFEI;
 import models.sensor_actuator;
 import monitor.transport.SFEE_transport_monitor;
 import org.apache.commons.math3.util.Pair;
+import utility.serialize.serializer;
 import viewers.SFEE_transport;
 
 import javax.xml.bind.annotation.*;
@@ -82,6 +83,9 @@ public class cSFEE_transport {
         return reBuiltFormula;
     }
 
+    /* Only to see if the next SFEE is free or with parts in production*/
+    private SFEE nextSFEE;
+
     public void init(ArrayList<Object> data) {
 
         SFEE inSFEE = (SFEE) data.get(3);
@@ -92,6 +96,8 @@ public class cSFEE_transport {
 
         this.inMB = (modbus) data.get(1);
         this.outMB = (modbus) data.get(2);
+
+        this.nextSFEE = outSFEE;
 
         this.prevSFEE_name = inSFEE.getName();
         this.nextSFEE_name = outSFEE.getName();
@@ -141,6 +147,11 @@ public class cSFEE_transport {
     public void cSFEE_transport_setup(SFEI inSFEI, SFEI outSFEI, modbus inMB, modbus outMB) {
         this.inMB = inMB;
         this.outMB = outMB;
+        if (!outSFEI.getSfeiType().equals(SFEI.SFEI_type.WAREHOUSE))
+            this.nextSFEE = serializer.getInstance().searchSFEE_SFEIbySFEI_name(outSFEI.getName()).getFirst();
+        else {
+            this.nextSFEE = serializer.getInstance().getC_Warehouse().getSfem().getSfeeWarehouse();
+        }
         sfeeMonitor = new SFEE_transport_monitor(sfee, inSFEI, outSFEI, configuration);
         sfeeFailures.setSfee(sfee);
         sfeeFailures.setConfiguration(configuration);
@@ -192,14 +203,14 @@ public class cSFEE_transport {
             List<Object> coilsState_outMB = new ArrayList<>();
 
             switch (configuration) {
-                case WH2SFEI,WH2RealSFEI -> {
+                case WH2SFEI, WH2RealSFEI -> {
                     discreteInputsState_outMB = new ArrayList<>(outMB.readDiscreteInputs());
                     coilsState_outMB = new ArrayList<>(outMB.readCoils());
                     coilsState_outMB = new ArrayList<>(Collections.nCopies(coilsState_outMB.size(), -1));
                     holdRegsValues_outMB = new ArrayList<>(outMB.readHoldingRegisters());
                     holdRegsValues_outMB = new ArrayList<>(Collections.nCopies(holdRegsValues_outMB.size(), -1));
                 }
-                case SFEI2WH,RealSFEI2WH -> {
+                case SFEI2WH, RealSFEI2WH -> {
                     discreteInputsState_inMB = new ArrayList<>(inMB.readDiscreteInputs());
                     coilsState_inMB = new ArrayList<>(inMB.readCoils());
                     coilsState_inMB = new ArrayList<>(Collections.nCopies(coilsState_inMB.size(), -1));
@@ -226,15 +237,15 @@ public class cSFEE_transport {
             outputs.add(coilsState_outMB);
             outputs.add(holdRegsValues_outMB);
 
-            sfeeFailures.loop(inputs, outputs);
+            sfeeFailures.loop(inputs, outputs, nextSFEE_availabity());
             sfeeMonitor.loop(inputs);
 
             switch (configuration) {
-                case WH2SFEI,WH2RealSFEI -> {
+                case WH2SFEI, WH2RealSFEI -> {
                     outMB.writeCoils(coilsState_outMB);
                     outMB.writeRegisters(holdRegsValues_outMB);
                 }
-                case SFEI2WH,RealSFEI2WH -> {
+                case SFEI2WH, RealSFEI2WH -> {
                     inMB.writeCoils(coilsState_inMB);
                 }
                 default -> {
@@ -248,6 +259,19 @@ public class cSFEE_transport {
             e.printStackTrace();
         }
 
+    }
+
+    private boolean nextSFEE_availabity() {
+        boolean free = true;
+        if (nextSFEE.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION)) {
+            for (SFEI sfei : nextSFEE.getSFEIs().values()) {
+                if (sfei.getPartsATM().size() > 0) {
+                    free = false;
+                    break;
+                }
+            }
+        }
+        return free;
     }
 
 }

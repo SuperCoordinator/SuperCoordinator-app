@@ -1,4 +1,4 @@
-package failures.newVersion.formulas;
+package failures.formulas;
 
 import utility.utils;
 
@@ -47,9 +47,7 @@ public class probFormula extends formula {
             case EQUAL -> state = n == thres;
         }
 
-        System.out.println("PROB currentValue: " + state + " n: " + n + signal + " " + thres);
+//        System.out.println("PROB currentValue: " + state + " n: " + n + signal + " " + thres);
 
     }
-
-
 }

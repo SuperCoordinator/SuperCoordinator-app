@@ -233,12 +233,12 @@
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>no</item>
-                    <item>no</item>
+                    <item>prob [ 2 ] &gt;= 90</item>
+                    <item>gauss [ 10 ; 5 ]</item>
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>det [ 1 ]</item>
+                    <item>det [ 13 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
@@ -259,12 +259,12 @@
                 <stochasticFormulas>65 </stochasticFormulas>
                 <stochasticFormulas>7 </stochasticFormulas>
                 <failuresFormulas>
+                    <item>gauss [ 20 ; 2 ]</item>
                     <item>no</item>
-                    <item>no</item>
-                    <item>no</item>
+                    <item>det [ 10 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>no</item>
+                    <item>gauss [ 1 ; 0 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>no</item>
@@ -300,15 +300,10 @@
                 <failuresFormulas>
                     <item>no</item>
                     <item>no</item>
-                    <item>no</item>
+                    <item>gauss [ 20 ; 3 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>no</item>
-                </failuresFormulas>
-                <failuresFormulas>
-                    <item>no</item>
-                    <item>no</item>
-                    <item>no</item>
+                    <item>gauss [ 5 ; 2 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>no</item>
@@ -316,7 +311,12 @@
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
+                    <item>det [ 18 ]</item>
                     <item>no</item>
+                    <item>no</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>gauss [ 25 ; 5 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>

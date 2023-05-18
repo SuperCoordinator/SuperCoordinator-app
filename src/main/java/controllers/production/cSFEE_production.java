@@ -2,7 +2,7 @@ package controllers.production;
 
 import communication.modbus;
 //import failures.oldVersion.SFEE_failures;
-import failures.newVersion.SFEE_production_failures2;
+import failures.SFEE_production_failures;
 import failures.stochasticTime;
 import models.SFEx.SFEI_pusher;
 import models.base.SFEE;
@@ -36,7 +36,7 @@ public class cSFEE_production {
     @XmlElement
     private SFEE_production_monitor sfeeMonitor;
     @XmlElement
-    private SFEE_production_failures2 sfeeFailures2;
+    private SFEE_production_failures sfeeFailures2;
 
     private viewers.SFEE viewer = new viewers.SFEE();
 
@@ -65,7 +65,7 @@ public class cSFEE_production {
         this.mb = mb;
     }
 
-    public SFEE_production_failures2 getSfeeFailures2() {
+    public SFEE_production_failures getSfeeFailures2() {
         return sfeeFailures2;
     }
 
@@ -723,7 +723,7 @@ public class cSFEE_production {
 
             if (sfeeTime[0].contains("gauss")) {
                 // Stochastic Time
-                sfeeFailures2 = new SFEE_production_failures2(
+                sfeeFailures2 = new SFEE_production_failures(
                         sfee,
                         stochasticTime.timeOptions.GAUSSIAN,
                         new String[]{sfeeTime[1], sfeeTime[2]},
@@ -731,7 +731,7 @@ public class cSFEE_production {
 
             } else if (sfeeTime[0].contains("linear")) {
                 // Linear Time
-                sfeeFailures2 = new SFEE_production_failures2(sfee,
+                sfeeFailures2 = new SFEE_production_failures(sfee,
                         stochasticTime.timeOptions.LINEAR,
                         new String[]{sfeeTime[1], sfeeTime[2]},
                         failures_f);
@@ -776,10 +776,12 @@ public class cSFEE_production {
                 outputs.add(holdRegsValues);
 
                 sfeeFailures2.loop(inputs, outputs);
-
+                mb.writeCoils(actuatorsState);
                 mb.writeRegisters(holdRegsValues);
 
+                return;
             }
+
             mb.writeCoils(actuatorsState);
         } catch (Exception e) {
             e.printStackTrace();

@@ -60,47 +60,14 @@ public class stochasticTime {
     //                 LINEAR   -> mean
     private String mean;
     private String std_dev;
-
-    //    private final SFEI_conveyor sfeiConveyor;
     private final SFEI sfei;
-    //    private final SFEI_machine sfeiMachine;
-//    private final SFEI_transport sfeiTransport;
     private SFEM_transport.configuration transportConfiguration;
-    //    private final SFEI.SFEI_type sfeiType;
     private final part part;
-    private final long delay;
+    private final double delay;
 
     public stochasticTime(SFEI sfei, part part, timeOptions timeType, String[] formulas, int minSFEEOperationTime) {
 
         this.sfei = sfei;
-
-//        if (sfei.getSfeiType().equals(SFEI.SFEI_type.CONVEYOR)) {
-//            this.sfeiConveyor = (SFEI_conveyor) sfei;
-//            this.sfeiMachine = null;
-//            this.sfeiTransport = null;
-//            this.sfeiType = sfeiConveyor.getSfeiType();
-//        } else if (sfei.getSfeiType().equals(SFEI.SFEI_type.PUSHER)) {
-//            this.sfeiMachine = (SFEI_machine) sfei;
-//            this.sfeiConveyor = null;
-//            this.sfeiTransport = null;
-//            this.sfeiType = sfeiMachine.getSfeiType();
-//        } else if (sfei.getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
-//            this.sfeiMachine = (SFEI_machine) sfei;
-//            this.sfeiConveyor = null;
-//            this.sfeiTransport = null;
-//            this.sfeiType = sfeiMachine.getSfeiType();
-//        } else if (sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT)) {
-//            this.sfeiTransport = (SFEI_transport) sfei;
-//            this.sfeiMachine = null;
-//            this.sfeiConveyor = null;
-//            this.sfeiType = sfeiTransport.getSfeiType();
-//        } else {
-//            this.sfeiConveyor = null;
-//            this.sfeiMachine = null;
-//            this.sfeiType = null;
-//            this.sfeiTransport = null;
-//        }
-
         this.part = part;
         this.timeType = timeType;
 
@@ -207,7 +174,7 @@ public class stochasticTime {
                     old_sRemover = sensor;
                 }
                 case STOPPED -> {
-                    if (Duration.between(initial_t, Instant.now()).toSeconds() >= delay) {
+                    if (Duration.between(initial_t, Instant.now()).toMillis() >= delay) {
                         actuatorsState.set(sfeiConveyor.getaConveyorMotor().getBit_offset(), 0);
                         smConv = SM_conv.RESUMING;
                     }
@@ -248,14 +215,14 @@ public class stochasticTime {
                     }
                 }
                 case MOVE -> {
-                    int safety_margin = 500;
+                    double safety_margin = 500.0;
                     if (Duration.between(safety_margin_start, Instant.now()).toMillis() >= safety_margin) {
                         smPusher = SM_pusher.STOP;
                         stopped_at = Instant.now();
                     }
                 }
                 case STOP -> {
-                    if (Duration.between(stopped_at, Instant.now()).toSeconds() >= delay) {
+                    if (Duration.between(stopped_at, Instant.now()).toMillis() >= delay) {
                         smPusher = SM_pusher.RESUME;
                     }
                     actuatorsState.set(sfeiPusher.getaForwardMotor().getBit_offset(), 1);
@@ -300,15 +267,15 @@ public class stochasticTime {
                     old_sMachine_door = b_machine_door;
                 }
                 case UNLOADING -> {
-                    int safety_margin = 2;
-                    if (Duration.between(safety_margin_start, Instant.now()).toSeconds() >= safety_margin) {
+                    double safety_margin = 2000.0;
+                    if (Duration.between(safety_margin_start, Instant.now()).toMillis() >= safety_margin) {
                         smMach = SM_mach.FORCE_PAUSE;
                         safety_margin_start = null;
                         stopped_at = Instant.now();
                     }
                 }
                 case FORCE_PAUSE -> {
-                    if (Duration.between(stopped_at, Instant.now()).toSeconds() >= delay) {
+                    if (Duration.between(stopped_at, Instant.now()).toMillis() >= delay) {
                         stopped_at = null;
                         smMach = SM_mach.RELEASE_PAUSE;
                     }
@@ -360,7 +327,7 @@ public class stochasticTime {
                     }
                 }
                 case FORCE_PAUSE -> {
-                    if (Duration.between(stopped_at, Instant.now()).toSeconds() >= delay) {
+                    if (Duration.between(stopped_at, Instant.now()).toMillis() >= delay) {
                         stopped_at = null;
                         smMach = SM_mach.RELEASE_PAUSE;
                     }
@@ -431,7 +398,7 @@ public class stochasticTime {
                     old_sRemover = sensor;
                 }
                 case WAITING -> {
-                    if (Duration.between(initial_t, Instant.now()).toSeconds() >= delay) {
+                    if (Duration.between(initial_t, Instant.now()).toMillis() >= delay) {
                         if (transportConfiguration.equals(SFEM_transport.configuration.SFEI2WH)
                                 || transportConfiguration.equals(SFEM_transport.configuration.RealSFEI2WH)) {
                             part.setState(models.base.part.status.PRODUCED);
@@ -493,30 +460,21 @@ public class stochasticTime {
 
     }
 
-    private int calculateDelay(int sumSFEEminOperationTime) {
+    private double calculateDelay(int sumSFEEminOperationTime) {
 
         try {
-//            SFEI sfei;
-//            if (sfeiType.equals(SFEI.SFEI_type.CONVEYOR)) {
-//                sfei = sfeiConveyor;
-//            } else if (sfeiType.equals(SFEI.SFEI_type.MACHINE)) {
-//                sfei = sfeiMachine;
-//            } else {
-//                sfei = sfeiTransport;
-//            }
-
             double m = utils.getInstance().getCustomCalculator().calcExpression(mean,
                     sfei.getnPiecesMoved(),
-                    (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
-                    (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
+                    (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toMinutes(),
+                    (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toMinutes());
 
             double total_Time;
             if (timeType.equals(timeOptions.GAUSSIAN)) {
 
                 double dev = utils.getInstance().getCustomCalculator().calcExpression(std_dev,
                         sfei.getnPiecesMoved(),
-                        (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toDays(),
-                        (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toDays());
+                        (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toMinutes(),
+                        (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toMinutes());
 
                 //            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
                 total_Time = utils.getInstance().getRandom().nextGaussian() * dev + m;
@@ -531,11 +489,11 @@ public class stochasticTime {
             total_Time = total_Time - sumSFEEminOperationTime;
 
             if (!sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT))
-                System.out.println(part + " delay " + total_Time + " on SFEI:" + sfei.getName());
+                System.out.println(part + " delay " + total_Time * 1000 + " (ms) on SFEI:" + sfei.getName());
             if (total_Time < 0)
                 return 0;
-
-            return (int) Math.round(total_Time);
+            // For the result in millis
+            return total_Time * 1000;
         } catch (Exception e) {
             e.printStackTrace();
             return 0;

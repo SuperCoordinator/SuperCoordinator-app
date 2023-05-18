@@ -1,8 +1,8 @@
-package failures.newVersion;
+package failures.evaluations;
 
-import failures.newVersion.formulas.gaussFormula;
-import failures.newVersion.formulas.deterministicFormula;
-import failures.newVersion.formulas.probFormula;
+import failures.formulas.gaussFormula;
+import failures.formulas.deterministicFormula;
+import failures.formulas.probFormula;
 
 public class condition_variable {
 

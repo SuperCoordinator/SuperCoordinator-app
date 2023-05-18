@@ -63,20 +63,22 @@ public class SFEE_transport_failures {
         return stochasticFormulas;
     }
 
-    private boolean first_exe = true;
+    private boolean firstRun = true;
 
-    public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
+    public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState, boolean isNextSFEE_Free) {
         try {
-            if (first_exe) {
+            if (firstRun) {
                 this.state = SM.INIT;
                 this.old_state = state;
-                first_exe = false;
+                firstRun = false;
             }
 
             switch (state) {
                 case INIT -> {
-                    if (checkNewPiece()) {
-                        state = SM.PROCESS_STOCHASTIC;
+                    if (isNextSFEE_Free) {
+                        if (checkNewPiece()) {
+                            state = SM.PROCESS_STOCHASTIC;
+                        }
                     }
                 }
                 case PROCESS_STOCHASTIC -> {
@@ -84,9 +86,7 @@ public class SFEE_transport_failures {
                         if (stochasticTimeTask.isTransportFinished())
                             state = SM.END;
                 }
-                case END -> {
-                    state = SM.INIT;
-                }
+                case END -> state = SM.INIT;
             }
 
             switch (state) {
@@ -108,13 +108,8 @@ public class SFEE_transport_failures {
                                 break;
                             }
                         }
-    /*                    stochasticTimeTask = new stochasticTime(
-                                sfee.getSFEIbyIndex(0),
-                                sfee.getSFEIbyIndex(0).getPartsATM().first(),
-                                stochasticType,
-                                stochasticFormulas,
-                                0);*/
                     }
+
                     if (stochasticTimeTask != null) {
                         stochasticTimeTask.loop(sensorsState, actuatorsState);
 
@@ -124,10 +119,8 @@ public class SFEE_transport_failures {
                     stochasticTimeTask = null;
                 }
             }
+            old_state = state;
 
-            if (old_state != state) {
-                old_state = state;
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -144,7 +137,8 @@ public class SFEE_transport_failures {
             currID = sfee.getSFEIbyIndex(0).getPartsATM().first().getId();
         }
         if (currID != oldPartID) {
-            oldPartID = currID;
+            if (currID >= 0)
+                oldPartID = currID;
             return true;
         }
         return false;

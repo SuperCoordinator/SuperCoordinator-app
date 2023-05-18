@@ -1,5 +1,7 @@
-package failures.newVersion;
+package failures.supportedTypes;
 
+import failures.evaluations.failure_occurrence;
+import failures.evaluations.failures_conditions;
 import models.SFEx.SFEI_machine;
 import utility.utils;
 
@@ -7,7 +9,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-public class produce_faulty2 extends failures_conditions {
+public class produce_faulty extends failures_conditions {
 
     private enum SM {
 
@@ -25,13 +27,16 @@ public class produce_faulty2 extends failures_conditions {
     private boolean old_sMachine_door = false;
     private Instant closed_door_at;
 
-    public produce_faulty2(String[] formulas, SFEI_machine sfeiMachine) {
+    public produce_faulty(String[] formulas, SFEI_machine sfeiMachine) {
         super(formulas, type.PRODUCE_FAULTY);
         this.sfeiMachine = sfeiMachine;
 
         this.state = SM.WORKING;
         this.old_state = state;
 
+        if (getnCondition() == null && getaCondition() == null && getmCondition() == null) {
+            return;
+        }
         System.out.println("Produce Faulty on -> " + sfeiMachine.getName());
     }
 
@@ -83,7 +88,6 @@ public class produce_faulty2 extends failures_conditions {
             case INJECT_FAILURE -> {
                 if (Duration.between(closed_door_at, Instant.now()).toSeconds() >= 1) {
                     state = SM.INJECTED;
-//                    state = SM.WORKING;
                 }
             }
             case INJECTED -> {
@@ -97,7 +101,6 @@ public class produce_faulty2 extends failures_conditions {
         switch (state) {
             case WORKING, WAITING_PART_POSITIONING -> {
                 if (state != old_state) {
-//                    System.out.println("P_Faulty -> " + state);
                 }
             }
             case INJECT_FAILURE -> {
@@ -118,8 +121,10 @@ public class produce_faulty2 extends failures_conditions {
                     else
                         throw new RuntimeException("(Produce Faulty) Activation Variable null but evalConditions was TRUE");
 
-
-//                    System.out.println("P_Faulty -> " + state);
+                    // Produce Faulty happened
+                    System.out.println("********************");
+                    System.out.println("   Failure " + sfeiMachine.getFailuresHistory().size() + " on " + sfeiMachine.getName() + " " + newOccurrence);
+                    System.out.println("********************");
                 }
 
             }
@@ -131,16 +136,17 @@ public class produce_faulty2 extends failures_conditions {
                     newOccurrence.setEnd_t(t);
 
                     sfeiMachine.addNewFailureOccurrence(newOccurrence);
-
+                    // Produced Faulty Solved
+                    System.out.println("********************");
+                    System.out.println("   Failure " + (sfeiMachine.getFailuresHistory().size() - 1) + " on " + sfeiMachine.getName() + " solved at " + newOccurrence.getEnd_t());
+                    System.out.println("********************");
                     newOccurrence = new failure_occurrence();
-
-//                    System.out.println("P_Faulty -> " + state);
                 }
             }
         }
-        if (old_state != state) {
-            System.out.println("*** Produce Faulty on " + sfeiMachine.getName() + " -> [" + state + "]");
-        }
+//        if (old_state != state) {
+//            System.out.println("*** Produce Faulty on " + sfeiMachine.getName() + " -> [" + state + "]");
+//        }
         old_state = state;
 
 //        return state != SM.WORKING;

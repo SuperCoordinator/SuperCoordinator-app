@@ -70,6 +70,19 @@ public class M_sfei extends queries_buffer implements IM_SFEx {
         }
     }
 
+    public void update_nMovedParts(String sfei_name, String fk_sfee, int nparts) {
+        try {
+            String query = "UPDATE sfei " +
+                    "SET moved_parts = " + nparts + " " +
+                    "WHERE name = '" + sfei_name + "' AND fk_sfee ='" + fk_sfee + "';";
+            getStoredQueries().add(query);
+//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public List<String> getAll_SFEx() {
         try {

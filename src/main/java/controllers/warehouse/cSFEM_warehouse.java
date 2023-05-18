@@ -36,12 +36,12 @@ public class cSFEM_warehouse implements Runnable {
         sfem.setSfeeWarehouse(sfeeWarehouse);
 
         sfeeWarehouseController = new cSFEE_warehouse(sfeeWarehouse);
-        sfeeWarehouseController.init(checkOrders_period);
+        sfeeWarehouseController.init(checkOrders_period, sfem.getWHDistribution());
     }
 
     public void init_afterLoad() {
         sfeeWarehouseController = new cSFEE_warehouse(sfem.getSfeeWarehouse());
-        sfeeWarehouseController.init(checkOrders_period);
+        sfeeWarehouseController.init(checkOrders_period, sfem.getWHDistribution());
         sfeeWarehouseController.loadWHBasedOnPrevStock();
     }
 

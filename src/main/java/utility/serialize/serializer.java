@@ -253,7 +253,6 @@ public class serializer {
 
     public Pair<SFEE, SFEI> searchSFEE_SFEIbySFEI_name(String name) {
         Pair<SFEE, SFEI> returnPair = null;
-        System.out.println(serializer.getInstance().getC_Production());
         for (cSFEM_production cSFEMProduction : serializer.getInstance().getC_Production()) {
             for (cSFEE_production cSFEEProduction : cSFEMProduction.getSfeeControllers()) {
                 for (Map.Entry<Integer, SFEI> entry : cSFEEProduction.getSFEE().getSFEIs().entrySet()) {

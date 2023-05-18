@@ -2,7 +2,9 @@ package monitor.warehouse;
 
 
 import communication.database.dbConnection;
+import models.SFEx.SFEM_warehouse;
 import models.base.SFEE;
+import models.base.SFEI;
 import models.base.part;
 import models.inboundOrder;
 import models.partDescription;
@@ -23,18 +25,19 @@ public class SFEE_warehouse_monitor {
 
     private SFEE sfee;
 
-
+    private SFEM_warehouse.warehouseOrganization whOrganization;
     private Instant old_t;
 
     private int part_id, inbound_order_id, outbound_order_id;
     private int check_period;
 
-    public SFEE_warehouse_monitor(SFEE sfee, int checkOrder_period_min) {
+    public SFEE_warehouse_monitor(SFEE sfee, int checkOrder_period_min, SFEM_warehouse.warehouseOrganization warehouseOrganization) {
         this.sfee = sfee;
         this.part_id = 0;
         this.inbound_order_id = 0;
         this.outbound_order_id = 0;
         this.check_period = checkOrder_period_min;
+        this.whOrganization = warehouseOrganization;
         old_t = Instant.parse("2023-04-01T12:00:00.840857500Z");
     }
 
@@ -57,11 +60,12 @@ public class SFEE_warehouse_monitor {
     private void dispatchOrders() {
 
         try {
+            SFEI sfei = sfee.getSFEIbyIndex(1);
             if (sfee.getSFEIbyIndex(1).getPartsATM().size() > 0) {
                 // create outbound order
                 dbConnection.getInstance().getOutbound_orders().insert();
                 outbound_order_id++;
-                Iterator<part> iterator = sfee.getSFEIbyIndex(1).getPartsATM().iterator();
+                Iterator<part> iterator = sfei.getPartsATM().iterator();
                 while (iterator.hasNext()) {
                     part movingPart = iterator.next();
                     if (movingPart.getState().equals(part.status.PRODUCED)) {
@@ -81,6 +85,14 @@ public class SFEE_warehouse_monitor {
                                 Instant.now());
 
                         iterator.remove();
+
+                        /* Increment the number of parts moved by the SFEI sfei_idx. */
+                        sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
+                        /* DATABASE update nParts -> sfei table */
+                        dbConnection.getInstance().getSfeis().update_nMovedParts(
+                                sfei.getName(),
+                                sfee.getName(),
+                                sfei.getnPiecesMoved());
                     } else
                         throw new RuntimeException("This part is in the exit warehouse but is not produced");
 
@@ -124,7 +136,7 @@ public class SFEE_warehouse_monitor {
             ArrayList<part> recentArrivedParts = new ArrayList<>();
             int m = order.getMetal_qty(), g = order.getGreen_qty(), b = order.getBlue_qty();
             while (m + g + b > 0) {
-                int color = utils.getInstance().getRandom().nextInt(0, 3);
+                int color = pickColor(m, g, b);
                 part p = null;
                 switch (color) {
                     case 0 -> {
@@ -161,14 +173,63 @@ public class SFEE_warehouse_monitor {
 
             }
 
-            sfee.getSFEIs().get(0).getPartsATM().addAll(recentArrivedParts);
+            SFEI sfei = sfee.getSFEIs().get(0);
+            sfei.getPartsATM().addAll(recentArrivedParts);
             System.out.println("#parts in the warehouse: " + sfee.getSFEIs().get(0).getPartsATM().size());
+
+            /* Increment the number of parts moved by the SFEI sfei_idx. */
+            sfei.setnPiecesMoved(sfei.getnPiecesMoved() + recentArrivedParts.size());
+            /* DATABASE update nParts -> sfei table */
+            dbConnection.getInstance().getSfeis().update_nMovedParts(
+                    sfei.getName(),
+                    sfee.getName(),
+                    sfei.getnPiecesMoved());
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    private int oldSelection = 2;
+
+    private int pickColor(int m, int g, int b) {
+        int selection = -1;
+        if (Objects.requireNonNull(whOrganization) == SFEM_warehouse.warehouseOrganization.SEQUENTIAL) {
+            switch (oldSelection) {
+                case 2 -> {
+                    if (m > 0)
+                        selection = 0;
+                    else if (g > 0)
+                        selection = 1;
+                    else
+                        selection = oldSelection;
+                }
+                case 0 -> {
+                    if (g > 0)
+                        selection = 1;
+                    else if (b > 0)
+                        selection = 2;
+
+                }
+                case 1 -> {
+                    if (b > 0)
+                        selection = 2;
+                    else if (m > 0)
+                        selection = 0;
+                    else
+                        selection = oldSelection;
+                }
+            }
+        } else {
+            // RANDOM
+            do {
+                selection = utils.getInstance().getRandom().nextInt(0, 3);
+            } while ((selection == 0 && m == 0) || (selection == 1 && g == 0) || (selection == 2 && b == 0));
+        }
+        oldSelection = selection;
+        return selection;
+    }
 
     public void loadWHBasedOnPrevStock() {
         try {
