@@ -28,7 +28,7 @@ public class produce_more extends failures_conditions {
     private final SFEI_conveyor sfeiConveyor;
     private boolean old_sEmitter = false;
     private partDescription.material material;
-    private int faulty_partID = -1;
+    private int faulty_partID = Integer.MAX_VALUE / 2;
 
     public produce_more(String[] formulas, SFEI_conveyor sfeiConveyor, partDescription.material mat) {
         super(formulas, type.PRODUCE_MORE);
@@ -109,12 +109,12 @@ public class produce_more extends failures_conditions {
                 if (state != old_state) {
 
                     part newPart = new part(faulty_partID, new partDescription(material, partDescription.form.RAW));
-                    faulty_partID--;
+                    faulty_partID++;
                     sfeiConveyor.addNewPartATM(newPart);
 
-                    // For the overflow, just in case
-                    if (faulty_partID > 0)
-                        faulty_partID = -1;
+//                    // For the overflow, just in case
+//                    if (faulty_partID > 0)
+//                        faulty_partID = Integer.MAX_VALUE / 2;
 
                     holdRegs.set(sfeiConveyor.getaEmitPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(newPart.getReality()) + 4 - 1));
                     actuatorsState.set(sfeiConveyor.getaEmit().getBit_offset(), 1);

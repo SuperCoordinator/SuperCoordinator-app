@@ -210,7 +210,8 @@ public class SFEE_warehouse_monitor {
                         selection = 1;
                     else if (b > 0)
                         selection = 2;
-
+                    else
+                        selection = oldSelection;
                 }
                 case 1 -> {
                     if (b > 0)

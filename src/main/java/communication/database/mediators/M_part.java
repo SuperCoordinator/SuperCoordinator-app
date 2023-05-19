@@ -35,7 +35,7 @@ public class M_part extends queries_buffer implements IM_part {
 //                    " @status = '" + status + "'," +
 //                    " @fk_inbound_order = " + inbound_order + ";";
 
-            if (id < 0)
+            if (id >= Integer.MAX_VALUE / 2)
                 return;
 
             String query = "INSERT INTO part (id,fk_sf_configuration,status,fk_inbound_orders) " +
@@ -74,7 +74,7 @@ public class M_part extends queries_buffer implements IM_part {
     @Override
     public void update_status(int id, String sf_configuration, String status) {
         try {
-            if (id < 0)
+            if (id >= Integer.MAX_VALUE / 2)
                 return;
             String query = "UPDATE part " +
                     "SET status = '" + status + "' " +
@@ -90,7 +90,7 @@ public class M_part extends queries_buffer implements IM_part {
     @Override
     public void update_outboundOrder(int id, String sf_configuration, int outbound_order) {
         try {
-            if(id < 0)
+            if (id >= Integer.MAX_VALUE / 2)
                 return;
             String query = "UPDATE part " +
                     "SET fk_outbound_orders = " +

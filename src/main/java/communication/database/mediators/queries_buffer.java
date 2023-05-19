@@ -7,15 +7,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class queries_buffer {
 
-    private ArrayList<String> storedQueries = new ArrayList<>();
+    private final CopyOnWriteArrayList<String> storedQueries = new CopyOnWriteArrayList<>();
 
     public queries_buffer() {
     }
 
-    public synchronized ArrayList<String> getStoredQueries() {
+    public synchronized CopyOnWriteArrayList<String> getStoredQueries() {
         return storedQueries;
     }
 

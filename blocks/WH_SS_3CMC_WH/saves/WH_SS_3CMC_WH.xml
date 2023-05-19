@@ -130,7 +130,7 @@
                             </entry>
                             <entry>
 <key>2</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_1" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-11T11:22:30.654552300Z" last_maintenance="2023-05-11T11:22:30.654552300Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_1" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-11T11:22:30.654552300Z" last_maintenance="2023-05-11T11:22:30.654552300Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
     <inSensor name="s_exitMC1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="23"/>
     <outSensor name="s_R1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="24"/>
     <aRemover name="exit_R1" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="21"/>
@@ -177,7 +177,7 @@
                             </entry>
                             <entry>
 <key>2</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_2" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-11T11:22:44.453492700Z" last_maintenance="2023-05-11T11:22:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_2" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-11T11:22:44.453492700Z" last_maintenance="2023-05-11T11:22:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
     <inSensor name="s_exitMC2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="34"/>
     <outSensor name="s_R2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="35"/>
     <aRemover name="exit_R2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="33"/>
@@ -218,7 +218,7 @@
             <sfeeFailures2>
                 <stochasticType>GAUSSIAN</stochasticType>
                 <stochasticFormulas>60 </stochasticFormulas>
-                <stochasticFormulas>5 </stochasticFormulas>
+                <stochasticFormulas>4 </stochasticFormulas>
                 <failuresFormulas>
                     <item>no</item>
                     <item>no</item>
@@ -233,12 +233,12 @@
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>no</item>
-                    <item>no</item>
+                    <item>prob [ 15 ] >= 50</item>
+                    <item>gauss [ 20 ; 5 ]</item>
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>det [ 1 ]</item>
+                    <item>det [ 20 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
@@ -256,15 +256,15 @@
             </sfeeMonitor>
             <sfeeFailures2>
                 <stochasticType>GAUSSIAN</stochasticType>
-                <stochasticFormulas>65 </stochasticFormulas>
-                <stochasticFormulas>7 </stochasticFormulas>
+                <stochasticFormulas>60 </stochasticFormulas>
+                <stochasticFormulas>8 </stochasticFormulas>
                 <failuresFormulas>
+                    <item>gauss [ 20 ; 5 ]</item>
                     <item>no</item>
-                    <item>no</item>
-                    <item>no</item>
+                    <item>det [ 30 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>no</item>
+                    <item>gauss [ 1 ; 0 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>no</item>
@@ -300,15 +300,10 @@
                 <failuresFormulas>
                     <item>no</item>
                     <item>no</item>
-                    <item>no</item>
+                    <item>gauss [ 20 ; 3 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>no</item>
-                </failuresFormulas>
-                <failuresFormulas>
-                    <item>no</item>
-                    <item>no</item>
-                    <item>no</item>
+                    <item>gauss [ 5 ; 2 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>no</item>
@@ -316,7 +311,12 @@
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
+                    <item>det [ 18 ]</item>
                     <item>no</item>
+                    <item>no</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>gauss [ 25 ; 5 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
@@ -515,7 +515,7 @@
         </sfeeTransportController>
     </c_Transport>
     <c_Warehouse checkOrdersPeriod="5">
-        <sfem sfemRole="WAREHOUSE" name="sfem_warehouse" warehouseOrganization="RANDOM">
+        <sfem sfemRole="WAREHOUSE" name="sfem_warehouse" warehouseOrganization="SEQUENTIAL">
             <sfeeWarehouse sfeeEnvironment="SIMULATION" sfeeRole="WAREHOUSE" com="MODBUS" name="sfee_warehouse">
                 <SFEIs>
                     <entry>

@@ -197,7 +197,7 @@ public class SFEE_production_failures {
         }
 
         // Delete the completed tasks
-        stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isPusherFinished() || object.isMachineFinished());
+        stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isPusherFinished() || object.isMachineFinished() || object.isPartProduced());
 
     }
 

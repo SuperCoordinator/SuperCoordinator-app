@@ -104,6 +104,13 @@ public class stochasticTime {
         return smTrans.equals(SM_trans.END);
     }
 
+    /**
+    * For the parts introduced in the middle of the production, in order to this task can be removed when expires
+    */
+    public boolean isPartProduced() {
+        return part.getState().equals(models.base.part.status.PRODUCED);
+    }
+
     public void setTransportConfiguration(SFEM_transport.configuration configuration) {
 
         try {
