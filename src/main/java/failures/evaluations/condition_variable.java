@@ -8,7 +8,9 @@ public class condition_variable {
 
     private validation validation;
 
-    public condition_variable(){}
+    public condition_variable() {
+    }
+
     public condition_variable(String condition, validation.method method) {
         initialize(condition, method);
     }
@@ -70,7 +72,13 @@ public class condition_variable {
 
     private probFormula.signal getProbFormulaSignal(String condition) {
         probFormula.signal op = null;
-        if (condition.contains(">")) {
+        if (condition.contains("<=")) {
+            operator = "<=";
+            op = probFormula.signal.LESS_EQUAL;
+        } else if (condition.contains(">=")) {
+            operator = ">=";
+            op = probFormula.signal.MORE_EQUAL;
+        } else if (condition.contains(">")) {
             operator = ">";
             op = probFormula.signal.MORE;
         } else if (condition.contains("<")) {
@@ -79,12 +87,6 @@ public class condition_variable {
         } else if (condition.contains("=")) {
             operator = "=";
             op = probFormula.signal.EQUAL;
-        } else if (condition.contains("<=")) {
-            operator = "<=";
-            op = probFormula.signal.LESS_EQUAL;
-        } else if (condition.contains(">=")) {
-            operator = ">=";
-            op = probFormula.signal.MORE_EQUAL;
         }
         return op;
     }

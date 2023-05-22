@@ -26,7 +26,7 @@ public class SFEE_production_failures {
 
     private SM sm_state;
     private SFEE sfee;
-    private final LinkedList<stochasticTime> stochasticTimeTasks = new LinkedList<>();
+    private final ArrayList<stochasticTime> stochasticTimeTasks = new ArrayList<>();
     @XmlElement
     private stochasticTime.timeOptions stochasticType;
     @XmlElement
@@ -148,7 +148,7 @@ public class SFEE_production_failures {
                     }
                 }
             }
-
+            stochasticTimeMode(sensorsState, actuatorsState);
             // Execute tasks
             switch (sm_state) {
                 case BREAKDOWN_WITH_REPAIR -> breakdownRepair.loop(sensorsState.get(0), actuatorsState.get(0));
@@ -156,8 +156,17 @@ public class SFEE_production_failures {
                 case PRODUCE_FAULTY -> produceFaulty.loop(sensorsState.get(0), actuatorsState.get(0));
                 case PRODUCE_MORE ->
                         produceMore.loop(sensorsState.get(0), actuatorsState.get(0), actuatorsState.get(1));
-                case STOCHASTIC -> stochasticTimeMode(sensorsState, actuatorsState);
+                case STOCHASTIC -> {
+                    // Runs the tasks
+                    for (stochasticTime object : stochasticTimeTasks) {
+                        object.loop(sensorsState, actuatorsState);
+                    }
+                    // Delete the completed tasks
+                    if (stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isPusherFinished() || object.isMachineFinished() || object.isPartProduced()))
+                        System.out.println(" >>> " + sfee.getName() + " stochasticTasks: " + stochasticTimeTasks.size());
+                }
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,16 +198,6 @@ public class SFEE_production_failures {
             }
 
         }
-
-
-        // Runs the tasks
-        for (stochasticTime object : stochasticTimeTasks) {
-            object.loop(sensorsState, actuatorsState);
-        }
-
-        // Delete the completed tasks
-        stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isPusherFinished() || object.isMachineFinished() || object.isPartProduced());
-
     }
 
     private int calculateSFEEMinOperationTime() {

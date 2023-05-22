@@ -90,7 +90,7 @@ public class validation {
                 //    IF true -> return the currentValue and calculate another one
                 //    ELSE -> return false
 
-                if ((var == probFormula.getCurrentValue() || var > 0) && var % probFormula.getCurrentValue() == 0) {
+                if (var == probFormula.getCurrentValue() || (var > 0 && var % probFormula.getCurrentValue() == 0)) {
                     res = probFormula.getState();
 //                    if (res)
 //                        System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);

@@ -345,8 +345,8 @@
         <sfeeTransportController prevSFEEName="sfee_warehouse" nextSFEEName="SFEE_SortingStation" prevSFEIName="sfei_entryWarehouse" nextSFEIName="parts_entry">
             <sfeeMonitor/>
             <sfeeFailures stochasticType="GAUSSIAN">
-                <stochasticFormulas>15 </stochasticFormulas>
-                <stochasticFormulas>3 </stochasticFormulas>
+                <stochasticFormulas>6 </stochasticFormulas>
+                <stochasticFormulas>2 </stochasticFormulas>
             </sfeeFailures>
         </sfeeTransportController>
     </c_Transport>
@@ -449,7 +449,7 @@
         <sfeeTransportController prevSFEEName="SFEE_SortingStation" nextSFEEName="SFEE_metalPL" prevSFEIName="metal_entry" nextSFEIName="EntryConveyor_0">
             <sfeeMonitor/>
             <sfeeFailures stochasticType="GAUSSIAN">
-                <stochasticFormulas>10 </stochasticFormulas>
+                <stochasticFormulas>5 </stochasticFormulas>
                 <stochasticFormulas>3 </stochasticFormulas>
             </sfeeFailures>
         </sfeeTransportController>
@@ -479,7 +479,7 @@
         <sfeeTransportController prevSFEEName="SFEE_SortingStation" nextSFEEName="SFEE_greenPL" prevSFEIName="green_entry" nextSFEIName="EntryConveyor_1">
             <sfeeMonitor/>
             <sfeeFailures stochasticType="GAUSSIAN">
-                <stochasticFormulas>10 </stochasticFormulas>
+                <stochasticFormulas>5 </stochasticFormulas>
                 <stochasticFormulas>3 </stochasticFormulas>
             </sfeeFailures>
         </sfeeTransportController>
@@ -509,7 +509,7 @@
         <sfeeTransportController prevSFEEName="SFEE_SortingStation" nextSFEEName="SFEE_bluePL" prevSFEIName="blue_entry" nextSFEIName="EntryConveyor_2">
             <sfeeMonitor/>
             <sfeeFailures stochasticType="GAUSSIAN">
-                <stochasticFormulas>10 </stochasticFormulas>
+                <stochasticFormulas>5 </stochasticFormulas>
                 <stochasticFormulas>3 </stochasticFormulas>
             </sfeeFailures>
         </sfeeTransportController>

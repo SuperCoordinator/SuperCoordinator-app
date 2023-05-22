@@ -105,8 +105,8 @@ public class stochasticTime {
     }
 
     /**
-    * For the parts introduced in the middle of the production, in order to this task can be removed when expires
-    */
+     * For the parts introduced in the middle of the production, in order to this task can be removed when expires
+     */
     public boolean isPartProduced() {
         return part.getState().equals(models.base.part.status.PRODUCED);
     }

@@ -39,29 +39,22 @@ public class App {
 
                 // Create new configuration files
                 /* PRODUCTION MODULES*/
-                int nModules = 1, nSFEE = 1;
+                int nModules = 1;
 
                 if (serializer.getInstance().scene.equals(serializer.scenes.CMC_connection)) {
                     nModules = 1;
-                    nSFEE = 2;
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.CMC2_con_individual)) {
                     nModules = 2;
-                    nSFEE = 1;
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.sorting_station)) {
                     nModules = 1;
-                    nSFEE = 3;
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_3CMC)) {
                     nModules = 2;
-                    nSFEE = 3;
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.MC_Staudinger)) {
                     nModules = 1;
-                    nSFEE = 1;
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_WH)) {
                     nModules = 1;
-                    nSFEE = 1;
                 } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_3CMC_WH)) {
                     nModules = 1;
-                    nSFEE = 4;
                 }
 
                 for (int i = 0; i < nModules; i++) {
@@ -222,6 +215,7 @@ public class App {
             for (cSFEM_transport transport : serializer.getInstance().getC_Transport()) {
                 scheduler.scheduleAtFixedRate(transport, 0, 100, TimeUnit.MILLISECONDS);
             }
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
