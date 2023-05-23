@@ -25,7 +25,7 @@ public class C_SFEE_items {
     public C_SFEE_items() {
     }
 
-    public void setIo(TreeMap<Integer, sensor_actuator> io, SFEE.SFEE_type sfeeType) {
+    public void setIo(TreeMap<Integer, sensor_actuator> io, SFEE.SFEE_environment sfeeType) {
         this.io = io;
         if (sfeisController == null)
             this.sfeisController = new C_SFEIs(io, sfeeType);

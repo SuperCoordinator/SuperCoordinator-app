@@ -1,21 +1,21 @@
 package controllers.warehouse;
 
-import models.SFEx_particular.SFEI_warehouse;
+import models.SFEx.SFEI_warehouse;
+import models.SFEx.SFEM_warehouse;
 import models.base.SFEE;
+import models.base.SFEI;
 import models.base.part;
+import monitor.warehouse.SFEE_warehouse_monitor;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.NONE)
 public class cSFEE_warehouse {
 
-
     private SFEE sfee;
+    private SFEE_warehouse_monitor sfeeWarehouseMonitor;
 
     public cSFEE_warehouse() {
     }
@@ -28,21 +28,35 @@ public class cSFEE_warehouse {
         return sfee;
     }
 
-    public void init() {
-        // Create SFEI
-        SFEI_warehouse sfeiWarehouse = new SFEI_warehouse();
-        sfee.getSFEIs().put(0, sfeiWarehouse);
+    public void init(int checkOrders_period, SFEM_warehouse.warehouseOrganization warehouseOrganization) {
+        try {
+            // Entry SFEI
+            sfee.getSFEIs().put(0, new SFEI_warehouse("sfei_entryWarehouse"));
+            // Exit SFEI
+            sfee.getSFEIs().put(1, new SFEI_warehouse("sfei_exitWarehouse"));
 
+            // Load the warehouse with parts that was previously on it to be used, this also update index of partID in the warehouse
+            sfeeWarehouseMonitor = new SFEE_warehouse_monitor(sfee, checkOrders_period,warehouseOrganization);
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
     }
 
-
-    public void storeParts(ArrayList<part> recentArrivedParts) {
-        sfee.getSFEIs().get(0).getPartsATM().addAll(recentArrivedParts);
-        System.out.println("#parts in the warehouse: " + sfee.getSFEIs().get(0).getPartsATM().size());
+    public void loadWHBasedOnPrevStock() {
+        try {
+            sfeeWarehouseMonitor.loadWHBasedOnPrevStock();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
 
     public void loop() {
+        try {
+            sfeeWarehouseMonitor.loop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 

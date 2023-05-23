@@ -9,7 +9,7 @@ import com.opencsv.*;
 
 public class csv_reader {
 
-    public TreeMap<Integer, sensor_actuator> readModbusTags(String path, int scene, boolean dbg) {
+    public TreeMap<Integer, sensor_actuator> readModbusTags(String path, boolean dbg) {
         TreeMap<Integer, sensor_actuator> treeMap = new TreeMap<>();
         try {
 
@@ -34,14 +34,15 @@ public class csv_reader {
                 treeMap.put(treeMap.size(), createObj(row));
 
             }
-            System.out.println("*** All imported IOs ***");
-            for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
-                System.out.println("   " + entry.getKey() + " - " + entry.getValue().getName());
-            }
-            System.out.println("From the IO which are in inverse logic?");
-
-            Scanner in = new Scanner(System.in);
             if (dbg) {
+                System.out.println("*** All imported IOs ***");
+                for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
+                    System.out.println("   " + entry.getKey() + " - " + entry.getValue().getName());
+                }
+                System.out.println("From the IO which are in inverse logic?");
+
+                Scanner in = new Scanner(System.in);
+
                 System.out.println("Enter following the example pattern: 2,3,1,5");
                 String input = in.nextLine();
 
@@ -49,10 +50,11 @@ public class csv_reader {
 //            String input = "12";
 
                 System.out.println(input);
-
-                for (String str : input.split(",")) {
-                    int key = Integer.parseInt(str);
-                    treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
+                if (!input.isEmpty()) {
+                    for (String str : input.split(",")) {
+                        int key = Integer.parseInt(str);
+                        treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
+                    }
                 }
             }
         } catch (Exception e) {

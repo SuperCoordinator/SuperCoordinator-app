@@ -11,7 +11,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx.SFEI_conveyor;
 import models.sensor_actuator;
 import utility.utils;
 
@@ -32,6 +32,7 @@ public class C_SFEI_conveyor implements Initializable {
     public C_SFEI_conveyor(TreeMap<Integer, sensor_actuator> io) {
         this.io = io;
     }
+
     public void activeEditMode() {
         this.editMode = true;
     }
@@ -50,6 +51,7 @@ public class C_SFEI_conveyor implements Initializable {
     private ToggleGroup failures_support;
     @FXML
     private Pane failure_pane;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (!editMode) {
@@ -116,19 +118,23 @@ public class C_SFEI_conveyor implements Initializable {
 
 
     public sensor_actuator[] getSensAct() {
-        sensor_actuator[] ret = new sensor_actuator[5];
+        sensor_actuator[] ret = new sensor_actuator[7];
         if (sfeiConveyorFailures != null) {
             ret[0] = search_sensor_actuator(sfeiConveyorFailures.getaRemover());
             ret[1] = search_sensor_actuator(sfeiConveyorFailures.getaEmitter());
-            ret[2] = search_sensor_actuator(sfeiConveyorFailures.getsRemover());
-            ret[3] = search_sensor_actuator(sfeiConveyorFailures.getsEmitter());
+            ret[2] = null; // for Emit Part
+            ret[3] = null; // for Emit Base
+            ret[4] = search_sensor_actuator(sfeiConveyorFailures.getsRemover());
+            ret[5] = search_sensor_actuator(sfeiConveyorFailures.getsEmitter());
         } else {
             ret[0] = null;
             ret[1] = null;
             ret[2] = null;
             ret[3] = null;
+            ret[4] = null;
+            ret[5] = null;
         }
-        ret[4] = search_sensor_actuator(aConveyor);
+        ret[6] = search_sensor_actuator(aConveyor);
 
         return ret;
     }

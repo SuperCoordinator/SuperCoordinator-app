@@ -2,20 +2,15 @@ package controllers.production;
 
 import communication.modbus;
 import models.base.SFEE;
-import models.SFEx_particular.SFEM_production;
+import models.SFEx.SFEM_production;
 import monitor.production.SFEM_production_monitor;
 
 import javax.xml.bind.annotation.*;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -58,8 +53,8 @@ public class cSFEM_production implements Runnable {
 
                 SFEE sfee = new SFEE(
                         inputs[0],
-                        Integer.parseInt(inputs[2]) == 1 ? SFEE.SFEE_type.SIMULATION : SFEE.SFEE_type.REAL,
-                        SFEE.SFEE_function.PRODUCTION,
+                        Integer.parseInt(inputs[2]) == 1 ? SFEE.SFEE_environment.SIMULATION : SFEE.SFEE_environment.REAL,
+                        SFEE.SFEE_role.PRODUCTION,
                         Integer.parseInt(inputs[1]) == 1 ? SFEE.communicationOption.MODBUS : SFEE.communicationOption.OPC_UA);
 
                 sfem.addNewSFEE(sfee);
@@ -81,7 +76,7 @@ public class cSFEM_production implements Runnable {
             int i = 0;
             for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
                 /* QUESTAO DO SLAVE ID*/
-                String[] comConfig = viewer.communicationParams(0);
+                String[] comConfig = viewer.communicationParams(0, sfee.getValue());
 
                 modbus mb = new modbus(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]));
                 cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
@@ -108,10 +103,17 @@ public class cSFEM_production implements Runnable {
                         sfeeController.init(scene + 6 + i);
                         firstRun(false, i);
                     }
-                }else if(scene == 4){
+                } else if (scene == 4) {
                     sfeeController.init(scene + 8);
-                }else if(scene == 5){
+                } else if (scene == 5) {
                     sfeeController.init(scene + 8);
+                } else if (scene == 6) {
+                    if (i == 0) {
+                        sfeeController.init(scene + 8);
+                    } else {
+                        sfeeController.init(scene + 8 + i);
+                        firstRun(false, i);
+                    }
                 }
 
                 sfeeController.initFailures();
@@ -141,11 +143,11 @@ public class cSFEM_production implements Runnable {
         try {
             // Open the first connection
             sfeeControllers.get(0).openCommunication();
-            System.out.println(" SFEE (" + 0 + ") mb:" + sfeeControllers.get(0).getMb());
+            System.out.println(sfeeControllers.get(0).getSFEE().getName() + " IP:" + sfeeControllers.get(0).getMb().getIp() + " Port:" + sfeeControllers.get(0).getMb().getPort());
             // For the rest, first check if there are common connections
             for (int i = 1; i < sfeeControllers.size(); i++) {
                 cSFEE_production to_define = sfeeControllers.get(i);
-                System.out.println(" SFEE (" + i + ") mb:" + to_define.getMb());
+                System.out.println(to_define.getSFEE().getName() + " IP:" + to_define.getMb().getIp() + " Port:" + to_define.getMb().getPort());
                 modbus found_mb = null;
 
                 for (int j = 0; j < sfeeControllers.size(); j++) {
@@ -156,7 +158,9 @@ public class cSFEM_production implements Runnable {
                         if (to_define.getMb().getIp().equals(temp.getMb().getIp()))
                             if (to_define.getMb().getPort() == temp.getMb().getPort()) {
                                 found_mb = temp.getMb();
-                                System.out.println(" FOUND for SFEE (" + j + ") mb:" + temp.getMb());
+                                System.out.println(" Found for " + to_define.getSFEE().getName() +
+                                        " IP:" + temp.getMb().getIp() + " Port:" + temp.getMb().getPort() +
+                                        " of " + temp.getSFEE().getName());
                                 break;
                             }
                     }
@@ -169,7 +173,7 @@ public class cSFEM_production implements Runnable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
     }
@@ -244,6 +248,7 @@ public class cSFEM_production implements Runnable {
 
             runtime.add(Duration.between(start_t, Instant.now()).toMillis());
         } catch (Exception e) {
+            // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();
         }
     }

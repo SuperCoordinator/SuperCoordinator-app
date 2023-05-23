@@ -187,8 +187,7 @@ public class customCalculator {
             return error;
 
         if (formula.indexOf(';') == -1) {
-            // Is random or linear
-
+            // Is deterministic or linear
             if (!(formula.indexOf('[') != -1 && formula.indexOf(']') != -1)) {
                 errorMsg = "Invalid formula, missing some [ ] ";
                 return true;
@@ -237,6 +236,11 @@ public class customCalculator {
                 return true;
         } // linear
         else if (elements[0].equalsIgnoreCase("linear")) {
+            boolean b = evalExpression(elements[1]);
+            if (b)
+                return true;
+        } // deterministic
+        else if (elements[0].equalsIgnoreCase("det")) {
             boolean b = evalExpression(elements[1]);
             if (b)
                 return true;

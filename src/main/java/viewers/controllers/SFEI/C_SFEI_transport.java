@@ -3,12 +3,11 @@ package viewers.controllers.SFEI;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import models.SFEx_particular.SFEI_transport;
+import models.SFEx.SFEI_transport;
 import models.sensor_actuator;
 import utility.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -92,7 +91,7 @@ public class C_SFEI_transport {
         }
         if (emit_part_bit.getValue() == null) {
             error = true;
-            errorMsg = errorMsg.concat("  - Emitter part bit \n");
+            errorMsg = errorMsg.concat("  - Emitter M_part bit \n");
         }
         if (emit_base_bit.getValue() == null) {
             error = true;

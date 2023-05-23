@@ -194,12 +194,13 @@ public class modbus implements Runnable {
                     for (int i = 0; i < registers.length; i++) {
                         registers[i] = new SimpleRegister(holdingRegisters.get(i));
                     }
+
                     con.writeMultipleRegisters(0, registers);
                     hRegUpdated.set(false);
                     writeLoop++;
                 }
             }
-            runtime.add(Duration.between(start_t, Instant.now()).toMillis());
+
 //            System.out.println("MB execution time (ms) " + Duration.between(start_t, Instant.now()).toMillis());
             if (Duration.between(init_t, Instant.now()).toSeconds() > 30) {
                 if (Duration.between(init_t, Instant.now()).toSeconds() % 5 == 0) {
@@ -219,8 +220,10 @@ public class modbus implements Runnable {
             }
 
             runLoop++;
+            runtime.add(Duration.between(start_t, Instant.now()).toMillis());
 
         } catch (Exception e) {
+            // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();
         }
 
@@ -277,9 +280,13 @@ public class modbus implements Runnable {
                     if ((Integer) coilsList.get(i) == -1) {
                         continue;
                     }
-                    int old = coils.getAndSet(i, (Integer) coilsList.get(i));
-                    if (old != (Integer) coilsList.get(i))
+                    if ((int) coilsList.get(i) != coils.get(i)) {
+                        coils.getAndSet(i, (Integer) coilsList.get(i));
                         coilsUpdated.getAndSet(true);
+                    }
+//                    int old = coils.getAndSet(i, (Integer) coilsList.get(i));
+//                    if (old != (Integer) coilsList.get(i))
+//                        coilsUpdated.getAndSet(true);
                 }
             }
         } catch (Exception e) {
@@ -291,14 +298,19 @@ public class modbus implements Runnable {
     public void writeRegisters(List<Object> registers) {
         try {
             if (holdingRegisters != null) {
+
                 for (int i = 0; i < holdingRegisters.length(); i++) {
                     if ((Integer) registers.get(i) == -1) {
                         continue;
                     }
-                    int old = holdingRegisters.getAndSet(i, (Integer) registers.get(i));
-                    if (old != (Integer) registers.get(i)) {
+                    if ((int) registers.get(i) != holdingRegisters.get(i)) {
+                        holdingRegisters.getAndSet(i, (Integer) registers.get(i));
                         hRegUpdated.getAndSet(true);
                     }
+//                    int old = holdingRegisters.getAndSet(i, (Integer) registers.get(i));
+//                    if (old != (Integer) registers.get(i)) {
+//                        hRegUpdated.getAndSet(true);
+//                    }
                 }
             }
         } catch (Exception e) {

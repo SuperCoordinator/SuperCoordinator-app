@@ -37,11 +37,12 @@ public class SFEM {
         return str;
     }
 
-    public String[] communicationParams(int opt) {
+    public String[] communicationParams(int opt, models.base.SFEE sfee) {
 
         String[] str = new String[3];
 
         if (opt == 0) {
+            System.out.println("Communication Parameters for " + sfee.getName());
             // Modbus
             System.out.print("IP: ");
             str[0] = in.nextLine();

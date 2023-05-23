@@ -1,0 +1,50 @@
+﻿Name,Type,Data Type,Address
+FACTORY I/O (Paused),Input,Bool,Input 0
+FACTORY I/O (Reset),Input,Bool,Input 1
+FACTORY I/O (Running),Input,Bool,Input 2
+Reset,Input,Bool,Input 3
+Start,Input,Bool,Input 4
+Stop,Input,Bool,Input 5
+s_blue,Input,Bool,Input 6
+s_blue_remover,Input,Bool,Input 7
+s_emitter,Input,Bool,Input 8
+s_exit,Input,Bool,Input 9
+s_faulty,Input,Bool,Input 10
+s_faulty_remover,Input,Bool,Input 11
+s_green,Input,Bool,Input 12
+s_green_remover,Input,Bool,Input 13
+s_metal,Input,Bool,Input 14
+s_metal_remover,Input,Bool,Input 15
+blue_conveyor,Output,Bool,Coil 0
+blue_remover,Output,Bool,Coil 1
+blue_sorter_belt,Output,Bool,Coil 2
+blue_sorter_turn,Output,Bool,Coil 3
+emit_SS,Output,Bool,Coil 4
+entry_conveyor,Output,Bool,Coil 5
+exit_conveyor,Output,Bool,Coil 6
+FACTORY I/O (Pause),Output,Bool,Coil 7
+FACTORY I/O (Reset),Output,Bool,Coil 8
+FACTORY I/O (Run),Output,Bool,Coil 9
+faulty_conveyor,Output,Bool,Coil 10
+faulty_remover,Output,Bool,Coil 11
+green_conveyor,Output,Bool,Coil 12
+green_remover,Output,Bool,Coil 13
+green_sorter_belt,Output,Bool,Coil 14
+green_sorter_turn,Output,Bool,Coil 15
+metal_conveyor,Output,Bool,Coil 16
+metal_remover,Output,Bool,Coil 17
+metal_sorter_belt,Output,Bool,Coil 18
+metal_sorter_turn,Output,Bool,Coil 19
+Reset_light,Output,Bool,Coil 20
+Start_light,Output,Bool,Coil 21
+Stop_light,Output,Bool,Coil 22
+stop_blade,Output,Bool,Coil 23
+FACTORY I/O (Time Scale),Input,Real,Input Reg 0
+s_vision,Input,Int,Input Reg 1
+counter_metal,Output,Int,Holding Reg 0
+counter_green,Output,Int,Holding Reg 1
+counter_blue,Output,Int,Holding Reg 2
+counter_faulty,Output,Int,Holding Reg 3
+FACTORY I/O (Camera Position),Output,Int,Holding Reg 4
+base_SS,Output,Int,Holding Reg 5
+part_SS,Output,Int,Holding Reg 6

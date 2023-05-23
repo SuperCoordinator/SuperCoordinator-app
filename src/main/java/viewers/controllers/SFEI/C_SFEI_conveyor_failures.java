@@ -4,7 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import models.SFEx_particular.SFEI_conveyor;
+import models.SFEx.SFEI_conveyor;
 import models.sensor_actuator;
 import utility.utils;
 
@@ -52,7 +52,7 @@ public class C_SFEI_conveyor_failures implements Initializable {
         } else {
             sEmitter.setValue(sfeiConveyor.getsEmitter().getName());
             sRemover.setValue(sfeiConveyor.getsRemover().getName());
-            aEmitter.setValue(sfeiConveyor.getaEmitter().getName());
+            aEmitter.setValue(sfeiConveyor.getaEmit().getName());
             aRemover.setValue(sfeiConveyor.getaRemover().getName());
 
         }

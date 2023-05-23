@@ -18,7 +18,7 @@ public class C_SFEE_failure {
     private final ArrayList<Object> savedValues;
 
     private cSFEE_production.operationMode operationMode;
-    private SFEE.SFEE_type sfeeType;
+    private SFEE.SFEE_environment sfeeType;
     private ArrayList<String> loadedData;
 
     public C_SFEE_failure() {
@@ -26,7 +26,7 @@ public class C_SFEE_failure {
         this.textFields = new ArrayList<>();
     }
 
-    public void setSfeeType(SFEE.SFEE_type sfeeType) {
+    public void setSfeeType(SFEE.SFEE_environment sfeeType) {
         this.sfeeType = sfeeType;
     }
 
@@ -108,7 +108,7 @@ public class C_SFEE_failure {
             }
         }
         // In case of real modules, not support failures
-        if (sfeeType.equals(SFEE.SFEE_type.REAL)) {
+        if (sfeeType.equals(SFEE.SFEE_environment.REAL)) {
             for (int i = 0; i < opMode.getToggles().size(); i++) {
                 if (((ToggleButton) opMode.getToggles().get(i)).getId().equals("prog_failures")) {
                     ((ToggleButton) opMode.getToggles().get(i)).setDisable(true);

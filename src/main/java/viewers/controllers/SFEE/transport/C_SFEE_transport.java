@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import models.SFEx_particular.SFEI_transport;
+import models.SFEx.SFEI_transport;
 import models.base.SFEI;
 import models.sensor_actuator;
 import utility.utils;

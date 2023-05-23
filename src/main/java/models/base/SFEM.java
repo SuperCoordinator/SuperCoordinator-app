@@ -1,28 +1,22 @@
 package models.base;
 
-import models.SFEx_particular.SFEM_production;
-import models.SFEx_particular.SFEM_transport;
 import models.part_prodTime;
 
 import javax.xml.bind.annotation.*;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.TreeMap;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class SFEM {
 
-    public enum SFEM_type {
+    public enum SFEM_role {
         PRODUCTION,
         TRANSPORT,
         WAREHOUSE
     }
 
     @XmlAttribute
-    private SFEM_type sfemType;
+    private SFEM_role sfemRole;
     @XmlAttribute
     private String name;
     private TreeMap<Integer, part_prodTime> productionHistory = new TreeMap<>();
@@ -30,8 +24,8 @@ public class SFEM {
     public SFEM() {
     }
 
-    public SFEM(String name, SFEM_type sfemType) {
-        this.sfemType = sfemType;
+    public SFEM(String name, SFEM_role sfemType) {
+        this.sfemRole = sfemType;
         this.name = name;
     }
 
@@ -43,8 +37,8 @@ public class SFEM {
         this.name = name;
     }
 
-    public SFEM_type getSfemType() {
-        return sfemType;
+    public SFEM_role getSfemRole() {
+        return sfemRole;
     }
 
     public void addPartToProductionHistory(part_prodTime producedPart) {

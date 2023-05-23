@@ -1,18 +1,13 @@
 package monitor.transport;
 
-import models.SFEx_particular.SFEM_transport;
+import models.SFEx.SFEM_transport;
 import models.base.SFEI;
 import models.base.SFEM;
 import models.base.part;
 import models.part_prodTime;
-import monitor.base.SFEM_monitor;
+import monitor.SFEM_monitor;
 
 
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -25,7 +20,7 @@ public class SFEM_transport_monitor extends SFEM_monitor {
 
     public void loop() {
         try {
-            if (Duration.between(getInit_t(), Instant.now()).toSeconds() % 5 == 0) {
+            if (/*Duration.between(getInit_t(), Instant.now()).toSeconds() % 5 == 0*/false) {
                 if (!isPrintedStats()) {
                     // will check the parts from the SFEE and save them into history
                     SFEM_transport sfem = (SFEM_transport) getSfem();
@@ -34,7 +29,7 @@ public class SFEM_transport_monitor extends SFEM_monitor {
                     while (iterator.hasNext()) {
                         part p = iterator.next();
                         if (!p.isProduced() && !p.isWaitTransport()) {
-                            int prod_t = calculateProductionTime(p);
+                            int prod_t = /*calculateProductionTime(p);*/0;
                             if (prod_t == -1)
                                 continue;
                             part_prodTime pp = new part_prodTime(p, prod_t);
@@ -45,13 +40,13 @@ public class SFEM_transport_monitor extends SFEM_monitor {
                             } else {
                                 getProductionTime_cnt().put(pp.production_time(), 1);
                             }
-                            iterator.remove();
+//                            iterator.remove();
                         }
                     }
 
-                    updateGraphs();
-
-                    printStats(new ArrayList<>());
+//                    updateGraphs();
+//
+//                    printStats(new ArrayList<>());
                     setPrintedStats(true);
 
                 }
@@ -70,7 +65,7 @@ public class SFEM_transport_monitor extends SFEM_monitor {
 
         // search for inOut sensor of SFEM : in from SFEE(0) / out from SFEE(size-1) ;
         String inSFEM_sensor = "none";
-        if (!sfem.getSfeeTransport().getSFEIbyIndex(0).getSfeiType().equals(SFEI.SFEI_type.TRANSPORT)){
+        if (!sfem.getSfeeTransport().getSFEIbyIndex(0).getSfeiType().equals(SFEI.SFEI_type.TRANSPORT)) {
             inSFEM_sensor = sfem.getSfeeTransport().getInSensor().getName();
         }
 

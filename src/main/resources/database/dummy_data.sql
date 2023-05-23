@@ -1,6 +1,6 @@
 SET @name = 'SS_3CMC',
     @time = current_timestamp();
-INSERT INTO sf_distribution (name,time_stamp)
+INSERT INTO sf_configuration (name,time_stamp)
        VALUES (@name,@time)
 ON DUPLICATE KEY UPDATE
     name = @name,
@@ -25,10 +25,10 @@ SET @id = 0,
     @status  = 'ARRIVED',
     @sf_dist = 'SS_3CMC',
     @in_order_id = 0;
-INSERT INTO part (id,status,fk_sf_distribution,fk_inbound_orders)
+INSERT INTO part (id,status,fk_sf_configuration,fk_inbound_orders)
        VALUES (@id,@status,@sf_dist,@in_order_id)
 ON DUPLICATE KEY UPDATE
     id = @id,
     status = @status,
-    fk_sf_distribution = @sf_dist,
+    fk_sf_configuration = @sf_dist,
     fk_inbound_orders = @in_order_id;

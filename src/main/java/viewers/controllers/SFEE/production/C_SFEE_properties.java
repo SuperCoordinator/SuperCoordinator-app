@@ -17,8 +17,8 @@ public class C_SFEE_properties {
 
     private final ArrayList<Object> savedValues;
 
-    private SFEE.SFEE_type sfeeType;
-    private SFEE.SFEE_function sfeeFunction;
+    private SFEE.SFEE_environment sfeeType;
+    private SFEE.SFEE_role sfeeFunction;
 
     @FXML
     private ToggleGroup env;
@@ -69,7 +69,7 @@ public class C_SFEE_properties {
         }
     }
 
-    public void loadData(SFEE.SFEE_type sfeeType, SFEE.SFEE_function sfeeFunction) {
+    public void loadData(SFEE.SFEE_environment sfeeType, SFEE.SFEE_role sfeeFunction) {
         this.sfeeType = sfeeType;
         this.sfeeFunction = sfeeFunction;
     }

@@ -2,19 +2,15 @@ package monitor.production;
 
 import models.base.SFEE;
 import models.base.SFEI;
-import models.SFEx_particular.SFEM_production;
+import models.SFEx.SFEM_production;
 import models.base.SFEM;
 import models.base.part;
 import models.part_prodTime;
-import monitor.base.SFEM_monitor;
+import monitor.SFEM_monitor;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -36,7 +32,7 @@ public class SFEM_production_monitor extends SFEM_monitor  {
 
     public void loop(List<Long> runtime) {
         try {
-            if (Duration.between(getInit_t(), Instant.now()).toSeconds() % 5 == 0) {
+            if (/*Duration.between(getInit_t(), Instant.now()).toSeconds() % 5 == 0*/false) {
                 if (!isPrintedStats()) {
                     SFEM_production sfem = (SFEM_production) getSfem();
                     // will check the parts from the SFEE and save them into history
@@ -46,7 +42,7 @@ public class SFEM_production_monitor extends SFEM_monitor  {
                         while (iterator.hasNext()) {
                             part p = iterator.next();
                             if (p.isProduced()) {
-                                int prod_t = calculateProductionTime(p);
+                                int prod_t = /*calculateProductionTime(p);*/0;
                                 if (prod_t == -1)
                                     continue;
                                 part_prodTime pp = new part_prodTime(p, prod_t);
@@ -62,10 +58,10 @@ public class SFEM_production_monitor extends SFEM_monitor  {
                             }
                         }
                     }
-                    printStats(runtime);
+//                    printStats(runtime);
                     setPrintedStats(true);
-
-                    updateGraphs();
+//
+//                    updateGraphs();
 
                 }
             } else {

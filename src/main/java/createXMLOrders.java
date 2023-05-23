@@ -8,9 +8,7 @@ import java.io.File;
 
 public class createXMLOrders {
     public static void main(String[] args) {
-
         try {
-
             for (int i = 0; i < 5; i++) {
                 inboundOrder inboundOrder = new inboundOrder(i,
                         utils.getInstance().getRandom().nextInt(1, 11),
@@ -22,11 +20,8 @@ public class createXMLOrders {
                 marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 marshaller.marshal(inboundOrder, new File("src/main/resources/inboundOrders/order" + i + ".xml"));
             }
-
-
         } catch (JAXBException  e) {
             throw new RuntimeException(e);
         }
-
     }
 }
