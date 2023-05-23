@@ -292,6 +292,11 @@ public class SFEE {
 
         formulas.add(f_PM);
 
+        System.out.println("PRODUCE LESS");
+        String[] f_PL = variablesFormulas();
+
+        formulas.add(f_PL);
+
 
 //        return str;
         return formulas;

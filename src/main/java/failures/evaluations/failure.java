@@ -12,7 +12,8 @@ public class failure {
         BREAKDOWN,
         BREAKDOWN_WITH_REPAIR,
         PRODUCE_FAULTY,
-        PRODUCE_MORE
+        PRODUCE_MORE,
+        PRODUCE_LESS
     }
 
     private final type type;

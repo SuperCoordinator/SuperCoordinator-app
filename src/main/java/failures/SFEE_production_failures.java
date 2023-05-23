@@ -1,9 +1,6 @@
 package failures;
 
-import failures.supportedTypes.breakdown;
-import failures.supportedTypes.breakdown_repair;
-import failures.supportedTypes.produce_faulty;
-import failures.supportedTypes.produce_more;
+import failures.supportedTypes.*;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.SFEx.SFEI_conveyor;
@@ -21,7 +18,8 @@ public class SFEE_production_failures {
         BREAKDOWN,
         BREAKDOWN_WITH_REPAIR,
         PRODUCE_FAULTY,
-        PRODUCE_MORE
+        PRODUCE_MORE,
+        PRODUCE_LESS
     }
 
     private SM sm_state;
@@ -38,6 +36,7 @@ public class SFEE_production_failures {
     private failures.supportedTypes.breakdown breakdown;
     private produce_faulty produceFaulty;
     private produce_more produceMore;
+    private produce_less produceLess;
 
     private int oldPartID = -1;
 
@@ -91,6 +90,10 @@ public class SFEE_production_failures {
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
                 ((SFEI_machine) sfee.getSFEIbyIndex(sfeiMachine_idx_failures)).getPartDescription().material());
 
+        this.produceLess = new produce_less(
+                failuresFormulas.get(5),
+                (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
+
         System.out.println("*******************************************");
         System.out.println();
         this.sm_state = SM.STOCHASTIC;
@@ -122,7 +125,12 @@ public class SFEE_production_failures {
                                 produceMore.loop(sensorsState.get(0), actuatorsState.get(0), actuatorsState.get(1));
                                 if (produceMore.isActive()) {
                                     sm_state = SM.PRODUCE_MORE;
-                                } /*ELSE state = SM.STOCHASTIC; */
+                                } else {
+                                    produceLess.loop(sensorsState.get(0), actuatorsState.get(0));
+                                    if (produceLess.isActive()) {
+                                        sm_state = SM.PRODUCE_LESS;
+                                    }/*ELSE state = SM.STOCHASTIC; */
+                                }
                             }
                         }
                     }
@@ -147,8 +155,14 @@ public class SFEE_production_failures {
                         sm_state = SM.STOCHASTIC;
                     }
                 }
+                case PRODUCE_LESS -> {
+                    if (!produceLess.isActive()) {
+                        sm_state = SM.STOCHASTIC;
+                    }
+                }
             }
-            stochasticTimeMode(sensorsState, actuatorsState);
+            stochasticTimeMode();
+
             // Execute tasks
             switch (sm_state) {
                 case BREAKDOWN_WITH_REPAIR -> breakdownRepair.loop(sensorsState.get(0), actuatorsState.get(0));
@@ -156,13 +170,15 @@ public class SFEE_production_failures {
                 case PRODUCE_FAULTY -> produceFaulty.loop(sensorsState.get(0), actuatorsState.get(0));
                 case PRODUCE_MORE ->
                         produceMore.loop(sensorsState.get(0), actuatorsState.get(0), actuatorsState.get(1));
+                case PRODUCE_LESS -> produceLess.loop(sensorsState.get(0), actuatorsState.get(0));
                 case STOCHASTIC -> {
                     // Runs the tasks
                     for (stochasticTime object : stochasticTimeTasks) {
                         object.loop(sensorsState, actuatorsState);
                     }
                     // Delete the completed tasks
-                    if (stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isPusherFinished() || object.isMachineFinished() || object.isPartProduced()))
+                    if (stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isPusherFinished() || object.isMachineFinished()
+                            || object.isPartProduced() || object.isPartRemovedInProduction()))
                         System.out.println(" >>> " + sfee.getName() + " stochasticTasks: " + stochasticTimeTasks.size());
                 }
             }
@@ -174,7 +190,7 @@ public class SFEE_production_failures {
 
     }
 
-    private void stochasticTimeMode(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
+    private void stochasticTimeMode() {
         // Depends on the piece at the emitter of SFEE
         boolean newPiece = checkNewPiece();
         if (newPiece) {

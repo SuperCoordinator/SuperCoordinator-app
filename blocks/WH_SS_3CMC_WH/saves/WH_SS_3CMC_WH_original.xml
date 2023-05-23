@@ -242,11 +242,6 @@
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
-                <failuresFormulas>
-                    <item>det [ 2 ]</item>
-                    <item>no</item>
-                    <item>no</item>
-                </failuresFormulas>
             </sfeeFailures2>
         </sfeeControllers>
         <sfeeControllers opMode="PROG_FAILURES">
@@ -270,11 +265,6 @@
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>gauss [ 1 ; 0 ]</item>
-                </failuresFormulas>
-                <failuresFormulas>
-                    <item>no</item>
-                    <item>no</item>
-                    <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>no</item>
@@ -327,11 +317,6 @@
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>gauss [ 25 ; 5 ]</item>
-                    <item>no</item>
-                    <item>no</item>
-                </failuresFormulas>
-                <failuresFormulas>
-                    <item>no</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>

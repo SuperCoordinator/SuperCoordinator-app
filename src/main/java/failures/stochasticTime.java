@@ -111,6 +111,8 @@ public class stochasticTime {
         return part.getState().equals(models.base.part.status.PRODUCED);
     }
 
+    public boolean isPartRemovedInProduction(){ return part.getState().equals(models.base.part.status.REMOVED);}
+
     public void setTransportConfiguration(SFEM_transport.configuration configuration) {
 
         try {

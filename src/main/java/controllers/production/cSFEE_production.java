@@ -731,7 +731,8 @@ public class cSFEE_production {
 
             } else if (sfeeTime[0].contains("linear")) {
                 // Linear Time
-                sfeeFailures2 = new SFEE_production_failures(sfee,
+                sfeeFailures2 = new SFEE_production_failures(
+                        sfee,
                         stochasticTime.timeOptions.LINEAR,
                         new String[]{sfeeTime[1], sfeeTime[2]},
                         failures_f);
