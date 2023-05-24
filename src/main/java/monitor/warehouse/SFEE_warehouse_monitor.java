@@ -109,7 +109,7 @@ public class SFEE_warehouse_monitor {
 
     private void receiveOrders() {
         try {
-            File f = new File("src/main/resources/inboundOrders");
+            File f = new File("C:\\Users\\danie\\Documents\\GitHub\\SC-sketch\\src\\main\\resources\\inboundOrders");
             if (file_index == Objects.requireNonNull(f.list()).length) {
                 file_index = 0;
             }

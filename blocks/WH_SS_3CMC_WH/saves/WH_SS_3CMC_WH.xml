@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <serializable>
+    <failureOccurrences>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\WH_SS_3CMC_WH\saves\failuresOccurrences.xml</failureOccurrences>
     <c_Production>
         <sfem sfemRole="PRODUCTION" name="SFEM_ProductionLine">
             <SFEEs>
@@ -58,7 +59,7 @@
                         <SFEIs>
                             <entry>
 <key>0</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="EntryConveyor_0" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-11T11:22:13.822474500Z" last_maintenance="2023-05-11T11:22:13.822474500Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="EntryConveyor_0" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-24T15:55:13.822474500Z" last_maintenance="2023-05-24T15:55:13.822474500Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
     <inSensor name="s_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
     <outSensor name="s_entryMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="11"/>
     <aRemover name="entry_R0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="3"/>
@@ -72,7 +73,7 @@
                             </entry>
                             <entry>
 <key>1</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MachineCenter_0" sfeiType="MACHINE" minOperationTime="30" manufacturing_date="2023-05-11T11:22:13.823474900Z" last_maintenance="2023-05-11T11:22:13.823474900Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MachineCenter_0" sfeiType="MACHINE" minOperationTime="30" manufacturing_date="2023-05-24T15:55:13.823474900Z" last_maintenance="2023-05-24T15:55:13.823474900Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
     <inSensor name="s_entryMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="11"/>
     <outSensor name="s_exitMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
     <partDescription material="METAL" form="BASE"/>
@@ -83,7 +84,7 @@
                             </entry>
                             <entry>
 <key>2</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_0" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-11T11:22:13.824640100Z" last_maintenance="2023-05-11T11:22:13.824640100Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_0" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-24T15:55:13.824640100Z" last_maintenance="2023-05-24T15:55:13.824640100Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
     <inSensor name="s_exitMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
     <outSensor name="s_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
     <aRemover name="exit_R0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="6"/>
@@ -105,7 +106,7 @@
                         <SFEIs>
                             <entry>
 <key>0</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="EntryConveyor_1" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-11T11:22:30.654552300Z" last_maintenance="2023-05-11T11:22:30.654552300Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="EntryConveyor_1" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-24T15:55:30.654552300Z" last_maintenance="2023-05-24T15:55:30.654552300Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
     <inSensor name="s_E1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="17"/>
     <outSensor name="s_entryMC1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="22"/>
     <aRemover name="entry_R1" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="18"/>
@@ -119,7 +120,7 @@
                             </entry>
                             <entry>
 <key>1</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MachineCenter_1" sfeiType="MACHINE" minOperationTime="33" manufacturing_date="2023-05-11T11:22:30.654552300Z" last_maintenance="2023-05-11T11:22:30.654552300Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MachineCenter_1" sfeiType="MACHINE" minOperationTime="33" manufacturing_date="2023-05-24T15:55:30.654552300Z" last_maintenance="2023-05-24T15:55:30.654552300Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
     <inSensor name="s_entryMC1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="22"/>
     <outSensor name="s_exitMC1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="23"/>
     <partDescription material="GREEN" form="LID"/>
@@ -130,7 +131,7 @@
                             </entry>
                             <entry>
 <key>2</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_1" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-11T11:22:30.654552300Z" last_maintenance="2023-05-11T11:22:30.654552300Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_1" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-24T15:55:30.654552300Z" last_maintenance="2023-05-24T15:55:30.654552300Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
     <inSensor name="s_exitMC1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="23"/>
     <outSensor name="s_R1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="24"/>
     <aRemover name="exit_R1" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="21"/>
@@ -152,7 +153,7 @@
                         <SFEIs>
                             <entry>
 <key>0</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="EntryConveyor_2" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-11T11:22:44.453492700Z" last_maintenance="2023-05-11T11:22:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="EntryConveyor_2" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-24T15:55:44.453492700Z" last_maintenance="2023-05-24T15:55:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
     <inSensor name="s_E2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="28"/>
     <outSensor name="s_entryMC2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="33"/>
     <aRemover name="entry_R2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="30"/>
@@ -166,7 +167,7 @@
                             </entry>
                             <entry>
 <key>1</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MachineCenter_2" sfeiType="MACHINE" minOperationTime="33" manufacturing_date="2023-05-11T11:22:44.453492700Z" last_maintenance="2023-05-11T11:22:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MachineCenter_2" sfeiType="MACHINE" minOperationTime="33" manufacturing_date="2023-05-24T15:55:44.453492700Z" last_maintenance="2023-05-24T15:55:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
     <inSensor name="s_entryMC2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="33"/>
     <outSensor name="s_exitMC2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="34"/>
     <partDescription material="BLUE" form="LID"/>
@@ -177,7 +178,7 @@
                             </entry>
                             <entry>
 <key>2</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_2" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-11T11:22:44.453492700Z" last_maintenance="2023-05-11T11:22:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_2" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-24T15:55:44.453492700Z" last_maintenance="2023-05-24T15:55:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
     <inSensor name="s_exitMC2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="34"/>
     <outSensor name="s_R2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="35"/>
     <aRemover name="exit_R2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="33"/>
@@ -215,7 +216,7 @@
                     </entry>
                 </visionSensorLocation>
             </sfeeMonitor>
-            <sfeeFailures2>
+            <sfeeFailures>
                 <stochasticType>GAUSSIAN</stochasticType>
                 <stochasticFormulas>60 </stochasticFormulas>
                 <stochasticFormulas>4 </stochasticFormulas>
@@ -243,11 +244,11 @@
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>det [ 2 ]</item>
+                    <item>det [ 31 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
-            </sfeeFailures2>
+            </sfeeFailures>
         </sfeeControllers>
         <sfeeControllers opMode="PROG_FAILURES">
             <mb ip="127.0.0.1" port="35502" slaveID="1"/>
@@ -259,7 +260,7 @@
                     </entry>
                 </visionSensorLocation>
             </sfeeMonitor>
-            <sfeeFailures2>
+            <sfeeFailures>
                 <stochasticType>GAUSSIAN</stochasticType>
                 <stochasticFormulas>60 </stochasticFormulas>
                 <stochasticFormulas>8 </stochasticFormulas>
@@ -291,7 +292,7 @@
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
-            </sfeeFailures2>
+            </sfeeFailures>
         </sfeeControllers>
         <sfeeControllers opMode="PROG_FAILURES">
             <mb ip="127.0.0.1" port="35502" slaveID="1"/>
@@ -303,7 +304,7 @@
                     </entry>
                 </visionSensorLocation>
             </sfeeMonitor>
-            <sfeeFailures2>
+            <sfeeFailures>
                 <stochasticType>GAUSSIAN</stochasticType>
                 <stochasticFormulas>70 </stochasticFormulas>
                 <stochasticFormulas>2 + ( 0.01 * n ) </stochasticFormulas>
@@ -313,7 +314,7 @@
                     <item>gauss [ 20 ; 3 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>gauss [ 5 ; 2 ]</item>
+                    <item>gauss [ 3 ; 2 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>no</item>
@@ -335,7 +336,7 @@
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
-            </sfeeFailures2>
+            </sfeeFailures>
         </sfeeControllers>
     </c_Production>
     <!-- Transport from the entry WH -->

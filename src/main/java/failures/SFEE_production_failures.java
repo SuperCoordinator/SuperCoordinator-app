@@ -75,24 +75,29 @@ public class SFEE_production_failures {
         this.breakdownRepair = new breakdown_repair(
                 failuresFormulas.get(0),
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
+                sfeiConveyor_idx_failures,
                 failuresFormulas.get(1));
 
         this.breakdown = new breakdown(
                 failuresFormulas.get(2),
-                (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
+                (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
+                sfeiConveyor_idx_failures);
 
         this.produceFaulty = new produce_faulty(
                 failuresFormulas.get(3),
-                (SFEI_machine) sfee.getSFEIbyIndex(sfeiMachine_idx_failures));
+                (SFEI_machine) sfee.getSFEIbyIndex(sfeiMachine_idx_failures),
+                sfeiMachine_idx_failures);
 
         this.produceMore = new produce_more(
                 failuresFormulas.get(4),
                 (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
+                sfeiConveyor_idx_failures,
                 ((SFEI_machine) sfee.getSFEIbyIndex(sfeiMachine_idx_failures)).getPartDescription().material());
 
         this.produceLess = new produce_less(
                 failuresFormulas.get(5),
-                (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures));
+                (SFEI_conveyor) sfee.getSFEIbyIndex(sfeiConveyor_idx_failures),
+                sfeiConveyor_idx_failures);
 
         System.out.println("*******************************************");
         System.out.println();
@@ -100,6 +105,7 @@ public class SFEE_production_failures {
     }
 
     private boolean firstRun = true;
+    private SM old_state;
 
     public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState) {
         if (firstRun) {
@@ -161,16 +167,50 @@ public class SFEE_production_failures {
                     }
                 }
             }
+
             stochasticTimeMode();
 
             // Execute tasks
             switch (sm_state) {
-                case BREAKDOWN_WITH_REPAIR -> breakdownRepair.loop(sensorsState.get(0), actuatorsState.get(0));
-                case BREAKDOWN -> breakdown.loop(sensorsState.get(0), actuatorsState.get(0));
-                case PRODUCE_FAULTY -> produceFaulty.loop(sensorsState.get(0), actuatorsState.get(0));
-                case PRODUCE_MORE ->
-                        produceMore.loop(sensorsState.get(0), actuatorsState.get(0), actuatorsState.get(1));
-                case PRODUCE_LESS -> produceLess.loop(sensorsState.get(0), actuatorsState.get(0));
+                case BREAKDOWN_WITH_REPAIR -> {
+                    for (stochasticTime object : stochasticTimeTasks) {
+                        if (breakdownRepair.getSfei_idx() > object.getSfei_idx())
+                            object.loop(sensorsState, actuatorsState);
+                    }
+                    breakdownRepair.loop(sensorsState.get(0), actuatorsState.get(0));
+                }
+                case BREAKDOWN -> {
+                    for (stochasticTime object : stochasticTimeTasks) {
+                        if (breakdown.getSfei_idx() > object.getSfei_idx())
+                            object.loop(sensorsState, actuatorsState);
+                    }
+                    breakdown.loop(sensorsState.get(0), actuatorsState.get(0));
+                }
+                case PRODUCE_FAULTY -> {
+                    for (stochasticTime object : stochasticTimeTasks) {
+                        // Here must execute always the stochastic tasks, due to the part location (in which SFEI)
+                        // and taking into account the time trigger (as for the event trigger all goes well)
+                        // For the time, the part can be in the SFEI_idx 2 sleeping and the PRODUCE FAULTY turns on
+
+//                        if (produceFaulty.getSfei_idx() > object.getSfei_idx())
+                        object.loop(sensorsState, actuatorsState);
+                    }
+                    produceFaulty.loop(sensorsState.get(0), actuatorsState.get(0));
+                }
+                case PRODUCE_MORE -> {
+                    for (stochasticTime object : stochasticTimeTasks) {
+                        if (produceMore.getSfei_idx() > object.getSfei_idx())
+                            object.loop(sensorsState, actuatorsState);
+                    }
+                    produceMore.loop(sensorsState.get(0), actuatorsState.get(0), actuatorsState.get(1));
+                }
+                case PRODUCE_LESS -> {
+                    for (stochasticTime object : stochasticTimeTasks) {
+                        if (produceLess.getSfei_idx() > object.getSfei_idx())
+                            object.loop(sensorsState, actuatorsState);
+                    }
+                    produceLess.loop(sensorsState.get(0), actuatorsState.get(0));
+                }
                 case STOCHASTIC -> {
                     // Runs the tasks
                     for (stochasticTime object : stochasticTimeTasks) {
@@ -182,7 +222,10 @@ public class SFEE_production_failures {
                         System.out.println(" >>> " + sfee.getName() + " stochasticTasks: " + stochasticTimeTasks.size());
                 }
             }
-
+            if (sm_state != old_state) {
+                System.out.println("   ---> " + sfee.getName() + " failure state: " + sm_state);
+            }
+            old_state = sm_state;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -206,6 +249,7 @@ public class SFEE_production_failures {
                 }
                 stochasticTime stochasticTime = new stochasticTime(
                         sfee.getSFEIbyIndex(pickSFEI),
+                        pickSFEI,
                         sfee.getSFEIbyIndex(0).getPartsATM().first(),
                         stochasticType,
                         stochasticFormulas,

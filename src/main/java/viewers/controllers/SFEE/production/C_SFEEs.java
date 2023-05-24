@@ -142,14 +142,14 @@ public class C_SFEEs extends CM_SFEE implements Initializable {
         C_SFEE_failure cSfeeFailure = new C_SFEE_failure();
         ArrayList<String> loadedData = new ArrayList<>();
         if (cSFEEProduction.getOpMode().equals(cSFEE_production.operationMode.PROG_FAILURES)) {
-            if (cSFEEProduction.getSfeeFailures2().getStochasticType().equals(stochasticTime.timeOptions.GAUSSIAN)) {
+            if (cSFEEProduction.getSfeeFailures().getStochasticType().equals(stochasticTime.timeOptions.GAUSSIAN)) {
                 // Rebuild string
-                cSFEEProduction.getSfeeFailures2().getFailuresFormulas().forEach(strings -> {
+                cSFEEProduction.getSfeeFailures().getFailuresFormulas().forEach(strings -> {
                     loadedData.addAll(Arrays.stream(strings).toList());
                 });
 
-                String mean = cSFEEProduction.getSfeeFailures2().getStochasticFormulas()[0];
-                String dev = cSFEEProduction.getSfeeFailures2().getStochasticFormulas()[1];
+                String mean = cSFEEProduction.getSfeeFailures().getStochasticFormulas()[0];
+                String dev = cSFEEProduction.getSfeeFailures().getStochasticFormulas()[1];
                 loadedData.add(0, "gauss [ " + mean + " ; " + dev + " ]");
             }
         }

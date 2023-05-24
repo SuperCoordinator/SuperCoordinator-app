@@ -5,20 +5,20 @@ import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class serializable {
-
     private dbConnection connection = new dbConnection();
     private cSFEM_warehouse C_Warehouse = new cSFEM_warehouse();
     private ArrayList<cSFEM_production> C_Production = new ArrayList<>();
     private ArrayList<cSFEM_transport> C_Transport = new ArrayList<>();
+
+    @XmlElement(name = "failureOccurrences")
+    private String failuresHistoryPath;
 
     public serializable() {
     }
@@ -59,4 +59,11 @@ public class serializable {
         return connection;
     }
 
+    public void setFailuresHistoryPath(String failuresHistoryPath) {
+        this.failuresHistoryPath = failuresHistoryPath;
+    }
+
+    public String getFailuresHistoryPath() {
+        return failuresHistoryPath;
+    }
 }

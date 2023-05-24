@@ -23,10 +23,12 @@ public class breakdown extends failures_conditions {
 
     // For now, support only breakdown with repair on the conveyors
     private final SFEI_conveyor sfeiConveyor;
+    private final int sfei_idx;
 
-    public breakdown(String[] formulas, SFEI_conveyor sfeiConveyor) {
+    public breakdown(String[] formulas, SFEI_conveyor sfeiConveyor, int sfei_idx) {
         super(formulas, type.BREAKDOWN);
         this.sfeiConveyor = sfeiConveyor;
+        this.sfei_idx = sfei_idx;
 
         this.resume = false;
         this.state = SM.WORKING;
@@ -38,8 +40,8 @@ public class breakdown extends failures_conditions {
         System.out.println("BreakDown on -> " + sfeiConveyor.getName());
     }
 
-    public void setResume(boolean resume) {
-        this.resume = resume;
+    public int getSfei_idx() {
+        return sfei_idx;
     }
 
     public boolean isActive() {
@@ -108,7 +110,7 @@ public class breakdown extends failures_conditions {
                         actVar = failure_occurrence.activationVariable.M;
                     }
                     if (actVar != null)
-                        newOccurrence = new failure_occurrence(type.BREAKDOWN, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
+                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.BREAKDOWN, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
                     else
                         throw new RuntimeException("(Breakdown) Activation Variable null but evalConditions was TRUE");
 

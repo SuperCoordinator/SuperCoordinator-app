@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class serializer {
     }
 
     public final scenes scene = scenes.WH_SS_3CMC_WH;
-    private final String filePath = "blocks/" + scene + "/saves/" + scene;
+//    private final String filePath = "blocks/" + scene + "/saves/" + scene;
 
     private serializable serializable = new serializable();
 
@@ -70,7 +71,7 @@ public class serializer {
         return serializable.getC_Transport();
     }
 
-    public void saveXML() {
+    public void saveXML(String filePath) {
 
         try {
             dbConnection.getInstance().getConnection();
@@ -79,18 +80,18 @@ public class serializer {
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(serializable, new File(filePath + ".xml"));
+            marshaller.marshal(serializable, new File(filePath));
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    public void loadXML() {
+    public void loadXML(String filePath) {
         try {
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            serializable = (utility.serialize.serializable) unmarshaller.unmarshal(new FileReader(filePath + ".xml"));
+            serializable = (utility.serialize.serializable) unmarshaller.unmarshal(new FileReader(filePath));
             dbConnection.getInstance().getConnection();
             createDB();
         } catch (Exception e) {
@@ -268,4 +269,30 @@ public class serializer {
         return returnPair;
 
     }
+
+    public void setFailuresHistoryPath(String path) {
+        serializable.setFailuresHistoryPath(path);
+    }
+
+    public void saveFailuresHistory() {
+        try {
+            FailureOccurrenceArray failureOccurrenceArray = new FailureOccurrenceArray();
+
+            for (cSFEM_production cSFEMProduction : serializer.getInstance().getC_Production()) {
+                for (cSFEE_production cSFEEProduction : cSFEMProduction.getSfeeControllers()) {
+                    for (SFEI sfei : cSFEEProduction.getSFEE().getSFEIs().values()) {
+                        failureOccurrenceArray.getFailuresOccurrences().addAll(sfei.getFailuresHistory().values());
+                    }
+                }
+            }
+
+            JAXBContext context = JAXBContext.newInstance(FailureOccurrenceArray.class);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(failureOccurrenceArray, new File(serializable.getFailuresHistoryPath()));
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

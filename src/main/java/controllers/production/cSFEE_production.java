@@ -36,7 +36,7 @@ public class cSFEE_production {
     @XmlElement
     private SFEE_production_monitor sfeeMonitor;
     @XmlElement
-    private SFEE_production_failures sfeeFailures2;
+    private SFEE_production_failures sfeeFailures;
 
     private viewers.SFEE viewer = new viewers.SFEE();
 
@@ -65,8 +65,12 @@ public class cSFEE_production {
         this.mb = mb;
     }
 
-    public SFEE_production_failures getSfeeFailures2() {
-        return sfeeFailures2;
+    public SFEE_production_monitor getSfeeMonitor() {
+        return sfeeMonitor;
+    }
+
+    public SFEE_production_failures getSfeeFailures() {
+        return sfeeFailures;
     }
 
     public modbus getMb() {
@@ -112,169 +116,6 @@ public class cSFEE_production {
                 opMode = operationMode.PROG_FAILURES;
             }
 
-
-/*            if (scene == 3 || scene == 0) {
-                addNewSFEI_conveyor(
-                        "entry_conveyor",
-                        "s_emitter",
-                        "s_lids_at_entry",
-                        Instant.now(),
-                        Instant.now(),
-                        true,
-                        true,
-                        "entry_remover",
-                        "entry_emitter",
-                        "s_entry_remover",
-                        "s_entry_emitter",
-                        "entry_conveyor",
-                        true,
-                        false);
-                addNewSFEI_machine(
-                        "MC1",
-                        partDescription.form.LID,
-                        "s_lids_at_entry",
-                        "s_lids_at_exit",
-                        Instant.now(),
-                        Instant.now(),
-                        true,
-                        true,
-                        "MC1_produce",
-                        "MC1_opened",
-                        "MC1_stop",
-                        false,
-                        false);
-                addNewSFEI_conveyor(
-                        "exit_conveyor",
-                        "s_lids_at_exit",
-                        "s_remover",
-                        Instant.now(),
-                        Instant.now(),
-                        true,
-                        true,
-                        "exit_remover",
-                        "exit_emitter",
-                        "s_exit_remover",
-                        "s_exit_emitter",
-                        "exit_conveyor",
-                        false,
-                        false);
-            }
-            if (scene == -1) {
-                addNewSFEI_conveyor(
-                        "entry2_conveyor",
-                        "s_emitter2",
-                        "s_lids_at_entry2",
-                        Instant.now(),
-                        Instant.now(),
-                        true,
-                        true,
-                        "entry_remover2",
-                        "entry_emitter2",
-                        "s_entry_remover2",
-                        "s_entry_emitter2",
-                        "entry_conveyor2",
-                        false,
-                        true);
-            }
-
-
-            if (scene == 4) {
-                addNewSFEI_conveyor(
-                        "entry_conveyor",
-                        "s_emitter",
-                        "s_lids_at_entry",
-                        Instant.now(),
-                        Instant.now(),
-                        true,
-                        true,
-                        "entry_remover",
-                        "entry_emitter",
-                        "s_entry_remover",
-                        "s_entry_emitter",
-                        "entry_conveyor",
-                        false,
-                        false);
-                addNewSFEI_machine(
-                        "MC1",
-                        partDescription.form.LID,
-                        "s_lids_at_entry",
-                        "s_lids_at_exit",
-                        Instant.now(),
-                        Instant.now(),
-                        true,
-                        true,
-                        "MC1_produce",
-                        "MC1_opened",
-                        "MC1_stop",
-                        false,
-                        false);
-                addNewSFEI_conveyor(
-                        "exit_conveyor",
-                        "s_lids_at_exit",
-                        "s_remover",
-                        Instant.now(),
-                        Instant.now(),
-                        true,
-                        true,
-                        "exit_remover",
-                        "exit_emitter",
-                        "s_exit_remover",
-                        "s_exit_emitter",
-                        "exit_conveyor",
-                        false,
-                        true);
-            }
-            if (scene == 5) {
-                addNewSFEI_conveyor(
-                        "metal_entry",
-                        "s_metal",
-                        "s_metal_remover",
-                        Instant.now(),
-                        Instant.now(),
-                        true,
-                        false,
-                        "none",
-                        "none",
-                        "none",
-                        "none",
-                        "metal_conveyor",
-                        false,
-                        false);
-            }
-            if (scene == 6) {
-                addNewSFEI_conveyor(
-                        "green_entry",
-                        "s_green",
-                        "s_green_remover",
-                        Instant.now(),
-                        Instant.now(),
-                        true,
-                        false,
-                        "none",
-                        "none",
-                        "none",
-                        "none",
-                        "green_conveyor",
-                        false,
-                        false);
-            }
-            if (scene == 7) {
-                addNewSFEI_conveyor(
-                        "blue_entry",
-                        "s_blue",
-                        "s_blue_remover",
-                        Instant.now(),
-                        Instant.now(),
-                        true,
-                        false,
-                        "",
-                        "",
-                        "",
-                        "",
-                        "blue_conveyor",
-                        false,
-                        false);
-            }*/
             if (scene == 8 || scene == 13 || scene == 14) {
                 addNewSFEI_conveyor(
                         "parts_entry",
@@ -593,7 +434,7 @@ public class cSFEE_production {
      ************************************ */
 
     public void importIO(String file_path, boolean dbg) {
-        sfee.setIo(utils.getInstance().getReader().readModbusTags(file_path, dbg));
+        sfee.setIo(utils.getInstance().getReader().readModbusTags(file_path, sfee.getName(), dbg));
 //        printAllIO();
     }
 
@@ -723,7 +564,7 @@ public class cSFEE_production {
 
             if (sfeeTime[0].contains("gauss")) {
                 // Stochastic Time
-                sfeeFailures2 = new SFEE_production_failures(
+                sfeeFailures = new SFEE_production_failures(
                         sfee,
                         stochasticTime.timeOptions.GAUSSIAN,
                         new String[]{sfeeTime[1], sfeeTime[2]},
@@ -731,7 +572,7 @@ public class cSFEE_production {
 
             } else if (sfeeTime[0].contains("linear")) {
                 // Linear Time
-                sfeeFailures2 = new SFEE_production_failures(
+                sfeeFailures = new SFEE_production_failures(
                         sfee,
                         stochasticTime.timeOptions.LINEAR,
                         new String[]{sfeeTime[1], sfeeTime[2]},
@@ -746,7 +587,7 @@ public class cSFEE_production {
         importIO(sfee.getIO_path(), true);
 
         if (opMode.equals(operationMode.PROG_FAILURES))
-            sfeeFailures2.setSfee(sfee);
+            sfeeFailures.setSfee(sfee);
         sfeeMonitor.setSfee(sfee);
     }
 
@@ -776,7 +617,7 @@ public class cSFEE_production {
                 outputs.add(actuatorsState);
                 outputs.add(holdRegsValues);
 
-                sfeeFailures2.loop(inputs, outputs);
+                sfeeFailures.loop(inputs, outputs);
                 mb.writeCoils(actuatorsState);
                 mb.writeRegisters(holdRegsValues);
 

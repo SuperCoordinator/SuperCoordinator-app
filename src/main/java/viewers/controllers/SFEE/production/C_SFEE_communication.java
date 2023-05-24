@@ -163,7 +163,7 @@ public class C_SFEE_communication implements Initializable {
         file = f_chooser.showOpenDialog(stage);
         if (file != null) {
             System.out.println(file.getPath());
-            io = utils.getInstance().getReader().readModbusTags(file.getPath(), false);
+            io = utils.getInstance().getReader().readModbusTags(file.getPath(), "", false);
             updateTables();
         }
     }

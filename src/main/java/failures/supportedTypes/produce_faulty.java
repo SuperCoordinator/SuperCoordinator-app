@@ -23,13 +23,15 @@ public class produce_faulty extends failures_conditions {
     private SM state;
     private SM old_state;
     private final SFEI_machine sfeiMachine;
+    private final int sfei_idx;
 
     private boolean old_sMachine_door = false;
     private Instant closed_door_at;
 
-    public produce_faulty(String[] formulas, SFEI_machine sfeiMachine) {
+    public produce_faulty(String[] formulas, SFEI_machine sfeiMachine,int sfei_idx) {
         super(formulas, type.PRODUCE_FAULTY);
         this.sfeiMachine = sfeiMachine;
+        this.sfei_idx = sfei_idx;
 
         this.state = SM.WORKING;
         this.old_state = state;
@@ -42,6 +44,10 @@ public class produce_faulty extends failures_conditions {
 
     public boolean isActive() {
         return state != SM.WORKING;
+    }
+
+    public int getSfei_idx() {
+        return sfei_idx;
     }
 
     private failure_occurrence newOccurrence = new failure_occurrence();
@@ -118,7 +124,7 @@ public class produce_faulty extends failures_conditions {
                         actVar = failure_occurrence.activationVariable.M;
                     }
                     if (actVar != null)
-                        newOccurrence = new failure_occurrence(type.PRODUCE_FAULTY, actVar, sfeiMachine.getnPiecesMoved(), Instant.now());
+                        newOccurrence = new failure_occurrence(sfeiMachine.getName(), type.PRODUCE_FAULTY, actVar, sfeiMachine.getnPiecesMoved(), Instant.now());
                     else
                         throw new RuntimeException("(Produce Faulty) Activation Variable null but evalConditions was TRUE");
 

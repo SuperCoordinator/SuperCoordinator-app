@@ -27,11 +27,13 @@ public class produce_less extends failures_conditions {
     private SM old_state;
 
     private final SFEI_conveyor sfeiConveyor;
+    private final int sfei_idx;
     private boolean old_sRemover = false;
 
-    public produce_less(String[] formulas, SFEI_conveyor sfeiConveyor) {
+    public produce_less(String[] formulas, SFEI_conveyor sfeiConveyor, int sfei_idx) {
         super(formulas, type.PRODUCE_LESS);
         this.sfeiConveyor = sfeiConveyor;
+        this.sfei_idx = sfei_idx;
 
         this.state = SM.WORKING;
         this.old_state = state;
@@ -44,6 +46,10 @@ public class produce_less extends failures_conditions {
 
     public boolean isActive() {
         return state != SM.WORKING;
+    }
+
+    public int getSfei_idx() {
+        return sfei_idx;
     }
 
     private failure_occurrence newOccurrence = new failure_occurrence();
@@ -115,7 +121,7 @@ public class produce_less extends failures_conditions {
                         actVar = failure_occurrence.activationVariable.M;
                     }
                     if (actVar != null)
-                        newOccurrence = new failure_occurrence(type.PRODUCE_LESS, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
+                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.PRODUCE_LESS, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
                     else
                         throw new RuntimeException("(Produce Less) Activation Variable null but evalConditions was TRUE");
 

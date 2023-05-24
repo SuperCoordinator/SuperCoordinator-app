@@ -61,13 +61,15 @@ public class stochasticTime {
     private String mean;
     private String std_dev;
     private final SFEI sfei;
+    private final int sfei_idx;
     private SFEM_transport.configuration transportConfiguration;
     private final part part;
     private final double delay;
 
-    public stochasticTime(SFEI sfei, part part, timeOptions timeType, String[] formulas, int minSFEEOperationTime) {
+    public stochasticTime(SFEI sfei, int sfei_idx, part part, timeOptions timeType, String[] formulas, int minSFEEOperationTime) {
 
         this.sfei = sfei;
+        this.sfei_idx = sfei_idx;
         this.part = part;
         this.timeType = timeType;
 
@@ -87,6 +89,9 @@ public class stochasticTime {
 
     }
 
+    public int getSfei_idx() {
+        return sfei_idx;
+    }
 
     public boolean isConveyorFinished() {
         return smConv.equals(SM_conv.END);
@@ -111,7 +116,9 @@ public class stochasticTime {
         return part.getState().equals(models.base.part.status.PRODUCED);
     }
 
-    public boolean isPartRemovedInProduction(){ return part.getState().equals(models.base.part.status.REMOVED);}
+    public boolean isPartRemovedInProduction() {
+        return part.getState().equals(models.base.part.status.REMOVED);
+    }
 
     public void setTransportConfiguration(SFEM_transport.configuration configuration) {
 

@@ -65,7 +65,7 @@ public class SFEE_transport_failures {
 
     private boolean firstRun = true;
 
-    public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState, boolean isNextSFEE_Free) {
+    public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState, boolean isNextSFEE_free) {
         try {
             if (firstRun) {
                 this.state = SM.INIT;
@@ -75,7 +75,7 @@ public class SFEE_transport_failures {
 
             switch (state) {
                 case INIT -> {
-                    if (isNextSFEE_Free) {
+                    if (isNextSFEE_free) {
                         if (checkNewPiece()) {
                             state = SM.PROCESS_STOCHASTIC;
                         }
@@ -100,6 +100,7 @@ public class SFEE_transport_failures {
                                 movingPart.setState(part.status.IN_TRANSPORT);
                                 stochasticTimeTask = new stochasticTime(
                                         sfee.getSFEIbyIndex(0),
+                                        0,
                                         movingPart,
                                         stochasticType,
                                         stochasticFormulas,

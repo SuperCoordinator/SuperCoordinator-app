@@ -17,10 +17,6 @@ public class failures_conditions extends failure {
     private boolean activated_by_N = false, activated_by_A = false, activated_by_M = false;
 
     public boolean evalConditions(int n, int a, int m) {
-        activated_by_N = false;
-        activated_by_A = false;
-        activated_by_M = false;
-
         if (nCondition != null) activated_by_N = nCondition.evalFormula(n);
         if (aCondition != null) activated_by_A = aCondition.evalFormula(a);
         if (mCondition != null) activated_by_M = mCondition.evalFormula(m);

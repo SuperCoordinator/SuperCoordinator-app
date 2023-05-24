@@ -323,9 +323,7 @@ public class SFEE_production_monitor {
                         sfei.getName(),
                         sfee.getName(),
                         sfei.getnPiecesMoved());
-
             }
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -434,6 +432,27 @@ public class SFEE_production_monitor {
                 }
             } else {
                 printedDBG = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Print Monitor and Tracking information, such as the part position (in which SFEI)
+     * and the number of parts moved by the SFEIs
+     */
+    public void monitorSFEE() {
+        try {
+            for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
+                if (sfei.getValue().getPartsATM().size() > 0) {
+                    System.out.println("SFEI [ idx =" + sfei.getKey() + "] " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPiecesMoved() + " parts");
+                    for (part p : sfei.getValue().getPartsATM()) {
+                        System.out.println(p);
+                    }
+                    System.out.println();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

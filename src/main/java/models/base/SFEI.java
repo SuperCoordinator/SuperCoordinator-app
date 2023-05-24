@@ -53,16 +53,11 @@ public class SFEI {
     private boolean simulation;
     @XmlAttribute
     private boolean supportsFailures;
-
-    private TreeMap<Integer, failure_occurrence> failuresHistory = new TreeMap<>();
-
-    private ArrayList<Pair<Integer, Instant>> breakdownHistory = new ArrayList<>();
-
     @XmlAttribute
     private boolean line_start;
     @XmlAttribute
     private boolean line_end;
-
+    private TreeMap<Integer, failure_occurrence> failuresHistory = new TreeMap<>();
 
     public SFEI() {
     }
@@ -159,16 +154,8 @@ public class SFEI {
         return failuresHistory;
     }
 
-    public void addNewFailureOccurrence(failure_occurrence failureOcurrence) {
-        failuresHistory.put(failuresHistory.size(), failureOcurrence);
-    }
-
-    public Pair<Integer, Instant> getLastBreakdown() {
-        return breakdownHistory.get(breakdownHistory.size() - 1);
-    }
-
-    public void addBreakdown(Pair<Integer, Instant> event) {
-        breakdownHistory.add(event);
+    public void addNewFailureOccurrence(failure_occurrence failureOccurrence) {
+        failuresHistory.put(failuresHistory.size(), failureOccurrence);
     }
 
     public boolean isSimulation() {

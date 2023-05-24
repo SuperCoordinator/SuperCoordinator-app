@@ -65,7 +65,7 @@ public class C_Homepage {
             if (file == null)
                 throw new RuntimeException("File is Null");
 
-            serializer.getInstance().loadXML();
+            serializer.getInstance().loadXML(file.getPath());
             for (cSFEM_production production : serializer.getInstance().getC_Production()) {
                 production.init_after_XML_loading();
             }
