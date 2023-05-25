@@ -193,7 +193,7 @@ public class C_SFEE_transport {
             error = true;
         } else if (utils.getInstance().getCustomCalculator().evalStochasticTimeExpression(formula.getText())) {
             error = true;
-            errorMsg = utils.getInstance().getCustomCalculator().errorMsg(formula.getText());
+            errorMsg = utils.getInstance().getCustomCalculator().errorMsg();
         }
         if (!error)
             setSavedValues();

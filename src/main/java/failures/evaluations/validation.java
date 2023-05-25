@@ -23,7 +23,6 @@ public class validation {
     }
 
     private final formulaType formulaPrefix;
-
     private final gaussFormula gaussFormula;
     private final deterministicFormula deterministicFormula;
     private final probFormula probFormula;
@@ -64,7 +63,7 @@ public class validation {
 
         boolean res = false;
         if ((old_var != var && validationMethod.equals(method.EVENT)) ||
-                (Duration.between(start_t, Instant.now()).toMinutes() >= 1 && validationMethod.equals(method.TIME))) {
+                (Duration.between(start_t, Instant.now()).toMillis() >= 500.0 && validationMethod.equals(method.TIME))) {
 
             if (formulaPrefix.equals(formulaType.GAUSSIAN)) {
 //                System.out.println(formulaPrefix + " currValue: " + gaussFormula.getCurrentValue() + " var: " + var);

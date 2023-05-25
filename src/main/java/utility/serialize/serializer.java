@@ -116,6 +116,24 @@ public class serializer {
         }
     }
 
+    public void emptyDB() {
+        try {
+            // EMPTY tables
+            ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
+            //Creating a reader object
+            Reader reader = new BufferedReader(new FileReader("src/main/resources/database/TRUNCATE.sql"));
+            scriptRunner.setLogWriter(null); // not print in terminal
+            //Running the script
+            scriptRunner.runScript(reader);
+
+            createDB();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void updateDB() {
         dbConnection.getInstance().getSf_configuration().insert(scene.name());
         instantiateSFEx();

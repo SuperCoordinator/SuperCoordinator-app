@@ -53,35 +53,37 @@ public class stochasticTime {
         GAUSSIAN,
         LINEAR
     }
-
-    private final timeOptions timeType;
+//
+//    private final timeOptions timeType;
 
     // timeOptions  == GAUSSIAN -> [ mean, std_dev ]
     //                 LINEAR   -> mean
-    private String mean;
-    private String std_dev;
+//    private String mean;
+//    private String std_dev;
     private final SFEI sfei;
     private final int sfei_idx;
     private SFEM_transport.configuration transportConfiguration;
     private final part part;
     private final double delay;
 
-    public stochasticTime(SFEI sfei, int sfei_idx, part part, timeOptions timeType, String[] formulas, int minSFEEOperationTime) {
+    public stochasticTime(SFEI sfei, int sfei_idx, part part, double delay/*, timeOptions timeType, String[] formulas, int minSFEEOperationTime*/) {
 
         this.sfei = sfei;
         this.sfei_idx = sfei_idx;
         this.part = part;
-        this.timeType = timeType;
+//        this.timeType = timeType;
+//
+//        if (timeType.equals(timeOptions.GAUSSIAN)) {
+//            this.mean = formulas[0];
+//            this.std_dev = formulas[1];
+//        } else if (timeType.equals(timeOptions.LINEAR)) {
+//            this.mean = formulas[0];
+//            this.std_dev = " ";
+//        }
+//
+//        this.delay = calculateDelay(minSFEEOperationTime);
+        this.delay = delay;
 
-        if (timeType.equals(timeOptions.GAUSSIAN)) {
-            this.mean = formulas[0];
-            this.std_dev = formulas[1];
-        } else if (timeType.equals(timeOptions.LINEAR)) {
-            this.mean = formulas[0];
-            this.std_dev = " ";
-        }
-
-        this.delay = calculateDelay(minSFEEOperationTime);
         this.smConv = SM_conv.INIT;
         this.smPusher = SM_pusher.INIT;
         this.smMach = SM_mach.WAITING;
@@ -91,6 +93,10 @@ public class stochasticTime {
 
     public int getSfei_idx() {
         return sfei_idx;
+    }
+
+    public models.base.part getPart() {
+        return part;
     }
 
     public boolean isConveyorFinished() {
@@ -476,45 +482,38 @@ public class stochasticTime {
 
     }
 
-    private double calculateDelay(int sumSFEEminOperationTime) {
-
-        try {
-            double m = utils.getInstance().getCustomCalculator().calcExpression(mean,
-                    sfei.getnPiecesMoved(),
-                    (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toMinutes(),
-                    (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toMinutes());
-
-            double total_Time;
-            if (timeType.equals(timeOptions.GAUSSIAN)) {
-
-                double dev = utils.getInstance().getCustomCalculator().calcExpression(std_dev,
-                        sfei.getnPiecesMoved(),
-                        (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toMinutes(),
-                        (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toMinutes());
-
-                //            total_Time = random.nextGaussian() * Math.sqrt(dev) + m;
-                total_Time = utils.getInstance().getRandom().nextGaussian() * dev + m;
-//                if (!sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT))
-//                    System.out.println("Calculated Mean: " + m + " and dev:" + dev + " with total time of: " + total_Time);
-            } else {
-                total_Time = m;
-//                if (!sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT))
-//                    System.out.println("Calculated Mean: " + m + " with total time of: " + total_Time);
-            }
-
-            total_Time = total_Time - sumSFEEminOperationTime;
-
-            if (!sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT))
-                System.out.println(part + " delay " + total_Time * 1000 + " (ms) on SFEI:" + sfei.getName());
-            if (total_Time < 0)
-                return 0;
-            // For the result in millis
-            return total_Time * 1000;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
+//    private double calculateDelay(int sumSFEEminOperationTime) {
+//
+//        try {
+//            double m = utils.getInstance().getCustomCalculator().calcExpression(mean,
+//                    sfei.getnPiecesMoved(),
+//                    (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toMinutes(),
+//                    (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toMinutes());
+//
+//            double total_Time = m;
+//            if (timeType.equals(timeOptions.GAUSSIAN)) {
+//
+//                double dev = utils.getInstance().getCustomCalculator().calcExpression(std_dev,
+//                        sfei.getnPiecesMoved(),
+//                        (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toMinutes(),
+//                        (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toMinutes());
+//
+//                total_Time = utils.getInstance().getRandom().nextGaussian() * dev + m;
+//            }
+//
+//            total_Time = total_Time - sumSFEEminOperationTime;
+//
+//            if (!sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT))
+//                System.out.println(part + " delay " + total_Time * 1000 + " (ms) on SFEI:" + sfei.getName());
+//            if (total_Time < 0)
+//                return 0;
+//            // For the result in millis
+//            return total_Time * 1000;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return 0;
+//    }
 
     private int getNumberbyPartAspect(partDescription aspect) {
 

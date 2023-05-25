@@ -34,7 +34,7 @@ public class condition_variable {
 
         String mean = condition.substring(condition.indexOf('[') + 1, condition.indexOf(';'));
         String dev = condition.substring(condition.indexOf(';') + 1, condition.indexOf(']'));
-        return new gaussFormula(removeSpaces(mean), removeSpaces(dev));
+        return new gaussFormula(removeSpaces(mean), removeSpaces(dev),false);
     }
 
     private deterministicFormula newDeterministicFormula(String condition) {

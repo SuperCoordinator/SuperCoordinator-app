@@ -190,7 +190,7 @@ public class SFEE {
         System.out.print("Enter expression:");
         do {
             if (retry)
-                System.out.println("Msg: " + customCalculator.errorMsg(str));
+                System.out.println("Msg: " + customCalculator.errorMsg());
             str = in.nextLine();
             retry = customCalculator.evalStochasticTimeExpression(str);
         } while (retry);
@@ -261,7 +261,7 @@ public class SFEE {
         boolean retry = false;
         do {
             if (retry) {
-                System.out.println("Msg (repair): " + customCalculator.errorMsg(repair));
+                System.out.println("Msg (repair): " + customCalculator.errorMsg());
             }
             if (!(f_BDwR[0].equalsIgnoreCase("no") && f_BDwR[1].equalsIgnoreCase("no") && f_BDwR[2].equalsIgnoreCase("no"))) {
                 System.out.print("   REPAIR (regarding time since break in min): gauss [ ");
@@ -308,7 +308,7 @@ public class SFEE {
         boolean retry = false;
         do {
             if (retry)
-                System.out.println("Msg: " + customCalculator.errorMsg(str[0]));
+                System.out.println("Msg: " + customCalculator.errorMsg());
             System.out.print("      [n] -> ");
             str[0] = in.nextLine();
             if (containsOperator(str[0]))
@@ -319,7 +319,7 @@ public class SFEE {
 
         do {
             if (retry)
-                System.out.println("Msg: " + customCalculator.errorMsg(str[1]));
+                System.out.println("Msg: " + customCalculator.errorMsg());
             System.out.print("      [a] -> ");
             str[1] = in.nextLine();
             if (containsOperator(str[1]))
@@ -330,7 +330,7 @@ public class SFEE {
 
         do {
             if (retry)
-                System.out.println("Msg: " + customCalculator.errorMsg(str[2]));
+                System.out.println("Msg: " + customCalculator.errorMsg());
             System.out.print("      [m] -> ");
             str[2] = in.nextLine();
             if (containsOperator(str[2]))

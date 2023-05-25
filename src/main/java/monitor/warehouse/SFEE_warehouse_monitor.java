@@ -38,13 +38,16 @@ public class SFEE_warehouse_monitor {
         this.outbound_order_id = 0;
         this.check_period = checkOrder_period_min;
         this.whOrganization = warehouseOrganization;
-        old_t = Instant.parse("2023-04-01T12:00:00.840857500Z");
+        this.old_t = Instant.now();
     }
+
+    private boolean firstRun = true;
 
     public boolean loop() {
 
         try {
-            if (Duration.between(old_t, Instant.now()).toMinutes() >= check_period) {
+            if (firstRun || Duration.between(old_t, Instant.now()).toMinutes() >= check_period) {
+                firstRun = false;
                 receiveOrders();
                 dispatchOrders();
                 old_t = Instant.now();
@@ -127,7 +130,7 @@ public class SFEE_warehouse_monitor {
             createParts(order, inbound_order_id);
             file_index++;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 

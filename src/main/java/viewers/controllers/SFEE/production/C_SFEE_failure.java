@@ -157,7 +157,7 @@ public class C_SFEE_failure {
                 errorMsg = "For the failures mode, formulas is mandatory! \n";
                 error = true;
             } else if (customCalculator.evalStochasticTimeExpression(formula.getText())) {
-                errorMsg = customCalculator.errorMsg(formula.getText());
+                errorMsg = customCalculator.errorMsg();
             }
             if (!BDwR_n.getText().isBlank() || !BDwR_a.getText().isBlank() || !BDwR_m.getText().isBlank()) {
                 if (BDwR_repair.getText().isBlank()) {

@@ -10,7 +10,6 @@ public class formula {
     public int getCurrentValue() {
         return currentValue;
     }
-
     public void setCurrentValue(int currentValue) {
         this.currentValue = currentValue;
     }

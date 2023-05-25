@@ -1,6 +1,7 @@
 package viewers.controllers.SFEE.production;
 
 import controllers.production.cSFEE_production;
+import failures.SFEE_production_failures;
 import failures.stochasticTime;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

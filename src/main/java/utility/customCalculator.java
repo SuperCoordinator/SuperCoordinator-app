@@ -166,9 +166,7 @@ public class customCalculator {
         return error;
     }
 
-    public String errorMsg(String userInput) {
-/*        errorMsg = "";
-        processInput(userInput, 1, 1, 1);*/
+    public String errorMsg() {
         return errorMsg;
     }
 

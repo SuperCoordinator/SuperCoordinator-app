@@ -61,7 +61,7 @@ public class SFEM_production_monitor extends SFEM_monitor  {
 //                    printStats(runtime);
                     setPrintedStats(true);
 //
-//                    updateGraphs();
+                    updateGraphs();
 
                 }
             } else {

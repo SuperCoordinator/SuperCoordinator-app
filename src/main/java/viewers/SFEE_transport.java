@@ -43,7 +43,7 @@ public class SFEE_transport {
         System.out.print("Enter expression:");
         do {
             if (retry)
-                System.out.println("Msg: " + utils.getInstance().getCustomCalculator().errorMsg(str));
+                System.out.println("Msg: " + utils.getInstance().getCustomCalculator().errorMsg());
             str = in.nextLine();
             retry = utils.getInstance().getCustomCalculator().evalStochasticTimeExpression(str);
         } while (retry);

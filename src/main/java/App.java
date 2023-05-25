@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import static java.lang.System.exit;
+import static java.lang.System.in;
 
 
 public class App {
@@ -39,6 +40,7 @@ public class App {
                         System.out.println("   1 - New configuration");
                         System.out.println("   2 - Load configuration");
 //                        System.out.println("   e - Exit execution");
+                        System.out.print("option: ");
                         input = in.nextLine();
                     }
 
@@ -93,10 +95,10 @@ public class App {
         System.out.println("   2 - Failures History      ");
         System.out.println("   e - Exit execution        ");
         System.out.println("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
-
+        System.out.print("option: ");
         // Se encrava aqui como dar o timeout por tempo???
         String input = in.nextLine();
-        if(input.equalsIgnoreCase("e"))
+        if (input.equalsIgnoreCase("e"))
             return -1;
 
         int opt = 1;
@@ -152,7 +154,6 @@ public class App {
         serializer.getInstance().updateDB();
 //            dbConnection.getInstance().initializeDB();
         scheduler.scheduleAtFixedRate(dbConnection.getInstance(), 0, 1, TimeUnit.SECONDS);
-
         /* ------------------- */
 
         System.out.print("Press ENTER to start simulation");
@@ -414,6 +415,19 @@ public class App {
         // Load existing configuration files
         // Deserialize Production Controllers
         serializer.getInstance().loadXML(new Scanner(System.in).nextLine());
+
+        /* ---- DATABASE  ---- */
+        System.out.print("EMPTY DATABASE (y/n)? ");
+        String input = " ";
+        do {
+            if (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"))
+                System.out.println("Invalid option! Try again");
+            input = new Scanner(System.in).nextLine();
+        } while (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"));
+
+        if (input.equalsIgnoreCase("y"))
+            serializer.getInstance().emptyDB();
+        /* ------------------- */
 
         // Load Warehouse
         serializer.getInstance().getC_Warehouse().init_afterLoad();
