@@ -39,32 +39,6 @@ public class cSFEM_transport implements Runnable {
         return sfeeTransportController;
     }
 
-    public void initSFEE_transport_FromTerminal() {
-
-        try {
-//            String[] input = viewer.initSFEE_transport_FromTerminal();
-            String[] input = new String[]{"SFEE_Connection_test", "1", "1", "1"};
-            SFEE.communicationOption com;
-            if (!input[2].equals(input[3])) {
-                com = SFEE.communicationOption.MIXED;
-            } else {
-                com = Integer.parseInt(input[1]) == 1 ? SFEE.communicationOption.MODBUS : SFEE.communicationOption.OPC_UA;
-            }
-
-            SFEE sfeeTransp = new SFEE(input[0],
-                    Integer.parseInt(input[1]) == 1 ? SFEE.SFEE_environment.SIMULATION : SFEE.SFEE_environment.REAL,
-                    SFEE.SFEE_role.TRANSPORT,
-                    com);
-
-            sfem.setSfeeTransport(sfeeTransp);
-
-            // Initialization of SFEM_transport_monitor
-            sfemTransportMonitor = new SFEM_transport_monitor(sfem);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void init_SFEE_transport(String SFEE_transport_name) {
         try {
             SFEE sfeeTransp = new SFEE(SFEE_transport_name,

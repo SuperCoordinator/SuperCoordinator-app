@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<failureOccurrenceArray>
+    <failuresOccurrences SFEI="EntryConveyor_0" activation_variable="N" failureType="PRODUCE_MORE" nPartsMovedAtTime="20" startT="2023-05-26T09:57:00.545881600Z" endT="2023-05-26T09:57:03.547656400Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_0" activation_variable="N" failureType="PRODUCE_MORE" nPartsMovedAtTime="40" startT="2023-05-26T10:26:08.055243Z" endT="2023-05-26T10:26:09.248278200Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_0" activation_variable="N" failureType="PRODUCE_MORE" nPartsMovedAtTime="60" startT="2023-05-26T10:59:17.047489Z" endT="2023-05-26T10:59:18.246001600Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_0" activation_variable="N" failureType="PRODUCE_MORE" nPartsMovedAtTime="80" startT="2023-05-26T11:26:47.048008300Z" endT="2023-05-26T11:26:48.446566700Z"/>
+    <failuresOccurrences SFEI="MachineCenter_0" activation_variable="A" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="7" startT="2023-05-26T09:41:48.856106Z" endT="2023-05-26T09:41:49.954589300Z"/>
+    <failuresOccurrences SFEI="MachineCenter_0" activation_variable="A" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="27" startT="2023-05-26T10:06:05.944624900Z" endT="2023-05-26T10:06:06.956164900Z"/>
+    <failuresOccurrences SFEI="MachineCenter_0" activation_variable="A" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="41" startT="2023-05-26T10:35:24.350385900Z" endT="2023-05-26T10:35:25.351964300Z"/>
+    <failuresOccurrences SFEI="MachineCenter_0" activation_variable="N" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="45" startT="2023-05-26T10:40:05.150349Z" endT="2023-05-26T10:40:06.255793700Z"/>
+    <failuresOccurrences SFEI="MachineCenter_0" activation_variable="A" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="62" startT="2023-05-26T11:02:30.652591800Z" endT="2023-05-26T11:02:31.756479500Z"/>
+    <failuresOccurrences SFEI="MachineCenter_0" activation_variable="N" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="75" startT="2023-05-26T11:21:57.153552100Z" endT="2023-05-26T11:21:58.154269300Z"/>
+    <failuresOccurrences SFEI="MachineCenter_0" activation_variable="A" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="76" startT="2023-05-26T11:23:03.151772100Z" endT="2023-05-26T11:23:04.243550900Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_1" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="19" startT="2023-05-26T09:55:30.749479800Z" endT="2023-05-26T09:56:31.156329800Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_1" activation_variable="N" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="29" startT="2023-05-26T10:07:54.948368500Z" endT="2023-05-26T10:08:55.456807600Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_1" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="38" startT="2023-05-26T10:25:30.857422400Z" endT="2023-05-26T10:26:31.056599100Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_1" activation_variable="N" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="44" startT="2023-05-26T10:40:25.449906500Z" endT="2023-05-26T10:41:25.546549Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_1" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="54" startT="2023-05-26T10:55:31.248773100Z" endT="2023-05-26T10:56:31.752464100Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_1" activation_variable="N" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="62" startT="2023-05-26T11:05:39.356889Z" endT="2023-05-26T11:06:39.753168600Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_1" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="74" startT="2023-05-26T11:25:31.449332500Z" endT="2023-05-26T11:26:31.557909800Z"/>
+    <failuresOccurrences SFEI="MachineCenter_2" activation_variable="N" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="18" startT="2023-05-26T09:58:49.350611200Z" endT="2023-05-26T09:58:50.454237Z"/>
+    <failuresOccurrences SFEI="MachineCenter_2" activation_variable="N" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="36" startT="2023-05-26T10:25:42.245674300Z" endT="2023-05-26T10:25:43.258021600Z"/>
+    <failuresOccurrences SFEI="MachineCenter_2" activation_variable="N" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="54" startT="2023-05-26T10:57:57.345792800Z" endT="2023-05-26T10:57:58.358825600Z"/>
+    <failuresOccurrences SFEI="MachineCenter_2" activation_variable="N" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="72" startT="2023-05-26T11:25:06.247584700Z" endT="2023-05-26T11:25:07.352527800Z"/>
+    <failuresOccurrences SFEI="ExitConveyor_2" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="11" startT="2023-05-26T09:48:44.651394500Z" endT="2023-05-26T09:49:45.046899Z"/>
+    <failuresOccurrences SFEI="ExitConveyor_2" activation_variable="N" failureType="PRODUCE_MORE" nPartsMovedAtTime="20" startT="2023-05-26T10:00:25.853816300Z" endT="2023-05-26T10:00:29.153860Z"/>
+    <failuresOccurrences SFEI="ExitConveyor_2" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="26" startT="2023-05-26T10:07:44.957596600Z" endT="2023-05-26T10:11:45.156877500Z"/>
+    <failuresOccurrences SFEI="ExitConveyor_2" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="37" startT="2023-05-26T10:25:45.250519500Z" endT="2023-05-26T10:33:45.252878400Z"/>
+    <failuresOccurrences SFEI="ExitConveyor_2" activation_variable="N" failureType="PRODUCE_MORE" nPartsMovedAtTime="43" startT="2023-05-26T10:40:47.352862700Z" endT="2023-05-26T10:40:50.658362300Z"/>
+    <failuresOccurrences SFEI="ExitConveyor_2" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="51" startT="2023-05-26T10:49:45.355064Z" endT="2023-05-26T10:51:45.450038400Z"/>
+    <failuresOccurrences SFEI="ExitConveyor_2" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="64" startT="2023-05-26T11:08:45.654555800Z" endT="2023-05-26T11:12:45.655808900Z"/>
+    <failuresOccurrences SFEI="ExitConveyor_2" activation_variable="N" failureType="PRODUCE_MORE" nPartsMovedAtTime="67" startT="2023-05-26T11:15:26.157943200Z" endT="2023-05-26T11:15:29.449516200Z"/>
+</failureOccurrenceArray>

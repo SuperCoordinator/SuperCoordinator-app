@@ -1,10 +1,17 @@
 package viewers;
 
+import models.SFEx.SFEI_conveyor;
+import models.SFEx.SFEI_machine;
+import models.SFEx.SFEI_pusher;
+import models.base.SFEI;
+import models.partDescription;
 import models.sensor_actuator;
 import utility.customCalculator;
+import utility.utils;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -27,16 +34,24 @@ public class SFEE {
         io.forEach((key, value) -> System.out.println(value.toString()));
     }
 
-    public String opMode() {
-        String str;
-        System.out.println("SFEE Operation Mode?");
+    public String getIOpath(String sfeeName) {
+        System.out.println("Path to I/O CSV file");
+        System.out.print(">");
+        return in.nextLine();
+    }
 
-        System.out.println("1 - Normal");
-        System.out.println("2 - Programmed Failures");
-        str = in.nextLine();
+    public String opMode(String sfeeName) {
 
+        System.out.println("Operation Mode for " + sfeeName);
+        System.out.println("    1 - Normal");
+        System.out.println("    2 - Programmed Failures");
+        int opt;
+        do {
+            System.out.print("> ");
+            opt = Integer.parseInt(in.nextLine());
+        } while (opt != 1 && opt != 2);
 
-        return str;
+        return String.valueOf(opt);
     }
 
     public String nSFEI() {
@@ -160,16 +175,22 @@ public class SFEE {
         return str;
     }
 
-    public String[] associateVisionSensors() {
+    public String[] associateVisionSensors(models.base.SFEE sfee) {
         String[] str = new String[]{"", "", ""};
-        System.out.print("Associate Vision Sensor in numerical configuration (y/n) ?");
-
+        System.out.println("Associate F_IO Vision Sensor in numerical configuration (y/n)?");
+        System.out.print("> ");
         str[0] = in.nextLine();
         if (str[0].contains("y")) {
-            System.out.print("Vision sensor name: ");
-            str[1] = in.nextLine();
-            System.out.print("Placed on: ");
-            str[2] = in.nextLine();
+
+            listElementItems(sfee);
+
+            System.out.println("Vision sensor : ");
+            System.out.print("> ");
+            str[1] = String.valueOf(utils.getInstance().validateUserOption(0, sfee.getIo().size() - 1));
+            System.out.println("Placed on item number");
+            int opt = utils.getInstance().validateUserOption(0, sfee.getSFEIs().size() - 1);
+            str[2] = String.valueOf(opt);
+
         } else {
             str[0] = "no";
         }
@@ -177,97 +198,77 @@ public class SFEE {
         return str;
     }
 
-    public String[] SFEE_stochasticTime() {
+    private void listElementItems(models.base.SFEE sfee) {
+        System.out.println("Element " + sfee.getName() + " items");
+        for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
+            System.out.println("   " + entry.getValue() + " - " + entry.getValue().getName());
+        }
+    }
 
-        String str = null;
+
+    public String[] SFEE_stochasticTime(String sfeeName) {
+
+        String str;
         customCalculator customCalculator = new customCalculator();
         boolean retry = false;
 
-        System.out.println("SFEE Operation Time?");
-        System.out.println("Valid variables: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
-        System.out.println("Valid operator: + - * / % or gauss [ mean ; dev ] linear [ value ] ");
-        System.out.println("Please insert a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]");
+        System.out.println("*** Stochastic Operation Time for Element " + sfeeName + " ***");
+        System.out.println("""
+                Runtime variables: 
+                    > n - number of pieces moved \n
+                    > a - age of the machine in minutes \n 
+                    > m - time since last maintenance in minutes \n
+                Basic Operator: + - * / % \n
+                Supported formulas: \n
+                    > gauss  [ A ; B ] \n
+                    > linear [ A ] \n
+                A,B : constant values or expressions depending the runtime variables
+                Please insert a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ] """);
         System.out.print("Enter expression:");
         do {
             if (retry)
-                System.out.println("Msg: " + customCalculator.errorMsg());
+                System.out.println("Error Message: " + customCalculator.errorMsg());
             str = in.nextLine();
             retry = customCalculator.evalStochasticTimeExpression(str);
         } while (retry);
 
         return customCalculator.getStochasticTimeFormulaElements();
-
-        /*String[] str = new String[3];
-        customCalculator customCalculator = new customCalculator();
-        boolean retry = false;
-        System.out.println("SFEE Operation Time?");
-
-        System.out.println("1 - Stochastic N(u,s) ");
-        System.out.println("2 - Linear ");
-        str[0] = in.nextLine();
-
-        if (Integer.parseInt(str[0]) == 1) {
-            do {
-                if (retry)
-                    System.out.println(customCalculator.errorMsg(str[1]));
-                System.out.println("Mean u :");
-                str[1] = in.nextLine();
-                retry = customCalculator.evalExpression(str[1]);
-            } while (retry);
-
-            do {
-                if (retry)
-                    System.out.println(customCalculator.errorMsg(str[2]));
-                System.out.println("Deviation s :");
-                str[2] = in.nextLine();
-                retry = customCalculator.evalExpression(str[2]);
-            } while (retry);
-
-        } else if (Integer.parseInt(str[0]) == 2) {
-            do {
-                if (retry)
-                    System.out.println(customCalculator.errorMsg(str[1]));
-                System.out.println("Value x :");
-                str[1] = in.nextLine();
-                retry = customCalculator.evalExpression(str[1]);
-            } while (retry);
-
-        }
-        return str;
-*/
     }
 
-    public /*String[] */    ArrayList<String[]> SFEEFailures() {
-//        String[] str = new String[]{"no", "no", "no"};
+    public ArrayList<String[]> SFEE_failures(String sfeeName) {
 
         ArrayList<String[]> formulas = new ArrayList<>();
-        customCalculator customCalculator = new customCalculator();
 
-        System.out.println("SFEE Failures ?");
-        System.out.println("Defined variables x[ n, a, m]: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
-        System.out.println("Valid operations");
-        System.out.println("   -- gauss  [ x ; y ]        => x,y are the numbers related to mean and dev, respectively ");
-        System.out.println("   -- prob   [ x ] (op) p     => x is a number related to the variable [x] / op [>,=,<,<=,>=] / p [0, 100] ");
-        System.out.println("   -- det [ x ]               => x is a number related to the variable [x]");
-        System.out.println("That example is interpreted as: the probability of failures after x units (parts or minutes ) is op than p");
-        System.out.println("Please insert a space between each character/number (p.e: prob [ 20 ] >= 50 )");
-        System.out.println("Write 'no' for pass to next expression!");
+        System.out.println("*** Failures Definition per runtime variable for Element " + sfeeName + " ***");
+        System.out.println("""
+                Supported formulas \n
+                    > gauss  [ A ; B ]          (A: mean / B: deviation) \n
+                    > prob   [ A ] (signal) B   (signal: > OR = OR < OR <= OR >= ),(B belongs to [0, 100]) \n
+                    > det    [ A ]               \n
+                A,B : ONLY constant values (can be floating point) \n
+                Example: \n
+                    > m : prob [ 70 ] >= 90 \n
+                Interpretation \n
+                    -> When time since last maintenance (m) equal to 70 minutes, if the current value of the probability
+                    is bigger or equal to 90 then the failure happen. \n
+                NOTE 1 : Insert a space between each character/number, i.e.: gauss [ 70 ; 5 ] \n
+                NOTE 2 : 'no' to skip expression!""");
 
         System.out.println("BREAKDOWN WITH REPAIR ");
         System.out.println("   BREAK ");
         String[] f_BDwR = variablesFormulas();
 
-        String repair = "gauss [ ";
+        String repair;
         boolean retry = false;
         do {
             if (retry) {
-                System.out.println("Msg (repair): " + customCalculator.errorMsg());
+                System.out.println("Msg (repair): " + utils.getInstance().getCustomCalculator().errorMsg());
             }
             if (!(f_BDwR[0].equalsIgnoreCase("no") && f_BDwR[1].equalsIgnoreCase("no") && f_BDwR[2].equalsIgnoreCase("no"))) {
-                System.out.print("   REPAIR (regarding time since break in min): gauss [ ");
+                System.out.print("   REPAIR (time, in minutes, since breakdown occurred in min): gauss [ ");
                 repair = "gauss [ ";
                 repair = repair.concat(in.nextLine());
-                retry = customCalculator.evalFailureFormula(repair);
+                retry = utils.getInstance().getCustomCalculator().evalFailureFormula(repair);
             } else {
                 repair = "no";
             }
@@ -297,46 +298,44 @@ public class SFEE {
 
         formulas.add(f_PL);
 
-
-//        return str;
         return formulas;
     }
 
     private String[] variablesFormulas() {
         String[] str = new String[3];
-        customCalculator customCalculator = new customCalculator();
+
         boolean retry = false;
         do {
             if (retry)
-                System.out.println("Msg: " + customCalculator.errorMsg());
-            System.out.print("      [n] -> ");
+                System.out.println("Error Message: " + utils.getInstance().getCustomCalculator().errorMsg());
+            System.out.print("  > n : ");
             str[0] = in.nextLine();
             if (containsOperator(str[0]))
-                retry = customCalculator.evalStochasticTimeExpression(str[0]);
+                retry = utils.getInstance().getCustomCalculator().evalStochasticTimeExpression(str[0]);
             else
-                retry = customCalculator.evalFailureFormula(str[0]);
+                retry = utils.getInstance().getCustomCalculator().evalFailureFormula(str[0]);
         } while (retry);
 
         do {
             if (retry)
-                System.out.println("Msg: " + customCalculator.errorMsg());
-            System.out.print("      [a] -> ");
+                System.out.println("Error Message: " + utils.getInstance().getCustomCalculator().errorMsg());
+            System.out.print("  > a : ");
             str[1] = in.nextLine();
             if (containsOperator(str[1]))
-                retry = customCalculator.evalStochasticTimeExpression(str[1]);
+                retry = utils.getInstance().getCustomCalculator().evalStochasticTimeExpression(str[1]);
             else
-                retry = customCalculator.evalFailureFormula(str[1]);
+                retry = utils.getInstance().getCustomCalculator().evalFailureFormula(str[1]);
         } while (retry);
 
         do {
             if (retry)
-                System.out.println("Msg: " + customCalculator.errorMsg());
-            System.out.print("      [m] -> ");
+                System.out.println("Error Message: " + utils.getInstance().getCustomCalculator().errorMsg());
+            System.out.print("  > m : ");
             str[2] = in.nextLine();
             if (containsOperator(str[2]))
-                retry = customCalculator.evalStochasticTimeExpression(str[2]);
+                retry = utils.getInstance().getCustomCalculator().evalStochasticTimeExpression(str[2]);
             else
-                retry = customCalculator.evalFailureFormula(str[2]);
+                retry = utils.getInstance().getCustomCalculator().evalFailureFormula(str[2]);
         } while (retry);
 
 
@@ -348,4 +347,147 @@ public class SFEE {
         return !str.contains(">") && !str.contains("<") && !str.contains(">=") && !str.contains("<=") && !str.contains("=");
     }
 
+    public ArrayList<SFEI> createSFEIs(models.base.SFEE sfee) {
+        System.out.println("Note 1 : Instant for the item age and maintenance will be the same and equal to this precise moment!");
+        System.out.println("         It will be possible to change in the XML configuration file.");
+        System.out.println("Note 2 : For the inputs and outputs please check the window with Element I/Os.");
+        System.out.println("         Enter -1 to leave empty!");
+        System.out.println("How many Items for Element " + sfee.getName());
+        System.out.print("> ");
+        int nSFEIS = Integer.parseInt(in.nextLine());
+        ArrayList<SFEI> sfeis = new ArrayList<>();
+
+        for (int i = 0; i < nSFEIS; i++) {
+            System.out.println("Item " + i + " type");
+            System.out.println("    1 - Conveyor");
+            System.out.println("    2 - Machine");
+            System.out.println("    3 - Pusher (only for the MC Staudinger)");
+            int opt = utils.getInstance().validateUserOption(1, 3);
+
+            switch (opt) {
+                case 1 -> sfeis.add(newConveyor(sfee));
+                case 2 -> sfeis.add(newMachine(sfee));
+                case 3 -> sfeis.add(newPusher(sfee));
+            }
+        }
+
+        return sfeis;
+    }
+
+    private SFEI_conveyor newConveyor(models.base.SFEE sfee) {
+
+        System.out.print("Item conveyor name: ");
+        String name = in.nextLine();
+
+        sensor_actuator inSensor = getSensorActuator("Input sensor: ", sfee);
+        sensor_actuator outSensor = getSensorActuator("Output sensor: ", sfee);
+
+        System.out.println("Is simulation (y/n) ?");
+        boolean isSimulation = utils.getInstance().validateUserOption();
+        System.out.println("Supports failures (y/n) ?");
+        boolean supportsFailures = utils.getInstance().validateUserOption();
+        System.out.println("Is line start (y/n)? (First item of all Modules combined)");
+        boolean isLineStart = utils.getInstance().validateUserOption();
+        System.out.println("Supports failures (y/n) ? (Last item of all Modules combined)");
+        boolean isLineEnd = utils.getInstance().validateUserOption();
+
+        sensor_actuator[] vector = new sensor_actuator[7];
+
+        if (supportsFailures) {
+
+            vector[0] = getSensorActuator("Remover actuator: ", sfee);
+            vector[1] = getSensorActuator("Emit actuator: ", sfee);
+            vector[2] = getSensorActuator("Emit Part register: ", sfee);
+            vector[3] = getSensorActuator("Emit Base register: ", sfee);
+            vector[4] = getSensorActuator("Remover sensor: ", sfee);
+            vector[5] = getSensorActuator("Emitter sensor: ", sfee);
+        }
+        vector[6] = getSensorActuator("Conveyor Motor actuator: ", sfee);
+
+        return new SFEI_conveyor(name, inSensor, outSensor,
+                Instant.now(), Instant.now(),
+                isSimulation, supportsFailures,
+                isLineStart, isLineEnd,
+                vector);
+    }
+
+    private sensor_actuator getSensorActuator(String msg, models.base.SFEE sfee) {
+
+        int max_io_idx = sfee.getIo().size() - 1;
+        System.out.print(msg);
+        int io = utils.getInstance().validateUserOption(-1, max_io_idx);
+        return io > 0 ? sfee.getIo().get(io) : null;
+    }
+
+    private SFEI_machine newMachine(models.base.SFEE sfee) {
+
+        System.out.print("Item machine name: ");
+        String name = in.nextLine();
+        System.out.println("Note : The UNKNOWN is only for the Staudinger Machine");
+        System.out.println("Part Material");
+        for (partDescription.material material : partDescription.material.values()) {
+            System.out.println("    " + material.ordinal() + " - " + material.name());
+        }
+        int opt = utils.getInstance().validateUserOption(0, partDescription.material.values().length - 1);
+        partDescription.material mat = partDescription.material.values()[opt];
+
+        System.out.println("Part Form");
+        for (partDescription.form form : partDescription.form.values()) {
+            System.out.println("    " + form.ordinal() + " - " + form.name());
+        }
+        opt = utils.getInstance().validateUserOption(0, partDescription.form.values().length - 1);
+        partDescription.form f = partDescription.form.values()[opt];
+
+        sensor_actuator inSensor = getSensorActuator("Input sensor: ", sfee);
+        sensor_actuator outSensor = getSensorActuator("Output sensor: ", sfee);
+
+        System.out.println("Is simulation (y/n) ?");
+        boolean isSimulation = utils.getInstance().validateUserOption();
+        System.out.println("Supports failures (y/n) ?");
+        boolean supportsFailures = utils.getInstance().validateUserOption();
+        System.out.println("Is line start (y/n)? (First item of all Modules combined)");
+        boolean isLineStart = utils.getInstance().validateUserOption();
+        System.out.println("Supports failures (y/n) ? (Last item of all Modules combined)");
+        boolean isLineEnd = utils.getInstance().validateUserOption();
+
+        sensor_actuator[] vector = new sensor_actuator[3];
+        if (isSimulation) {
+            vector[0] = getSensorActuator("Produce register: ", sfee);
+            if (supportsFailures) {
+                vector[1] = getSensorActuator("Machine Door sensor: ", sfee);
+                vector[2] = getSensorActuator("Stop Machine actuator: ", sfee);
+            }
+        } else {
+            vector[2] = getSensorActuator("Stop Machine actuator: ", sfee);
+        }
+
+        return new SFEI_machine(name, new partDescription(mat, f), inSensor, outSensor,
+                Instant.now(), Instant.now(),
+                isSimulation, supportsFailures,
+                isLineStart, isLineEnd,
+                vector);
+    }
+
+    private SFEI_pusher newPusher(models.base.SFEE sfee) {
+
+        System.out.print("Item Staudinger pusher name: ");
+        String name = in.nextLine();
+
+        sensor_actuator inSensor = getSensorActuator("Pusher back sensor: ", sfee);
+        sensor_actuator outSensor = getSensorActuator("Pusher forward sensor: ", sfee);
+
+
+        System.out.println("Is line start (y/n)? (First item of all Modules combined)");
+        boolean isLineStart = utils.getInstance().validateUserOption();
+        System.out.println("Supports failures (y/n) ? (Last item of all Modules combined)");
+        boolean isLineEnd = utils.getInstance().validateUserOption();
+
+        sensor_actuator aBackMotor = getSensorActuator("Pusher back actuator: ", sfee);
+        sensor_actuator aForwardMotor = getSensorActuator("Pusher forward actuator: ", sfee);
+
+        return new SFEI_pusher(name, inSensor, outSensor,
+                Instant.now(), Instant.now(), false, false,
+                isLineStart, isLineEnd,
+                aBackMotor, aForwardMotor);
+    }
 }

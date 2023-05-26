@@ -230,10 +230,11 @@ public class SFEE_production_failures {
                     }
                     // Delete the completed tasks
                     if (stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isPusherFinished() || object.isMachineFinished()
-                            || object.isPartProduced() || object.isPartRemovedInProduction()))
+                            || object.isPartProduced() || object.isPartRemovedInProduction())) {
                         System.out.println(" >>> " + sfee.getName() + " stochasticTasks: " + stochasticTimeTasks.size());
-                    if (stochasticTimeTasks.size() == 1) {
-                        System.out.println(stochasticTimeTasks.get(0).getPart());
+                        if (stochasticTimeTasks.size() == 1) {
+                            System.out.println(stochasticTimeTasks.get(0).getPart());
+                        }
                     }
                 }
             }

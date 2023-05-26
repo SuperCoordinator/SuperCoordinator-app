@@ -46,7 +46,7 @@ public class gaussFormula extends formula {
             discreteGaussDistr = new TreeMap<>();
         }
 
-        for (int i = 0; i < 1024 * 2; i++) {
+        for (int i = 0; i < 1024 /* 2 */; i++) {
             double r = utils.getInstance().getRandom().nextGaussian() * dev + mean;
             r = (double) Math.round(r);
             if (showHist) {

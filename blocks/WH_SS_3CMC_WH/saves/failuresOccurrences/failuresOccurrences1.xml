@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<failureOccurrenceArray>
+    <failuresOccurrences SFEI="MachineCenter_0" activation_variable="A" failureType="PRODUCE_FAULTY" nPartsMovedAtTime="0" startT="2023-05-26T11:34:57.842189900Z" endT="2023-05-26T11:34:58.852544100Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_1" activation_variable="N" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="15" startT="2023-05-26T11:53:35.350805200Z" endT="2023-05-26T11:54:35.551624400Z"/>
+    <failuresOccurrences SFEI="ExitConveyor_2" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="0" startT="2023-05-26T11:33:20.649451900Z" endT="2023-05-26T11:38:20.851711600Z"/>
+    <failuresOccurrences SFEI="ExitConveyor_2" activation_variable="M" failureType="BREAKDOWN_WITH_REPAIR" nPartsMovedAtTime="12" startT="2023-05-26T11:52:21.042514100Z" endT="2023-05-26T11:57:21.341853400Z"/>
+</failureOccurrenceArray>

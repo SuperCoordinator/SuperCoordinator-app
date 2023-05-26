@@ -17,9 +17,10 @@ public class serializable {
     private ArrayList<cSFEM_production> C_Production = new ArrayList<>();
     private ArrayList<cSFEM_transport> C_Transport = new ArrayList<>();
 
-    @XmlElement(name = "failureOccurrences")
+    @XmlElement(name = "failureOccurrencesPath")
     private String failuresHistoryPath;
-
+    @XmlElement(name = "inboundOrdersPath")
+    private String inboundOrdersPath;
     public serializable() {
     }
 
@@ -65,5 +66,13 @@ public class serializable {
 
     public String getFailuresHistoryPath() {
         return failuresHistoryPath;
+    }
+
+    public String getInboundOrdersPath() {
+        return inboundOrdersPath;
+    }
+
+    public void setInboundOrdersPath(String inboundOrdersPath) {
+        this.inboundOrdersPath = inboundOrdersPath;
     }
 }

@@ -1,0 +1,45 @@
+﻿Name,Type,Data Type,Address
+FACTORY I/O (Paused),Input,Bool,Input 0
+FACTORY I/O (Reset),Input,Bool,Input 1
+FACTORY I/O (Running),Input,Bool,Input 2
+MC0_has_error,Input,Bool,Input 3
+MC0_busy,Input,Bool,Input 4
+MC0_opened,Input,Bool,Input 5
+s_E0,Input,Bool,Input 6
+s_entry_E0,Input,Bool,Input 7
+s_entry_R0,Input,Bool,Input 8
+s_exit_E0,Input,Bool,Input 9
+s_exit_R0,Input,Bool,Input 10
+s_entryMC0,Input,Bool,Input 11
+s_exitMC0,Input,Bool,Input 12
+s_R0,Input,Bool,Input 13
+s_inMC0,Input,Bool,Input 14
+emit_E0,Output,Bool,Coil 0
+entry_C0,Output,Bool,Coil 1
+entry_E0,Output,Bool,Coil 2
+entry_R0,Output,Bool,Coil 3
+exit_C0,Output,Bool,Coil 4
+exit_E0,Output,Bool,Coil 5
+exit_R0,Output,Bool,Coil 6
+FACTORY I/O (Pause),Output,Bool,Coil 7
+FACTORY I/O (Reset),Output,Bool,Coil 8
+FACTORY I/O (Run),Output,Bool,Coil 9
+MC0_reset,Output,Bool,Coil 10
+MC0_produce,Output,Bool,Coil 11
+MC0_start,Output,Bool,Coil 12
+MC0_stop,Output,Bool,Coil 13
+R0,Output,Bool,Coil 14
+metalPL_redLight,Output,Bool,Coil 15
+metal_PL_yellowLight,Output,Bool,Coil 16
+metalPL_greenLight,Output,Bool,Coil 17
+FACTORY I/O (Time Scale),Input,Real,Input Reg 0
+MC0_progress,Input,Int,Input Reg 1
+vs_C0,Input,Int,Input Reg 2
+FACTORY I/O (Camera Position),Output,Int,Holding Reg 0
+part_E0,Output,Int,Holding Reg 1
+base_E0,Output,Int,Holding Reg 2
+entry_EP0,Output,Int,Holding Reg 3
+entry_EB0,Output,Int,Holding Reg 4
+MC0_counter,Output,Int,Holding Reg 5
+exit_EP0,Output,Int,Holding Reg 6
+exit_EB0,Output,Int,Holding Reg 7

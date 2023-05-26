@@ -15,40 +15,41 @@ public class gaussianHistogram {
 
     public static void main(String[] args) {
 
-        printQueryRes();
-//        double mean = 60.0;
-//        double dev = 8.0;
-//
-//        TreeMap<Double, Double> discreteGaussDistr = new TreeMap<>();
-//        ArrayList<Double> unOrder = new ArrayList<>();
-//
-//        for (int i = 0; i < 51; i++) {
-//            double gauss = utils.getInstance().getRandom().nextGaussian() * dev + mean;
-//            double r = (double) Math.round(gauss);
-//
-//            if (discreteGaussDistr.containsKey(r)) {
-//                discreteGaussDistr.replace(r, discreteGaussDistr.get(r), discreteGaussDistr.get(r) + 1);
-//            } else {
-//                discreteGaussDistr.put(r, 1.0);
-//            }
-//            unOrder.add(r);
-//        }
-//        System.out.println(Arrays.toString(discreteGaussDistr.keySet().toArray()));
-//        System.out.println(Arrays.toString(discreteGaussDistr.values().toArray()));
-//        System.out.println(Arrays.toString(unOrder.toArray()));
-//
-//        List<Double> xData = new ArrayList<>(discreteGaussDistr.keySet());
-//        List<Double> yData = new ArrayList<>(discreteGaussDistr.values());
-//
-//        CategoryChart categoryChart = new CategoryChartBuilder().width(600).height(600).title("Gaussian Distribution").xAxisTitle("Production time (s)").yAxisTitle("# parts").build();
-//        categoryChart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
-//        categoryChart.addSeries("All Gaussian Distr", xData, yData);
-////            categoryChart.addSeries(seriesNames[i], data.get(i).xData(), data.get(i).yData());
-//
-//
-//        SwingWrapper<CategoryChart> sw = new SwingWrapper<>(categoryChart);
-////        sw.displayChartMatrix();
-//        sw.displayChart();
+//        printQueryRes();
+        double mean = 60.0;
+        double dev = 4.0;
+
+        TreeMap<Double, Double> discreteGaussDistr = new TreeMap<>();
+        ArrayList<Double> unOrder = new ArrayList<>();
+        for (int j = 0; j < 1; j++) {
+            for (int i = 0; i < 153; i++) {
+                double gauss = utils.getInstance().getRandom().nextGaussian() * dev + mean;
+                double r = (double) Math.round(gauss);
+
+                if (discreteGaussDistr.containsKey(r)) {
+                    discreteGaussDistr.replace(r, discreteGaussDistr.get(r), discreteGaussDistr.get(r) + 1);
+                } else {
+                    discreteGaussDistr.put(r, 1.0);
+                }
+                unOrder.add(r);
+            }
+        }
+        System.out.println(Arrays.toString(discreteGaussDistr.keySet().toArray()));
+        System.out.println(Arrays.toString(discreteGaussDistr.values().toArray()));
+        System.out.println(Arrays.toString(unOrder.toArray()));
+
+        List<Double> xData = new ArrayList<>(discreteGaussDistr.keySet());
+        List<Double> yData = new ArrayList<>(discreteGaussDistr.values());
+
+        CategoryChart categoryChart = new CategoryChartBuilder().width(600).height(600).title("Gaussian Distribution").xAxisTitle("Production time (s)").yAxisTitle("# parts").build();
+        categoryChart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
+        categoryChart.addSeries("All Gaussian Distr", xData, yData);
+//            categoryChart.addSeries(seriesNames[i], data.get(i).xData(), data.get(i).yData());
+
+
+        SwingWrapper<CategoryChart> sw = new SwingWrapper<>(categoryChart);
+//        sw.displayChartMatrix();
+        sw.displayChart();
 
 
     }

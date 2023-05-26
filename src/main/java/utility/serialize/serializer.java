@@ -21,6 +21,7 @@ import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class serializer {
 
@@ -57,7 +58,6 @@ public class serializer {
     public void setC_Warehouse(cSFEM_warehouse cSFEMWarehouse) {
         serializable.setC_Warehouse(cSFEMWarehouse);
     }
-
 
     public cSFEM_warehouse getC_Warehouse() {
         return serializable.getC_Warehouse();
@@ -292,6 +292,14 @@ public class serializer {
         serializable.setFailuresHistoryPath(path);
     }
 
+    public void setInboundOrdersPath(String path) {
+        serializable.setInboundOrdersPath(path);
+    }
+
+    public String getInboundOrdersPath() {
+        return serializable.getInboundOrdersPath();
+    }
+
     public void saveFailuresHistory() {
         try {
             FailureOccurrenceArray failureOccurrenceArray = new FailureOccurrenceArray();
@@ -304,10 +312,12 @@ public class serializer {
                 }
             }
 
+            File f = new File(serializable.getFailuresHistoryPath());
+
             JAXBContext context = JAXBContext.newInstance(FailureOccurrenceArray.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(failureOccurrenceArray, new File(serializable.getFailuresHistoryPath()));
+            marshaller.marshal(failureOccurrenceArray, new File(serializable.getFailuresHistoryPath() + "/failuresOccurrences" + Objects.requireNonNull(f.list()).length + ".xml"));
         } catch (JAXBException e) {
             e.printStackTrace();
         }

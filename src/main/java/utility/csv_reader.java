@@ -16,7 +16,7 @@ import javax.swing.*;
 
 public class csv_reader {
 
-    public TreeMap<Integer, sensor_actuator> readModbusTags(String path, String sfee_name, boolean dbg) {
+    public TreeMap<Integer, sensor_actuator> readModbusTags(String path, String sfee_name, boolean openIOwindow) {
         TreeMap<Integer, sensor_actuator> treeMap = new TreeMap<>();
         try {
 
@@ -41,17 +41,12 @@ public class csv_reader {
                 treeMap.put(treeMap.size(), createObj(row));
 
             }
-            if (dbg) {
+            if (openIOwindow) {
                 openWindow(treeMap, sfee_name);
-                System.out.print(" >> There are inputs with inverse logic for " + sfee_name + " (y/n)?");
-                Scanner in = new Scanner(System.in);
-                String value;
-                do {
-                    value = in.nextLine();
-                } while (!(value.equalsIgnoreCase("y") || value.equalsIgnoreCase("n")));
-                if (value.equalsIgnoreCase("y")) {
+                System.out.print("There are inputs with inverse logic for " + sfee_name + " (y/n)?");
+                if (utils.getInstance().validateUserOption()) {
                     System.out.println("Enter following the example pattern: 2,3,1,5");
-                    String input = in.nextLine();
+                    String input = new Scanner(System.in).nextLine();
                     if (!input.isEmpty()) {
                         for (String str : input.split(",")) {
                             int key = Integer.parseInt(str);
@@ -59,25 +54,6 @@ public class csv_reader {
                         }
                     }
                 }
-//                System.out.println("*** All imported IOs ***");
-//                for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
-//                    System.out.println("   " + entry.getKey() + " - " + entry.getValue().getName());
-//                }
-//                System.out.println("From the IO which are in inverse logic?");
-//
-//                Scanner in = new Scanner(System.in);
-//
-
-                //String input = "6,7,8,9,10,12,13";
-//            String input = "12";
-//
-//                System.out.println(input);
-//                if (!input.isEmpty()) {
-//                    for (String str : input.split(",")) {
-//                        int key = Integer.parseInt(str);
-//                        treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
-//                    }
-//                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,9 +110,9 @@ public class csv_reader {
         return new sensor_actuator(objName, objType, false, objDataType, objAddressType, 0, bit_off);
     }
 
-    private void openWindow(TreeMap<Integer, sensor_actuator> treeMap, String sfee_name) {
+    private void openWindow(TreeMap<Integer, sensor_actuator> treeMap, String sfeeName) {
 
-        JFrame mainFrame = new JFrame(sfee_name);
+        JFrame mainFrame = new JFrame(sfeeName);
         JPanel controlPanel = new JPanel();
         mainFrame.setSize(500, 500);
         mainFrame.add(controlPanel);

@@ -11,6 +11,7 @@ import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
 import utility.serialize.serializer;
+import utility.utils;
 import viewers.SFEE_transport;
 
 import java.time.Duration;
@@ -26,7 +27,7 @@ public class App {
 
     public static void main(String[] args) {
         try {
-            Scanner in = new Scanner(System.in);
+
             Instant start_t = Instant.now();
             String input = "0";
             boolean exit = false;
@@ -37,11 +38,9 @@ public class App {
                         System.out.println("***** SuperCoordinator *****");
                         System.out.println("****************************");
                         System.out.println();
-                        System.out.println("   1 - New configuration");
-                        System.out.println("   2 - Load configuration");
-//                        System.out.println("   e - Exit execution");
-                        System.out.print("option: ");
-                        input = in.nextLine();
+                        System.out.println("1 - New configuration");
+                        System.out.println("2 - Load configuration");
+                        input = String.valueOf(utils.getInstance().validateUserOption(1, 2));
                     }
 
                     case "1" -> {
@@ -81,8 +80,13 @@ public class App {
             e.printStackTrace();
         }
         // Stop simulation
-
+        System.out.println("Closing SuperCoordinator...");
+        // Close modbus connection
+        for (cSFEM_production production : serializer.getInstance().getC_Production()) {
+            production.endSimulation();
+        }
         // Save XML with failures records
+        System.out.println("Saving Failures History...");
         serializer.getInstance().saveFailuresHistory();
 
         exit(0);
@@ -95,44 +99,41 @@ public class App {
         System.out.println("   2 - Failures History      ");
         System.out.println("   e - Exit execution        ");
         System.out.println("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
-        System.out.print("option: ");
-        // Se encrava aqui como dar o timeout por tempo???
-        String input = in.nextLine();
-        if (input.equalsIgnoreCase("e"))
-            return -1;
+        System.out.print("> ");
 
-        int opt = 1;
+        String input = in.nextLine();
+        if (input.equalsIgnoreCase("e")) {
+            System.out.println("Exit detected...");
+            return -1;
+        }
+
+        int opt = Integer.parseInt(input);
         do {
             if (opt < 1 || opt > 2)
-                System.out.println("Invalid option! Try again");
-            opt = Integer.parseInt(input);
+                System.out.println("Invalid option. Try again!");
+            System.out.print("> ");
+            opt = Integer.parseInt(in.nextLine());
         } while (opt < 1 || opt > 2);
+
 
         if (opt == 1) {
             System.out.println("Monitor/Tracking Parts");
             System.out.println("   From SFEM ? ");
-            int i = 1;
+            int i = 0;
             for (cSFEM_production cSFEMProduction : serializer.getInstance().getC_Production()) {
                 System.out.println("     " + i + " - " + cSFEMProduction.getSfem().getName());
                 i++;
             }
-            do {
-                if (opt < 1 || opt > serializer.getInstance().getC_Production().size())
-                    System.out.println("Invalid option! Try again");
-                opt = Integer.parseInt(in.nextLine());
-            } while (opt < 1 || opt > serializer.getInstance().getC_Production().size());
+            opt = utils.getInstance().validateUserOption(0, serializer.getInstance().getC_Production().size() - 1);
+
             cSFEM_production production = serializer.getInstance().getC_Production().get(opt);
-            i = 1;
+            i = 0;
             System.out.println("     And which SFEE of " + production.getSfem().getName());
             for (cSFEE_production cSFEEProduction : production.getSfeeControllers()) {
                 System.out.println("     " + i + " - " + cSFEEProduction.getSFEE().getName());
                 i++;
             }
-            do {
-                if (opt < 1 || opt > serializer.getInstance().getC_Production().size())
-                    System.out.println("Invalid option! Try again");
-                opt = Integer.parseInt(in.nextLine());
-            } while (opt < 1 || opt > serializer.getInstance().getC_Production().size());
+            opt = utils.getInstance().validateUserOption(0, serializer.getInstance().getC_Production().size() - 1);
 
             production.getSfeeControllers().get(opt).getSfeeMonitor().monitorSFEE();
 
@@ -152,7 +153,6 @@ public class App {
 
         /* ---- DATABASE  ---- */
         serializer.getInstance().updateDB();
-//            dbConnection.getInstance().initializeDB();
         scheduler.scheduleAtFixedRate(dbConnection.getInstance(), 0, 1, TimeUnit.SECONDS);
         /* ------------------- */
 
@@ -179,11 +179,17 @@ public class App {
     private static void newConfiguration() {
         Scanner in = new Scanner(System.in);
 
-        System.out.print("Path to save XML configuration file: ");
+        System.out.println("Path to save XML configuration file");
+        System.out.print("> ");
         String xmlPath = in.nextLine();
 
-        System.out.print("Path to save future Failures Occurrences XML file: ");
+        System.out.println("Path to save future Failures Occurrences XML file (folder)");
+        System.out.print("> ");
         serializer.getInstance().setFailuresHistoryPath(new Scanner(System.in).nextLine());
+
+        System.out.println("Path to inbound orders folder");
+        System.out.print("> ");
+        serializer.getInstance().setInboundOrdersPath(new Scanner(System.in).nextLine());
 
         /* WAREHOUSE MODULE */
         SFEM_warehouse sfemWarehouse = new SFEM_warehouse(SFEM_warehouse.warehouseOrganization.RANDOM);
@@ -194,32 +200,21 @@ public class App {
 
         // Create new configuration files
         /* PRODUCTION MODULES*/
-        int nModules = 1;
-
-        if (serializer.getInstance().scene.equals(serializer.scenes.CMC_connection)) {
-            nModules = 1;
-        } else if (serializer.getInstance().scene.equals(serializer.scenes.CMC2_con_individual)) {
-            nModules = 2;
-        } else if (serializer.getInstance().scene.equals(serializer.scenes.sorting_station)) {
-            nModules = 1;
-        } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_3CMC)) {
-            nModules = 2;
-        } else if (serializer.getInstance().scene.equals(serializer.scenes.MC_Staudinger)) {
-            nModules = 1;
-        } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_WH)) {
-            nModules = 1;
-        } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_3CMC_WH)) {
-            nModules = 1;
-        }
+        System.out.println("Number of Modules to configure? ");
+        System.out.print("> ");
+        int nModules = Integer.parseInt(in.nextLine());
 
         for (int i = 0; i < nModules; i++) {
-            System.out.println("SFEM Production " + i + " name ?");
-            SFEM_production sfemProduction = new SFEM_production(in.nextLine());
+            System.out.println("Production Module (SFEM) number " + i + " name ?");
+            System.out.print("> ");
+            String sfemName = in.nextLine();
+            SFEM_production sfemProduction = new SFEM_production(sfemName);
 
             cSFEM_production sfemController = new cSFEM_production(sfemProduction);
-            System.out.println("How many SFEEs Production for " + sfemProduction.getName() + " ?");
-            sfemController.init_SFEEs(Integer.parseInt(in.nextLine()));
-            sfemController.init_SFEE_controllers(serializer.getInstance().scene.ordinal(), i);
+            System.out.println("Number of Production Elements (SFEE) for " + sfemName + " ?");
+            System.out.print("> ");
+            sfemController.init_SFEEs(Integer.parseInt(in.nextLine()), sfemName);
+            sfemController.init_SFEE_controllers(/*serializer.getInstance().scene.ordinal(), i*/);
 
             serializer.getInstance().getC_Production().add(i, sfemController);
         }
@@ -230,36 +225,29 @@ public class App {
 
         }
 
-        System.out.print("Path to save configuration XML file: ");
         //Intermediate save before Transport Modules setup
         serializer.getInstance().saveXML(xmlPath);
 
-        /* TRANSPORT MODULES*/
-/*          System.out.println("How many Transport SFEModules ?");
-            String str = in.nextLine();
-            int nModules = Integer.parseInt(str);*/
-        if (serializer.getInstance().scene.equals(serializer.scenes.sorting_station))
-            nModules = 0;
-        else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_3CMC)) {
-            nModules = 3;
-        } else if (serializer.getInstance().scene.equals(serializer.scenes.MC_Staudinger)) {
-            nModules = 0;
-        } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_WH)) {
-            nModules = 0;
-        } else if (serializer.getInstance().scene.equals(serializer.scenes.WH_SS_3CMC_WH)) {
-            nModules = 3;
-        } else
-            nModules = 1;
-
-        if (!serializer.getInstance().scene.equals(serializer.scenes.MC_Staudinger)) {
+        System.out.println("Start of Line Item (SFEI) to connect with the Warehouse is Simulation (y) or Real(n) ?");
+        boolean isSimulation = utils.getInstance().validateUserOption();
+        if (isSimulation) {
             initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.WH2SFEI);
-            initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.SFEI2WH);
         } else {
             initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.WH2RealSFEI);
+        }
+
+        System.out.println("End of Line Item (SFEI) to connect with the Warehouse is Simulation (y) or Real(n) ?");
+        isSimulation = utils.getInstance().validateUserOption();
+        if (isSimulation) {
+            initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.SFEI2WH);
+        } else {
             initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.RealSFEI2WH);
         }
 
-
+        System.out.println("Number of Transport Modules to configure? ");
+        System.out.println("(Transport Modules connects Elements)");
+        System.out.print("> ");
+        nModules = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nModules; i++) {
             initializeTransport(null, SFEM_transport.configuration.SFEI2SFEI);
         }
@@ -284,7 +272,7 @@ public class App {
                 System.out.print("SFEE transport name ? ");
                 String sfee_transport_name = in.nextLine();
 
-                System.out.println("Input SFEE name to connect with " + sfem_transport_name + " ?");
+                System.out.println("Input Element (SFEE) name to connect with " + sfem_transport_name + " ?");
                 Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
                 if (inSFEE.getFirst().getSFEE_environment().equals(SFEE.SFEE_environment.REAL))
                     configuration = SFEM_transport.configuration.RealSFEI2SFEI;
@@ -295,7 +283,7 @@ public class App {
                     System.out.println("  " + index + " -> " + entry.getValue().getName());
                     index++;
                 }
-                SFEI inSFEI = inSFEE.getFirst().getSFEIbyIndex(Integer.parseInt(in.nextLine()));
+                SFEI inSFEI = inSFEE.getFirst().getSFEIbyIndex(utils.getInstance().validateUserOption(0, inSFEE.getFirst().getSFEIs().size() - 1));
 
                 System.out.println("Output SFEE name to connect with " + sfem_transport_name + " ?");
                 Pair<SFEE, cSFEM_production> outSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
@@ -308,7 +296,7 @@ public class App {
                     System.out.println("  " + index + " -> " + entry.getValue().getName());
                     index++;
                 }
-                SFEI outSFEI = outSFEE.getFirst().getSFEIbyIndex(Integer.parseInt(in.nextLine()));
+                SFEI outSFEI = outSFEE.getFirst().getSFEIbyIndex(utils.getInstance().validateUserOption(0, outSFEE.getFirst().getSFEIs().size() - 1));
 
                 SFEE_transport viewer = new SFEE_transport();
                 String[] in_SensAct = viewer.associateSensor2Actuator(1, inSFEI.getOutSensor().getName());
@@ -411,21 +399,18 @@ public class App {
 
     private static void loadConfiguration() {
 
-        System.out.print("Path to XML file: ");
+        System.out.println("Path to XML file");
+        System.out.print("> ");
         // Load existing configuration files
+
         // Deserialize Production Controllers
         serializer.getInstance().loadXML(new Scanner(System.in).nextLine());
 
         /* ---- DATABASE  ---- */
-        System.out.print("EMPTY DATABASE (y/n)? ");
-        String input = " ";
-        do {
-            if (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"))
-                System.out.println("Invalid option! Try again");
-            input = new Scanner(System.in).nextLine();
-        } while (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"));
+        System.out.println("EMPTY DATABASE (y/n)?");
+        System.out.print("> ");
 
-        if (input.equalsIgnoreCase("y"))
+        if (utils.getInstance().validateUserOption())
             serializer.getInstance().emptyDB();
         /* ------------------- */
 
@@ -481,7 +466,6 @@ public class App {
                 }
             }
         }
-//                serializer.getInstance().saveXML();
     }
 }
 
