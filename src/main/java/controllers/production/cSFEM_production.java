@@ -235,7 +235,7 @@ public class cSFEM_production implements Runnable {
         sfeeControllers.get(0).stopSimulation();
 
         for (cSFEE_production sfeeController : sfeeControllers) {
-            sfeeController.getMb().closeConnection();
+            sfeeController.closeCommunication();
         }
 
     }

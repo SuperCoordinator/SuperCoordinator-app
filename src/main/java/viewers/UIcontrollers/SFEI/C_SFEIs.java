@@ -321,19 +321,19 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
             // Add new SFEI
             case "conveyor" -> {
 
-                SFEI_conveyor newObj = new SFEI_conveyor(
-                        sfeiName.getText(),
-                        utils.getInstance().getSearch().getIObyName(input_sensor.getValue(), io),
-                        utils.getInstance().getSearch().getIObyName(output_sensor.getValue(), io),
-                        Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
-                        Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
-                        sfee_environment.equals(SFEE.SFEE_environment.SIMULATION),
-                        cSfeiConveyor.getFailures_support(),
-                        ((RadioButton) start_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
-                        ((RadioButton) end_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
-                        cSfeiConveyor.getSensAct());
+//                SFEI_conveyor newObj = new SFEI_conveyor(
+//                        sfeiName.getText(),
+//                        utils.getInstance().getSearch().getIObyName(input_sensor.getValue(), io),
+//                        utils.getInstance().getSearch().getIObyName(output_sensor.getValue(), io),
+//                        Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+//                        Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+//                        sfee_environment.equals(SFEE.SFEE_environment.SIMULATION),
+//                        cSfeiConveyor.getFailures_support(),
+//                        ((RadioButton) start_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
+//                        ((RadioButton) end_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
+//                        cSfeiConveyor.getSensAct());
 
-                cSfeiConveyor.setSfeiConveyor(newObj);
+//                cSfeiConveyor.setSfeiConveyor(newObj);
                 if (name.isBlank()) {
                     registerC_SFEI_conveyor(cSfeiConveyor);
                 } else {
@@ -352,20 +352,20 @@ public class C_SFEIs extends CM_SFEI implements Initializable {
             }
             case "machine" -> {
 
-                SFEI_machine newObj = new SFEI_machine(
-                        sfeiName.getText(),
-                        new partDescription(partDescription.material.UNKNOWN, cSfeiMachine.getPart_type()),
-                        utils.getInstance().getSearch().getIObyName(input_sensor.getValue(), io),
-                        utils.getInstance().getSearch().getIObyName(output_sensor.getValue(), io),
-                        Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
-                        Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
-                        sfee_environment.equals(SFEE.SFEE_environment.SIMULATION),
-                        cSfeiMachine.getFailure_support(),
-                        ((RadioButton) start_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
-                        ((RadioButton) end_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
-                        cSfeiMachine.getSensAct());
-
-                cSfeiMachine.setSfeiMachine(newObj);
+//                SFEI_machine newObj = new SFEI_machine(
+//                        sfeiName.getText(),
+//                        new partDescription(partDescription.material.UNKNOWN, cSfeiMachine.getPart_type()),
+//                        utils.getInstance().getSearch().getIObyName(input_sensor.getValue(), io),
+//                        utils.getInstance().getSearch().getIObyName(output_sensor.getValue(), io),
+//                        Instant.from(manufacturing_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+//                        Instant.from(last_maintenance_date.getValue().atStartOfDay(ZoneId.systemDefault())),
+//                        sfee_environment.equals(SFEE.SFEE_environment.SIMULATION),
+//                        cSfeiMachine.getFailure_support(),
+//                        ((RadioButton) start_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
+//                        ((RadioButton) end_item.getSelectedToggle()).getText().equalsIgnoreCase("yes"),
+//                        cSfeiMachine.getSensAct());
+//
+//                cSfeiMachine.setSfeiMachine(newObj);
                 if (name.isBlank()) {
                     registerC_SFEI_machine(cSfeiMachine);
                 } else {

@@ -43,7 +43,7 @@ public class csv_reader {
             }
             if (openIOwindow) {
                 openWindow(treeMap, sfee_name);
-                System.out.print("There are inputs with inverse logic for " + sfee_name + " (y/n)?");
+                System.out.println("There are inputs with inverse logic for " + sfee_name + " (y/n)?");
                 if (utils.getInstance().validateUserOption()) {
                     System.out.println("Enter following the example pattern: 2,3,1,5");
                     String input = new Scanner(System.in).nextLine();
@@ -112,7 +112,7 @@ public class csv_reader {
 
     private void openWindow(TreeMap<Integer, sensor_actuator> treeMap, String sfeeName) {
 
-        JFrame mainFrame = new JFrame(sfeeName);
+        JFrame mainFrame = new JFrame(sfeeName + " I/O's");
         JPanel controlPanel = new JPanel();
         mainFrame.setSize(500, 500);
         mainFrame.add(controlPanel);

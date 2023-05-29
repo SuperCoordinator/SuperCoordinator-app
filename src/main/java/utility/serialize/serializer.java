@@ -39,20 +39,20 @@ public class serializer {
         private static final serializer INSTANCE = new serializer();
     }
 
-    public enum scenes {
-        CMC_connection,
-        CMC2_con_individual,
-        sorting_station,
-        WH_SS_3CMC,
-        MC_Staudinger,
-        WH_SS_WH,
-        WH_SS_3CMC_WH,
-        WH_SS_3CMC_MCS_WH
-    }
-
-    public final scenes scene = scenes.WH_SS_3CMC_WH;
+    //    public enum scenes {
+//        CMC_connection,
+//        CMC2_con_individual,
+//        sorting_station,
+//        WH_SS_3CMC,
+//        MC_Staudinger,
+//        WH_SS_WH,
+//        WH_SS_3CMC_WH,
+//        WH_SS_3CMC_MCS_WH
+//    }
+//
+//    public final scenes scene = scenes.WH_SS_3CMC_WH;
 //    private final String filePath = "blocks/" + scene + "/saves/" + scene;
-
+    public String scene;
     private serializable serializable = new serializable();
 
     public void setC_Warehouse(cSFEM_warehouse cSFEMWarehouse) {
@@ -75,7 +75,10 @@ public class serializer {
 
         try {
             dbConnection.getInstance().getConnection();
-            createDB();
+            String fileName = new File(filePath).getName();
+            String scene = fileName.split(".xml")[0];
+            this.scene = scene;
+            createDB(scene);
 
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Marshaller marshaller = context.createMarshaller();
@@ -93,17 +96,21 @@ public class serializer {
             Unmarshaller unmarshaller = context.createUnmarshaller();
             serializable = (utility.serialize.serializable) unmarshaller.unmarshal(new FileReader(filePath));
             dbConnection.getInstance().getConnection();
-            createDB();
+
+            String fileName = new File(filePath).getName();
+            String scene = fileName.split(".xml")[0];
+            this.scene = scene;
+            createDB(scene);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void createDB() {
+    private void createDB(String scene) {
         try {
-            String query = "CREATE DATABASE IF NOT EXISTS " + scene.name() + ";";
+            String query = "CREATE DATABASE IF NOT EXISTS " + scene + ";";
             dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
-            dbConnection.getInstance().setDatabase(scene.name());
+            dbConnection.getInstance().setDatabase(scene);
             // create tables
             ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
             //Creating a reader object
@@ -116,17 +123,17 @@ public class serializer {
         }
     }
 
-    public void emptyDB() {
+    public void emptyDB(String scene) {
         try {
             // EMPTY tables
             ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
             //Creating a reader object
-            Reader reader = new BufferedReader(new FileReader("src/main/resources/database/TRUNCATE.sql"));
+            Reader reader = new BufferedReader(new FileReader("src/main/resources/database/DROP.sql"));
             scriptRunner.setLogWriter(null); // not print in terminal
             //Running the script
             scriptRunner.runScript(reader);
 
-            createDB();
+            createDB(scene);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -134,15 +141,15 @@ public class serializer {
 
     }
 
-    public void updateDB() {
-        dbConnection.getInstance().getSf_configuration().insert(scene.name());
-        instantiateSFEx();
+    public void updateDB(String scene) {
+        dbConnection.getInstance().getSf_configuration().insert(scene);
+        instantiateSFEx(scene);
     }
 
-    private void instantiateSFEx() {
+    private void instantiateSFEx(String scene) {
 
         // Instantiate IN-Warehouse
-        dbConnection.getInstance().getSfems().insert(getC_Warehouse().getSfem().getName(), scene.toString());
+        dbConnection.getInstance().getSfems().insert(getC_Warehouse().getSfem().getName(), scene);
 
         dbConnection.getInstance().getSfees().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getName(),
                 getC_Warehouse().getSfem().getName());
@@ -168,7 +175,7 @@ public class serializer {
 
         // Instantiate Production Elements (and their sensors)
         getC_Production().forEach(cSFEMProduction -> {
-            dbConnection.getInstance().getSfems().insert(cSFEMProduction.getSfem().getName(), scene.toString());
+            dbConnection.getInstance().getSfems().insert(cSFEMProduction.getSfem().getName(), scene);
 
             cSFEMProduction.getSfeeControllers().forEach(cSFEEProduction -> {
                 dbConnection.getInstance().getSfees().insert(cSFEEProduction.getSFEE().getName(), cSFEMProduction.getSfem().getName());

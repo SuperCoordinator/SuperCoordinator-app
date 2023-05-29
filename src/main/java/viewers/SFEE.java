@@ -182,12 +182,12 @@ public class SFEE {
         str[0] = in.nextLine();
         if (str[0].contains("y")) {
 
+            System.out.println("Vision sensor index");
+            str[1] = String.valueOf(utils.getInstance().validateUserOption(0, sfee.getIo().size() - 1));
+
             listElementItems(sfee);
 
-            System.out.println("Vision sensor : ");
-            System.out.print("> ");
-            str[1] = String.valueOf(utils.getInstance().validateUserOption(0, sfee.getIo().size() - 1));
-            System.out.println("Placed on item number");
+            System.out.println("Placed on Item (SFEI) number");
             int opt = utils.getInstance().validateUserOption(0, sfee.getSFEIs().size() - 1);
             str[2] = String.valueOf(opt);
 
@@ -201,7 +201,7 @@ public class SFEE {
     private void listElementItems(models.base.SFEE sfee) {
         System.out.println("Element " + sfee.getName() + " items");
         for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
-            System.out.println("   " + entry.getValue() + " - " + entry.getValue().getName());
+            System.out.println("   " + entry.getKey() + " - " + entry.getValue().getName());
         }
     }
 
@@ -214,16 +214,16 @@ public class SFEE {
 
         System.out.println("*** Stochastic Operation Time for Element " + sfeeName + " ***");
         System.out.println("""
-                Runtime variables: 
-                    > n - number of pieces moved \n
-                    > a - age of the machine in minutes \n 
-                    > m - time since last maintenance in minutes \n
-                Basic Operator: + - * / % \n
-                Supported formulas: \n
-                    > gauss  [ A ; B ] \n
-                    > linear [ A ] \n
+                Runtime variables:
+                    > n - number of pieces moved
+                    > a - age of the machine in minutes
+                    > m - time since last maintenance in minutes
+                Basic Operator: + - * / %
+                Supported formulas:
+                    > gauss  [ A ; B ]
+                    > linear [ A ]
                 A,B : constant values or expressions depending the runtime variables
-                Please insert a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ] """);
+                Please insert a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]""");
         System.out.print("Enter expression:");
         do {
             if (retry)
@@ -241,17 +241,17 @@ public class SFEE {
 
         System.out.println("*** Failures Definition per runtime variable for Element " + sfeeName + " ***");
         System.out.println("""
-                Supported formulas \n
-                    > gauss  [ A ; B ]          (A: mean / B: deviation) \n
-                    > prob   [ A ] (signal) B   (signal: > OR = OR < OR <= OR >= ),(B belongs to [0, 100]) \n
-                    > det    [ A ]               \n
-                A,B : ONLY constant values (can be floating point) \n
-                Example: \n
-                    > m : prob [ 70 ] >= 90 \n
-                Interpretation \n
+                Supported formulas
+                    > gauss  [ A ; B ]          (A: mean / B: deviation)
+                    > prob   [ A ] (signal) B   (signal: > OR = OR < OR <= OR >= ),(B belongs to [0, 100])
+                    > det    [ A ]
+                A,B : ONLY constant values (can be floating point)
+                Example:
+                    > m : prob [ 70 ] >= 90
+                Interpretation
                     -> When time since last maintenance (m) equal to 70 minutes, if the current value of the probability
-                    is bigger or equal to 90 then the failure happen. \n
-                NOTE 1 : Insert a space between each character/number, i.e.: gauss [ 70 ; 5 ] \n
+                    is bigger or equal to 90 then the failure happen.
+                NOTE 1 : Insert a space between each character/number, i.e.: gauss [ 70 ; 5 ]
                 NOTE 2 : 'no' to skip expression!""");
 
         System.out.println("BREAKDOWN WITH REPAIR ");
@@ -347,12 +347,12 @@ public class SFEE {
         return !str.contains(">") && !str.contains("<") && !str.contains(">=") && !str.contains("<=") && !str.contains("=");
     }
 
-    public ArrayList<SFEI> createSFEIs(models.base.SFEE sfee) {
+    public ArrayList<SFEI> createSFEIs(models.base.SFEE sfee, boolean supportFailures) {
         System.out.println("Note 1 : Instant for the item age and maintenance will be the same and equal to this precise moment!");
         System.out.println("         It will be possible to change in the XML configuration file.");
         System.out.println("Note 2 : For the inputs and outputs please check the window with Element I/Os.");
         System.out.println("         Enter -1 to leave empty!");
-        System.out.println("How many Items for Element " + sfee.getName());
+        System.out.println("How many Items (SFEIs) for Element " + sfee.getName());
         System.out.print("> ");
         int nSFEIS = Integer.parseInt(in.nextLine());
         ArrayList<SFEI> sfeis = new ArrayList<>();
@@ -365,8 +365,8 @@ public class SFEE {
             int opt = utils.getInstance().validateUserOption(1, 3);
 
             switch (opt) {
-                case 1 -> sfeis.add(newConveyor(sfee));
-                case 2 -> sfeis.add(newMachine(sfee));
+                case 1 -> sfeis.add(newConveyor(sfee, supportFailures));
+                case 2 -> sfeis.add(newMachine(sfee, supportFailures));
                 case 3 -> sfeis.add(newPusher(sfee));
             }
         }
@@ -374,7 +374,7 @@ public class SFEE {
         return sfeis;
     }
 
-    private SFEI_conveyor newConveyor(models.base.SFEE sfee) {
+    private SFEI_conveyor newConveyor(models.base.SFEE sfee, boolean supportFailures) {
 
         System.out.print("Item conveyor name: ");
         String name = in.nextLine();
@@ -382,18 +382,23 @@ public class SFEE {
         sensor_actuator inSensor = getSensorActuator("Input sensor: ", sfee);
         sensor_actuator outSensor = getSensorActuator("Output sensor: ", sfee);
 
-        System.out.println("Is simulation (y/n) ?");
-        boolean isSimulation = utils.getInstance().validateUserOption();
-        System.out.println("Supports failures (y/n) ?");
-        boolean supportsFailures = utils.getInstance().validateUserOption();
-        System.out.println("Is line start (y/n)? (First item of all Modules combined)");
-        boolean isLineStart = utils.getInstance().validateUserOption();
-        System.out.println("Supports failures (y/n) ? (Last item of all Modules combined)");
-        boolean isLineEnd = utils.getInstance().validateUserOption();
+        boolean isSimulation = sfee.getSFEE_environment().equals(models.base.SFEE.SFEE_environment.SIMULATION);
+
+//        System.out.println("Is simulation (y/n)?");
+//        boolean isSimulation = utils.getInstance().validateUserOption();
+//        System.out.println("Supports failures (y/n) ?");
+//        boolean supportsFailures = utils.getInstance().validateUserOption();
+//        System.out.println("Is line start (y/n)? (First item of all Modules combined)");
+//        boolean isLineStart = utils.getInstance().validateUserOption();
+//        boolean isLineEnd = false;
+//        if (!isLineStart) {
+//            System.out.println("Is line end (y/n) ? (Last item of all Modules combined)");
+//            isLineEnd = utils.getInstance().validateUserOption();
+//        }
 
         sensor_actuator[] vector = new sensor_actuator[7];
 
-        if (supportsFailures) {
+        if (supportFailures) {
 
             vector[0] = getSensorActuator("Remover actuator: ", sfee);
             vector[1] = getSensorActuator("Emit actuator: ", sfee);
@@ -406,20 +411,19 @@ public class SFEE {
 
         return new SFEI_conveyor(name, inSensor, outSensor,
                 Instant.now(), Instant.now(),
-                isSimulation, supportsFailures,
-                isLineStart, isLineEnd,
+                isSimulation, supportFailures,
                 vector);
     }
 
     private sensor_actuator getSensorActuator(String msg, models.base.SFEE sfee) {
 
         int max_io_idx = sfee.getIo().size() - 1;
-        System.out.print(msg);
+        System.out.println(msg);
         int io = utils.getInstance().validateUserOption(-1, max_io_idx);
         return io > 0 ? sfee.getIo().get(io) : null;
     }
 
-    private SFEI_machine newMachine(models.base.SFEE sfee) {
+    private SFEI_machine newMachine(models.base.SFEE sfee, boolean supportFailures) {
 
         System.out.print("Item machine name: ");
         String name = in.nextLine();
@@ -441,19 +445,19 @@ public class SFEE {
         sensor_actuator inSensor = getSensorActuator("Input sensor: ", sfee);
         sensor_actuator outSensor = getSensorActuator("Output sensor: ", sfee);
 
-        System.out.println("Is simulation (y/n) ?");
-        boolean isSimulation = utils.getInstance().validateUserOption();
-        System.out.println("Supports failures (y/n) ?");
-        boolean supportsFailures = utils.getInstance().validateUserOption();
-        System.out.println("Is line start (y/n)? (First item of all Modules combined)");
-        boolean isLineStart = utils.getInstance().validateUserOption();
-        System.out.println("Supports failures (y/n) ? (Last item of all Modules combined)");
-        boolean isLineEnd = utils.getInstance().validateUserOption();
-
+//        System.out.println("Is simulation (y/n) ?");
+//        boolean isSimulation = utils.getInstance().validateUserOption();
+//        System.out.println("Supports failures (y/n) ?");
+//        boolean supportsFailures = utils.getInstance().validateUserOption();
+        boolean isSimulation = sfee.getSFEE_environment().equals(models.base.SFEE.SFEE_environment.SIMULATION);
+//        System.out.println("Is line start (y/n)? (First item of all Modules combined)");
+//        boolean isLineStart = utils.getInstance().validateUserOption();
+//        System.out.println("Supports failures (y/n) ? (Last item of all Modules combined)");
+//        boolean isLineEnd = utils.getInstance().validateUserOption();
         sensor_actuator[] vector = new sensor_actuator[3];
         if (isSimulation) {
             vector[0] = getSensorActuator("Produce register: ", sfee);
-            if (supportsFailures) {
+            if (supportFailures) {
                 vector[1] = getSensorActuator("Machine Door sensor: ", sfee);
                 vector[2] = getSensorActuator("Stop Machine actuator: ", sfee);
             }
@@ -463,8 +467,7 @@ public class SFEE {
 
         return new SFEI_machine(name, new partDescription(mat, f), inSensor, outSensor,
                 Instant.now(), Instant.now(),
-                isSimulation, supportsFailures,
-                isLineStart, isLineEnd,
+                isSimulation, supportFailures,
                 vector);
     }
 
@@ -477,17 +480,29 @@ public class SFEE {
         sensor_actuator outSensor = getSensorActuator("Pusher forward sensor: ", sfee);
 
 
-        System.out.println("Is line start (y/n)? (First item of all Modules combined)");
-        boolean isLineStart = utils.getInstance().validateUserOption();
-        System.out.println("Supports failures (y/n) ? (Last item of all Modules combined)");
-        boolean isLineEnd = utils.getInstance().validateUserOption();
+//        System.out.println("Is line start (y/n)? (First item of all Modules combined)");
+//        boolean isLineStart = utils.getInstance().validateUserOption();
+//        System.out.println("Is line end (y/n) ? (Last item of all Modules combined)");
+//        boolean isLineEnd = utils.getInstance().validateUserOption();
 
         sensor_actuator aBackMotor = getSensorActuator("Pusher back actuator: ", sfee);
         sensor_actuator aForwardMotor = getSensorActuator("Pusher forward actuator: ", sfee);
 
         return new SFEI_pusher(name, inSensor, outSensor,
                 Instant.now(), Instant.now(), false, false,
-                isLineStart, isLineEnd,
                 aBackMotor, aForwardMotor);
+    }
+
+    public int[] startEnd_sfeis(models.base.SFEE sfee) {
+        int[] vector = new int[2];
+
+        listElementItems(sfee);
+        System.out.println("   " + sfee.getSFEIs().size() + " - NONE");
+        System.out.println("Which Item (SFEI) is line START ?");
+        vector[0] = utils.getInstance().validateUserOption(0, sfee.getSFEIs().size());
+
+        System.out.println("Which Item (SFEI) is line END ?");
+        vector[1] = utils.getInstance().validateUserOption(0, sfee.getSFEIs().size());
+        return vector;
     }
 }

@@ -12,7 +12,7 @@ import java.time.Instant;
 //@XmlRootElement(name = "SFEI_transport")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEI_transport extends SFEI  {
+public class SFEI_transport extends SFEI {
 
     @XmlElement
     private sensor_actuator aRemover;
@@ -29,7 +29,7 @@ public class SFEI_transport extends SFEI  {
     public SFEI_transport(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
                           Instant dayOfBirth, Instant dayOfLastMaintenance, sensor_actuator aRemover,
                           sensor_actuator aEmitter, sensor_actuator aEmitterpart, sensor_actuator aEmitterBase) {
-        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance,true, false, false, false);
+        super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, 0, true, false, false, false);
         this.aRemover = aRemover;
         this.aEmitter = aEmitter;
         this.aEmitterPart = aEmitterpart;

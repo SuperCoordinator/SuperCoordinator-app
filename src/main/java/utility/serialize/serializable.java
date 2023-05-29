@@ -12,7 +12,6 @@ import java.util.ArrayList;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class serializable {
-    private dbConnection connection = new dbConnection();
     private cSFEM_warehouse C_Warehouse = new cSFEM_warehouse();
     private ArrayList<cSFEM_production> C_Production = new ArrayList<>();
     private ArrayList<cSFEM_transport> C_Transport = new ArrayList<>();
@@ -51,13 +50,9 @@ public class serializable {
         return C_Transport;
     }
 
-    public void setConnection(dbConnection connection) {
-        this.connection = connection;
-    }
-
     @XmlElement
     public dbConnection getConnection() {
-        return connection;
+        return dbConnection.getInstance();
     }
 
     public void setFailuresHistoryPath(String failuresHistoryPath) {

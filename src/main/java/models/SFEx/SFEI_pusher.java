@@ -25,8 +25,8 @@ public class SFEI_pusher extends SFEI {
 
     public SFEI_pusher(String name, sensor_actuator inSensor, sensor_actuator outSensor,
                        Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation,
-                       boolean supportsFailures, boolean line_start, boolean line_end, sensor_actuator aBackMotor, sensor_actuator aForwardMotor) {
-        super(name, SFEI_type.PUSHER, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, isSimulation, supportsFailures, line_start, line_end);
+                       boolean supportsFailures, sensor_actuator aBackMotor, sensor_actuator aForwardMotor) {
+        super(name, SFEI_type.PUSHER, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, 0, isSimulation, supportsFailures, false, false);
 
         this.aBackMotor = aBackMotor;
         this.aForwardMotor = aForwardMotor;

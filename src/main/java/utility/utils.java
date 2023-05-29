@@ -75,6 +75,7 @@ public class utils {
         do {
             if (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"))
                 System.out.println("Invalid option! Try again");
+            System.out.print("> ");
             input = new Scanner(System.in).nextLine();
         } while (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"));
 

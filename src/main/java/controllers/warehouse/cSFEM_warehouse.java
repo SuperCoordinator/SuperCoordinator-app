@@ -28,6 +28,10 @@ public class cSFEM_warehouse implements Runnable {
         return sfem;
     }
 
+    public void setCheckOrders_period(int checkOrders_period) {
+        this.checkOrders_period = checkOrders_period;
+    }
+
     public void init() {
         SFEE sfeeWarehouse = new SFEE("sfee_warehouse",
                 SFEE.SFEE_environment.SIMULATION,

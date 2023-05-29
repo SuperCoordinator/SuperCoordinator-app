@@ -23,8 +23,8 @@ public class SFEM {
 
         String[] str = new String[3];
 
-        System.out.print("Name Element " + num + " of " + SFEM_name);
-        System.out.println("> ");
+        System.out.println("Name Element " + num + " of " + SFEM_name);
+        System.out.print("> ");
         str[0] = in.nextLine();
 
 //        System.out.println("1 - Modbus");

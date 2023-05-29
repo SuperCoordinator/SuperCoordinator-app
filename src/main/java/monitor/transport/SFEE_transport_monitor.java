@@ -225,7 +225,7 @@ public class SFEE_transport_monitor {
                 // update part status
                 dbConnection.getInstance().getParts().update_status(
                         movingPart.getId(),
-                        serializer.getInstance().scene.toString(),
+                        serializer.getInstance().scene,
                         movingPart.getState().toString());
 
                 iterator.remove();
@@ -239,7 +239,7 @@ public class SFEE_transport_monitor {
         // update part status
         dbConnection.getInstance().getParts().update_status(
                 movingPart.getId(),
-                serializer.getInstance().scene.toString(),
+                serializer.getInstance().scene,
                 movingPart.getState().toString());
 
         // new record in production_history

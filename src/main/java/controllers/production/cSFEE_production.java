@@ -107,7 +107,7 @@ public class cSFEE_production {
 //                    importIO(csv_path, true);
 //                }
 //            }
-            sfee.setIO_path(csv_path);
+            importIO(csv_path, true);
 
             String mode = viewer.opMode(sfee.getName());
             //String mode = "2";
@@ -117,9 +117,16 @@ public class cSFEE_production {
                 opMode = operationMode.PROG_FAILURES;
             }
 
-            ArrayList<SFEI> sfeis = viewer.createSFEIs(sfee);
+            ArrayList<SFEI> sfeis = viewer.createSFEIs(sfee, opMode.equals(operationMode.PROG_FAILURES));
             sfeis.forEach(sfei -> sfee.getSFEIs().put(sfee.getSFEIs().size(), sfei));
 
+            int[] start_endLine_sfeis_idx = viewer.startEnd_sfeis(sfee);
+
+            if (start_endLine_sfeis_idx[0] < sfee.getSFEIs().size())
+                sfee.getSFEIs().get(start_endLine_sfeis_idx[0]).setLine_start(true);
+
+            if (start_endLine_sfeis_idx[1] < sfee.getSFEIs().size())
+                sfee.getSFEIs().get(start_endLine_sfeis_idx[1]).setLine_end(true);
 //            if (scene == 8 || scene == 13 || scene == 14) {
 //                addNewSFEI_conveyor(
 //                        "parts_entry",
@@ -270,88 +277,77 @@ public class cSFEE_production {
             String[] visionStr = viewer.associateVisionSensors(sfee);
 
             if (!visionStr[0].equals("no")) {
-                // search for SFEI
-                int sfei_id = -1;
-                for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
-                    if (entry.getValue().getName().equals(visionStr[2])) {
-                        sfei_id = entry.getKey();
-                        break;
-                    }
-                }
-                if (sfei_id == -1)
-                    throw new RuntimeException("SFEI with name '" + visionStr[2] + "' do not exist");
                 TreeMap<Integer, sensor_actuator> treeMap = new TreeMap<>();
-                treeMap.put(sfei_id, sfee.getIObyName(visionStr[1]));
+                treeMap.put(Integer.parseInt(visionStr[2]), sfee.getIo().get(Integer.parseInt(visionStr[1])));
                 sfeeMonitor.setVisionSensorLocation(treeMap);
             }
 
 
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
 
-    private void add_CMC_block(int index) {
-        partDescription partDescription;
-        if (index == 0)
-            partDescription = new partDescription(models.partDescription.material.METAL, models.partDescription.form.BASE);
-        else if (index == 1) {
-            partDescription = new partDescription(models.partDescription.material.GREEN, models.partDescription.form.LID);
-        } else {
-            partDescription = new partDescription(models.partDescription.material.BLUE, models.partDescription.form.LID);
-        }
-        addNewSFEI_conveyor(
-                "EntryConveyor_" + index,
-                "s_E" + index,
-                "s_entryMC" + index,
-                Instant.now(),
-                Instant.now(),
-                true,
-                true,
-                "entry_R" + index,
-                "entry_E" + index,
-                "entry_EP" + index,
-                "entry_EB" + index,
-                "s_entry_R" + index,
-                "s_entry_E" + index,
-                "entry_C" + index,
-                false,
-                false);
-        addNewSFEI_machine(
-                "MachineCenter_" + index,
-                partDescription,
-                "s_entryMC" + index,
-                "s_exitMC" + index,
-                Instant.now(),
-                Instant.now(),
-                true,
-                true,
-                "MC" + index + "_produce",
-                "MC" + index + "_opened",
-                "MC" + index + "_stop",
-                false,
-                false);
-        addNewSFEI_conveyor(
-                "ExitConveyor_" + index,
-                "s_exitMC" + index,
-                "s_R" + index,
-                Instant.now(),
-                Instant.now(),
-                true,
-                true,
-                "exit_R" + index,
-                "exit_E" + index,
-                "exit_EP" + index,
-                "exit_EB" + index,
-                "s_exit_R" + index,
-                "s_exit_E" + index,
-                "exit_C" + index,
-                false,
-                false);
-    }
+//    private void add_CMC_block(int index) {
+//        partDescription partDescription;
+//        if (index == 0)
+//            partDescription = new partDescription(models.partDescription.material.METAL, models.partDescription.form.BASE);
+//        else if (index == 1) {
+//            partDescription = new partDescription(models.partDescription.material.GREEN, models.partDescription.form.LID);
+//        } else {
+//            partDescription = new partDescription(models.partDescription.material.BLUE, models.partDescription.form.LID);
+//        }
+//        addNewSFEI_conveyor(
+//                "EntryConveyor_" + index,
+//                "s_E" + index,
+//                "s_entryMC" + index,
+//                Instant.now(),
+//                Instant.now(),
+//                true,
+//                true,
+//                "entry_R" + index,
+//                "entry_E" + index,
+//                "entry_EP" + index,
+//                "entry_EB" + index,
+//                "s_entry_R" + index,
+//                "s_entry_E" + index,
+//                "entry_C" + index,
+//                false,
+//                false);
+//        addNewSFEI_machine(
+//                "MachineCenter_" + index,
+//                partDescription,
+//                "s_entryMC" + index,
+//                "s_exitMC" + index,
+//                Instant.now(),
+//                Instant.now(),
+//                true,
+//                true,
+//                "MC" + index + "_produce",
+//                "MC" + index + "_opened",
+//                "MC" + index + "_stop",
+//                false,
+//                false);
+//        addNewSFEI_conveyor(
+//                "ExitConveyor_" + index,
+//                "s_exitMC" + index,
+//                "s_R" + index,
+//                Instant.now(),
+//                Instant.now(),
+//                true,
+//                true,
+//                "exit_R" + index,
+//                "exit_E" + index,
+//                "exit_EP" + index,
+//                "exit_EB" + index,
+//                "s_exit_R" + index,
+//                "s_exit_E" + index,
+//                "exit_C" + index,
+//                false,
+//                false);
+//    }
 
     /* ***********************************
                SFEE Communications
@@ -383,6 +379,7 @@ public class cSFEE_production {
      ************************************ */
 
     public void importIO(String file_path, boolean dbg) {
+        sfee.setIO_path(file_path);
         sfee.setIo(utils.getInstance().getReader().readModbusTags(file_path, sfee.getName(), dbg));
 //        printAllIO();
     }
@@ -394,54 +391,54 @@ public class cSFEE_production {
     /* ***********************************
                     SFEI
     ************************************ */
-    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
-                                    boolean isSimulation, boolean supportFailures, String aRemover, String aEmit, String aEmitPart, String aEmitBase,
-                                    String sRemover, String sEmitter, String aConveyorMotor, boolean is_line_start, boolean is_line_end) {
-
-        sensor_actuator[] vector = new sensor_actuator[7];
-        vector[0] = sfee.getIObyName(aRemover);
-        vector[1] = sfee.getIObyName(aEmit);
-        vector[2] = sfee.getIObyName(aEmitPart);
-        vector[3] = sfee.getIObyName(aEmitBase);
-        vector[4] = sfee.getIObyName(sRemover);
-        vector[5] = sfee.getIObyName(sEmitter);
-        vector[6] = sfee.getIObyName(aConveyorMotor);
-        SFEI_conveyor newObj = new SFEI_conveyor(
-                name,
-                sfee.getIObyName(inSensor),
-                sfee.getIObyName(outSensor),
-                dayOfBirth, dayOfLastMaintenance,
-                isSimulation, supportFailures, is_line_start, is_line_end,
-                vector);
-        sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
-
-    }
-
-    private void addNewSFEI_pusher(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
-                                   boolean isSimulation, boolean supportFailures, String aBackMotor, String aForwardMotor,
-                                   boolean is_line_start, boolean is_line_end) {
-
-        SFEI_pusher newObj = new SFEI_pusher(
-                name,
-                sfee.getIObyName(inSensor),
-                sfee.getIObyName(outSensor),
-                dayOfBirth, dayOfLastMaintenance,
-                isSimulation, supportFailures, is_line_start, is_line_end,
-                sfee.getIObyName(aBackMotor), sfee.getIObyName(aForwardMotor));
-
-        sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
-
-    }
-
-    public void addNewSFEI_machine(String name, partDescription partDescription, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportsFailures, String aProduce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
-        sensor_actuator[] vector = new sensor_actuator[3];
-        vector[0] = sfee.getIObyName(aProduce);
-        vector[1] = sfee.getIObyName(sDoor);
-        vector[2] = sfee.getIObyName(aStop);
-        SFEI_machine newObj = new SFEI_machine(name, partDescription, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, isSimulation, supportsFailures, is_line_start, is_line_end, vector);
-        sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
-
-    }
+//    public void addNewSFEI_conveyor(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
+//                                    boolean isSimulation, boolean supportFailures, String aRemover, String aEmit, String aEmitPart, String aEmitBase,
+//                                    String sRemover, String sEmitter, String aConveyorMotor, boolean is_line_start, boolean is_line_end) {
+//
+//        sensor_actuator[] vector = new sensor_actuator[7];
+//        vector[0] = sfee.getIObyName(aRemover);
+//        vector[1] = sfee.getIObyName(aEmit);
+//        vector[2] = sfee.getIObyName(aEmitPart);
+//        vector[3] = sfee.getIObyName(aEmitBase);
+//        vector[4] = sfee.getIObyName(sRemover);
+//        vector[5] = sfee.getIObyName(sEmitter);
+//        vector[6] = sfee.getIObyName(aConveyorMotor);
+//        SFEI_conveyor newObj = new SFEI_conveyor(
+//                name,
+//                sfee.getIObyName(inSensor),
+//                sfee.getIObyName(outSensor),
+//                dayOfBirth, dayOfLastMaintenance,
+//                isSimulation, supportFailures, is_line_start, is_line_end,
+//                vector);
+//        sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
+//
+//    }
+//
+//    private void addNewSFEI_pusher(String name, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
+//                                   boolean isSimulation, boolean supportFailures, String aBackMotor, String aForwardMotor,
+//                                   boolean is_line_start, boolean is_line_end) {
+//
+//        SFEI_pusher newObj = new SFEI_pusher(
+//                name,
+//                sfee.getIObyName(inSensor),
+//                sfee.getIObyName(outSensor),
+//                dayOfBirth, dayOfLastMaintenance,
+//                isSimulation, supportFailures, is_line_start, is_line_end,
+//                sfee.getIObyName(aBackMotor), sfee.getIObyName(aForwardMotor));
+//
+//        sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
+//
+//    }
+//
+//    public void addNewSFEI_machine(String name, partDescription partDescription, String inSensor, String outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance, boolean isSimulation, boolean supportsFailures, String aProduce, String sDoor, String aStop, boolean is_line_start, boolean is_line_end) {
+//        sensor_actuator[] vector = new sensor_actuator[3];
+//        vector[0] = sfee.getIObyName(aProduce);
+//        vector[1] = sfee.getIObyName(sDoor);
+//        vector[2] = sfee.getIObyName(aStop);
+//        SFEI_machine newObj = new SFEI_machine(name, partDescription, sfee.getIObyName(inSensor), sfee.getIObyName(outSensor), dayOfBirth, dayOfLastMaintenance, isSimulation, supportsFailures, is_line_start, is_line_end, vector);
+//        sfee.getSFEIs().put(sfee.getSFEIs().size(), newObj);
+//
+//    }
 
     private void autoSetSFEE_InOut() {
 
@@ -587,7 +584,24 @@ public class cSFEE_production {
     }
 
     public void stopSimulation() {
-        mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Run)").getBit_offset(), 0);
+
+        try {
+            if (sfee.getSFEE_environment().equals(SFEE.SFEE_environment.SIMULATION)) {
+                mb.writeSingleCoil(sfee.getIObyName("FACTORY I/O (Pause)").getBit_offset(), 1);
+                do {
+                    Thread.sleep(100);
+                }
+                while ((int) mb.readDiscreteInputs().get((sfee.getIObyName("FACTORY I/O (Paused)").getBit_offset())) == 0);
+            } else {
+                mb.writeSingleCoil(sfee.getIObyName("start_module").getBit_offset(), 0);
+                do {
+                    Thread.sleep(100);
+                }
+                while ((int) mb.readCoils().get((sfee.getIObyName("start_module").getBit_offset())) == 1);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private Long[] getSFEEOperationTime() {

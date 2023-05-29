@@ -42,7 +42,7 @@ public class SFEE {
 
     @XmlElement
     private String IO_path;
-//    @XmlElement
+
     private TreeMap<Integer, sensor_actuator> io;
     @XmlElement
     private TreeMap<Integer, SFEI> SFEIs;

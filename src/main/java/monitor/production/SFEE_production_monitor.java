@@ -109,7 +109,7 @@ public class SFEE_production_monitor {
             if (visionSensorLocation != null)
                 updatePartDescription(inputRegsValue);
 
-            printDBG();
+//            printDBG();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
