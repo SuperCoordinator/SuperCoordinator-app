@@ -15,6 +15,7 @@ import java.util.List;
 public class produce_more extends failures_conditions {
 
     private enum SM {
+        UNDEFINED,
         WORKING,
         TURN_ON,
         WAITING,
@@ -31,7 +32,7 @@ public class produce_more extends failures_conditions {
     private partDescription.material material;
     private int faulty_partID = Integer.MAX_VALUE / 2;
 
-    public produce_more(String[] formulas, SFEI_conveyor sfeiConveyor,int sfei_idx, partDescription.material mat) {
+    public produce_more(String[] formulas, SFEI_conveyor sfeiConveyor, int sfei_idx, partDescription.material mat) {
         super(formulas, type.PRODUCE_MORE);
         this.sfeiConveyor = sfeiConveyor;
         this.sfei_idx = sfei_idx;
@@ -41,17 +42,24 @@ public class produce_more extends failures_conditions {
         this.old_state = state;
 
         if (getnCondition() == null && getaCondition() == null && getmCondition() == null) {
+            this.state = SM.UNDEFINED;
             return;
         }
         System.out.println("Produce More on -> " + sfeiConveyor.getName());
     }
 
     public boolean isActive() {
+        if (state.equals(SM.UNDEFINED))
+            return false;
         return state != SM.WORKING;
     }
 
     public int getSfei_idx() {
         return sfei_idx;
+    }
+
+    public boolean isUndefined() {
+        return state.equals(SM.UNDEFINED);
     }
 
     private failure_occurrence newOccurrence = new failure_occurrence();

@@ -69,12 +69,12 @@
                 <stochasticFormulas>65 </stochasticFormulas>
                 <stochasticFormulas>5 </stochasticFormulas>
                 <failuresFormulas>
-                    <item>no</item>
+                    <item>det [ 2 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>no</item>
+                    <item>gauss [ 1 ; 0 ]</item>
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>no</item>

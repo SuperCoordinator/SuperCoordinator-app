@@ -213,7 +213,7 @@ public class modbus implements Runnable {
                             for (Long run_t : runtime) {
                                 totalRuntime = totalRuntime + run_t;
                             }
-                            //                        System.out.println("MB runtime (ms): " + totalRuntime / runtime.size());
+                            //                        System.out.println("MB C_Runtime (ms): " + totalRuntime / C_Runtime.size());
                             //                        System.out.println("Runloop: " + runLoop + " Writeloop: " + writeLoop);
                             printDBG = true;
                         }

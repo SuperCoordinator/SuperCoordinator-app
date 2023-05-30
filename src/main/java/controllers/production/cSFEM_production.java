@@ -21,7 +21,7 @@ public class cSFEM_production implements Runnable {
     private SFEM_production_monitor sfemMonitor;
     @XmlElement
     private ArrayList<cSFEE_production> sfeeControllers;
-    private viewers.SFEM viewer = new viewers.SFEM();
+    private final viewers.SFEM viewer = new viewers.SFEM();
 
     public cSFEM_production() {
     }
@@ -69,7 +69,7 @@ public class cSFEM_production implements Runnable {
 
     public void init_SFEE_controllers(/*int scene, int SFEM_idx*/) {
         try {
-            int i = 0;
+//            int i = 0;
             for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
 
                 String[] comConfig = viewer.communicationParams(sfee.getValue().getCom().ordinal(), sfee.getValue().getName());
@@ -116,7 +116,7 @@ public class cSFEM_production implements Runnable {
                 sfeeController.initFailures();
 
                 sfeeControllers.add(sfeeController);
-                i++;
+//                i++;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,19 +241,19 @@ public class cSFEM_production implements Runnable {
     }
 
 
-    private final List<Long> runtime = new ArrayList<>();
+//    private final List<Long> C_Runtime = new ArrayList<>();
 
     @Override
     public void run() {
         try {
-            Instant start_t = Instant.now();
+//            Instant start_t = Instant.now();
 
             for (cSFEE_production sfeeController : sfeeControllers) {
                 sfeeController.loop();
             }
-            sfemMonitor.loop(runtime);
+//            sfemMonitor.loop(/*C_Runtime*/);
 
-            runtime.add(Duration.between(start_t, Instant.now()).toMillis());
+//            C_Runtime.add(Duration.between(start_t, Instant.now()).toMillis());
         } catch (Exception e) {
             // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();

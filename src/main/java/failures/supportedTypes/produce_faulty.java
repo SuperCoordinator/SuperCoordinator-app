@@ -12,7 +12,7 @@ import java.util.List;
 public class produce_faulty extends failures_conditions {
 
     private enum SM {
-
+        UNDEFINED,
         WORKING,
         WAITING_PART_POSITIONING,
         INJECT_FAILURE,
@@ -37,17 +37,24 @@ public class produce_faulty extends failures_conditions {
         this.old_state = state;
 
         if (getnCondition() == null && getaCondition() == null && getmCondition() == null) {
+            this.state = SM.UNDEFINED;
             return;
         }
         System.out.println("Produce Faulty on -> " + sfeiMachine.getName());
     }
 
     public boolean isActive() {
+        if (state.equals(SM.UNDEFINED))
+            return false;
         return state != SM.WORKING;
     }
 
     public int getSfei_idx() {
         return sfei_idx;
+    }
+
+    public boolean isUndefined() {
+        return state.equals(SM.UNDEFINED);
     }
 
     private failure_occurrence newOccurrence = new failure_occurrence();

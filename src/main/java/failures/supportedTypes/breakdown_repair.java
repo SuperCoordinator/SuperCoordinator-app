@@ -13,6 +13,7 @@ import java.util.List;
 public class breakdown_repair extends failures_conditions {
 
     private enum SM {
+        UNDEFINED,
         WORKING,
         DISABLED,
         REPAIRED
@@ -25,7 +26,7 @@ public class breakdown_repair extends failures_conditions {
     private final int sfei_idx;
     private final condition_variable recoveryConditions;
 
-    public breakdown_repair(String[] formulas, SFEI_conveyor sfeiConveyor,int sfei_idx, String[] recovery_formula) {
+    public breakdown_repair(String[] formulas, SFEI_conveyor sfeiConveyor, int sfei_idx, String[] recovery_formula) {
         super(formulas, type.BREAKDOWN_WITH_REPAIR);
         this.sfeiConveyor = sfeiConveyor;
         this.sfei_idx = sfei_idx;
@@ -35,17 +36,24 @@ public class breakdown_repair extends failures_conditions {
         this.old_state = state;
 
         if (getnCondition() == null && getaCondition() == null && getmCondition() == null) {
+            this.state = SM.UNDEFINED;
             return;
         }
         System.out.println("BreakDown with Repair on -> " + sfeiConveyor.getName());
     }
 
     public boolean isActive() {
+        if (state.equals(SM.UNDEFINED))
+            return false;
         return state != SM.WORKING;
     }
 
     public int getSfei_idx() {
         return sfei_idx;
+    }
+
+    public boolean isUndefined() {
+        return state.equals(SM.UNDEFINED);
     }
 
     private failure_occurrence newOccurrence = new failure_occurrence();

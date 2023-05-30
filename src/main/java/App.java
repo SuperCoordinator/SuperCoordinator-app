@@ -3,7 +3,6 @@ import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
-import javafx.application.Application;
 import models.SFEx.SFEM_production;
 import models.SFEx.SFEM_transport;
 import models.SFEx.SFEM_warehouse;
@@ -13,6 +12,7 @@ import org.apache.commons.math3.util.Pair;
 import utility.serialize.serializer;
 import utility.utils;
 import viewers.SFEE_transport;
+import viewers.runtimeUI.C_Runtime;
 
 import java.io.File;
 import java.time.Duration;
@@ -21,7 +21,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import static java.lang.System.exit;
-import static java.lang.System.in;
 
 
 public class App {
@@ -158,8 +157,8 @@ public class App {
 
 
     private static void runApplication(String scene) {
-
-        int poolsize = serializer.getInstance().getC_Production().size() + serializer.getInstance().getC_Transport().size() + 2;
+        // Threads for Production/Transport/Warehouse Modules Controllers, Database and Runtime Interface
+        int poolsize = serializer.getInstance().getC_Production().size() + serializer.getInstance().getC_Transport().size() + 3;
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(poolsize);
 
         /* ---- DATABASE  ---- */
@@ -177,14 +176,19 @@ public class App {
         }
 
         scheduler.scheduleAtFixedRate(serializer.getInstance().getC_Warehouse(), 0, 1, TimeUnit.SECONDS);
+        ArrayList<cSFEE_production> sfees = new ArrayList<>();
 
         for (cSFEM_production production : serializer.getInstance().getC_Production()) {
             scheduler.scheduleAtFixedRate(production, 0, 100, TimeUnit.MILLISECONDS);
+            sfees.addAll(production.getSfeeControllers());
         }
 
         for (cSFEM_transport transport : serializer.getInstance().getC_Transport()) {
             scheduler.scheduleAtFixedRate(transport, 0, 100, TimeUnit.MILLISECONDS);
         }
+
+        scheduler.scheduleAtFixedRate(new C_Runtime(sfees), 0, 1, TimeUnit.SECONDS);
+
     }
 
     private static String newConfiguration() {

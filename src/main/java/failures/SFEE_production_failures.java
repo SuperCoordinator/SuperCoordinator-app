@@ -17,7 +17,7 @@ import java.util.*;
 @XmlAccessorType(XmlAccessType.NONE)
 public class SFEE_production_failures {
 
-    private enum SM {
+    public enum SM {
         STOCHASTIC,
         BREAKDOWN,
         BREAKDOWN_WITH_REPAIR,
@@ -35,7 +35,6 @@ public class SFEE_production_failures {
     private String[] stochasticFormulas;
     @XmlElement
     private ArrayList<String[]> failuresFormulas;
-
 
     private gaussFormula gaussFormula;
     private breakdown_repair breakdownRepair;
@@ -114,6 +113,19 @@ public class SFEE_production_failures {
         System.out.println("*******************************************");
         System.out.println();
         this.sm_state = SM.STOCHASTIC;
+    }
+
+    public boolean[] getUndefinedFailures() {
+        boolean[] vec = new boolean[4];
+        vec[0] = breakdownRepair.isUndefined();
+        vec[1] = produceFaulty.isUndefined();
+        vec[2] = produceMore.isUndefined();
+        vec[3] = produceLess.isUndefined();
+        return vec;
+    }
+
+    public SM getFailuresState() {
+        return sm_state;
     }
 
     private boolean firstRun = true;

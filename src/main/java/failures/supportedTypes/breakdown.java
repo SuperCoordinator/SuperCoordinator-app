@@ -11,6 +11,7 @@ import java.util.List;
 public class breakdown extends failures_conditions {
 
     private enum SM {
+        UNDEFINED,
         WORKING,
         DISABLED,
         RESUMING
@@ -35,6 +36,7 @@ public class breakdown extends failures_conditions {
         this.old_state = state;
 
         if (getnCondition() == null && getaCondition() == null && getmCondition() == null) {
+            this.state = SM.UNDEFINED;
             return;
         }
         System.out.println("BreakDown on -> " + sfeiConveyor.getName());
@@ -45,7 +47,13 @@ public class breakdown extends failures_conditions {
     }
 
     public boolean isActive() {
+        if (state.equals(SM.UNDEFINED))
+            return false;
         return state != SM.WORKING;
+    }
+
+    public boolean isUndefined() {
+        return state.equals(SM.UNDEFINED);
     }
 
     private failure_occurrence newOccurrence = new failure_occurrence();

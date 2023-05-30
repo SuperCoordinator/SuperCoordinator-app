@@ -222,7 +222,7 @@ public class SFEE {
                 Supported formulas:
                     > gauss  [ A ; B ]
                     > linear [ A ]
-                A,B : constant values or expressions depending the runtime variables
+                A,B : constant values or expressions depending the C_Runtime variables
                 Please insert a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]""");
         System.out.print("Enter expression:");
         do {
@@ -239,7 +239,7 @@ public class SFEE {
 
         ArrayList<String[]> formulas = new ArrayList<>();
 
-        System.out.println("*** Failures Definition per runtime variable for Element " + sfeeName + " ***");
+        System.out.println("*** Failures Definition per C_Runtime variable for Element " + sfeeName + " ***");
         System.out.println("""
                 Supported formulas
                     > gauss  [ A ; B ]          (A: mean / B: deviation)
