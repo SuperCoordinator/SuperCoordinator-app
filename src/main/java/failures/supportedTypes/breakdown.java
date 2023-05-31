@@ -11,6 +11,7 @@ import java.util.List;
 public class breakdown extends failures_conditions {
 
     private enum SM {
+        UNDEFINED,
         WORKING,
         DISABLED,
         RESUMING
@@ -23,27 +24,36 @@ public class breakdown extends failures_conditions {
 
     // For now, support only breakdown with repair on the conveyors
     private final SFEI_conveyor sfeiConveyor;
+    private final int sfei_idx;
 
-    public breakdown(String[] formulas, SFEI_conveyor sfeiConveyor) {
+    public breakdown(String[] formulas, SFEI_conveyor sfeiConveyor, int sfei_idx) {
         super(formulas, type.BREAKDOWN);
         this.sfeiConveyor = sfeiConveyor;
+        this.sfei_idx = sfei_idx;
 
         this.resume = false;
         this.state = SM.WORKING;
         this.old_state = state;
 
         if (getnCondition() == null && getaCondition() == null && getmCondition() == null) {
+            this.state = SM.UNDEFINED;
             return;
         }
         System.out.println("BreakDown on -> " + sfeiConveyor.getName());
     }
 
-    public void setResume(boolean resume) {
-        this.resume = resume;
+    public int getSfei_idx() {
+        return sfei_idx;
     }
 
     public boolean isActive() {
+        if (state.equals(SM.UNDEFINED))
+            return false;
         return state != SM.WORKING;
+    }
+
+    public boolean isUndefined() {
+        return state.equals(SM.UNDEFINED);
     }
 
     private failure_occurrence newOccurrence = new failure_occurrence();
@@ -108,7 +118,7 @@ public class breakdown extends failures_conditions {
                         actVar = failure_occurrence.activationVariable.M;
                     }
                     if (actVar != null)
-                        newOccurrence = new failure_occurrence(type.BREAKDOWN, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
+                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.BREAKDOWN, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
                     else
                         throw new RuntimeException("(Breakdown) Activation Variable null but evalConditions was TRUE");
 

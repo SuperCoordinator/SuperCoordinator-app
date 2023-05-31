@@ -237,7 +237,7 @@ public class cSFEE_transport {
             outputs.add(coilsState_outMB);
             outputs.add(holdRegsValues_outMB);
 
-            sfeeFailures.loop(inputs, outputs, nextSFEE_availabity());
+            sfeeFailures.loop(inputs, outputs, nextSFEE_availability());
             sfeeMonitor.loop(inputs);
 
             switch (configuration) {
@@ -261,7 +261,7 @@ public class cSFEE_transport {
 
     }
 
-    private boolean nextSFEE_availabity() {
+    private boolean nextSFEE_availability() {
         boolean free = true;
         if (nextSFEE.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION)) {
             for (SFEI sfei : nextSFEE.getSFEIs().values()) {

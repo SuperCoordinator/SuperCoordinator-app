@@ -38,7 +38,6 @@ public class dbConnection implements Runnable {
         return dbConnection.dbConnectionHolder.INSTANCE;
     }
 
-
     private static class dbConnectionHolder {
         private static final dbConnection INSTANCE = new dbConnection();
     }
@@ -122,27 +121,7 @@ public class dbConnection implements Runnable {
 
     private boolean firstRun = true;
     private ArrayList<queries_buffer> tables = new ArrayList<>();
-    private int table_idx = 0;
 
-//    public void initializeDB() {
-//        // The order is important, mainly in the first execution as the static tables (until sensors, including)
-//        tables.add(sf_configuration);
-//        tables.add(sfems);
-//        tables.add(sfees);
-//        tables.add(sfeis);
-//        tables.add(sensors);
-//        tables.add(inbound_orders);
-//        tables.add(outbound_orders);
-//        tables.add(parts);
-//        tables.add(production_history);
-//
-//        for (queries_buffer buffer : tables) {
-//            if (buffer.getStoredQueries().size() > 0) {
-//                buffer.runQueries(getConnection());
-//            }
-//        }
-//
-//    }
 
     @Override
     public void run() {
@@ -160,20 +139,10 @@ public class dbConnection implements Runnable {
                 tables.add(production_history);
                 firstRun = false;
             }
-
-            int i = 0;
-//            System.out.print("buffer sizes: ");
             for (queries_buffer buffer : tables) {
-//                System.out.print("[" + i + "]" + buffer.getStoredQueries().size() + ", ");
                 if (buffer.getStoredQueries().size() > 0) {
-//                    if (i == 7) {
-//                        for (String str_vec : buffer.getStoredQueries()) {
-//                            System.out.println(str_vec);
-//                        }
-//                    }
                     buffer.runQueries(con);
                 }
-                i++;
             }
 
         } catch (Exception e) {

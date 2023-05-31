@@ -19,41 +19,52 @@ public class SFEM {
         return str;
     }
 
-    public String[] SFEE_params(int num) {
+    public String[] SFEE_params(int num, String SFEM_name) {
 
         String[] str = new String[3];
 
-        System.out.print("SFEE " + num + " name? ");
+        System.out.println("Name Element " + num + " of " + SFEM_name);
+        System.out.print("> ");
         str[0] = in.nextLine();
 
-        System.out.println("1 - Modbus");
-        System.out.println("2 - OPC UA");
-        str[1] = in.nextLine();
+//        System.out.println("1 - Modbus");
+//        System.out.println("2 - OPC UA");
+//        str[1] = in.nextLine();
+        str[1] = "1";
 
-        System.out.println("1 - Simulation");
-        System.out.println("2 - Real");
-        str[2] = in.nextLine();
+        System.out.println("Element Environment");
+        System.out.println("    1 - Simulation");
+        System.out.println("    2 - Real");
+        int opt = 1;
+        do {
+            if (opt != 1 && opt != 2) {
+                System.out.println("Invalid option! Try again");
+            }
+            System.out.print("> ");
+            opt = Integer.parseInt(in.nextLine());
+        } while (opt != 1 && opt != 2);
+        str[2] = String.valueOf(opt);
 
         return str;
     }
 
-    public String[] communicationParams(int opt, models.base.SFEE sfee) {
+    public String[] communicationParams(int opt, String sfeeName) {
 
         String[] str = new String[3];
 
+        // MODBUS
         if (opt == 0) {
-            System.out.println("Communication Parameters for " + sfee.getName());
+            System.out.println("MODBUS Connection of " + sfeeName);
             // Modbus
-            System.out.print("IP: ");
+            System.out.print("   IP: ");
             str[0] = in.nextLine();
 
-            System.out.print("Port: ");
+            System.out.print("   Port: ");
             str[1] = in.nextLine();
 
-            System.out.print("Slave ID: ");
+            System.out.print("   Slave ID: ");
             str[2] = in.nextLine();
         }
-
         return str;
     }
 

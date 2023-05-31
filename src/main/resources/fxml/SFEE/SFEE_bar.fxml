@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.Polyline?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="800.0" styleClass="transparent" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewers.controllers.SFEE.production.C_SFEEs">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="800.0" styleClass="transparent" stylesheets="@../../css/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewers.UIcontrollers.SFEE.production.C_SFEEs">
    <children>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="801.0">
          <children>

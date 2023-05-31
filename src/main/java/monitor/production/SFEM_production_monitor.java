@@ -30,7 +30,7 @@ public class SFEM_production_monitor extends SFEM_monitor  {
 
     // Avaliador de peças defeituosas baseada no tipo e no tempo de processamento
 
-    public void loop(List<Long> runtime) {
+    public void loop(/*List<Long> C_Runtime*/) {
         try {
             if (/*Duration.between(getInit_t(), Instant.now()).toSeconds() % 5 == 0*/false) {
                 if (!isPrintedStats()) {
@@ -58,10 +58,10 @@ public class SFEM_production_monitor extends SFEM_monitor  {
                             }
                         }
                     }
-//                    printStats(runtime);
+//                    printStats(C_Runtime);
                     setPrintedStats(true);
 //
-//                    updateGraphs();
+                    updateGraphs();
 
                 }
             } else {

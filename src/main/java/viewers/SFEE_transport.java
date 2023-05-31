@@ -1,5 +1,6 @@
 package viewers;
 
+import models.base.SFEE;
 import utility.customCalculator;
 import utility.utils;
 
@@ -13,41 +14,51 @@ public class SFEE_transport {
         this.in = new Scanner(System.in);
     }
 
-    public String[] associateSensor2Actuator(int repeat, String sensorName) {
+    public String[] associateSensor2Actuator(boolean isEntry, SFEE sfee, String sensorName) {
 
-        String[] str = new String[repeat];
-        if (repeat == 1) {
-            System.out.println("What is the actuator for the " + sensorName + " sensor ?");
-            str[0] = in.nextLine();
-        } else if (repeat == 3) {
-            System.out.println("What is the actuator for the " + sensorName + " sensor (Emit) ?");
-            str[0] = in.nextLine();
-            System.out.println(" And for the part ? ");
-            str[1] = in.nextLine();
-            System.out.println(" And for the base ? ");
-            str[2] = in.nextLine();
+        String[] str = new String[isEntry ? 3 : 1];
+        if (isEntry) {
+
+            System.out.println("Emit Coil actuator of sensor " + sensorName);
+            str[0] = sfee.getIo().get(utils.getInstance().validateUserOption(0, sfee.getIo().size() - 1)).getName();
+            System.out.println("Emit Part register");
+            str[1] = sfee.getIo().get(utils.getInstance().validateUserOption(0, sfee.getIo().size() - 1)).getName();
+            System.out.println("Emit Base register");
+            str[2] = sfee.getIo().get(utils.getInstance().validateUserOption(0, sfee.getIo().size() - 1)).getName();
+        } else {
+            System.out.println("Remover Coil actuator of sensor " + sensorName);
+            str[0] = sfee.getIo().get(utils.getInstance().validateUserOption(0, sfee.getIo().size() - 1)).getName();
         }
 
         return str;
     }
 
-    public String[] SFEE_stochasticTime() {
+    public String[] SFEE_stochasticTime(String sfeeName) {
 
-        String str = null;
+        String str;
+        customCalculator customCalculator = new customCalculator();
         boolean retry = false;
 
-        System.out.println("SFEE Transport Operation Time?");
-        System.out.println("Valid variables: n - number of pieces moved / a - age of the machine in minutes / m - time since last maintenance in minutes");
-        System.out.println("Valid operator: + - * / % or gauss[ mean ; dev ] linear[ value ] ");
-        System.out.println("Please insert a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]");
+        System.out.println("*** Stochastic Operation Time for Element " + sfeeName + " ***");
+        System.out.println("""
+                Runtime variables:
+                    > n - number of pieces moved
+                    > a - age of the machine in minutes
+                    > m - time since last maintenance in minutes
+                Basic Operator: + - * / %
+                Supported formulas:
+                    > gauss  [ A ; B ]
+                    > linear [ A ]
+                A,B : constant values or expressions depending the runtime variables
+                Please insert a space between each character/number (p.e: gauss [ 65 + ( 0.001 * n) ; 3.5 + 0.1 * a ]""");
         System.out.print("Enter expression:");
         do {
             if (retry)
-                System.out.println("Msg: " + utils.getInstance().getCustomCalculator().errorMsg(str));
+                System.out.println("Error Message: " + customCalculator.errorMsg());
             str = in.nextLine();
-            retry = utils.getInstance().getCustomCalculator().evalStochasticTimeExpression(str);
+            retry = customCalculator.evalStochasticTimeExpression(str);
         } while (retry);
 
-        return utils.getInstance().getCustomCalculator().getStochasticTimeFormulaElements();
+        return customCalculator.getStochasticTimeFormulaElements();
     }
 }

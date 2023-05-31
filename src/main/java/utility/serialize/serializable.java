@@ -5,21 +5,21 @@ import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class serializable {
-
-    private dbConnection connection = new dbConnection();
     private cSFEM_warehouse C_Warehouse = new cSFEM_warehouse();
     private ArrayList<cSFEM_production> C_Production = new ArrayList<>();
     private ArrayList<cSFEM_transport> C_Transport = new ArrayList<>();
 
+    @XmlElement(name = "failureOccurrencesPath")
+    private String failuresHistoryPath;
+    @XmlElement(name = "inboundOrdersPath")
+    private String inboundOrdersPath;
     public serializable() {
     }
 
@@ -50,13 +50,24 @@ public class serializable {
         return C_Transport;
     }
 
-    public void setConnection(dbConnection connection) {
-        this.connection = connection;
-    }
-
     @XmlElement
     public dbConnection getConnection() {
-        return connection;
+        return dbConnection.getInstance();
     }
 
+    public void setFailuresHistoryPath(String failuresHistoryPath) {
+        this.failuresHistoryPath = failuresHistoryPath;
+    }
+
+    public String getFailuresHistoryPath() {
+        return failuresHistoryPath;
+    }
+
+    public String getInboundOrdersPath() {
+        return inboundOrdersPath;
+    }
+
+    public void setInboundOrdersPath(String inboundOrdersPath) {
+        this.inboundOrdersPath = inboundOrdersPath;
+    }
 }

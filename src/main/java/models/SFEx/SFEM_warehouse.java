@@ -34,6 +34,10 @@ public class SFEM_warehouse extends SFEM {
         return sfeeWarehouse;
     }
 
+    public void setWarehouseOrganization(SFEM_warehouse.warehouseOrganization warehouseOrganization) {
+        this.warehouseOrganization = warehouseOrganization;
+    }
+
     public warehouseOrganization getWHDistribution() {
         return warehouseOrganization;
     }

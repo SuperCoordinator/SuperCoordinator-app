@@ -21,7 +21,7 @@ public class cSFEM_production implements Runnable {
     private SFEM_production_monitor sfemMonitor;
     @XmlElement
     private ArrayList<cSFEE_production> sfeeControllers;
-    private viewers.SFEM viewer = new viewers.SFEM();
+    private final viewers.SFEM viewer = new viewers.SFEM();
 
     public cSFEM_production() {
     }
@@ -40,16 +40,12 @@ public class cSFEM_production implements Runnable {
         return sfeeControllers;
     }
 
-    public void init_SFEEs(int nSFEEs) {
+    public void init_SFEEs(int nSFEEs, String sfemName) {
 
         try {
-            // # of SFEE to be added
-            //String input = viewer.nSFEE();
-//            String input = String.valueOf(n);
-            for (int i = 0; i < nSFEEs; i++) {
 
-                String[] inputs = viewer.SFEE_params(i);
-//                String[] inputs = {"sfee" + (i + 1), "1", "1"};
+            for (int i = 0; i < nSFEEs; i++) {
+                String[] inputs = viewer.SFEE_params(i, sfemName);
 
                 SFEE sfee = new SFEE(
                         inputs[0],
@@ -71,55 +67,56 @@ public class cSFEM_production implements Runnable {
         sfemMonitor = new SFEM_production_monitor(sfem);
     }
 
-    public void init_SFEE_controllers(int scene, int SFEM_idx) {
+    public void init_SFEE_controllers(/*int scene, int SFEM_idx*/) {
         try {
-            int i = 0;
+//            int i = 0;
             for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
-                /* QUESTAO DO SLAVE ID*/
-                String[] comConfig = viewer.communicationParams(0, sfee.getValue());
+
+                String[] comConfig = viewer.communicationParams(sfee.getValue().getCom().ordinal(), sfee.getValue().getName());
 
                 modbus mb = new modbus(comConfig[0], Integer.parseInt(comConfig[1]), Integer.parseInt(comConfig[2]));
                 cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
 
-                if (scene == 0)
-                    sfeeController.init(i == 0 ? scene : -1);
-                else if (scene == 1) {
-                    if (SFEM_idx == 0)
-                        sfeeController.init(3);
-                    else
-                        sfeeController.init(4);
-                } else if (scene == 2) {
-                    if (i == 0)
-                        sfeeController.init(5);
-                    else if (i == 1) {
-                        sfeeController.init(6);
-                    } else if (i == 2) {
-                        sfeeController.init(7);
-                    }
-                } else if (scene == 3) {
-                    if (SFEM_idx == 0) {
-                        sfeeController.init(scene + 5);
-                    } else if (SFEM_idx == 1) {
-                        sfeeController.init(scene + 6 + i);
-                        firstRun(false, i);
-                    }
-                } else if (scene == 4) {
-                    sfeeController.init(scene + 8);
-                } else if (scene == 5) {
-                    sfeeController.init(scene + 8);
-                } else if (scene == 6) {
-                    if (i == 0) {
-                        sfeeController.init(scene + 8);
-                    } else {
-                        sfeeController.init(scene + 8 + i);
-                        firstRun(false, i);
-                    }
-                }
+                sfeeController.init();
+//                if (scene == 0)
+//                    sfeeController.init(i == 0 ? scene : -1);
+//                else if (scene == 1) {
+//                    if (SFEM_idx == 0)
+//                        sfeeController.init(3);
+//                    else
+//                        sfeeController.init(4);
+//                } else if (scene == 2) {
+//                    if (i == 0)
+//                        sfeeController.init(5);
+//                    else if (i == 1) {
+//                        sfeeController.init(6);
+//                    } else if (i == 2) {
+//                        sfeeController.init(7);
+//                    }
+//                } else if (scene == 3) {
+//                    if (SFEM_idx == 0) {
+//                        sfeeController.init(scene + 5);
+//                    } else if (SFEM_idx == 1) {
+//                        sfeeController.init(scene + 6 + i);
+//                        firstRun(false, i);
+//                    }
+//                } else if (scene == 4) {
+//                    sfeeController.init(scene + 8);
+//                } else if (scene == 5) {
+//                    sfeeController.init(scene + 8);
+//                } else if (scene == 6) {
+//                    if (i == 0) {
+//                        sfeeController.init(scene + 8);
+//                    } else {
+//                        sfeeController.init(scene + 8 + i);
+//                        firstRun(false, i);
+//                    }
+//                }
 
                 sfeeController.initFailures();
 
                 sfeeControllers.add(sfeeController);
-                i++;
+//                i++;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,23 +175,23 @@ public class cSFEM_production implements Runnable {
 
     }
 
-    public void firstRun(boolean run, int itr) {
-        if (run)
-            for (cSFEE_production sfeeController : sfeeControllers) {
-                sfeeController.launchSetup();
-            }
-        else {
-            int[] array = new int[]{9, 33, 8};
-            for (int i = 0; i < sfem.getSFEEbyIndex(itr).getSFEIs().size(); i++) {
-                sfem.getSFEEbyIndex(itr).getSFEIbyIndex(i).setMinOperationTime(array[i]);
-            }
-
-/*            sfem.getSFEEbyIndex(1).getSFEIbyIndex(0).setMinOperationTime(9);
-            sfem.getSFEEbyIndex(1).getSFEIbyIndex(1).setMinOperationTime(33);
-            sfem.getSFEEbyIndex(1).getSFEIbyIndex(2).setMinOperationTime(8);*/
-        }
-
-    }
+//    public void firstRun(boolean run, int itr) {
+//        if (run)
+//            for (cSFEE_production sfeeController : sfeeControllers) {
+//                sfeeController.launchSetup();
+//            }
+//        else {
+//            int[] array = new int[]{9, 33, 8};
+//            for (int i = 0; i < sfem.getSFEEbyIndex(itr).getSFEIs().size(); i++) {
+//                sfem.getSFEEbyIndex(itr).getSFEIbyIndex(i).setMinOperationTime(array[i]);
+//            }
+//
+///*            sfem.getSFEEbyIndex(1).getSFEIbyIndex(0).setMinOperationTime(9);
+//            sfem.getSFEEbyIndex(1).getSFEIbyIndex(1).setMinOperationTime(33);
+//            sfem.getSFEEbyIndex(1).getSFEIbyIndex(2).setMinOperationTime(8);*/
+//        }
+//
+//    }
 
     public modbus searchMBbySFEE(String sfeeName) {
         try {
@@ -234,19 +231,29 @@ public class cSFEM_production implements Runnable {
         sfeeControllers.get(0).launchSimulation();
     }
 
-    private final List<Long> runtime = new ArrayList<>();
+    public void endSimulation() {
+        sfeeControllers.get(0).stopSimulation();
+
+        for (cSFEE_production sfeeController : sfeeControllers) {
+            sfeeController.closeCommunication();
+        }
+
+    }
+
+
+//    private final List<Long> C_Runtime = new ArrayList<>();
 
     @Override
     public void run() {
         try {
-            Instant start_t = Instant.now();
+//            Instant start_t = Instant.now();
 
             for (cSFEE_production sfeeController : sfeeControllers) {
                 sfeeController.loop();
             }
-            sfemMonitor.loop(runtime);
+//            sfemMonitor.loop(/*C_Runtime*/);
 
-            runtime.add(Duration.between(start_t, Instant.now()).toMillis());
+//            C_Runtime.add(Duration.between(start_t, Instant.now()).toMillis());
         } catch (Exception e) {
             // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();

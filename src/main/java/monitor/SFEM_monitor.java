@@ -15,7 +15,7 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.*;
 
-public class SFEM_monitor  {
+public class SFEM_monitor {
     private SFEM sfem;
     private TreeMap<Integer, Integer> productionTime_cnt = new TreeMap<>();
 
@@ -109,8 +109,7 @@ public class SFEM_monitor  {
     private void initGraphs() {
         if (productionTime_cnt.size() > 0) {
             List<histogram.intPair> list = getGraphLists();
-            assert list != null;
-            graphs = new histogram(sfem.getName(), list, "All production", "Last 20 parts");
+            graphs = new histogram(sfem.getName(), Objects.requireNonNull(list), "All production", "Last 20 parts");
             graphs.createWindow(list);
             isGraphsInited = true;
         }

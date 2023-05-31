@@ -1,6 +1,7 @@
 package utility;
 
 import java.util.Random;
+import java.util.Scanner;
 
 public class utils {
 
@@ -14,6 +15,19 @@ public class utils {
 
     private static final customCalculator customCalc = new customCalculator();
 
+
+    public utils() {
+        random.setSeed(rnd_seed);
+    }
+
+    public static utils getInstance() {
+        return utils.utilsHolder.INSTANCE;
+    }
+
+
+    private static class utilsHolder {
+        private static final utils INSTANCE = new utils();
+    }
 
     public csv_reader getReader() {
         return reader;
@@ -43,16 +57,29 @@ public class utils {
         this.rnd_seed = rnd_seed;
     }
 
-    public utils() {
-        random.setSeed(rnd_seed);
+    public int validateUserOption(int min, int max) {
+        int opt = min;
+        Scanner in = new Scanner(System.in);
+        do {
+            if (opt < min || opt > max)
+                System.out.println("Invalid option. Try again!");
+            System.out.print("> ");
+            opt = Integer.parseInt(in.nextLine());
+        } while (opt < min || opt > max);
+
+        return opt;
     }
 
-    public static utils getInstance() {
-        return utils.utilsHolder.INSTANCE;
+    public boolean validateUserOption() {
+        String input = "y";
+        do {
+            if (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"))
+                System.out.println("Invalid option! Try again");
+            System.out.print("> ");
+            input = new Scanner(System.in).nextLine();
+        } while (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"));
+
+        return input.equalsIgnoreCase("y");
     }
 
-
-    private static class utilsHolder {
-        private static final utils INSTANCE = new utils();
-    }
 }

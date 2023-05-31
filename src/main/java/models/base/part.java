@@ -12,7 +12,8 @@ public class part {
         IN_PRODUCTION,
         WAIT_TRANSPORT,
         IN_TRANSPORT,
-        REMOVED, PRODUCED
+        REMOVED,
+        PRODUCED
     }
 
     private int id;

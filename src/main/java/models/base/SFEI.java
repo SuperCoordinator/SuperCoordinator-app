@@ -53,21 +53,17 @@ public class SFEI {
     private boolean simulation;
     @XmlAttribute
     private boolean supportsFailures;
-
-    private TreeMap<Integer, failure_occurrence> failuresHistory = new TreeMap<>();
-
-    private ArrayList<Pair<Integer, Instant>> breakdownHistory = new ArrayList<>();
-
     @XmlAttribute
     private boolean line_start;
     @XmlAttribute
     private boolean line_end;
-
+    private final TreeMap<Integer, failure_occurrence> failuresHistory = new TreeMap<>();
 
     public SFEI() {
     }
 
-    public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor, Instant dayOfBirth, Instant dayOfLastMaintenance,
+    public SFEI(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
+                Instant dayOfBirth, Instant dayOfLastMaintenance, int minOperationTime,
                 boolean simulation, boolean supportsFailures, boolean line_start, boolean line_end) {
         this.name = name;
         this.sfeiType = sfeiType;
@@ -77,7 +73,7 @@ public class SFEI {
         this.dayOfLastMaintenance = dayOfLastMaintenance;
         this.simulation = simulation;
         this.supportsFailures = supportsFailures;
-
+        this.minOperationTime = minOperationTime;
         this.line_start = line_start;
         this.line_end = line_end;
 
@@ -159,16 +155,8 @@ public class SFEI {
         return failuresHistory;
     }
 
-    public void addNewFailureOccurrence(failure_occurrence failureOcurrence) {
-        failuresHistory.put(failuresHistory.size(), failureOcurrence);
-    }
-
-    public Pair<Integer, Instant> getLastBreakdown() {
-        return breakdownHistory.get(breakdownHistory.size() - 1);
-    }
-
-    public void addBreakdown(Pair<Integer, Instant> event) {
-        breakdownHistory.add(event);
+    public void addNewFailureOccurrence(failure_occurrence failureOccurrence) {
+        failuresHistory.put(failuresHistory.size(), failureOccurrence);
     }
 
     public boolean isSimulation() {
@@ -183,8 +171,15 @@ public class SFEI {
         return line_start;
     }
 
+    public void setLine_start(boolean line_start) {
+        this.line_start = line_start;
+    }
+
     public boolean isLine_end() {
         return line_end;
     }
 
+    public void setLine_end(boolean line_end) {
+        this.line_end = line_end;
+    }
 }

@@ -1,15 +1,22 @@
 package utility;
 
+import de.erichseifert.vectorgraphics2d.VectorHints;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import models.sensor_actuator;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 import com.opencsv.*;
 
+import javax.swing.*;
+
 public class csv_reader {
 
-    public TreeMap<Integer, sensor_actuator> readModbusTags(String path, boolean dbg) {
+    public TreeMap<Integer, sensor_actuator> readModbusTags(String path, String sfee_name, boolean openIOwindow) {
         TreeMap<Integer, sensor_actuator> treeMap = new TreeMap<>();
         try {
 
@@ -34,26 +41,17 @@ public class csv_reader {
                 treeMap.put(treeMap.size(), createObj(row));
 
             }
-            if (dbg) {
-                System.out.println("*** All imported IOs ***");
-                for (Map.Entry<Integer, sensor_actuator> entry : treeMap.entrySet()) {
-                    System.out.println("   " + entry.getKey() + " - " + entry.getValue().getName());
-                }
-                System.out.println("From the IO which are in inverse logic?");
-
-                Scanner in = new Scanner(System.in);
-
-                System.out.println("Enter following the example pattern: 2,3,1,5");
-                String input = in.nextLine();
-
-                //String input = "6,7,8,9,10,12,13";
-//            String input = "12";
-
-                System.out.println(input);
-                if (!input.isEmpty()) {
-                    for (String str : input.split(",")) {
-                        int key = Integer.parseInt(str);
-                        treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
+            if (openIOwindow) {
+                openWindow(treeMap, sfee_name);
+                System.out.println("There are inputs with inverse logic for " + sfee_name + " (y/n)?");
+                if (utils.getInstance().validateUserOption()) {
+                    System.out.println("Enter following the example pattern: 2,3,1,5");
+                    String input = new Scanner(System.in).nextLine();
+                    if (!input.isEmpty()) {
+                        for (String str : input.split(",")) {
+                            int key = Integer.parseInt(str);
+                            treeMap.replace(key, treeMap.get(key), treeMap.get(key).changeInvLogic(true));
+                        }
                     }
                 }
             }
@@ -110,6 +108,27 @@ public class csv_reader {
             objAddressType = sensor_actuator.AddressType.DISCRETE_INPUT;
 
         return new sensor_actuator(objName, objType, false, objDataType, objAddressType, 0, bit_off);
+    }
+
+    private void openWindow(TreeMap<Integer, sensor_actuator> treeMap, String sfeeName) {
+
+        JFrame mainFrame = new JFrame(sfeeName + " I/O's");
+        JPanel controlPanel = new JPanel();
+        mainFrame.setSize(500, 500);
+        mainFrame.add(controlPanel);
+
+        String[] columnNames = {"Index", "Name", "Bit", "Data Type"};
+        Object[][] data = new Object[treeMap.size()][4];
+        treeMap.forEach((key, value) -> {
+            data[key] = new Object[]{String.valueOf(key), value.getName(), String.valueOf(value.getBit_offset()), value.getDataType().toString()};
+        });
+
+        JTable table = new JTable(data, columnNames);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setSize(400, 500);
+        table.setFillsViewportHeight(true);
+        controlPanel.add(scrollPane);
+        mainFrame.setVisible(true);
     }
 
 }

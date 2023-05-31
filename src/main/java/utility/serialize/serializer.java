@@ -16,10 +16,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class serializer {
 
@@ -37,26 +39,25 @@ public class serializer {
         private static final serializer INSTANCE = new serializer();
     }
 
-    public enum scenes {
-        CMC_connection,
-        CMC2_con_individual,
-        sorting_station,
-        WH_SS_3CMC,
-        MC_Staudinger,
-        WH_SS_WH,
-        WH_SS_3CMC_WH,
-        WH_SS_3CMC_MCS_WH
-    }
-
-    public final scenes scene = scenes.WH_SS_3CMC_WH;
-    private final String filePath = "blocks/" + scene + "/saves/" + scene;
-
+    //    public enum scenes {
+//        CMC_connection,
+//        CMC2_con_individual,
+//        sorting_station,
+//        WH_SS_3CMC,
+//        MC_Staudinger,
+//        WH_SS_WH,
+//        WH_SS_3CMC_WH,
+//        WH_SS_3CMC_MCS_WH
+//    }
+//
+//    public final scenes scene = scenes.WH_SS_3CMC_WH;
+//    private final String filePath = "blocks/" + scene + "/saves/" + scene;
+    public String scene;
     private serializable serializable = new serializable();
 
     public void setC_Warehouse(cSFEM_warehouse cSFEMWarehouse) {
         serializable.setC_Warehouse(cSFEMWarehouse);
     }
-
 
     public cSFEM_warehouse getC_Warehouse() {
         return serializable.getC_Warehouse();
@@ -70,39 +71,46 @@ public class serializer {
         return serializable.getC_Transport();
     }
 
-    public void saveXML() {
+    public void saveXML(String filePath) {
 
         try {
             dbConnection.getInstance().getConnection();
-            createDB();
+            String fileName = new File(filePath).getName();
+            String scene = fileName.split(".xml")[0];
+            this.scene = scene;
+            createDB(scene);
 
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(serializable, new File(filePath + ".xml"));
+            marshaller.marshal(serializable, new File(filePath));
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    public void loadXML() {
+    public void loadXML(String filePath) {
         try {
             JAXBContext context = JAXBContext.newInstance(utility.serialize.serializable.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            serializable = (utility.serialize.serializable) unmarshaller.unmarshal(new FileReader(filePath + ".xml"));
+            serializable = (utility.serialize.serializable) unmarshaller.unmarshal(new FileReader(filePath));
             dbConnection.getInstance().getConnection();
-            createDB();
+
+            String fileName = new File(filePath).getName();
+            String scene = fileName.split(".xml")[0];
+            this.scene = scene;
+            createDB(scene);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void createDB() {
+    private void createDB(String scene) {
         try {
-            String query = "CREATE DATABASE IF NOT EXISTS " + scene.name() + ";";
+            String query = "CREATE DATABASE IF NOT EXISTS " + scene + ";";
             dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
-            dbConnection.getInstance().setDatabase(scene.name());
+            dbConnection.getInstance().setDatabase(scene);
             // create tables
             ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
             //Creating a reader object
@@ -115,15 +123,33 @@ public class serializer {
         }
     }
 
-    public void updateDB() {
-        dbConnection.getInstance().getSf_configuration().insert(scene.name());
-        instantiateSFEx();
+    public void emptyDB(String scene) {
+        try {
+            // EMPTY tables
+            ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
+            //Creating a reader object
+            Reader reader = new BufferedReader(new FileReader("src/main/resources/database/DROP.sql"));
+            scriptRunner.setLogWriter(null); // not print in terminal
+            //Running the script
+            scriptRunner.runScript(reader);
+
+            createDB(scene);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    private void instantiateSFEx() {
+    public void updateDB(String scene) {
+        dbConnection.getInstance().getSf_configuration().insert(scene);
+        instantiateSFEx(scene);
+    }
+
+    private void instantiateSFEx(String scene) {
 
         // Instantiate IN-Warehouse
-        dbConnection.getInstance().getSfems().insert(getC_Warehouse().getSfem().getName(), scene.toString());
+        dbConnection.getInstance().getSfems().insert(getC_Warehouse().getSfem().getName(), scene);
 
         dbConnection.getInstance().getSfees().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getName(),
                 getC_Warehouse().getSfem().getName());
@@ -149,7 +175,7 @@ public class serializer {
 
         // Instantiate Production Elements (and their sensors)
         getC_Production().forEach(cSFEMProduction -> {
-            dbConnection.getInstance().getSfems().insert(cSFEMProduction.getSfem().getName(), scene.toString());
+            dbConnection.getInstance().getSfems().insert(cSFEMProduction.getSfem().getName(), scene);
 
             cSFEMProduction.getSfeeControllers().forEach(cSFEEProduction -> {
                 dbConnection.getInstance().getSfees().insert(cSFEEProduction.getSFEE().getName(), cSFEMProduction.getSfem().getName());
@@ -268,4 +294,40 @@ public class serializer {
         return returnPair;
 
     }
+
+    public void setFailuresHistoryPath(String path) {
+        serializable.setFailuresHistoryPath(path);
+    }
+
+    public void setInboundOrdersPath(String path) {
+        serializable.setInboundOrdersPath(path);
+    }
+
+    public String getInboundOrdersPath() {
+        return serializable.getInboundOrdersPath();
+    }
+
+    public void saveFailuresHistory() {
+        try {
+            FailureOccurrenceArray failureOccurrenceArray = new FailureOccurrenceArray();
+
+            for (cSFEM_production cSFEMProduction : serializer.getInstance().getC_Production()) {
+                for (cSFEE_production cSFEEProduction : cSFEMProduction.getSfeeControllers()) {
+                    for (SFEI sfei : cSFEEProduction.getSFEE().getSFEIs().values()) {
+                        failureOccurrenceArray.getFailuresOccurrences().addAll(sfei.getFailuresHistory().values());
+                    }
+                }
+            }
+
+            File f = new File(serializable.getFailuresHistoryPath());
+
+            JAXBContext context = JAXBContext.newInstance(FailureOccurrenceArray.class);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(failureOccurrenceArray, new File(serializable.getFailuresHistoryPath() + "/failuresOccurrences" + Objects.requireNonNull(f.list()).length + ".xml"));
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

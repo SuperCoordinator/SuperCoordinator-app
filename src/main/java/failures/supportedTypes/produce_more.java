@@ -15,6 +15,7 @@ import java.util.List;
 public class produce_more extends failures_conditions {
 
     private enum SM {
+        UNDEFINED,
         WORKING,
         TURN_ON,
         WAITING,
@@ -26,26 +27,39 @@ public class produce_more extends failures_conditions {
     private SM old_state;
 
     private final SFEI_conveyor sfeiConveyor;
+    private final int sfei_idx;
     private boolean old_sEmitter = false;
     private partDescription.material material;
     private int faulty_partID = Integer.MAX_VALUE / 2;
 
-    public produce_more(String[] formulas, SFEI_conveyor sfeiConveyor, partDescription.material mat) {
+    public produce_more(String[] formulas, SFEI_conveyor sfeiConveyor, int sfei_idx, partDescription.material mat) {
         super(formulas, type.PRODUCE_MORE);
         this.sfeiConveyor = sfeiConveyor;
+        this.sfei_idx = sfei_idx;
         this.material = mat;
 
         this.state = SM.WORKING;
         this.old_state = state;
 
         if (getnCondition() == null && getaCondition() == null && getmCondition() == null) {
+            this.state = SM.UNDEFINED;
             return;
         }
         System.out.println("Produce More on -> " + sfeiConveyor.getName());
     }
 
     public boolean isActive() {
+        if (state.equals(SM.UNDEFINED))
+            return false;
         return state != SM.WORKING;
+    }
+
+    public int getSfei_idx() {
+        return sfei_idx;
+    }
+
+    public boolean isUndefined() {
+        return state.equals(SM.UNDEFINED);
     }
 
     private failure_occurrence newOccurrence = new failure_occurrence();
@@ -128,7 +142,7 @@ public class produce_more extends failures_conditions {
                         actVar = failure_occurrence.activationVariable.M;
                     }
                     if (actVar != null)
-                        newOccurrence = new failure_occurrence(type.PRODUCE_MORE, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
+                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.PRODUCE_MORE, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
                     else
                         throw new RuntimeException("(Produce More) Activation Variable null but evalConditions was TRUE");
 
