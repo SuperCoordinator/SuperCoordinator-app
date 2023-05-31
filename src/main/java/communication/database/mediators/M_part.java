@@ -51,8 +51,7 @@ public class M_part extends queries_buffer implements IM_part {
 //            st.addBatch(query);
 //
 //            return st.executeBatch()[1];
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
