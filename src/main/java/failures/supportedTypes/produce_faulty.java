@@ -2,7 +2,7 @@ package failures.supportedTypes;
 
 import failures.evaluations.failure_occurrence;
 import failures.evaluations.failures_conditions;
-import models.SFEx.SFEI_machine;
+import models.sfe_x.SFEI_machine;
 import utility.utils;
 
 import java.time.Duration;

@@ -1,9 +1,8 @@
 package monitor.transport;
 
 import communication.database.dbConnection;
-import failures.SFEE_transport_failures;
-import models.SFEx.SFEI_transport;
-import models.SFEx.SFEM_transport;
+import models.sfe_x.SFEI_transport;
+import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;

@@ -1,16 +1,9 @@
 package controllers.warehouse;
 
-import models.SFEx.SFEI_warehouse;
-import models.SFEx.SFEM_warehouse;
+import models.sfe_x.SFEI_warehouse;
+import models.sfe_x.SFEM_warehouse;
 import models.base.SFEE;
-import models.base.SFEI;
-import models.base.part;
 import monitor.warehouse.SFEE_warehouse_monitor;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
 
 public class cSFEE_warehouse {
 

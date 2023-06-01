@@ -2,6 +2,7 @@
 <serializable>
     <failureOccurrencesPath>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\WH_SS_3CMC_WH\saves\failuresOccurrences</failureOccurrencesPath>
     <inboundOrdersPath>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\WH_SS_3CMC_WH\inboundOrders</inboundOrdersPath>
+    <databasePath>C:\Users\danie\Documents\GitHub\SC-sketch\database</databasePath>
     <c_Production>
         <sfem sfemRole="PRODUCTION" name="SFEM_ProductionLine">
             <SFEEs>
@@ -154,7 +155,7 @@
                         <SFEIs>
                             <entry>
 <key>0</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="EntryConveyor_2" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-26T09:26:44.453492700Z" last_maintenance="2023-05-26T09:26:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="EntryConveyor_2" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-06-01T09:05:44.453492700Z" last_maintenance="2023-06-01T09:05:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
     <inSensor name="s_E2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="28"/>
     <outSensor name="s_entryMC2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="33"/>
     <aRemover name="entry_R2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="30"/>
@@ -168,7 +169,7 @@
                             </entry>
                             <entry>
 <key>1</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MachineCenter_2" sfeiType="MACHINE" minOperationTime="33" manufacturing_date="2023-05-26T09:26:44.453492700Z" last_maintenance="2023-05-26T09:26:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MachineCenter_2" sfeiType="MACHINE" minOperationTime="33" manufacturing_date="2023-06-01T09:05:44.453492700Z" last_maintenance="2023-06-01T09:05:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
     <inSensor name="s_entryMC2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="33"/>
     <outSensor name="s_exitMC2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="34"/>
     <partDescription material="BLUE" form="LID"/>
@@ -179,7 +180,7 @@
                             </entry>
                             <entry>
 <key>2</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_2" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-26T09:26:44.453492700Z" last_maintenance="2023-05-26T09:26:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_2" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-06-01T09:05:44.453492700Z" last_maintenance="2023-06-01T09:05:44.453492700Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
     <inSensor name="s_exitMC2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="34"/>
     <outSensor name="s_R2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="35"/>
     <aRemover name="exit_R2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="33"/>
@@ -219,28 +220,28 @@
             </sfeeMonitor>
             <sfeeFailures>
                 <stochasticType>GAUSSIAN</stochasticType>
-                <stochasticFormulas>60 </stochasticFormulas>
+                <stochasticFormulas>65  </stochasticFormulas>
                 <stochasticFormulas>4 </stochasticFormulas>
                 <failuresFormulas>
                     <item>no</item>
+                    <item>det [ 50 ]</item>
+                    <item>no</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>gauss [ 1 ; 0 ]</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>no</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
+                    <item>prob [ 35 ] >= 50</item>
+                    <item>gauss [ 23 ; 5 ]</item>
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>no</item>
-                    <item>no</item>
-                    <item>no</item>
-                </failuresFormulas>
-                <failuresFormulas>
-                    <item>prob [ 15 ] >= 50</item>
-                    <item>gauss [ 20 ; 5 ]</item>
-                    <item>no</item>
-                </failuresFormulas>
-                <failuresFormulas>
-                    <item>det [ 20 ]</item>
+                    <item>det [ 19 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
@@ -263,8 +264,8 @@
             </sfeeMonitor>
             <sfeeFailures>
                 <stochasticType>GAUSSIAN</stochasticType>
-                <stochasticFormulas>60 </stochasticFormulas>
-                <stochasticFormulas>8 </stochasticFormulas>
+                <stochasticFormulas>65 </stochasticFormulas>
+                <stochasticFormulas>6 </stochasticFormulas>
                 <failuresFormulas>
                     <item>gauss [ 20 ; 5 ]</item>
                     <item>no</item>
@@ -307,28 +308,28 @@
             </sfeeMonitor>
             <sfeeFailures>
                 <stochasticType>GAUSSIAN</stochasticType>
-                <stochasticFormulas>70 </stochasticFormulas>
-                <stochasticFormulas>2 + ( 0.01 * n ) </stochasticFormulas>
-                <failuresFormulas>
-                    <item>no</item>
-                    <item>no</item>
-                    <item>gauss [ 20 ; 3 ]</item>
-                </failuresFormulas>
-                <failuresFormulas>
-                    <item>gauss [ 3 ; 2 ]</item>
-                </failuresFormulas>
+                <stochasticFormulas>70 + ( 0.1 * n ) </stochasticFormulas>
+                <stochasticFormulas>2 </stochasticFormulas>
                 <failuresFormulas>
                     <item>no</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>det [ 18 ]</item>
+                    <item>no</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>no</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>gauss [ 25 ; 5 ]</item>
+                    <item>det [ 23 ]</item>
+                    <item>no</item>
+                    <item>no</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>gauss [ 45 ; 5 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
@@ -362,8 +363,8 @@
         <sfeeTransportController prevSFEEName="sfee_warehouse" nextSFEEName="SFEE_SortingStation" prevSFEIName="sfei_entryWarehouse" nextSFEIName="parts_entry">
             <sfeeMonitor/>
             <sfeeFailures stochasticType="GAUSSIAN">
-                <stochasticFormulas>6 </stochasticFormulas>
-                <stochasticFormulas>2 </stochasticFormulas>
+                <stochasticFormulas>5 </stochasticFormulas>
+                <stochasticFormulas>1 </stochasticFormulas>
             </sfeeFailures>
         </sfeeTransportController>
     </c_Transport>
@@ -466,8 +467,8 @@
         <sfeeTransportController prevSFEEName="SFEE_SortingStation" nextSFEEName="SFEE_metalPL" prevSFEIName="metal_entry" nextSFEIName="EntryConveyor_0">
             <sfeeMonitor/>
             <sfeeFailures stochasticType="GAUSSIAN">
-                <stochasticFormulas>5 </stochasticFormulas>
-                <stochasticFormulas>3 </stochasticFormulas>
+                <stochasticFormulas>2 </stochasticFormulas>
+                <stochasticFormulas>1 </stochasticFormulas>
             </sfeeFailures>
         </sfeeTransportController>
     </c_Transport>
@@ -496,8 +497,8 @@
         <sfeeTransportController prevSFEEName="SFEE_SortingStation" nextSFEEName="SFEE_greenPL" prevSFEIName="green_entry" nextSFEIName="EntryConveyor_1">
             <sfeeMonitor/>
             <sfeeFailures stochasticType="GAUSSIAN">
-                <stochasticFormulas>5 </stochasticFormulas>
-                <stochasticFormulas>3 </stochasticFormulas>
+                <stochasticFormulas>2 </stochasticFormulas>
+                <stochasticFormulas>1 </stochasticFormulas>
             </sfeeFailures>
         </sfeeTransportController>
     </c_Transport>
@@ -526,8 +527,8 @@
         <sfeeTransportController prevSFEEName="SFEE_SortingStation" nextSFEEName="SFEE_bluePL" prevSFEIName="blue_entry" nextSFEIName="EntryConveyor_2">
             <sfeeMonitor/>
             <sfeeFailures stochasticType="GAUSSIAN">
-                <stochasticFormulas>5 </stochasticFormulas>
-                <stochasticFormulas>3 </stochasticFormulas>
+                <stochasticFormulas>2 </stochasticFormulas>
+                <stochasticFormulas>1 </stochasticFormulas>
             </sfeeFailures>
         </sfeeTransportController>
     </c_Transport>

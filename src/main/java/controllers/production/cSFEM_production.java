@@ -2,14 +2,11 @@ package controllers.production;
 
 import communication.modbus;
 import models.base.SFEE;
-import models.SFEx.SFEM_production;
+import models.sfe_x.SFEM_production;
 import monitor.production.SFEM_production_monitor;
 
 import javax.xml.bind.annotation.*;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @XmlRootElement

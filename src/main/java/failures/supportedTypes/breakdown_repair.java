@@ -4,7 +4,7 @@ import failures.evaluations.condition_variable;
 import failures.evaluations.failure_occurrence;
 import failures.evaluations.failures_conditions;
 import failures.evaluations.validation;
-import models.SFEx.SFEI_conveyor;
+import models.sfe_x.SFEI_conveyor;
 
 import java.time.Duration;
 import java.time.Instant;

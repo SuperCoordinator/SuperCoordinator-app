@@ -1,7 +1,7 @@
 package failures;
 
 import failures.formulas.gaussFormula;
-import models.SFEx.SFEM_transport;
+import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;
@@ -122,9 +122,7 @@ public class SFEE_transport_failures {
 
                     }
                 }
-                case END -> {
-                    stochasticTimeTask = null;
-                }
+                case END -> stochasticTimeTask = null;
             }
             old_state = state;
 

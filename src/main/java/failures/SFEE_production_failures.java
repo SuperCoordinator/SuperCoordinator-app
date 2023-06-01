@@ -4,8 +4,8 @@ import failures.formulas.gaussFormula;
 import failures.supportedTypes.*;
 import models.base.SFEE;
 import models.base.SFEI;
-import models.SFEx.SFEI_conveyor;
-import models.SFEx.SFEI_machine;
+import models.sfe_x.SFEI_conveyor;
+import models.sfe_x.SFEI_machine;
 import utility.utils;
 
 import javax.xml.bind.annotation.*;

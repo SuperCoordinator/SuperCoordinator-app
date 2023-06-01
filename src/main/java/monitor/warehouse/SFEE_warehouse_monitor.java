@@ -2,7 +2,7 @@ package monitor.warehouse;
 
 
 import communication.database.dbConnection;
-import models.SFEx.SFEM_warehouse;
+import models.sfe_x.SFEM_warehouse;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;
@@ -43,7 +43,7 @@ public class SFEE_warehouse_monitor {
 
     private boolean firstRun = true;
 
-    public boolean loop() {
+    public void loop() {
 
         try {
             if (firstRun || Duration.between(old_t, Instant.now()).toMinutes() >= check_period) {
@@ -51,13 +51,11 @@ public class SFEE_warehouse_monitor {
                 receiveOrders();
                 dispatchOrders();
                 old_t = Instant.now();
-                return true;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
     }
 
     private void dispatchOrders() {

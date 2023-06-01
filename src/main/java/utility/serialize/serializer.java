@@ -5,7 +5,7 @@ import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
-import models.SFEx.SFEM_transport;
+import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
@@ -16,7 +16,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -114,7 +113,7 @@ public class serializer {
             // create tables
             ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
             //Creating a reader object
-            Reader reader = new BufferedReader(new FileReader("src/main/resources/database/DDL.sql"));
+            Reader reader = new BufferedReader(new FileReader(serializable.getDatabasePath() + "/DDL.sql"));
             scriptRunner.setLogWriter(null); // not print in terminal
             //Running the script
             scriptRunner.runScript(reader);
@@ -128,7 +127,7 @@ public class serializer {
             // EMPTY tables
             ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
             //Creating a reader object
-            Reader reader = new BufferedReader(new FileReader("src/main/resources/database/DROP.sql"));
+            Reader reader = new BufferedReader(new FileReader(serializable.getDatabasePath() + "/DROP.sql"));
             scriptRunner.setLogWriter(null); // not print in terminal
             //Running the script
             scriptRunner.runScript(reader);
@@ -303,8 +302,16 @@ public class serializer {
         serializable.setInboundOrdersPath(path);
     }
 
+    public void setDatabasePath(String path) {
+        serializable.setDatabasePath(path);
+    }
+
     public String getInboundOrdersPath() {
         return serializable.getInboundOrdersPath();
+    }
+
+    public String getDatabasePath() {
+        return serializable.getDatabasePath();
     }
 
     public void saveFailuresHistory() {

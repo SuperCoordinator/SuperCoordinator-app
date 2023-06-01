@@ -124,15 +124,9 @@ public class customCalculator {
                 }
             } else if (isVariable(ch)) {
                 switch (ch) {
-                    case 'n' -> {
-                        valueStack.push(n);
-                    }
-                    case 'a' -> {
-                        valueStack.push(a);
-                    }
-                    case 'm' -> {
-                        valueStack.push(m);
-                    }
+                    case 'n' -> valueStack.push(n);
+                    case 'a' -> valueStack.push(a);
+                    case 'm' -> valueStack.push(m);
                 }
             } else {
                 error = true;

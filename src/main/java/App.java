@@ -3,9 +3,9 @@ import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
-import models.SFEx.SFEM_production;
-import models.SFEx.SFEM_transport;
-import models.SFEx.SFEM_warehouse;
+import models.sfe_x.SFEM_production;
+import models.sfe_x.SFEM_transport;
+import models.sfe_x.SFEM_warehouse;
 import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
@@ -94,6 +94,8 @@ public class App {
         serializer.getInstance().saveFailuresHistory();
 
         exit(0);
+
+
     }
 
     private static int liveStats() {
@@ -208,6 +210,9 @@ public class App {
 
         xmlPath = xmlPath + "/" + confName + ".xml";
 
+        System.out.println("Folder path to database files:");
+        System.out.print("> ");
+        serializer.getInstance().setDatabasePath(new Scanner(System.in).nextLine());
 
         System.out.println("Folder path to inbound orders");
         System.out.print("> ");

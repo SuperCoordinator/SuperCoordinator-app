@@ -3,8 +3,8 @@ package controllers.transport;
 import communication.modbus;
 import failures.SFEE_transport_failures;
 import failures.stochasticTime;
-import models.SFEx.SFEI_transport;
-import models.SFEx.SFEM_transport;
+import models.sfe_x.SFEI_transport;
+import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
@@ -42,7 +42,7 @@ public class cSFEE_transport {
     @XmlAttribute
     private String nextSFEI_name;
 
-    private SFEE_transport viewer = new SFEE_transport();
+    private final SFEE_transport viewer = new SFEE_transport();
 
     public cSFEE_transport() {
     }
@@ -245,9 +245,7 @@ public class cSFEE_transport {
                     outMB.writeCoils(coilsState_outMB);
                     outMB.writeRegisters(holdRegsValues_outMB);
                 }
-                case SFEI2WH, RealSFEI2WH -> {
-                    inMB.writeCoils(coilsState_inMB);
-                }
+                case SFEI2WH, RealSFEI2WH -> inMB.writeCoils(coilsState_inMB);
                 default -> {
                     inMB.writeCoils(coilsState_inMB);
                     outMB.writeCoils(coilsState_outMB);

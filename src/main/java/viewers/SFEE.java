@@ -1,8 +1,8 @@
 package viewers;
 
-import models.SFEx.SFEI_conveyor;
-import models.SFEx.SFEI_machine;
-import models.SFEx.SFEI_pusher;
+import models.sfe_x.SFEI_conveyor;
+import models.sfe_x.SFEI_machine;
+import models.sfe_x.SFEI_pusher;
 import models.base.SFEI;
 import models.partDescription;
 import models.sensor_actuator;

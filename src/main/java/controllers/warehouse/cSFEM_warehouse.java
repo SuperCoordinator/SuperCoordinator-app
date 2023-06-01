@@ -1,6 +1,6 @@
 package controllers.warehouse;
 
-import models.SFEx.SFEM_warehouse;
+import models.sfe_x.SFEM_warehouse;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.base.part;

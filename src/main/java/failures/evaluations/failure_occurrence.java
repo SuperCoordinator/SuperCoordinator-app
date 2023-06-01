@@ -46,6 +46,10 @@ public class failure_occurrence {
         this.start_t = start_t;
     }
 
+    public String getSfeiName() {
+        return sfeiName;
+    }
+
     public void setEnd_t(Instant end_t) {
         this.end_t = end_t;
     }

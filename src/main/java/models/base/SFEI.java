@@ -1,18 +1,16 @@
 package models.base;
 
 import failures.evaluations.failure_occurrence;
-import models.SFEx.SFEI_conveyor;
-import models.SFEx.SFEI_machine;
-import models.SFEx.SFEI_pusher;
-import models.SFEx.SFEI_transport;
+import models.sfe_x.SFEI_conveyor;
+import models.sfe_x.SFEI_machine;
+import models.sfe_x.SFEI_pusher;
+import models.sfe_x.SFEI_transport;
 import models.sensor_actuator;
-import org.apache.commons.math3.util.Pair;
 import utility.InstantAdapter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
 import java.util.TreeSet;

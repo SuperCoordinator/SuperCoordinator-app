@@ -20,6 +20,8 @@ public class serializable {
     private String failuresHistoryPath;
     @XmlElement(name = "inboundOrdersPath")
     private String inboundOrdersPath;
+    @XmlElement(name = "databasePath")
+    private String databasePath;
     public serializable() {
     }
 
@@ -69,5 +71,13 @@ public class serializable {
 
     public void setInboundOrdersPath(String inboundOrdersPath) {
         this.inboundOrdersPath = inboundOrdersPath;
+    }
+
+    public String getDatabasePath() {
+        return databasePath;
+    }
+
+    public void setDatabasePath(String databasePath) {
+        this.databasePath = databasePath;
     }
 }

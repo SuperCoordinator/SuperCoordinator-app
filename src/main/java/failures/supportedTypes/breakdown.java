@@ -2,7 +2,7 @@ package failures.supportedTypes;
 
 import failures.evaluations.failure_occurrence;
 import failures.evaluations.failures_conditions;
-import models.SFEx.SFEI_conveyor;
+import models.sfe_x.SFEI_conveyor;
 
 import java.time.Duration;
 import java.time.Instant;

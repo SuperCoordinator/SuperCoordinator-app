@@ -2,7 +2,7 @@ package failures.supportedTypes;
 
 import failures.evaluations.failure_occurrence;
 import failures.evaluations.failures_conditions;
-import models.SFEx.SFEI_conveyor;
+import models.sfe_x.SFEI_conveyor;
 import models.base.part;
 import models.partDescription;
 import utility.utils;
@@ -92,9 +92,7 @@ public class produce_more extends failures_conditions {
                     state = SM.TURN_ON;
                 }
             }
-            case TURN_ON -> {
-                state = SM.WAITING;
-            }
+            case TURN_ON -> state = SM.WAITING;
             case WAITING -> {
                 boolean sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().getBit_offset()) == 1;
                 if (utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {

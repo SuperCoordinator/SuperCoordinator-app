@@ -1,13 +1,7 @@
 package utility;
-
-import de.erichseifert.vectorgraphics2d.VectorHints;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import models.sensor_actuator;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 import com.opencsv.*;

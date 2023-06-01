@@ -4,18 +4,13 @@ import communication.modbus;
 //import failures.oldVersion.SFEE_failures;
 import failures.SFEE_production_failures;
 import failures.stochasticTime;
-import models.SFEx.SFEI_pusher;
 import models.base.SFEE;
 import models.base.SFEI;
-import models.SFEx.SFEI_conveyor;
-import models.SFEx.SFEI_machine;
-import models.partDescription;
 import models.sensor_actuator;
 import monitor.production.SFEE_production_monitor;
 import utility.utils;
 
 import javax.xml.bind.annotation.*;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -37,7 +32,7 @@ public class cSFEE_production {
     @XmlElement
     private SFEE_production_failures sfeeFailures;
 
-    private viewers.SFEE viewer = new viewers.SFEE();
+    private final viewers.SFEE viewer = new viewers.SFEE();
 
     public cSFEE_production() {
     }

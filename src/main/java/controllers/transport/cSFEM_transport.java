@@ -1,10 +1,9 @@
 package controllers.transport;
 
 import communication.modbus;
-import models.SFEx.SFEM_transport;
+import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
-import models.base.SFEM;
 import models.base.part;
 import monitor.transport.SFEM_transport_monitor;
 import org.apache.commons.math3.util.Pair;
@@ -22,7 +21,7 @@ public class cSFEM_transport implements Runnable {
     @XmlElement
     private cSFEE_transport sfeeTransportController;
 
-    private viewers.SFEM_transport viewer = new viewers.SFEM_transport();
+    private final viewers.SFEM_transport viewer = new viewers.SFEM_transport();
 
     public cSFEM_transport() {
     }
