@@ -4,6 +4,7 @@ import failures.formulas.gaussFormula;
 import failures.supportedTypes.*;
 import models.base.SFEE;
 import models.base.SFEI;
+import models.base.SFE_role;
 import models.sfe_x.SFEI_conveyor;
 import models.sfe_x.SFEI_machine;
 import utility.utils;
@@ -291,7 +292,7 @@ public class SFEE_production_failures {
 
     private double calculateSFEEMinOperationTime() {
         double total_t = 0;
-        if (sfee.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION))
+        if (sfee.getSFEE_role().equals(SFE_role.PRODUCTION))
             for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
                 total_t = total_t + entry.getValue().getMinOperationTime();
             }

@@ -2,6 +2,7 @@ package models.sfe_x;
 
 import models.base.SFEE;
 import models.base.SFEM;
+import models.base.SFE_role;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,7 +34,7 @@ public class SFEM_transport extends SFEM {
     }
 
     public SFEM_transport(String name, configuration transport_configuration) {
-        super(name, SFEM_role.TRANSPORT);
+        super(name, SFE_role.TRANSPORT);
         this.transport_configuration = transport_configuration;
     }
 

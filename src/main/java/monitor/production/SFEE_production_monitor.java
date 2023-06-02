@@ -3,6 +3,7 @@ package monitor.production;
 import communication.database.dbConnection;
 import models.base.SFEE;
 import models.base.SFEI;
+import models.base.SFE_role;
 import models.sfe_x.SFEI_conveyor;
 import models.sfe_x.SFEI_machine;
 import models.base.part;
@@ -77,7 +78,7 @@ public class SFEE_production_monitor {
             // default -> LID
             default_partForm = partDescription.form.LID;
 
-            if (sfee.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION)) {
+            if (sfee.getSFEE_role().equals(SFE_role.PRODUCTION)) {
                 for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet())
                     if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE)) {
                         SFEI_machine temp = (SFEI_machine) sfeiEntry.getValue();

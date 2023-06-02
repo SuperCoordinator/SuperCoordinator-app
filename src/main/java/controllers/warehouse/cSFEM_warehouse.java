@@ -1,5 +1,6 @@
 package controllers.warehouse;
 
+import models.base.SFE_role;
 import models.sfe_x.SFEM_warehouse;
 import models.base.SFEE;
 import models.base.SFEI;
@@ -35,7 +36,7 @@ public class cSFEM_warehouse implements Runnable {
     public void init() {
         SFEE sfeeWarehouse = new SFEE("sfee_warehouse",
                 SFEE.SFEE_environment.SIMULATION,
-                SFEE.SFEE_role.WAREHOUSE,
+                SFE_role.WAREHOUSE,
                 SFEE.communicationOption.MODBUS);
         sfem.setSfeeWarehouse(sfeeWarehouse);
 

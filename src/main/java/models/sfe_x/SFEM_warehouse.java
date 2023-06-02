@@ -2,6 +2,7 @@ package models.sfe_x;
 
 import models.base.SFEE;
 import models.base.SFEM;
+import models.base.SFE_role;
 
 import javax.xml.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class SFEM_warehouse extends SFEM {
         super();
     }
     public SFEM_warehouse(warehouseOrganization warehouseOrganization) {
-        super("sfem_warehouse", SFEM_role.WAREHOUSE);
+        super("sfem_warehouse", SFE_role.WAREHOUSE);
         this.warehouseOrganization = warehouseOrganization;
     }
 

@@ -3,6 +3,7 @@ package controllers.transport;
 import communication.modbus;
 import failures.SFEE_transport_failures;
 import failures.stochasticTime;
+import models.base.SFE_role;
 import models.sfe_x.SFEI_transport;
 import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
@@ -261,7 +262,7 @@ public class cSFEE_transport {
 
     private boolean nextSFEE_availability() {
         boolean free = true;
-        if (nextSFEE.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION)) {
+        if (nextSFEE.getSFEE_role().equals(SFE_role.PRODUCTION)) {
             for (SFEI sfei : nextSFEE.getSFEIs().values()) {
                 if (sfei.getPartsATM().size() > 0) {
                     free = false;

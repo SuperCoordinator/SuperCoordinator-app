@@ -1,6 +1,7 @@
 package controllers.transport;
 
 import communication.modbus;
+import models.base.SFE_role;
 import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
@@ -42,7 +43,7 @@ public class cSFEM_transport implements Runnable {
         try {
             SFEE sfeeTransp = new SFEE(SFEE_transport_name,
                     SFEE.SFEE_environment.SIMULATION,
-                    SFEE.SFEE_role.TRANSPORT,
+                    SFE_role.TRANSPORT,
                     SFEE.communicationOption.MODBUS);
             sfem.setSfeeTransport(sfeeTransp);
             sfemTransportMonitor = new SFEM_transport_monitor(sfem);

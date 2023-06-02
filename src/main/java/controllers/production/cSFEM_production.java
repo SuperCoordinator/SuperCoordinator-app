@@ -2,6 +2,7 @@ package controllers.production;
 
 import communication.modbus;
 import models.base.SFEE;
+import models.base.SFE_role;
 import models.sfe_x.SFEM_production;
 import monitor.production.SFEM_production_monitor;
 
@@ -47,7 +48,7 @@ public class cSFEM_production implements Runnable {
                 SFEE sfee = new SFEE(
                         inputs[0],
                         Integer.parseInt(inputs[2]) == 1 ? SFEE.SFEE_environment.SIMULATION : SFEE.SFEE_environment.REAL,
-                        SFEE.SFEE_role.PRODUCTION,
+                        SFE_role.PRODUCTION,
                         Integer.parseInt(inputs[1]) == 1 ? SFEE.communicationOption.MODBUS : SFEE.communicationOption.OPC_UA);
 
                 sfem.addNewSFEE(sfee);
@@ -231,9 +232,9 @@ public class cSFEM_production implements Runnable {
     public void endSimulation() {
         sfeeControllers.get(0).stopSimulation();
 
-        for (cSFEE_production sfeeController : sfeeControllers) {
-            sfeeController.closeCommunication();
-        }
+//        for (cSFEE_production sfeeController : sfeeControllers) {
+//            sfeeController.closeCommunication();
+//        }
 
     }
 

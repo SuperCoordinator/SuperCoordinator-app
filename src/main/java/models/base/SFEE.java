@@ -17,15 +17,8 @@ public class SFEE {
     @XmlAttribute
     private SFEE_environment SFEE_environment;
 
-    public enum SFEE_role {
-        PRODUCTION,
-        SORTING_STATION,
-        TRANSPORT,
-        WAREHOUSE
-    }
-
     @XmlAttribute
-    private SFEE_role sfeeRole;
+    private SFE_role sfeeRole;
 
     public enum communicationOption {
         MODBUS, OPC_UA, MIXED
@@ -50,7 +43,7 @@ public class SFEE {
     public SFEE() {
     }
 
-    public SFEE(String name, SFEE_environment sfee_environment, SFEE_role sfeeFunction, communicationOption com) {
+    public SFEE(String name, SFEE_environment sfee_environment, SFE_role sfeeFunction, communicationOption com) {
         this.name = name;
         this.SFEE_environment = sfee_environment;
         this.sfeeRole = sfeeFunction;
@@ -67,7 +60,7 @@ public class SFEE {
         return SFEE_environment;
     }
 
-    public SFEE_role getSFEE_role() {
+    public SFE_role getSFEE_role() {
         return sfeeRole;
     }
 

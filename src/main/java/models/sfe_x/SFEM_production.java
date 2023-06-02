@@ -4,6 +4,7 @@ package models.sfe_x;
 
 import models.base.SFEE;
 import models.base.SFEM;
+import models.base.SFE_role;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,8 +16,8 @@ import java.util.TreeMap;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SFEM_production extends SFEM  {
-        @XmlElement
+public class SFEM_production extends SFEM {
+    @XmlElement
     private TreeMap<Integer, SFEE> SFEEs;
 
     public SFEM_production() {
@@ -24,7 +25,7 @@ public class SFEM_production extends SFEM  {
     }
 
     public SFEM_production(String name) {
-        super(name, SFEM_role.PRODUCTION);
+        super(name, SFE_role.PRODUCTION);
         this.SFEEs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
     }
 
