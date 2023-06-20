@@ -65,7 +65,7 @@ public class produce_faulty extends failures_conditions {
         if (state == SM.WORKING || state == SM.INJECTED) {
             int[] lastFailureOccurrenceDetails = getLastFailureOccurrence(sfeiMachine);
 
-            nParts = sfeiMachine.getnPiecesMoved() - lastFailureOccurrenceDetails[0];
+            nParts = sfeiMachine.getnPartsMoved() - lastFailureOccurrenceDetails[0];
 
             // If it is 0, then not happened yet the 1st failure
             if (lastFailureOccurrenceDetails[1] == 0) {
@@ -91,7 +91,7 @@ public class produce_faulty extends failures_conditions {
                 }
             }
             case WAITING_PART_POSITIONING -> {
-                boolean b_machine_door = (int) sensorsState.get(sfeiMachine.getsDoor().getBit_offset()) == 1;
+                boolean b_machine_door = (int) sensorsState.get(sfeiMachine.getsDoor().getOffset()) == 1;
                 if (sfeiMachine.getPartsATM().size() > 0) {
                     if (utils.getInstance().getLogicalOperator().FE_detector(b_machine_door, old_sMachine_door)) {
                         state = SM.INJECT_FAILURE;
@@ -119,7 +119,7 @@ public class produce_faulty extends failures_conditions {
             }
             case INJECT_FAILURE -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiMachine.getaStop().getBit_offset(), 1);
+                    actuatorsState.set(sfeiMachine.getaStop().getOffset(), 1);
                     closed_door_at = Instant.now();
 
                     failure_occurrence.activationVariable actVar = null;
@@ -131,7 +131,7 @@ public class produce_faulty extends failures_conditions {
                         actVar = failure_occurrence.activationVariable.M;
                     }
                     if (actVar != null)
-                        newOccurrence = new failure_occurrence(sfeiMachine.getName(), type.PRODUCE_FAULTY, actVar, sfeiMachine.getnPiecesMoved(), Instant.now());
+                        newOccurrence = new failure_occurrence(sfeiMachine.getName(), type.PRODUCE_FAULTY, actVar, sfeiMachine.getnPartsMoved(), Instant.now());
                     else
                         throw new RuntimeException("(Produce Faulty) Activation Variable null but evalConditions was TRUE");
 
@@ -144,7 +144,7 @@ public class produce_faulty extends failures_conditions {
             }
             case INJECTED -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiMachine.getaStop().getBit_offset(), 0);
+                    actuatorsState.set(sfeiMachine.getaStop().getOffset(), 0);
 
                     Instant t = Instant.now();
                     newOccurrence.setEnd_t(t);

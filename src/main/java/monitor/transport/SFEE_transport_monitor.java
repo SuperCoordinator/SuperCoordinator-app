@@ -46,17 +46,17 @@ public class SFEE_transport_monitor {
             switch (operationMode) {
                 case WH2SFEI, WH2RealSFEI -> {
                     sensor_actuator sfei_outSensor = sfee.getSFEIbyIndex(0).getOutSensor();
-                    SFEI_old_outSensors = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
+                    SFEI_old_outSensors = (int) sensorsState.get(1).get(sfei_outSensor.getOffset()) == 1;
                 }
                 case SFEI2SFEI, SFEI2RealSFEI, RealSFEI2SFEI -> {
                     sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
-                    SFEI_old_inSensors = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
+                    SFEI_old_inSensors = (int) sensorsState.get(0).get(sfei_inSensor.getOffset()) == 1;
                     sensor_actuator sfei_outSensor = sfee.getSFEIbyIndex(0).getOutSensor();
-                    SFEI_old_outSensors = (int) sensorsState.get(1).get(sfei_outSensor.getBit_offset()) == 1;
+                    SFEI_old_outSensors = (int) sensorsState.get(1).get(sfei_outSensor.getOffset()) == 1;
                 }
                 case SFEI2WH, RealSFEI2WH -> {
                     sensor_actuator sfei_inSensor = sfee.getSFEIbyIndex(0).getInSensor();
-                    SFEI_old_inSensors = (int) sensorsState.get(0).get(sfei_inSensor.getBit_offset()) == 1;
+                    SFEI_old_inSensors = (int) sensorsState.get(0).get(sfei_inSensor.getOffset()) == 1;
 
                 }
                 default -> throw new RuntimeException(SFEE_transport.class + " operation mode not defined!");
@@ -94,8 +94,8 @@ public class SFEE_transport_monitor {
         SFEI_transport sfeiTransport = (SFEI_transport) sfee.getSFEIbyIndex(0);
 
 
-        boolean b_inSensor = (int) sensorsState.get(0).get(sfeiTransport.getInSensor().getBit_offset()) == 1;
-        boolean b_outSensor = (int) sensorsState.get(1).get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
+        boolean b_inSensor = (int) sensorsState.get(0).get(sfeiTransport.getInSensor().getOffset()) == 1;
+        boolean b_outSensor = (int) sensorsState.get(1).get(sfeiTransport.getOutSensor().getOffset()) == 1;
 
         switch (sm_state) {
             case T1 -> {
@@ -127,7 +127,7 @@ public class SFEE_transport_monitor {
                             movingPart.setState(part.status.IN_PRODUCTION);
                             nextSFEI.addNewPartATM(movingPart);
 
-                            sfeiTransport.setnPiecesMoved(sfeiTransport.getnPiecesMoved() + 1);
+                            sfeiTransport.setnPartsMoved(sfeiTransport.getnPartsMoved() + 1);
 
                             iterator.remove();
                             sm_state = state.T1;
@@ -154,7 +154,7 @@ public class SFEE_transport_monitor {
 
         SFEI_transport sfeiTransport = (SFEI_transport) sfee.getSFEIbyIndex(0);
 
-        boolean b_outSensor = (int) sensorsState.get(1).get(sfeiTransport.getOutSensor().getBit_offset()) == 1;
+        boolean b_outSensor = (int) sensorsState.get(1).get(sfeiTransport.getOutSensor().getOffset()) == 1;
 
         switch (sm_state) {
             case T1 -> {
@@ -173,7 +173,6 @@ public class SFEE_transport_monitor {
             }
             case T2 -> {
                 if (utils.getInstance().getLogicalOperator().FE_detector(b_outSensor, SFEI_old_outSensors)) {
-
                     Iterator<part> iterator = sfeiTransport.getPartsATM().iterator();
                     while (iterator.hasNext()) {
                         part movingPart = iterator.next();
@@ -200,7 +199,7 @@ public class SFEE_transport_monitor {
 
         SFEI_transport sfeiTransport = (SFEI_transport) sfee.getSFEIbyIndex(0);
 
-        boolean b_inSensor = (int) sensorsState.get(0).get(sfeiTransport.getInSensor().getBit_offset()) == 1;
+        boolean b_inSensor = (int) sensorsState.get(0).get(sfeiTransport.getInSensor().getOffset()) == 1;
 
         if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEI_old_inSensors)) {
             Iterator<part> iterator = previousSFEI.getPartsATM().iterator();
@@ -256,7 +255,7 @@ public class SFEE_transport_monitor {
                 if (!printedDBG) {
                     for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
                         if (sfei.getValue().getPartsATM().size() > 0) {
-                            System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPiecesMoved() + " parts");
+                            System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPartsMoved() + " parts");
                             for (part p : sfei.getValue().getPartsATM()) {
                                 System.out.println(p);
 //                                p.getTimestamps().forEach((key, value) -> {

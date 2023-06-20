@@ -74,7 +74,7 @@ public class SFEE_warehouse_monitor {
                         //update in db fk to outbound order
                         dbConnection.getInstance().getParts().update_outboundOrder(
                                 Objects.requireNonNull(movingPart).getId(),
-                                serializer.getInstance().scene.toString(),
+                                serializer.getInstance().scene,
                                 outbound_order_id);
 
                         // register insertion in warehouse
@@ -88,12 +88,12 @@ public class SFEE_warehouse_monitor {
                         iterator.remove();
 
                         /* Increment the number of parts moved by the SFEI sfei_idx. */
-                        sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
+                        sfei.setnPartsMoved(sfei.getnPartsMoved() + 1);
                         /* DATABASE update nParts -> sfei table */
                         dbConnection.getInstance().getSfeis().update_nMovedParts(
                                 sfei.getName(),
                                 sfee.getName(),
-                                sfei.getnPiecesMoved());
+                                sfei.getnPartsMoved());
                     } else
                         throw new RuntimeException("This part is in the exit warehouse but is not produced");
 
@@ -179,12 +179,12 @@ public class SFEE_warehouse_monitor {
             System.out.println("#parts in the warehouse: " + sfee.getSFEIs().get(0).getPartsATM().size());
 
             /* Increment the number of parts moved by the SFEI sfei_idx. */
-            sfei.setnPiecesMoved(sfei.getnPiecesMoved() + recentArrivedParts.size());
+            sfei.setnPartsMoved(sfei.getnPartsMoved() + recentArrivedParts.size());
             /* DATABASE update nParts -> sfei table */
             dbConnection.getInstance().getSfeis().update_nMovedParts(
                     sfei.getName(),
                     sfee.getName(),
-                    sfei.getnPiecesMoved());
+                    sfei.getnPartsMoved());
 
 
         } catch (Exception e) {

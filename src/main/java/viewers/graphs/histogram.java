@@ -30,16 +30,14 @@ public class histogram {
 
     public void createWindow(List<intPair> data) {
 
-//            categoryChart.getStyler().setHasAnnotations(true);
         for (int i = 0; i < data.size(); i++) {
             CategoryChart categoryChart = new CategoryChartBuilder().width(600).height(600).title(seriesNames[i]).xAxisTitle("Production time (s)").yAxisTitle("# parts").build();
             categoryChart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
             categoryChart.addSeries(seriesNames[i], Arrays.asList(data.get(i).xData()), Arrays.asList(data.get(i).yData()));
-//            categoryChart.addSeries(seriesNames[i], data.get(i).xData(), data.get(i).yData());
-            chartList.add(categoryChart);
 
+            chartList.add(categoryChart);
         }
-        sw = new SwingWrapper<CategoryChart>(chartList);
+        sw = new SwingWrapper<>(chartList);
         sw.setTitle(windowTitle);
         sw.displayChartMatrix();
 

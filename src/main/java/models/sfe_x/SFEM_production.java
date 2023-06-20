@@ -29,7 +29,6 @@ public class SFEM_production extends SFEM {
         this.SFEEs = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
     }
 
-
     public TreeMap<Integer, SFEE> getSFEEs() {
         return SFEEs;
     }

@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <serializable>
+    <failureOccurrencesPath>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\MC_Staudinger\saves/failuresOccurrences/</failureOccurrencesPath>
+    <inboundOrdersPath>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\WH_SS_3CMC_WH\inboundOrders</inboundOrdersPath>
+    <databasePath>C:\Users\danie\Documents\GitHub\SC-sketch\database</databasePath>
     <c_Production>
-        <sfem sfemRole="PRODUCTION" name="SFEM_MC_Staudinger">
+        <sfem sfemRole="PRODUCTION" name="SFEM_Staudinger">
             <SFEEs>
                 <entry>
                     <key>0</key>
-                    <value sfeeEnvironment="REAL" sfeeRole="PRODUCTION" com="MODBUS" name="SFEE_MC_Staudinger">
+                    <value sfeeEnvironment="REAL" sfeeRole="PRODUCTION" com="MODBUS" name="SFEE_Staudinger">
                         <IO_path>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\MC_Staudinger\simulation\Tags_MC_Staudinger.csv</IO_path>
                         <SFEIs>
                             <entry>
 <key>0</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiPusher" name="MCS_Pusher" sfeiType="PUSHER" minOperationTime="0" manufacturing_date="2023-05-16T11:02:40.142739900Z" last_maintenance="2023-05-16T11:02:40.142739900Z" simulation="false" supportsFailures="false" lineStart="true" lineEnd="false">
-    <inSensor name="s_pusher_back" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="0"/>
-    <outSensor name="s_pusher_forward" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="1"/>
-    <aForwardMotor name="pusher_forward" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="6"/>
-    <aBackMotor name="pusher_back" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiPusher" name="MCS_Pusher" sfeiType="PUSHER" minOperationTime="0" manufacturing_date="2023-06-20T08:47:02.612390400Z" last_maintenance="2023-06-20T08:47:02.612390400Z" simulation="false" supportsFailures="false" lineStart="false" lineEnd="false">
+    <outSensor name="s_pusher_forward" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="1"/>
+    <aForwardMotor name="conveyor1_motor" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="7"/>
+    <aBackMotor name="machine1_lamp" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="1"/>
 </value>
                             </entry>
                             <entry>
 <key>1</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MCS_MC1" sfeiType="MACHINE" minOperationTime="0" manufacturing_date="2023-05-16T11:02:40.143741Z" last_maintenance="2023-05-16T11:02:40.143741Z" simulation="false" supportsFailures="false" lineStart="false" lineEnd="false">
-    <inSensor name="s_pusher_forward" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="1"/>
-    <outSensor name="s_conveyor2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="3"/>
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MCS_MC1" sfeiType="MACHINE" minOperationTime="34" manufacturing_date="2023-06-20T08:47:39.565047200Z" last_maintenance="2023-06-20T08:47:39.565047200Z" simulation="false" supportsFailures="false" lineStart="false" lineEnd="false">
+    <inSensor name="s_conveyor1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="2"/>
+    <outSensor name="sw_conveyor1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="4"/>
     <partDescription material="UNKNOWN" form="UNKNOWN"/>
-    <sDoor name="s_conveyor1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="2"/>
-    <aStop name="machine1_tool" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="4"/>
+    <aStop name="machine2_tool" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="5"/>
 </value>
                             </entry>
                             <entry>
 <key>2</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MCS_MC2" sfeiType="MACHINE" minOperationTime="0" manufacturing_date="2023-05-16T11:02:40.144740300Z" last_maintenance="2023-05-16T11:02:40.144740300Z" simulation="false" supportsFailures="false" lineStart="false" lineEnd="true">
-    <inSensor name="s_conveyor2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="3"/>
-    <outSensor name="sw_endLine" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MCS_MC2" sfeiType="MACHINE" minOperationTime="34" manufacturing_date="2023-06-20T08:48:33.275965100Z" last_maintenance="2023-06-20T08:48:33.275965100Z" simulation="false" supportsFailures="false" lineStart="false" lineEnd="true">
+    <inSensor name="sw_conveyor1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="4"/>
+    <outSensor name="pusher_back" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="0"/>
     <partDescription material="UNKNOWN" form="UNKNOWN"/>
-    <sDoor name="s_conveyor2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="3"/>
-    <aStop name="machine2_tool" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="5"/>
+    <aStop name="pusher_forward" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="6"/>
 </value>
                             </entry>
                         </SFEIs>
@@ -47,64 +47,17 @@
             <sfeeMonitor/>
         </sfeeControllers>
     </c_Production>
-    <c_Transport>
-        <sfem sfemRole="TRANSPORT" name="SFEM_T_WH2SFEI">
-            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_WH2SFEI">
-                <outSensor name="s_pusher_back" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="0"/>
-                <SFEIs>
-                    <entry>
-                        <key>0</key>
-                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T_WH2SFEI" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-16T11:03:27.079826500Z" last_maintenance="2023-05-16T11:03:27.079826500Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
-                            <outSensor name="s_pusher_back" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="0"/>
-                            <aEmitter name="pusher_forward" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="6"/>
-                        </value>
-                    </entry>
-                </SFEIs>
-            </sfeeTransport>
-            <transport_configuration>WH2RealSFEI</transport_configuration>
-        </sfem>
-        <sfeeTransportController prevSFEEName="sfee_warehouse" nextSFEEName="SFEE_MC_Staudinger" prevSFEIName="sfei_entryWarehouse" nextSFEIName="MCS_Pusher">
-            <sfeeMonitor/>
-            <sfeeFailures stochasticType="LINEAR">
-                <stochasticFormulas>30 </stochasticFormulas>
-                <stochasticFormulas> </stochasticFormulas>
-            </sfeeFailures>
-        </sfeeTransportController>
-    </c_Transport>
-    <c_Transport>
-        <sfem sfemRole="TRANSPORT" name="SFEM_T_SFEM2WH">
-            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_SFEE2WH">
-                <inSensor name="sw_endLine" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
-                <SFEIs>
-                    <entry>
-                        <key>0</key>
-                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-16T11:03:59.173597300Z" last_maintenance="2023-05-16T11:03:59.173597300Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
-                            <inSensor name="sw_endLine" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
-                        </value>
-                    </entry>
-                </SFEIs>
-            </sfeeTransport>
-            <transport_configuration>RealSFEI2WH</transport_configuration>
-        </sfem>
-        <sfeeTransportController prevSFEEName="SFEE_MC_Staudinger" nextSFEEName="sfee_warehouse" prevSFEIName="MCS_MC2" nextSFEIName="sfei_exitWarehouse">
-            <sfeeMonitor/>
-            <sfeeFailures stochasticType="LINEAR">
-                <stochasticFormulas>30 </stochasticFormulas>
-                <stochasticFormulas> </stochasticFormulas>
-            </sfeeFailures>
-        </sfeeTransportController>
-    </c_Transport>
     <c_Warehouse checkOrdersPeriod="5">
-        <sfem sfemRole="WAREHOUSE" name="sfem_warehouse">
+        <sfem warehouseOrganization="RANDOM" sfemRole="WAREHOUSE" name="sfem_warehouse">
             <sfeeWarehouse sfeeEnvironment="SIMULATION" sfeeRole="WAREHOUSE" com="MODBUS" name="sfee_warehouse">
                 <SFEIs>
                     <entry>
                         <key>0</key>
-                        <value name="sfei_entryWarehouse" sfeiType="WAREHOUSE" minOperationTime="0" manufacturing_date="2023-05-16T11:01:47.958537100Z" last_maintenance="2023-05-16T11:01:47.958537100Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false"/>
+                        <value name="sfei_entryWarehouse" sfeiType="WAREHOUSE" minOperationTime="0" manufacturing_date="2023-06-20T08:45:00.321038800Z" last_maintenance="2023-06-20T08:45:00.321038800Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false"/>
                     </entry>
                     <entry>
                         <key>1</key>
-                        <value name="sfei_exitWarehouse" sfeiType="WAREHOUSE" minOperationTime="0" manufacturing_date="2023-05-16T11:01:47.959540300Z" last_maintenance="2023-05-16T11:01:47.959540300Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false"/>
+                        <value name="sfei_exitWarehouse" sfeiType="WAREHOUSE" minOperationTime="0" manufacturing_date="2023-06-20T08:45:00.321038800Z" last_maintenance="2023-06-20T08:45:00.321038800Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false"/>
                     </entry>
                 </SFEIs>
             </sfeeWarehouse>
@@ -112,7 +65,7 @@
     </c_Warehouse>
     <connection>
         <url>jdbc:mysql://localhost:3306/</url>
-        <database></database>
+        <database>MC_Staudinger</database>
         <user>root</user>
         <pass></pass>
     </connection>

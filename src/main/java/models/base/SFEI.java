@@ -39,7 +39,7 @@ public class SFEI {
     @XmlAttribute
     private long minOperationTime;
     private TreeSet<part> partsATM = new TreeSet<>(partsOrder.INSTANCE);
-    private int nPiecesMoved = 0;
+    private int nPartsMoved = 0;
 
     @XmlAttribute(name = "manufacturing_date", required = true)
     @XmlJavaTypeAdapter(InstantAdapter.class)
@@ -128,12 +128,12 @@ public class SFEI {
     }
 
 
-    public int getnPiecesMoved() {
-        return nPiecesMoved;
+    public int getnPartsMoved() {
+        return nPartsMoved;
     }
 
-    public void setnPiecesMoved(int nPiecesMoved) {
-        this.nPiecesMoved = nPiecesMoved;
+    public void setnPartsMoved(int nPartsMoved) {
+        this.nPartsMoved = nPartsMoved;
     }
 
     public Instant getDayOfBirth() {

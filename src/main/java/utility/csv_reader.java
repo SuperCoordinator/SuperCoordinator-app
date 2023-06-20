@@ -114,7 +114,7 @@ public class csv_reader {
         String[] columnNames = {"Index", "Name", "Bit", "Data Type"};
         Object[][] data = new Object[treeMap.size()][4];
         treeMap.forEach((key, value) -> {
-            data[key] = new Object[]{String.valueOf(key), value.getName(), String.valueOf(value.getBit_offset()), value.getDataType().toString()};
+            data[key] = new Object[]{String.valueOf(key), value.getName(), String.valueOf(value.getOffset()), value.getDataType().toString()};
         });
 
         JTable table = new JTable(data, columnNames);

@@ -57,8 +57,8 @@ public class SFEE_production_monitor {
                 sensor_actuator sfei_inSensor = sfei.getValue().getInSensor();
                 sensor_actuator sfei_outSensor = sfei.getValue().getOutSensor();
 
-                boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
-                boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
+                boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getOffset()) == 1;
+                boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getOffset()) == 1;
 
                 SFEIs_old_inSensors[sfei.getKey()] = b_inSensor;
                 SFEIs_old_outSensors[sfei.getKey()] = b_outSensor;
@@ -102,7 +102,7 @@ public class SFEE_production_monitor {
                 updateSFEI_machinePartType(actuatorsState);
                 firstRun = false;
             }
-            switch (sfee.getSFEE_environment()) {
+            switch (sfee.getSfeeEnvironment()) {
                 case SIMULATION -> simulationProductionMonitor(sensorsState);
                 case REAL -> realProductionMonitor(sensorsState);
             }
@@ -129,8 +129,8 @@ public class SFEE_production_monitor {
                 sensor_actuator sfei_inSensor = sfei.getInSensor();
                 sensor_actuator sfei_outSensor = sfei.getOutSensor();
 
-                boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
-                boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
+                boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getOffset()) == 1;
+                boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getOffset()) == 1;
 
                 if (sfei_idx == 0 && sfei.isLine_start()) {
                     /* First conveyor of the Shop Floor.
@@ -204,8 +204,8 @@ public class SFEE_production_monitor {
                 sensor_actuator sfei_inSensor = sfei.getInSensor();
                 sensor_actuator sfei_outSensor = sfei.getOutSensor();
 
-                boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getBit_offset()) == 1;
-                boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getBit_offset()) == 1;
+                boolean b_inSensor = (int) sensorsState.get(sfei_inSensor.getOffset()) == 1;
+                boolean b_outSensor = (int) sensorsState.get(sfei_outSensor.getOffset()) == 1;
 
                 if (sfei_idx == 0) {
                     /* Can be or not the startLine,
@@ -280,13 +280,13 @@ public class SFEE_production_monitor {
                         Instant.now());
 
                 /* Increment the number of parts moved by the SFEI sfei_idx */
-                sfee.getSFEIbyIndex(origin_sfei).setnPiecesMoved(sfee.getSFEIbyIndex(origin_sfei).getnPiecesMoved() + 1);
+                sfee.getSFEIbyIndex(origin_sfei).setnPartsMoved(sfee.getSFEIbyIndex(origin_sfei).getnPartsMoved() + 1);
 
                 /* DATABASE update nParts -> sfei table */
                 dbConnection.getInstance().getSfeis().update_nMovedParts(
                         sfee.getSFEIbyIndex(origin_sfei).getName(),
                         sfee.getName(),
-                        sfee.getSFEIbyIndex(origin_sfei).getnPiecesMoved());
+                        sfee.getSFEIbyIndex(origin_sfei).getnPartsMoved());
 
             }
         } catch (Exception e) {
@@ -318,12 +318,12 @@ public class SFEE_production_monitor {
                         Instant.now());
 
                 /* Increment the number of parts moved by the SFEI sfei_idx. */
-                sfei.setnPiecesMoved(sfei.getnPiecesMoved() + 1);
+                sfei.setnPartsMoved(sfei.getnPartsMoved() + 1);
                 /* DATABASE update nParts -> sfei table */
                 dbConnection.getInstance().getSfeis().update_nMovedParts(
                         sfei.getName(),
                         sfee.getName(),
-                        sfei.getnPiecesMoved());
+                        sfei.getnPartsMoved());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -335,14 +335,14 @@ public class SFEE_production_monitor {
         try {
             for (Map.Entry<Integer, SFEI> sfeiEntry : sfee.getSFEIs().entrySet()) {
 
-                if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE) && sfee.getSFEE_environment().equals(SFEE.SFEE_environment.SIMULATION)) {
+                if (sfeiEntry.getValue().getSfeiType().equals(SFEI.SFEI_type.MACHINE) && sfee.getSfeeEnvironment().equals(SFEE.SFEE_environment.SIMULATION)) {
 
                     SFEI_machine sfei = (SFEI_machine) sfeiEntry.getValue();
 
                     if (default_partForm.equals(partDescription.form.LID)) {
-                        actuatorsState.set(sfei.getaProduce().getBit_offset(), 1);
+                        actuatorsState.set(sfei.getaProduce().getOffset(), 1);
                     } else if (default_partForm.equals(partDescription.form.BASE)) {
-                        actuatorsState.set(sfei.getaProduce().getBit_offset(), 0);
+                        actuatorsState.set(sfei.getaProduce().getOffset(), 0);
                     }
                 }
             }
@@ -359,7 +359,7 @@ public class SFEE_production_monitor {
 
                     SFEI_conveyor sfeiConveyor = (SFEI_conveyor) sfee.getSFEIbyIndex(entry.getKey());
                     // Verify if there is a part in the vision sensor range
-                    int visionSensor_number = (int) inputRegsValue.get(entry.getValue().getBit_offset());
+                    int visionSensor_number = (int) inputRegsValue.get(entry.getValue().getOffset());
 
                     if (visionSensor_number > 0) {
                         if (sfeiConveyor.getPartsATM().size() > 0) {
@@ -419,7 +419,7 @@ public class SFEE_production_monitor {
                 if (!printedDBG) {
                     for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
                         if (sfei.getValue().getPartsATM().size() > 0) {
-                            System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPiecesMoved() + " parts");
+                            System.out.println("(" + sfei.getKey() + ") " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPartsMoved() + " parts");
                             for (part p : sfei.getValue().getPartsATM()) {
                                 System.out.println(p);
 //                                p.getTimestamps().forEach((key, value) -> {
@@ -448,7 +448,7 @@ public class SFEE_production_monitor {
         try {
             for (Map.Entry<Integer, SFEI> sfei : sfee.getSFEIs().entrySet()) {
                 if (sfei.getValue().getPartsATM().size() > 0) {
-                    System.out.println("SFEI [ idx =" + sfei.getKey() + "] " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPiecesMoved() + " parts");
+                    System.out.println("SFEI [ idx =" + sfei.getKey() + "] " + sfei.getValue().getName() + " moved: " + sfei.getValue().getnPartsMoved() + " parts");
                     for (part p : sfei.getValue().getPartsATM()) {
                         System.out.println(p);
                     }

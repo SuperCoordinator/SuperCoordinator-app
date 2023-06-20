@@ -94,7 +94,7 @@ public class C_Runtime implements Runnable {
                 else
                     frame.getElementPanels().get(i).getItemsPanel().turnOff(j);
 
-                frame.getElementPanels().get(i).getItemsPanel().updateNparts(sfeis.get(j).getnPiecesMoved(), j);
+                frame.getElementPanels().get(i).getItemsPanel().updateNparts(sfeis.get(j).getnPartsMoved(), j);
             }
         }
     }

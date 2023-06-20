@@ -13,41 +13,41 @@
                         <SFEIs>
                             <entry>
 <key>0</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="EntryConveyor_0" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-29T14:02:29.545565800Z" last_maintenance="2023-05-29T14:02:29.545565800Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
-    <inSensor name="s_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
-    <outSensor name="s_entryMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="11"/>
-    <aRemover name="entry_R0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="3"/>
-    <aEmit name="emit_E0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
-    <aEmitPart name="entry_EP0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="3"/>
-    <aEmitBase name="entry_EB0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="4"/>
-    <sRemover name="s_entry_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="8"/>
-    <sEmitter name="s_entry_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="7"/>
-    <aConveyorMotor name="entry_C0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="1"/>
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="EntryConveyor_0" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-06-15T14:16:29.545565800Z" last_maintenance="2023-06-15T14:16:29.545565800Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+    <inSensor name="s_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="6"/>
+    <outSensor name="s_entryMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="11"/>
+    <aRemover name="entry_R0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="3"/>
+    <aEmit name="emit_E0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="0"/>
+    <aEmitPart name="entry_EP0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" offset="3"/>
+    <aEmitBase name="entry_EB0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" offset="4"/>
+    <sRemover name="s_entry_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="8"/>
+    <sEmitter name="s_entry_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="7"/>
+    <aConveyorMotor name="entry_C0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="1"/>
 </value>
                             </entry>
                             <entry>
 <key>1</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MC0" sfeiType="MACHINE" minOperationTime="33" manufacturing_date="2023-05-29T14:03:07.256788300Z" last_maintenance="2023-05-29T14:03:07.256788300Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
-    <inSensor name="s_entryMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="11"/>
-    <outSensor name="s_exitMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiMachine" name="MC0" sfeiType="MACHINE" minOperationTime="33" manufacturing_date="2023-06-15T14:16:07.256788300Z" last_maintenance="2023-06-15T14:16:07.256788300Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="false">
+    <inSensor name="s_entryMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="11"/>
+    <outSensor name="s_exitMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="12"/>
     <partDescription material="METAL" form="BASE"/>
-    <aProduce name="MC0_produce" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="11"/>
-    <sDoor name="MC0_opened" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="5"/>
-    <aStop name="MC0_stop" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="13"/>
+    <aProduce name="MC0_produce" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="11"/>
+    <sDoor name="MC0_opened" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="5"/>
+    <aStop name="MC0_stop" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="13"/>
 </value>
                             </entry>
                             <entry>
 <key>2</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_0" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-05-29T14:04:19.016299Z" last_maintenance="2023-05-29T14:04:19.016299Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
-    <inSensor name="s_exitMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="12"/>
-    <outSensor name="s_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
-    <aRemover name="exit_R0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="6"/>
-    <aEmit name="exit_E0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="5"/>
-    <aEmitPart name="exit_EP0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="6"/>
-    <aEmitBase name="exit_EB0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="7"/>
-    <sRemover name="s_exit_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="10"/>
-    <sEmitter name="s_exit_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="9"/>
-    <aConveyorMotor name="exit_C0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="4"/>
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_0" sfeiType="CONVEYOR" minOperationTime="8" anufacturing_date="2023-06-15T14:16:19.016299Z" last_maintenance="2023-06-15T14:16:19.016299Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
+    <inSensor name="s_exitMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="12"/>
+    <outSensor name="s_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="13"/>
+    <aRemover name="exit_R0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="6"/>
+    <aEmit name="exit_E0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="5"/>
+    <aEmitPart name="exit_EP0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" offset="6"/>
+    <aEmitBase name="exit_EB0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" offset="7"/>
+    <sRemover name="s_exit_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="10"/>
+    <sEmitter name="s_exit_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="9"/>
+    <aConveyorMotor name="exit_C0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="4"/>
 </value>
                             </entry>
                         </SFEIs>
@@ -61,7 +61,7 @@
                 <visionSensorLocation>
                     <entry>
                         <key>2</key>
-                        <value name="vs_C0" type="INPUT" invLogic="false" dataType="INT" addressType="INPUT_REGISTER" register="0" bitOffset="2"/>
+                        <value name="vs_C0" type="INPUT" invLogic="false" dataType="INT" addressType="INPUT_REGISTER" register="0" offset="2"/>
                     </entry>
                 </visionSensorLocation>
             </sfeeMonitor>
@@ -70,16 +70,11 @@
                 <stochasticFormulas>65 </stochasticFormulas>
                 <stochasticFormulas>5 </stochasticFormulas>
                 <failuresFormulas>
-                    <item>det [ 2 ]</item>
+                    <item>no</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
-                    <item>gauss [ 1 ; 0 ]</item>
-                </failuresFormulas>
-                <failuresFormulas>
-                    <item>no</item>
-                    <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
                 <failuresFormulas>
@@ -94,6 +89,11 @@
                 </failuresFormulas>
                 <failuresFormulas>
                     <item>no</item>
+                    <item>no</item>
+                    <item>no</item>
+                </failuresFormulas>
+                <failuresFormulas>
+                    <item>gauss [ 29 ; 3 ]</item>
                     <item>no</item>
                     <item>no</item>
                 </failuresFormulas>
@@ -103,15 +103,15 @@
     <c_Transport>
         <sfem sfemRole="TRANSPORT" name="SFEM_T_WH2SFEI">
             <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_WH2SFEI">
-                <outSensor name="s_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
+                <outSensor name="s_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="6"/>
                 <SFEIs>
                     <entry>
                         <key>0</key>
-                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T_WH2SFEI" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-29T14:05:37.921722500Z" last_maintenance="2023-05-29T14:05:37.921722500Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
-                            <outSensor name="s_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="6"/>
-                            <aEmitter name="emit_E0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="0"/>
-                            <aEmitterPart name="part_E0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="1"/>
-                            <aEmitterBase name="base_E0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" bitOffset="2"/>
+                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T_WH2SFEI" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-06-15T14:05:37.921722500Z" last_maintenance="2023-06-15T14:05:37.921722500Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
+                            <outSensor name="s_E0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="6"/>
+                            <aEmit name="emit_E0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="0"/>
+                            <aEmitPart name="part_E0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" offset="1"/>
+                            <aEmitBase name="base_E0" type="OUTPUT" invLogic="false" dataType="INT" addressType="HOLDING_REGISTER" register="0" offset="2"/>
                         </value>
                     </entry>
                 </SFEIs>
@@ -129,13 +129,13 @@
     <c_Transport>
         <sfem sfemRole="TRANSPORT" name="SFEM_T_SFEI2WH">
             <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_SFEI2WH">
-                <inSensor name="s_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
+                <inSensor name="s_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="13"/>
                 <SFEIs>
                     <entry>
                         <key>0</key>
-                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-29T14:06:07.847763700Z" last_maintenance="2023-05-29T14:06:07.847763700Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
-                            <inSensor name="s_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" bitOffset="13"/>
-                            <aRemover name="R0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" bitOffset="14"/>
+                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-06-15T14:06:07.847763700Z" last_maintenance="2023-06-15T14:06:07.847763700Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
+                            <inSensor name="s_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="13"/>
+                            <aRemover name="R0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="14"/>
                         </value>
                     </entry>
                 </SFEIs>
@@ -150,17 +150,17 @@
             </sfeeFailures>
         </sfeeTransportController>
     </c_Transport>
-    <c_Warehouse checkOrdersPeriod="6">
+    <c_Warehouse checkOrdersPeriod="5">
         <sfem warehouseOrganization="SEQUENTIAL" sfemRole="WAREHOUSE" name="sfem_warehouse">
             <sfeeWarehouse sfeeEnvironment="SIMULATION" sfeeRole="WAREHOUSE" com="MODBUS" name="sfee_warehouse">
                 <SFEIs>
                     <entry>
                         <key>0</key>
-                        <value name="sfei_entryWarehouse" sfeiType="WAREHOUSE" minOperationTime="0" manufacturing_date="2023-05-29T14:00:36.093055400Z" last_maintenance="2023-05-29T14:00:36.093055400Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false"/>
+                        <value name="sfei_entryWarehouse" sfeiType="WAREHOUSE" minOperationTime="0" manufacturing_date="2023-06-15T14:00:36.093055400Z" last_maintenance="2023-06-15T14:00:36.093055400Z"  simulation="true" supportsFailures="false" lineStart="false" lineEnd="false"/>
                     </entry>
                     <entry>
                         <key>1</key>
-                        <value name="sfei_exitWarehouse" sfeiType="WAREHOUSE" minOperationTime="0" manufacturing_date="2023-05-29T14:00:36.094055700Z" last_maintenance="2023-05-29T14:00:36.094055700Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false"/>
+                        <value name="sfei_exitWarehouse" sfeiType="WAREHOUSE" minOperationTime="0" manufacturing_date="2023-06-15T14:00:36.094055700Z" last_maintenance="2023-06-15T14:00:36.094055700Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false"/>
                     </entry>
                 </SFEIs>
             </sfeeWarehouse>

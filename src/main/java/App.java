@@ -204,8 +204,6 @@ public class App {
         System.out.print("> ");
         String xmlPath = in.nextLine();
 
-//        System.out.println("Folder path to save future Failures Occurrences XML file");
-//        System.out.print("> ");
         serializer.getInstance().setFailuresHistoryPath(xmlPath + "/failuresOccurrences/");
 
         xmlPath = xmlPath + "/" + confName + ".xml";
@@ -250,7 +248,6 @@ public class App {
         // Open communications
         for (cSFEM_production production : serializer.getInstance().getC_Production()) {
             production.openConnections();
-
         }
 
         //Intermediate save before Transport Modules setup
@@ -276,12 +273,18 @@ public class App {
             initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.WH2RealSFEI);
         }
 
-        System.out.println("End of Line Item (SFEI) to connect with the Warehouse is Simulation (y) or Real(n) ?");
-        isSimulation = utils.getInstance().validateUserOption();
-        if (isSimulation) {
-            initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.SFEI2WH);
-        } else {
-            initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.RealSFEI2WH);
+        System.out.println("Number END Items that links with the warehouse ? ");
+        System.out.print("> ");
+        nModules = Integer.parseInt(in.nextLine());
+        for (int i = 0; i < nModules; i++) {
+            System.out.println("Defining connection end item " + i + " of " + nModules);
+            System.out.println("End of Line Item (SFEI) to connect with the Warehouse is Simulation (y) or Real(n) ?");
+            isSimulation = utils.getInstance().validateUserOption();
+            if (isSimulation) {
+                initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.SFEI2WH);
+            } else {
+                initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.RealSFEI2WH);
+            }
         }
 
         System.out.println("Number of Transport Modules to configure? ");
@@ -316,7 +319,7 @@ public class App {
 
                 System.out.println("Input Element (SFEE) name to connect with " + sfem_transport_name);
                 Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
-                if (inSFEE.getFirst().getSFEE_environment().equals(SFEE.SFEE_environment.REAL))
+                if (inSFEE.getFirst().getSfeeEnvironment().equals(SFEE.SFEE_environment.REAL))
                     configuration = SFEM_transport.configuration.RealSFEI2SFEI;
 
                 System.out.println("Connection Item (SFEI)");
@@ -329,7 +332,7 @@ public class App {
 
                 System.out.println("Output Element (SFEE) name to connect with " + sfem_transport_name);
                 Pair<SFEE, cSFEM_production> outSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
-                if (outSFEE.getFirst().getSFEE_environment().equals(SFEE.SFEE_environment.REAL))
+                if (outSFEE.getFirst().getSfeeEnvironment().equals(SFEE.SFEE_environment.REAL))
                     configuration = SFEM_transport.configuration.SFEI2RealSFEI;
 
                 System.out.println("Connection Item (SFEI)");

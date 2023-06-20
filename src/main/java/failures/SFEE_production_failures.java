@@ -307,7 +307,7 @@ public class SFEE_production_failures {
             SFEI sfei = sfee.getSFEIbyIndex(sfei_idx);
 
             double m = utils.getInstance().getCustomCalculator().calcExpression(stochasticFormulas[0],
-                    sfei.getnPiecesMoved(),
+                    sfei.getnPartsMoved(),
                     (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toMinutes(),
                     (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toMinutes());
 
@@ -316,7 +316,7 @@ public class SFEE_production_failures {
             if (stochasticType.equals(stochasticTime.timeOptions.GAUSSIAN)) {
 
                 double dev = utils.getInstance().getCustomCalculator().calcExpression(stochasticFormulas[1],
-                        sfei.getnPiecesMoved(),
+                        sfei.getnPartsMoved(),
                         (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toMinutes(),
                         (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toMinutes());
 

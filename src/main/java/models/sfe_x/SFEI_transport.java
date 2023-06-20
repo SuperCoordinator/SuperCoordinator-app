@@ -17,39 +17,39 @@ public class SFEI_transport extends SFEI {
     @XmlElement
     private sensor_actuator aRemover;
     @XmlElement
-    private sensor_actuator aEmitter;
+    private sensor_actuator aEmit;
     @XmlElement
-    private sensor_actuator aEmitterPart;
+    private sensor_actuator aEmitPart;
     @XmlElement
-    private sensor_actuator aEmitterBase;
+    private sensor_actuator aEmitBase;
 
     public SFEI_transport() {
     }
 
     public SFEI_transport(String name, SFEI_type sfeiType, sensor_actuator inSensor, sensor_actuator outSensor,
                           Instant dayOfBirth, Instant dayOfLastMaintenance, sensor_actuator aRemover,
-                          sensor_actuator aEmitter, sensor_actuator aEmitterpart, sensor_actuator aEmitterBase) {
+                          sensor_actuator aEmit, sensor_actuator aEmitterpart, sensor_actuator aEmitBase) {
         super(name, sfeiType, inSensor, outSensor, dayOfBirth, dayOfLastMaintenance, 0, true, false, false, false);
         this.aRemover = aRemover;
-        this.aEmitter = aEmitter;
-        this.aEmitterPart = aEmitterpart;
-        this.aEmitterBase = aEmitterBase;
+        this.aEmit = aEmit;
+        this.aEmitPart = aEmitterpart;
+        this.aEmitBase = aEmitBase;
     }
 
     public sensor_actuator getaRemover() {
         return aRemover;
     }
 
-    public sensor_actuator getaEmitter() {
-        return aEmitter;
+    public sensor_actuator getaEmit() {
+        return aEmit;
     }
 
-    public sensor_actuator getaEmitterPart() {
-        return aEmitterPart;
+    public sensor_actuator getaEmitPart() {
+        return aEmitPart;
     }
 
-    public sensor_actuator getaEmitterBase() {
-        return aEmitterBase;
+    public sensor_actuator getaEmitBase() {
+        return aEmitBase;
     }
 
 }

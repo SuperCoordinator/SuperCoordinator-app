@@ -265,7 +265,7 @@ public class SFEE {
                 System.out.println("Msg (repair): " + utils.getInstance().getCustomCalculator().errorMsg());
             }
             if (!(f_BDwR[0].equalsIgnoreCase("no") && f_BDwR[1].equalsIgnoreCase("no") && f_BDwR[2].equalsIgnoreCase("no"))) {
-                System.out.print("   REPAIR (time, in minutes, since breakdown occurred in min): gauss [ ");
+                System.out.print("   REPAIR (time, in minutes, since breakdown occurred) : gauss [ ");
                 repair = "gauss [ ";
                 repair = repair.concat(in.nextLine());
                 retry = utils.getInstance().getCustomCalculator().evalFailureFormula(repair);
@@ -382,7 +382,7 @@ public class SFEE {
         sensor_actuator inSensor = getSensorActuator("Input sensor: ", sfee);
         sensor_actuator outSensor = getSensorActuator("Output sensor: ", sfee);
 
-        boolean isSimulation = sfee.getSFEE_environment().equals(models.base.SFEE.SFEE_environment.SIMULATION);
+        boolean isSimulation = sfee.getSfeeEnvironment().equals(models.base.SFEE.SFEE_environment.SIMULATION);
 
 //        System.out.println("Is simulation (y/n)?");
 //        boolean isSimulation = utils.getInstance().validateUserOption();
@@ -449,7 +449,7 @@ public class SFEE {
 //        boolean isSimulation = utils.getInstance().validateUserOption();
 //        System.out.println("Supports failures (y/n) ?");
 //        boolean supportsFailures = utils.getInstance().validateUserOption();
-        boolean isSimulation = sfee.getSFEE_environment().equals(models.base.SFEE.SFEE_environment.SIMULATION);
+        boolean isSimulation = sfee.getSfeeEnvironment().equals(models.base.SFEE.SFEE_environment.SIMULATION);
 //        System.out.println("Is line start (y/n)? (First item of all Modules combined)");
 //        boolean isLineStart = utils.getInstance().validateUserOption();
 //        System.out.println("Supports failures (y/n) ? (Last item of all Modules combined)");

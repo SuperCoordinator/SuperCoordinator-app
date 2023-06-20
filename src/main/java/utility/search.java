@@ -40,7 +40,7 @@ public class search {
                         first = false;
                         continue;
                     }
-                    if (largestOff.getBit_offset() < sa.getBit_offset())
+                    if (largestOff.getOffset() < sa.getOffset())
                         largestOff = sa;
                 }
             }
@@ -61,7 +61,7 @@ public class search {
                         first = false;
                         continue;
                     }
-                    if (largestOff.getBit_offset() < sa.getBit_offset())
+                    if (largestOff.getOffset() < sa.getOffset())
                         largestOff = sa;
                 }
             }

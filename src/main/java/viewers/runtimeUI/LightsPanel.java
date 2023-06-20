@@ -58,8 +58,7 @@ public class LightsPanel extends JPanel {
                     new Rectangle(circle.getxPos(), circle.getyPos() + circle.getRadius() + 5, circle.getRadius(), 10),
                     graphics.getFont());
         }
-//        graphics.setColor(Color.BLACK);
-//        graphics.drawRect(50, 50, 450, 150);
+
     }
 
 

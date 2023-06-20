@@ -63,7 +63,7 @@ public class breakdown extends failures_conditions {
         if (state != SM.DISABLED) {
             int[] lastFailureOccurrenceDetails = getLastFailureOccurrence(sfeiConveyor);
 
-            nParts = sfeiConveyor.getnPiecesMoved() - lastFailureOccurrenceDetails[0];
+            nParts = sfeiConveyor.getnPartsMoved() - lastFailureOccurrenceDetails[0];
 
             // If it is 0, then not happened yet the 1st failure
             if (lastFailureOccurrenceDetails[1] == 0) {
@@ -107,7 +107,7 @@ public class breakdown extends failures_conditions {
             case DISABLED -> {
                 if (state != old_state) {
                     // IF SFEI == conveyor !!
-                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().getBit_offset(), 1);
+                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().getOffset(), 1);
 
                     failure_occurrence.activationVariable actVar = null;
                     if (wasActivated_by_N()) {
@@ -118,7 +118,7 @@ public class breakdown extends failures_conditions {
                         actVar = failure_occurrence.activationVariable.M;
                     }
                     if (actVar != null)
-                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.BREAKDOWN, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
+                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.BREAKDOWN, actVar, sfeiConveyor.getnPartsMoved(), Instant.now());
                     else
                         throw new RuntimeException("(Breakdown) Activation Variable null but evalConditions was TRUE");
 
@@ -130,7 +130,7 @@ public class breakdown extends failures_conditions {
             }
             case RESUMING -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().getBit_offset(), 0);
+                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().getOffset(), 0);
 
                     Instant t = Instant.now();
                     newOccurrence.setEnd_t(t);

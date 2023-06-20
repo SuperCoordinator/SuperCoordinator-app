@@ -46,6 +46,9 @@ s_green_remover,Input,Bool,Input 43
 s_metal,Input,Bool,Input 44
 s_metal_remover,Input,Bool,Input 45
 s_stop_blade,Input,Bool,Input 46
+s_inMC0,Input,Bool,Input 47
+s_inMC1,Input,Bool,Input 48
+s_inMC2,Input,Bool,Input 49
 emit_E0,Output,Bool,Coil 0
 entry_C0,Output,Bool,Coil 1
 entry_E0,Output,Bool,Coil 2
@@ -103,6 +106,15 @@ metal_remover,Output,Bool,Coil 53
 metal_sorter_belt,Output,Bool,Coil 54
 metal_sorter_turn,Output,Bool,Coil 55
 stop_blade,Output,Bool,Coil 56
+metalPL_redLight,Output,Bool,Coil 57
+metal_PL_yellowLight,Output,Bool,Coil 58
+metalPL_greenLight,Output,Bool,Coil 59
+greenPL_redLight,Output,Bool,Coil 60
+greenPL_yellowLight,Output,Bool,Coil 61
+greenPL_greenLight,Output,Bool,Coil 62
+bluePL_redLight,Output,Bool,Coil 63
+bluePL_yellowLight,Output,Bool,Coil 64
+bluePL_greenLight,Output,Bool,Coil 65
 FACTORY I/O (Time Scale),Input,Real,Input Reg 0
 MC0_progress,Input,Int,Input Reg 1
 vs_C0,Input,Int,Input Reg 2

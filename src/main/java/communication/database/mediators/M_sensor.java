@@ -95,7 +95,7 @@ public class M_sensor extends queries_buffer implements IM_sensor {
     }
 
     @Override
-    public List<String> getAll_sensors_of_SFEI(String fk_sfei) {
+    public List<String> getAll_sensorsFrom(String fk_sfei) {
         try {
             List<String> list = new ArrayList<>();
             String query = "SELECT * FROM sensor WHERE fk_sfei='" + fk_sfei + "';";

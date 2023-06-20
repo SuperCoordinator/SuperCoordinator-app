@@ -41,7 +41,7 @@ public class setupRun implements Callable {
     private void sStartTrigger() {
 //        boolean sStart = Boolean.parseBoolean(mb.readState(sfei.getInSensor()));
         //int obj = (int) mb.readState(sfei.getInSensor()).get(0);
-        int obj = (int) mb.readCoils().get(sfei.getInSensor().getBit_offset());
+        int obj = (int) mb.readCoils().get(sfei.getInSensor().getOffset());
         boolean sStart = (obj == 1);
 
         if (utils.getInstance().getLogicalOperator().RE_detector(sStart, old_sStart)) {
@@ -57,7 +57,7 @@ public class setupRun implements Callable {
     private boolean sEndTrigger() {
 //        boolean sEnd = Boolean.parseBoolean(mb.readState(sfei.getOutSensor()));
 //        int obj = (int) mb.readState(sfei.getOutSensor()).get(0);
-        int obj = (int) mb.readCoils().get(sfei.getOutSensor().getBit_offset());
+        int obj = (int) mb.readCoils().get(sfei.getOutSensor().getOffset());
         boolean sEnd = (obj == 1);
         if (utils.getInstance().getLogicalOperator().RE_detector(sEnd, old_sEnd)) {
             if (start_t != null) {

@@ -31,32 +31,6 @@ public class MainFrame extends JFrame {
             e.printStackTrace();
         }
 
-//        Timer timer = new Timer(2000, e -> {
-//            switch (cnt) {
-//                case 0 -> panels.forEach(panel -> panel.turnOn(0));
-//                case 1 -> panels.forEach(panel -> panel.turnOn(3));
-//                case 2 -> panels.forEach(panel -> panel.turnOn(2));
-//                case 3 -> panels.forEach(panel -> panel.turnOn(1));
-//            }
-//            cnt++;
-//            if (cnt == 4)
-//                cnt = 0;
-//        });
-//        Timer timer2 = new Timer(3000, e -> {
-//            switch (cnt) {
-//                case 0 -> panels.forEach(panel -> panel.turnOff(0));
-//                case 1 -> panels.forEach(panel -> panel.turnOff(3));
-//                case 2 -> panels.forEach(panel -> panel.turnOff(2));
-//                case 3 -> panels.forEach(panel -> panel.turnOff(1));
-//            }
-//            cnt++;
-//            if (cnt == 4)
-//                cnt = 0;
-//        });
-//
-////        timer.setRepeats(false);
-//        timer.start();
-//        timer2.start();
     }
 
     public ArrayList<ElementPanel> getElementPanels() {
