@@ -4,12 +4,13 @@ import communication.database.dbConnection;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
+import utility.utils;
 
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 
-@XmlRootElement
+@XmlRootElement(name = "config")
 @XmlAccessorType(XmlAccessType.NONE)
 public class serializable {
     private cSFEM_warehouse C_Warehouse = new cSFEM_warehouse();
@@ -22,6 +23,8 @@ public class serializable {
     private String inboundOrdersPath;
     @XmlElement(name = "databasePath")
     private String databasePath;
+    @XmlElement(name ="randomSeed")
+    private long randSeed;
     public serializable() {
     }
 
@@ -79,5 +82,14 @@ public class serializable {
 
     public void setDatabasePath(String databasePath) {
         this.databasePath = databasePath;
+    }
+
+    public long getRandSeed() {
+        randSeed = utils.getInstance().getRnd_seed();
+        return randSeed;
+    }
+
+    public void setRandSeed(long randSeed) {
+        this.randSeed = randSeed;
     }
 }

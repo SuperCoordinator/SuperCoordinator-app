@@ -7,7 +7,7 @@ import failures.stochasticTime;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
-import monitor.production.SFEE_production_monitor;
+import monitors.production.SFEE_production_monitor;
 import utility.utils;
 
 import javax.xml.bind.annotation.*;
@@ -71,11 +71,7 @@ public class cSFEE_production {
         return mb;
     }
 
-    public operationMode getOpMode() {
-        return opMode;
-    }
-
-    public void init(/*int scene*/) {
+    public void init() {
         try {
 
             String csv_path = viewer.getIOpath(sfee.getName());
@@ -83,7 +79,6 @@ public class cSFEE_production {
             importIO(csv_path, true);
 
             String mode = viewer.opMode(sfee.getName());
-            //String mode = "2";
             if (Integer.parseInt(mode) == 1) {
                 opMode = operationMode.NORMAL;
             } else {

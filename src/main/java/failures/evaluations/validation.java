@@ -66,22 +66,21 @@ public class validation {
                 (Duration.between(start_t, Instant.now()).toMillis() >= 500.0 && validationMethod.equals(method.TIME))) {
 
             if (formulaPrefix.equals(formulaType.GAUSSIAN)) {
-//                System.out.println(formulaPrefix + " currValue: " + gaussFormula.getCurrentValue() + " var: " + var);
+
                 res = gaussFormula.getCurrentValue() == var;
-                if (var > 0)
+                if (var > 0) {
                     res = res || var % gaussFormula.getCurrentValue() == 0;
+                }
                 if (res) {
                     gaussFormula.setNextValue();
-//                    System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
                 }
             } else if (formulaPrefix.equals(formulaType.DETERMINISTIC)) {
 
                 // Verification of deterministic formula
                 res = deterministicFormula.getCurrentValue() == var;
-                if (var > 0)
+                if (var > 0) {
                     res = res || var % deterministicFormula.getCurrentValue() == 0;
-//                if (res)
-//                    System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
+                }
 
             } else if (formulaPrefix.equals(formulaType.PROBABILITY)) {
                 // verification of prob formula - 2 steps
@@ -91,19 +90,17 @@ public class validation {
 
                 if (var == probFormula.getCurrentValue() || (var > 0 && var % probFormula.getCurrentValue() == 0)) {
                     res = probFormula.getState();
-//                    if (res)
-//                        System.out.println("Activated by " + validationMethod + ": " + formulaPrefix);
                 }
-
-
             }
 
-            if (validationMethod.equals(method.TIME))
+            if (validationMethod.equals(method.TIME)) {
                 start_t = Instant.now();
+            }
 
         }
-        if (validationMethod.equals(method.EVENT))
+        if (validationMethod.equals(method.EVENT)) {
             old_var = var;
+        }
 
         return res;
 

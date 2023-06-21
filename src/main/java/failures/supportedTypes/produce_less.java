@@ -98,7 +98,6 @@ public class produce_less extends failures_conditions {
                 old_sRemover = sensor;
             }
             case TURN_OFF -> {
-//                state = SM.WORKING;
                 if (!evalConditions(nParts, age, maintenance)) {
                     state = SM.WORKING;
                 }
@@ -108,8 +107,6 @@ public class produce_less extends failures_conditions {
         // Execute actions
         switch (state) {
             case WORKING, WAITING -> {
-                if (state != old_state) {
-                }
             }
 
             case REMOVING -> {
@@ -131,9 +128,9 @@ public class produce_less extends failures_conditions {
                         throw new RuntimeException("(Produce Less) Activation Variable null but evalConditions was TRUE");
 
                     // Produce Less happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
+//                    System.out.println("********************");
                 }
             }
             case TURN_OFF -> {
@@ -146,17 +143,15 @@ public class produce_less extends failures_conditions {
 
                     sfeiConveyor.addNewFailureOccurrence(newOccurrence);
                     // Produce Less happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
+//                    System.out.println("********************");
                     newOccurrence = new failure_occurrence();
 
                 }
             }
         }
-//        if (old_state != state) {
-//            System.out.println("*** Produce More on " + sfeiConveyor.getName() + " -> [" + state + "]");
-//        }
+
         old_state = state;
     }
 

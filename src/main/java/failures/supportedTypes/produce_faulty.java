@@ -85,9 +85,6 @@ public class produce_faulty extends failures_conditions {
             case WORKING -> {
                 if (evalConditions(nParts, age, maintenance)) {
                     state = SM.WAITING_PART_POSITIONING;
-                    // in this case the machine should have parts in buffer
-//                    if (sfeiMachine.getPartsATM().size() > 0)
-//                        state = SM.WAITING_PART_POSITIONING;
                 }
             }
             case WAITING_PART_POSITIONING -> {
@@ -114,8 +111,6 @@ public class produce_faulty extends failures_conditions {
         // Execute actions
         switch (state) {
             case WORKING, WAITING_PART_POSITIONING -> {
-                if (state != old_state) {
-                }
             }
             case INJECT_FAILURE -> {
                 if (state != old_state) {
@@ -136,9 +131,9 @@ public class produce_faulty extends failures_conditions {
                         throw new RuntimeException("(Produce Faulty) Activation Variable null but evalConditions was TRUE");
 
                     // Produce Faulty happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + sfeiMachine.getFailuresHistory().size() + " on " + sfeiMachine.getName() + " " + newOccurrence);
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + sfeiMachine.getFailuresHistory().size() + " on " + sfeiMachine.getName() + " " + newOccurrence);
+//                    System.out.println("********************");
                 }
 
             }
@@ -151,19 +146,16 @@ public class produce_faulty extends failures_conditions {
 
                     sfeiMachine.addNewFailureOccurrence(newOccurrence);
                     // Produced Faulty Solved
-                    System.out.println("********************");
-                    System.out.println("   Failure " + (sfeiMachine.getFailuresHistory().size() - 1) + " on " + sfeiMachine.getName() + " solved at " + newOccurrence.getEnd_t());
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + (sfeiMachine.getFailuresHistory().size() - 1) + " on " + sfeiMachine.getName() + " solved at " + newOccurrence.getEnd_t());
+//                    System.out.println("********************");
                     newOccurrence = new failure_occurrence();
                 }
             }
         }
-//        if (old_state != state) {
-//            System.out.println("*** Produce Faulty on " + sfeiMachine.getName() + " -> [" + state + "]");
-//        }
         old_state = state;
 
-//        return state != SM.WORKING;
+
     }
 
 }

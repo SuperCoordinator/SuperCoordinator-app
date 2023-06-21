@@ -1,4 +1,4 @@
-package monitor.production;
+package monitors.production;
 
 import communication.database.dbConnection;
 import models.base.SFEE;
@@ -110,8 +110,6 @@ public class SFEE_production_monitor {
             if (visionSensorLocation != null)
                 updatePartDescription(inputRegsValue);
 
-//            printDBG();
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -211,9 +209,9 @@ public class SFEE_production_monitor {
                     /* Can be or not the startLine,
                      * so SFEI with idx == 1 will accept the part from this one. */
                     if (utils.getInstance().getLogicalOperator().RE_detector(b_inSensor, SFEIs_old_inSensors[sfei_idx]) || b_inSensor) {
-//                        System.out.println(sfei_inSensor.getName() + " is ON");
+
                         Iterator<part> iterator = sfee.getSFEIbyIndex(sfei_idx).getPartsATM().iterator();
-//                        System.out.println(sfee.getSFEIbyIndex(sfei_idx).getPartsATM().size());
+
                         if (iterator.hasNext()) {
                             part movingPart = iterator.next();
                             /* DATABASE save -> production_history table */
@@ -227,7 +225,6 @@ public class SFEE_production_monitor {
                     }
 
                     if (utils.getInstance().getLogicalOperator().RE_detector(b_outSensor, SFEIs_old_outSensors[sfei_idx])) {
-//                        System.out.println(sfei_outSensor.getName() + " is ON");
                         /* Remove the part from the previous SFEI and place on the next one. */
                         movePart(sfei_idx, sfei_idx + 1, sfei.getOutSensor().getName());
                     }
@@ -267,9 +264,6 @@ public class SFEE_production_monitor {
                 part movingPart = Objects.requireNonNull(sfee.getSFEIbyIndex(origin_sfei).getPartsATM().pollFirst());
                 sfee.getSFEIbyIndex(destination_sfei).addNewPartATM(movingPart);
 
-//                System.out.println("MOVED " + movingPart +
-//                        " from: " + sfee.getSFEIbyIndex(origin_sfei).getName() +
-//                        " to: " + sfee.getSFEIbyIndex(destination_sfei).getName());
 
                 /* DATABASE save -> production_history table */
                 dbConnection.getInstance().getProduction_history().insert(
@@ -301,13 +295,8 @@ public class SFEE_production_monitor {
             if (sfei.getPartsATM().size() > 0) {
                 // In the case of Transport, the most recent part that arrives in the out sensor is the last()
                 part movingPart = Objects.requireNonNull(sfei.getPartsATM().last());
-//                if (sfei.isLine_end()) {
-//                    movingPart.setState(part.status.PRODUCED);
-//                } else {
-//                    movingPart.setState(part.status.WAIT_TRANSPORT);
-//                }
+
                 movingPart.setState(part.status.WAIT_TRANSPORT);
-//                System.out.println("MARKED " + movingPart + " FOR TRANSPORT");
 
                 /* DATABASE save -> production_history table */
                 dbConnection.getInstance().getProduction_history().insert(
@@ -364,11 +353,10 @@ public class SFEE_production_monitor {
                     if (visionSensor_number > 0) {
                         if (sfeiConveyor.getPartsATM().size() > 0) {
                             partDescription actualDescription = Objects.requireNonNull(getPartsAspectByNumber(visionSensor_number));
-//                            Objects.requireNonNull(sfeiConveyor.getPartsATM().first()).setReality(actualDescription);
+
                             part p = Objects.requireNonNull(sfeiConveyor.getPartsATM().last());
                             if (!p.getReality().form().equals(actualDescription.form())) {
                                 p.setReality(actualDescription);
-//                                System.out.println("[" + entry.getValue().getName() + "] " + p);
                             }
                         }
                     }

@@ -31,10 +31,6 @@ public class SFEM {
         this.name = name;
     }
 
-    public SFE_role getSfemRole() {
-        return sfemRole;
-    }
-
     public void addPartToProductionHistory(part_prodTime producedPart) {
         productionHistory.put(producedPart.part().getId(), producedPart);
     }

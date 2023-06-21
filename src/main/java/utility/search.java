@@ -29,48 +29,6 @@ public class search {
         return rTreeMap;
     }
 
-    public sensor_actuator getLargestInputOffset(TreeMap<Integer, sensor_actuator> treeMap) {
-        sensor_actuator largestOff = null;
-        boolean first = true;
-        try {
-            for (sensor_actuator sa : treeMap.values()) {
-                if (sa.getType() == sensor_actuator.Type.INPUT) {
-                    if (first) {
-                        largestOff = sa;
-                        first = false;
-                        continue;
-                    }
-                    if (largestOff.getOffset() < sa.getOffset())
-                        largestOff = sa;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return largestOff;
-    }
-
-    public sensor_actuator getLargestOutputOffset(TreeMap<Integer, sensor_actuator> treeMap) {
-        sensor_actuator largestOff = null;
-        boolean first = true;
-        try {
-            for (sensor_actuator sa : treeMap.values()) {
-                if (sa.getType() == sensor_actuator.Type.OUTPUT) {
-                    if (first) {
-                        largestOff = sa;
-                        first = false;
-                        continue;
-                    }
-                    if (largestOff.getOffset() < sa.getOffset())
-                        largestOff = sa;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return largestOff;
-    }
-
     public int[] getLargestOffsetperAddressType(TreeMap<Integer, sensor_actuator> treeMap) {
 
         // coils, discrete inputs, input registers, holding registers
@@ -87,17 +45,4 @@ public class search {
         return cnts;
     }
 
-    public sensor_actuator getIObyName(String name, TreeMap<Integer, sensor_actuator> io) {
-
-        try {
-            for (Map.Entry<Integer, sensor_actuator> entry : io.entrySet()) {
-                if (entry.getValue().getName().equalsIgnoreCase(name))
-                    return entry.getValue();
-            }
-            throw new Exception("IO with name " + name + " not found!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

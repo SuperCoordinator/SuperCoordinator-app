@@ -103,6 +103,7 @@ public class App {
         System.out.println("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
         System.out.println("   1 - Monitor/Tracking Parts");
         System.out.println("   2 - Failures History      ");
+        System.out.println("   3 - Threads list          ");
         System.out.println("   e - Exit execution        ");
         System.out.println("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
         System.out.print("> ");
@@ -115,11 +116,11 @@ public class App {
 
         int opt = Integer.parseInt(input);
         do {
-            if (opt < 1 || opt > 2)
+            if (opt < 1 || opt > 3)
                 System.out.println("Invalid option. Try again!");
             System.out.print("> ");
             opt = Integer.parseInt(in.nextLine());
-        } while (opt < 1 || opt > 2);
+        } while (opt < 1 || opt > 3);
 
 
         if (opt == 1) {
@@ -150,6 +151,11 @@ public class App {
                         System.out.println(Arrays.toString(sfei.getFailuresHistory().values().toArray()));
                     }
                 }
+            }
+        } else if (opt == 3) {
+            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+            for (Thread x : threadSet) {
+                System.out.println(x.getName());
             }
         }
 

@@ -21,9 +21,6 @@ public class failures_conditions extends failure {
         if (aCondition != null) activated_by_A = aCondition.evalFormula(a);
         if (mCondition != null) activated_by_M = mCondition.evalFormula(m);
 
-//        if (activated_by_N || activated_by_A || activated_by_M)
-//            System.out.println("Failure activated by variable n:" + activated_by_N + " a:" + activated_by_A + " m:" + activated_by_M);
-
         return activated_by_N || activated_by_A || activated_by_M;
     }
 

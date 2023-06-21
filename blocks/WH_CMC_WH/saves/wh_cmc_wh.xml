@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<serializable>
+<config>
     <failureOccurrencesPath>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\WH_CMC_WH\saves/failuresOccurrences/</failureOccurrencesPath>
     <inboundOrdersPath>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\WH_CMC_WH\inboundOrders</inboundOrdersPath>
     <databasePath>C:\Users\danie\Documents\GitHub\SC-sketch\database</databasePath>
+    <randomSeed>3587214</randomSeed>
     <c_Production>
         <sfem sfemRole="PRODUCTION" name="SFEM_metalPL">
             <SFEEs>
@@ -38,7 +39,7 @@
                             </entry>
                             <entry>
 <key>2</key>
-<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_0" sfeiType="CONVEYOR" minOperationTime="8" anufacturing_date="2023-06-15T14:16:19.016299Z" last_maintenance="2023-06-15T14:16:19.016299Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
+<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiConveyor" name="ExitConveyor_0" sfeiType="CONVEYOR" minOperationTime="8" manufacturing_date="2023-06-15T14:16:19.016299Z" last_maintenance="2023-06-15T14:16:19.016299Z" simulation="true" supportsFailures="true" lineStart="false" lineEnd="true">
     <inSensor name="s_exitMC0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="12"/>
     <outSensor name="s_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="13"/>
     <aRemover name="exit_R0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="6"/>
@@ -172,4 +173,4 @@
         <user>root</user>
         <pass></pass>
     </connection>
-</serializable>
+</config>

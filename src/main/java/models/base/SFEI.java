@@ -161,10 +161,6 @@ public class SFEI {
         return simulation;
     }
 
-    public boolean isSupportsFailures() {
-        return supportsFailures;
-    }
-
     public boolean isLine_start() {
         return line_start;
     }

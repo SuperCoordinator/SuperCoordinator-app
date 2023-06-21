@@ -9,10 +9,9 @@ import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
-import monitor.transport.SFEE_transport_monitor;
+import monitors.transport.SFEE_transport_monitor;
 import org.apache.commons.math3.util.Pair;
 import utility.serialize.serializer;
-import viewers.SFEE_transport;
 
 import javax.xml.bind.annotation.*;
 import java.time.Instant;
@@ -43,8 +42,6 @@ public class cSFEE_transport {
     @XmlAttribute
     private String nextSFEI_name;
 
-    private final SFEE_transport viewer = new SFEE_transport();
-
     public cSFEE_transport() {
     }
 
@@ -63,25 +60,6 @@ public class cSFEE_transport {
 
     public SFEE getSfee() {
         return sfee;
-    }
-
-    public String getPrevSFEI_name() {
-        return prevSFEI_name;
-    }
-
-    public String getNextSFEI_name() {
-        return nextSFEI_name;
-    }
-
-    public String getSavedFormula() {
-
-        String reBuiltFormula;
-        if (sfeeFailures.getStochasticType().equals(stochasticTime.timeOptions.LINEAR))
-            reBuiltFormula = "linear [ " + sfeeFailures.getStochasticFormulas()[0] + "]";
-        else
-            reBuiltFormula = "gauss [ " + sfeeFailures.getStochasticFormulas()[0] + "; " + sfeeFailures.getStochasticFormulas()[1] + "]";
-
-        return reBuiltFormula;
     }
 
     /* Only to see if the next SFEE is free or with parts in production*/
@@ -166,8 +144,6 @@ public class cSFEE_transport {
 
     public void init_OperationMode(ArrayList<Object> data) {
 
-
-//        String[] sfeeTime = viewer.SFEE_stochasticTime();
         String operator = (String) data.get(0);
         String mean = (String) data.get(1);
         String dev = " ";

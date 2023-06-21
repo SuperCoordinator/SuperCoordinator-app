@@ -58,19 +58,10 @@ public class cSFEM_warehouse implements Runnable {
     public void run() {
         try {
             sfeeWarehouseController.loop();
-//            printDBG();
         } catch (Exception e) {
             // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();
         }
     }
 
-    private void printDBG() {
-        for (SFEI sfei : sfeeWarehouseController.getSfee().getSFEIs().values()) {
-            System.out.println(sfei.getName());
-            for (part movingPart : sfei.getPartsATM()) {
-                System.out.println(movingPart);
-            }
-        }
-    }
 }

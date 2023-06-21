@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<serializable>
+<config>
     <failureOccurrencesPath>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\WH_SS_3CMC_MCS_WH\saves\failuresOccurrences</failureOccurrencesPath>
     <inboundOrdersPath>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\WH_SS_3CMC_MCS_WH\inboundOrders</inboundOrdersPath>
     <databasePath>C:\Users\danie\Documents\GitHub\SC-sketch\database</databasePath>
+    <randomSeed>3587214</randomSeed>
     <!-- Production with SortingStation and 3 Production Lines   -->
     <c_Production>
         <sfem sfemRole="PRODUCTION" name="SFEM_ProductionLine">
@@ -349,7 +350,7 @@
                 <entry>
                     <key>0</key>
                     <value sfeeEnvironment="REAL" sfeeRole="PRODUCTION" com="MODBUS" name="SFEE_Staudinger">
-                        <IO_path>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\MC_Staudinger\simulation\Tags_MC_Staudinger.csv</IO_path>
+                        <IO_path>C:\Users\danie\Documents\GitHub\SC-sketch\blocks\WH_SS_3CMC_MCS_WH\simulation\Tags_MC_Staudinger.csv</IO_path>
                         <SFEIs>
                             <entry>
                                 <key>0</key>
@@ -629,4 +630,4 @@
         <user>root</user>
         <pass></pass>
     </connection>
-</serializable>
+</config>

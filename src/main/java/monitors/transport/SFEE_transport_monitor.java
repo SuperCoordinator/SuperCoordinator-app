@@ -1,4 +1,4 @@
-package monitor.transport;
+package monitors.transport;
 
 import communication.database.dbConnection;
 import models.sfe_x.SFEI_transport;

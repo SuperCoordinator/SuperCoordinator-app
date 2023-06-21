@@ -10,6 +10,7 @@ import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
 import org.apache.ibatis.jdbc.ScriptRunner;
+import utility.utils;
 
 
 import javax.xml.bind.JAXBContext;
@@ -38,19 +39,6 @@ public class serializer {
         private static final serializer INSTANCE = new serializer();
     }
 
-    //    public enum scenes {
-//        CMC_connection,
-//        CMC2_con_individual,
-//        sorting_station,
-//        WH_SS_3CMC,
-//        MC_Staudinger,
-//        WH_SS_WH,
-//        WH_SS_3CMC_WH,
-//        WH_SS_3CMC_MCS_WH
-//    }
-//
-//    public final scenes scene = scenes.WH_SS_3CMC_WH;
-//    private final String filePath = "blocks/" + scene + "/saves/" + scene;
     public String scene;
     private serializable serializable = new serializable();
 
@@ -100,6 +88,7 @@ public class serializer {
             String scene = fileName.split(".xml")[0];
             this.scene = scene;
             createDB(scene);
+            utils.getInstance().setRnd_seed(serializable.getRandSeed());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -159,8 +148,6 @@ public class serializer {
                     getC_Warehouse().getSfeeWarehouseController().getSfee().getName());
         });
 
-/*       dbConnection.getInstance().getSfeis().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
-                getC_Warehouse().getSfeeWarehouseController().getSfee().getName());*/
 
         // Invented in sensor -> warehouse_entryDoor
         dbConnection.getInstance().getSensors().insert("warehouse_entryDoor",
@@ -312,6 +299,10 @@ public class serializer {
 
     public String getDatabasePath() {
         return serializable.getDatabasePath();
+    }
+
+    public long getRandomSeed() {
+        return serializable.getRandSeed();
     }
 
     public void saveFailuresHistory() {

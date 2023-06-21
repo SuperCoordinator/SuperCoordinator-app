@@ -3,7 +3,7 @@ package controllers.warehouse;
 import models.sfe_x.SFEI_warehouse;
 import models.sfe_x.SFEM_warehouse;
 import models.base.SFEE;
-import monitor.warehouse.SFEE_warehouse_monitor;
+import monitors.warehouse.SFEE_warehouse_monitor;
 
 public class cSFEE_warehouse {
 

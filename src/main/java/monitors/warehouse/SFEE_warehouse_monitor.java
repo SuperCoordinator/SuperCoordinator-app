@@ -1,4 +1,4 @@
-package monitor.warehouse;
+package monitors.warehouse;
 
 
 import communication.database.dbConnection;
@@ -120,9 +120,6 @@ public class SFEE_warehouse_monitor {
             inboundOrder order = (inboundOrder) unmarshaller.unmarshal(new FileReader(f.getPath() + "/" + Objects.requireNonNull(f.list())[file_index]));
 
             // Register received order on DB
-//            dbConnection.getInstance().getInbound_orders().insert(inbound_order_id, order.getMetal_qty(), order.getGreen_qty(), order.getBlue_qty());
-//            createParts(order, inbound_order_id);
-//            inbound_order_id++;
             dbConnection.getInstance().getInbound_orders().insert(order.getMetal_qty(), order.getGreen_qty(), order.getBlue_qty());
             inbound_order_id++;
             createParts(order, inbound_order_id);
@@ -176,7 +173,7 @@ public class SFEE_warehouse_monitor {
 
             SFEI sfei = sfee.getSFEIs().get(0);
             sfei.getPartsATM().addAll(recentArrivedParts);
-            System.out.println("#parts in the warehouse: " + sfee.getSFEIs().get(0).getPartsATM().size());
+            System.out.println("inbound order#" + inboundOrder_id + "-> #parts in stock: " + sfee.getSFEIs().get(0).getPartsATM().size());
 
             /* Increment the number of parts moved by the SFEI sfei_idx. */
             sfei.setnPartsMoved(sfei.getnPartsMoved() + recentArrivedParts.size());

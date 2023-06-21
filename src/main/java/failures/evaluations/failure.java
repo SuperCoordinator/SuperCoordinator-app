@@ -31,8 +31,7 @@ public class failure {
         ret[0] = getLastFailureOccurrenceByVariable(failure_occurrence.activationVariable.N, sfei);
         ret[1] = getLastFailureOccurrenceByVariable(failure_occurrence.activationVariable.A, sfei);
         ret[2] = getLastFailureOccurrenceByVariable(failure_occurrence.activationVariable.M, sfei);
-//        if (ret[0] > 0 || ret[1] > 0 || ret[2] > 0)
-//            System.out.println(Arrays.toString(ret));
+
         return ret;
     }
 

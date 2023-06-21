@@ -60,14 +60,6 @@ public class SFEE_transport_failures {
             this.gaussFormula = new gaussFormula();
     }
 
-    public stochasticTime.timeOptions getStochasticType() {
-        return stochasticType;
-    }
-
-    public String[] getStochasticFormulas() {
-        return stochasticFormulas;
-    }
-
     private boolean firstRun = true;
 
     public void loop(ArrayList<List<Object>> sensorsState, ArrayList<List<Object>> actuatorsState, boolean isNextSFEE_free) {
@@ -107,10 +99,7 @@ public class SFEE_transport_failures {
                                         sfee.getSFEIbyIndex(0),
                                         0,
                                         movingPart,
-                                        calculateDelay()
- /*                                       stochasticType,
-                                        stochasticFormulas,
-                                        0*/);
+                                        calculateDelay());
                                 stochasticTimeTask.setTransportConfiguration(configuration);
                                 break;
                             }
@@ -135,8 +124,7 @@ public class SFEE_transport_failures {
 
     private boolean checkNewPiece() {
         int currID = oldPartID;
-//        System.out.println("[" + SFEE_transport_failures.class + "]  partsATM size:" + sfee.getSFEIbyIndex(0).getPartsATM().size());
-//        sfee.getSFEIbyIndex(0).getPartsATM().forEach(System.out::println);
+
         if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
             currID = sfee.getSFEIbyIndex(0).getPartsATM().first().getId();
         }

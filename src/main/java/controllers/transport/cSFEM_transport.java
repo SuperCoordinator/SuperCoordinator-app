@@ -5,8 +5,6 @@ import models.base.SFE_role;
 import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
-import models.base.part;
-import monitor.transport.SFEM_transport_monitor;
 import org.apache.commons.math3.util.Pair;
 
 import javax.xml.bind.annotation.*;
@@ -18,7 +16,6 @@ public class cSFEM_transport implements Runnable {
 
     @XmlElement
     private SFEM_transport sfem;
-    private SFEM_transport_monitor sfemTransportMonitor;
     @XmlElement
     private cSFEE_transport sfeeTransportController;
 
@@ -35,10 +32,6 @@ public class cSFEM_transport implements Runnable {
         return sfem;
     }
 
-    public cSFEE_transport getSfeeTransportController() {
-        return sfeeTransportController;
-    }
-
     public void init_SFEE_transport(String SFEE_transport_name) {
         try {
             SFEE sfeeTransp = new SFEE(SFEE_transport_name,
@@ -46,7 +39,6 @@ public class cSFEM_transport implements Runnable {
                     SFE_role.TRANSPORT,
                     SFEE.communicationOption.MODBUS);
             sfem.setSfeeTransport(sfeeTransp);
-            sfemTransportMonitor = new SFEM_transport_monitor(sfem);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,7 +47,6 @@ public class cSFEM_transport implements Runnable {
     public void init_after_XML_load() {
         sfeeTransportController.setSfee(sfem.getSfeeTransport());
         sfeeTransportController.setConfiguration(sfem.getTransport_configuration());
-        sfemTransportMonitor = new SFEM_transport_monitor(sfem);
     }
 
     public void init_cSFEETransport(SFEM_transport.configuration configuration, ArrayList<Object> initController_data, ArrayList<Object> initOperationMode_data) {
@@ -84,22 +75,11 @@ public class cSFEM_transport implements Runnable {
     public void run() {
         try {
             sfeeTransportController.loop();
-            sfemTransportMonitor.loop();
-//            printDBG();
         } catch (Exception e) {
             // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();
         }
 
-    }
-
-    private void printDBG() {
-        for (SFEI sfei : sfeeTransportController.getSfee().getSFEIs().values()) {
-            System.out.println(sfei.getName());
-            for (part movingPart : sfei.getPartsATM()) {
-                System.out.println(movingPart);
-            }
-        }
     }
 
 

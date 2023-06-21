@@ -213,11 +213,6 @@ public class customCalculator {
         if (elements[0].charAt(elements[0].length() - 1) == ' ')
             elements[0] = elements[0].substring(0, elements[0].length() - 1);
 
-/*        for (String str : elements) {
-            System.out.print(str + "/");
-        }
-        System.out.println("");*/
-
         // gaussian
         if (elements[0].equalsIgnoreCase("gauss")) {
             boolean b = evalExpression(elements[1]);

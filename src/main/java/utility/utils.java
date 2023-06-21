@@ -55,6 +55,7 @@ public class utils {
 
     public void setRnd_seed(long rnd_seed) {
         this.rnd_seed = rnd_seed;
+        random.setSeed(rnd_seed);
     }
 
     public int validateUserOption(int min, int max) {

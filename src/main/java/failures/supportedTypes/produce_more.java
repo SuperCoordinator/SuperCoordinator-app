@@ -110,8 +110,6 @@ public class produce_more extends failures_conditions {
         // Execute actions
         switch (state) {
             case WORKING -> {
-                if (state != old_state) {
-                }
             }
             case TURN_ON -> {
                 if (state != old_state) {
@@ -120,9 +118,6 @@ public class produce_more extends failures_conditions {
                     faulty_partID++;
                     sfeiConveyor.addNewPartATM(newPart);
 
-//                    // For the overflow, just in case
-//                    if (faulty_partID > 0)
-//                        faulty_partID = Integer.MAX_VALUE / 2;
 
                     holdRegs.set(sfeiConveyor.getaEmitPart().getOffset(), (int) Math.pow(2, getNumberbyPartAspect(newPart.getReality()) + 4 - 1));
                     actuatorsState.set(sfeiConveyor.getaEmit().getOffset(), 1);
@@ -141,14 +136,12 @@ public class produce_more extends failures_conditions {
                         throw new RuntimeException("(Produce More) Activation Variable null but evalConditions was TRUE");
 
                     // Produce More happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
+//                    System.out.println("********************");
                 }
             }
-            case WAITING -> {
-                holdRegs.set(sfeiConveyor.getaEmitPart().getOffset(), (int) Math.pow(2, getNumberbyPartAspect(new partDescription(material, partDescription.form.RAW)) + 4 - 1));
-            }
+            case WAITING -> holdRegs.set(sfeiConveyor.getaEmitPart().getOffset(), (int) Math.pow(2, getNumberbyPartAspect(new partDescription(material, partDescription.form.RAW)) + 4 - 1));
 
             case TURN_OFF -> {
                 if (state != old_state) {
@@ -159,17 +152,15 @@ public class produce_more extends failures_conditions {
 
                     sfeiConveyor.addNewFailureOccurrence(newOccurrence);
                     // Produce More happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
+//                    System.out.println("********************");
                     newOccurrence = new failure_occurrence();
 
                 }
             }
         }
-//        if (old_state != state) {
-//            System.out.println("*** Produce More on " + sfeiConveyor.getName() + " -> [" + state + "]");
-//        }
+
         old_state = state;
     }
 

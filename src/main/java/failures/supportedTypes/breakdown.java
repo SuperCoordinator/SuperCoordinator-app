@@ -123,9 +123,9 @@ public class breakdown extends failures_conditions {
                         throw new RuntimeException("(Breakdown) Activation Variable null but evalConditions was TRUE");
 
                     // Breakdown happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
+//                    System.out.println("********************");
                 }
             }
             case RESUMING -> {
@@ -138,9 +138,9 @@ public class breakdown extends failures_conditions {
                     sfeiConveyor.addNewFailureOccurrence(newOccurrence);
 
                     // Breakdown  Solved
-                    System.out.println("********************");
-                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
+//                    System.out.println("********************");
 
                     newOccurrence = new failure_occurrence();
 
@@ -148,9 +148,7 @@ public class breakdown extends failures_conditions {
             }
 
         }
-//        if (old_state != state) {
-//            System.out.println("*** BREAKDOWN on " + sfeiConveyor.getName() + " -> [" + state + "]");
-//        }
+
 
         old_state = state;
 

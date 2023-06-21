@@ -133,26 +133,11 @@ public class modbus implements Runnable {
 
     }
 
-    private final List<Long> runtime = new ArrayList<>();
-    private final Instant init_t = Instant.now();
-    private boolean printDBG = false;
-
-    private long runLoop = 0;
-    private long writeLoop = 0;
-
     @Override
     public void run() {
         try {
             if (con != null) {
-                Instant start_t = Instant.now();
 
-                // Read Step
-/*            if (coils.length() > 0) {
-                BitVector bitVector = con.readCoils(0, coils.length());
-                for (int i = 0; i < bitVector.size(); i++) {
-                    coils.getAndSet(i, outputs_invLogic[i] == bitVector.getBit(i) ? 0 : 1);
-                }
-            }*/
                 if (discreteInputs != null) {
                     if (discreteInputs.length() > 0) {
                         BitVector bitVector = con.readInputDiscretes(0, discreteInputs.length());
@@ -170,12 +155,6 @@ public class modbus implements Runnable {
                         }
                     }
                 }
-/*              if (holdingRegisters.length() > 0) {
-                Register[] registers = con.readMultipleRegisters(0, holdingRegisters.length());
-                for (int i = 0; i < registers.length; i++) {
-                    holdingRegisters.getAndSet(i, registers[i].getMean());
-                }
-            }*/
 
                 // Write Step
                 if (coils != null) {
@@ -187,7 +166,6 @@ public class modbus implements Runnable {
                         }
                         con.writeMultipleCoils(0, bitVector);
                         coilsUpdated.set(false);
-                        writeLoop++;
                     }
                 }
                 if (holdingRegisters != null) {
@@ -200,30 +178,9 @@ public class modbus implements Runnable {
 
                         con.writeMultipleRegisters(0, registers);
                         hRegUpdated.set(false);
-                        writeLoop++;
                     }
                 }
 
-//            System.out.println("MB execution time (ms) " + Duration.between(start_t, Instant.now()).toMillis());
-                if (Duration.between(init_t, Instant.now()).toSeconds() > 30) {
-                    if (Duration.between(init_t, Instant.now()).toSeconds() % 5 == 0) {
-                        if (!printDBG) {
-
-                            long totalRuntime = 0;
-                            for (Long run_t : runtime) {
-                                totalRuntime = totalRuntime + run_t;
-                            }
-                            //                        System.out.println("MB C_Runtime (ms): " + totalRuntime / C_Runtime.size());
-                            //                        System.out.println("Runloop: " + runLoop + " Writeloop: " + writeLoop);
-                            printDBG = true;
-                        }
-                    } else {
-                        printDBG = false;
-                    }
-                }
-
-                runLoop++;
-                runtime.add(Duration.between(start_t, Instant.now()).toMillis());
             }
 
         } catch (Exception e) {
@@ -288,9 +245,6 @@ public class modbus implements Runnable {
                         coils.getAndSet(i, (Integer) coilsList.get(i));
                         coilsUpdated.getAndSet(true);
                     }
-//                    int old = coils.getAndSet(i, (Integer) coilsList.get(i));
-//                    if (old != (Integer) coilsList.get(i))
-//                        coilsUpdated.getAndSet(true);
                 }
             }
         } catch (Exception e) {
@@ -311,10 +265,6 @@ public class modbus implements Runnable {
                         holdingRegisters.getAndSet(i, (Integer) registers.get(i));
                         hRegUpdated.getAndSet(true);
                     }
-//                    int old = holdingRegisters.getAndSet(i, (Integer) registers.get(i));
-//                    if (old != (Integer) registers.get(i)) {
-//                        hRegUpdated.getAndSet(true);
-//                    }
                 }
             }
         } catch (Exception e) {
