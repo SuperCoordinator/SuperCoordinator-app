@@ -11,21 +11,8 @@ import java.util.List;
 
 public class M_sf_configuration extends queries_buffer implements IM_sf_configuration {
 
-    //    /**
-//     * Singleton pattern
-//     */
     public M_sf_configuration() {
     }
-//
-//    public static M_sf_configuration getInstance() {
-//        return M_sf_configuration.sf_configurationHolder.INSTANCE;
-//    }
-//
-//
-//    private static class sf_configurationHolder {
-//        private static final M_sf_configuration INSTANCE = new M_sf_configuration();
-//    }
-
 
     @Override
     public void insert(String sf_configuration) {

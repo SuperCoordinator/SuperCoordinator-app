@@ -2,7 +2,7 @@ package failures.supportedTypes;
 
 import failures.evaluations.failure_occurrence;
 import failures.evaluations.failures_conditions;
-import models.SFEx.SFEI_conveyor;
+import models.sfe_x.SFEI_conveyor;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -63,7 +63,7 @@ public class breakdown extends failures_conditions {
         if (state != SM.DISABLED) {
             int[] lastFailureOccurrenceDetails = getLastFailureOccurrence(sfeiConveyor);
 
-            nParts = sfeiConveyor.getnPiecesMoved() - lastFailureOccurrenceDetails[0];
+            nParts = sfeiConveyor.getnPartsMoved() - lastFailureOccurrenceDetails[0];
 
             // If it is 0, then not happened yet the 1st failure
             if (lastFailureOccurrenceDetails[1] == 0) {
@@ -107,7 +107,7 @@ public class breakdown extends failures_conditions {
             case DISABLED -> {
                 if (state != old_state) {
                     // IF SFEI == conveyor !!
-                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().getBit_offset(), 1);
+                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().getOffset(), 1);
 
                     failure_occurrence.activationVariable actVar = null;
                     if (wasActivated_by_N()) {
@@ -118,19 +118,19 @@ public class breakdown extends failures_conditions {
                         actVar = failure_occurrence.activationVariable.M;
                     }
                     if (actVar != null)
-                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.BREAKDOWN, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
+                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.BREAKDOWN, actVar, sfeiConveyor.getnPartsMoved(), Instant.now());
                     else
                         throw new RuntimeException("(Breakdown) Activation Variable null but evalConditions was TRUE");
 
                     // Breakdown happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
+//                    System.out.println("********************");
                 }
             }
             case RESUMING -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().getBit_offset(), 0);
+                    actuatorsState.set(sfeiConveyor.getaConveyorMotor().getOffset(), 0);
 
                     Instant t = Instant.now();
                     newOccurrence.setEnd_t(t);
@@ -138,9 +138,9 @@ public class breakdown extends failures_conditions {
                     sfeiConveyor.addNewFailureOccurrence(newOccurrence);
 
                     // Breakdown  Solved
-                    System.out.println("********************");
-                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
+//                    System.out.println("********************");
 
                     newOccurrence = new failure_occurrence();
 
@@ -148,9 +148,7 @@ public class breakdown extends failures_conditions {
             }
 
         }
-//        if (old_state != state) {
-//            System.out.println("*** BREAKDOWN on " + sfeiConveyor.getName() + " -> [" + state + "]");
-//        }
+
 
         old_state = state;
 

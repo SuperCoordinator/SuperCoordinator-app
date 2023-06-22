@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<failureOccurrenceArray/>
+<failureOccurrenceArray>
+    <failuresOccurrences SFEI="EntryConveyor_0" activation_variable="N" failureType="PRODUCE_LESS" nPartsMovedAtTime="29" startT="2023-06-16T14:02:13.655154500Z" endT="2023-06-16T14:03:00.058603100Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_0" activation_variable="N" failureType="PRODUCE_LESS" nPartsMovedAtTime="57" startT="2023-06-16T14:34:53.368144200Z" endT="2023-06-16T14:35:39.863609400Z"/>
+    <failuresOccurrences SFEI="EntryConveyor_0" activation_variable="N" failureType="PRODUCE_LESS" nPartsMovedAtTime="81" startT="2023-06-16T15:01:26.361556100Z" endT="2023-06-16T15:02:14.059015900Z"/>
+</failureOccurrenceArray>

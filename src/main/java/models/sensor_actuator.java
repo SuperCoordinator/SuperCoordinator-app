@@ -4,10 +4,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -55,25 +51,25 @@ public final class sensor_actuator  {
     @XmlAttribute
     private int register;
     @XmlAttribute
-    private int bit_offset;
+    private int offset;
 
     public sensor_actuator() {
     }
 
     public sensor_actuator(String name, Type type, boolean invLogic,
                            DataType dataType,
-                           AddressType addressType, int register, int bit_offset) {
+                           AddressType addressType, int register, int offset) {
         this.name = name;
         this.type = type;
         this.invLogic = invLogic;
         this.dataType = dataType;
         this.addressType = addressType;
         this.register = register;
-        this.bit_offset = bit_offset;
+        this.offset = offset;
     }
 
     public sensor_actuator changeInvLogic(boolean invLogic) {
-        return new sensor_actuator(getName(), getType(), invLogic, getDataType(), getAddressType(), getRegister(), getBit_offset());
+        return new sensor_actuator(getName(), getType(), invLogic, getDataType(), getAddressType(), getRegister(), getOffset());
     }
 
 
@@ -101,8 +97,8 @@ public final class sensor_actuator  {
         return register;
     }
 
-    public int getBit_offset() {
-        return bit_offset;
+    public int getOffset() {
+        return offset;
     }
 
 }

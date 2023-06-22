@@ -2,7 +2,7 @@ package failures.supportedTypes;
 
 import failures.evaluations.failure_occurrence;
 import failures.evaluations.failures_conditions;
-import models.SFEx.SFEI_conveyor;
+import models.sfe_x.SFEI_conveyor;
 import models.base.part;
 import models.partDescription;
 import utility.utils;
@@ -70,7 +70,7 @@ public class produce_more extends failures_conditions {
         if (state == SM.WORKING || state == SM.TURN_OFF) {
             int[] lastFailureOccurrenceDetails = getLastFailureOccurrence(sfeiConveyor);
 
-            nParts = sfeiConveyor.getnPiecesMoved() - lastFailureOccurrenceDetails[0];
+            nParts = sfeiConveyor.getnPartsMoved() - lastFailureOccurrenceDetails[0];
 
             // If it is 0, then not happened yet the 1st failure
             if (lastFailureOccurrenceDetails[1] == 0) {
@@ -92,11 +92,9 @@ public class produce_more extends failures_conditions {
                     state = SM.TURN_ON;
                 }
             }
-            case TURN_ON -> {
-                state = SM.WAITING;
-            }
+            case TURN_ON -> state = SM.WAITING;
             case WAITING -> {
-                boolean sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().getBit_offset()) == 1;
+                boolean sensor = (int) sensorsState.get(sfeiConveyor.getsEmitter().getOffset()) == 1;
                 if (utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sEmitter)) {
                     state = SM.TURN_OFF;
                 }
@@ -112,13 +110,7 @@ public class produce_more extends failures_conditions {
         // Execute actions
         switch (state) {
             case WORKING -> {
-                if (state != old_state) {
-                }
             }
-            case WAITING -> {
-                holdRegs.set(sfeiConveyor.getaEmitPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(new partDescription(material, partDescription.form.RAW)) + 4 - 1));
-            }
-
             case TURN_ON -> {
                 if (state != old_state) {
 
@@ -126,12 +118,9 @@ public class produce_more extends failures_conditions {
                     faulty_partID++;
                     sfeiConveyor.addNewPartATM(newPart);
 
-//                    // For the overflow, just in case
-//                    if (faulty_partID > 0)
-//                        faulty_partID = Integer.MAX_VALUE / 2;
 
-                    holdRegs.set(sfeiConveyor.getaEmitPart().getBit_offset(), (int) Math.pow(2, getNumberbyPartAspect(newPart.getReality()) + 4 - 1));
-                    actuatorsState.set(sfeiConveyor.getaEmit().getBit_offset(), 1);
+                    holdRegs.set(sfeiConveyor.getaEmitPart().getOffset(), (int) Math.pow(2, getNumberbyPartAspect(newPart.getReality()) + 4 - 1));
+                    actuatorsState.set(sfeiConveyor.getaEmit().getOffset(), 1);
 
                     failure_occurrence.activationVariable actVar = null;
                     if (wasActivated_by_N()) {
@@ -142,36 +131,36 @@ public class produce_more extends failures_conditions {
                         actVar = failure_occurrence.activationVariable.M;
                     }
                     if (actVar != null)
-                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.PRODUCE_MORE, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
+                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.PRODUCE_MORE, actVar, sfeiConveyor.getnPartsMoved(), Instant.now());
                     else
                         throw new RuntimeException("(Produce More) Activation Variable null but evalConditions was TRUE");
 
                     // Produce More happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
+//                    System.out.println("********************");
                 }
             }
+            case WAITING -> holdRegs.set(sfeiConveyor.getaEmitPart().getOffset(), (int) Math.pow(2, getNumberbyPartAspect(new partDescription(material, partDescription.form.RAW)) + 4 - 1));
+
             case TURN_OFF -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaEmit().getBit_offset(), 0);
+                    actuatorsState.set(sfeiConveyor.getaEmit().getOffset(), 0);
 
                     Instant t = Instant.now();
                     newOccurrence.setEnd_t(t);
 
                     sfeiConveyor.addNewFailureOccurrence(newOccurrence);
                     // Produce More happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
+//                    System.out.println("********************");
                     newOccurrence = new failure_occurrence();
 
                 }
             }
         }
-//        if (old_state != state) {
-//            System.out.println("*** Produce More on " + sfeiConveyor.getName() + " -> [" + state + "]");
-//        }
+
         old_state = state;
     }
 

@@ -27,9 +27,6 @@ public class SFEM {
         System.out.print("> ");
         str[0] = in.nextLine();
 
-//        System.out.println("1 - Modbus");
-//        System.out.println("2 - OPC UA");
-//        str[1] = in.nextLine();
         str[1] = "1";
 
         System.out.println("Element Environment");

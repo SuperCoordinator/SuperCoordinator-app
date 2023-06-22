@@ -13,27 +13,12 @@ import java.util.Objects;
 
 public class M_part extends queries_buffer implements IM_part {
 
-    /**
-     * Singleton pattern
-     */
     public M_part() {
     }
 
-    //
-//    public static M_part getInstance() {
-//        return partHolder.INSTANCE;
-//    }
-//
-//    private static class partHolder {
-//        private static final M_part INSTANCE = new M_part();
-//    }
     @Override
     public void insert(int id, String sf_configuration, String status, int inbound_order) {
         try {
-//            String def_vars = "SET @id = " + id + "," +
-//                    " @fk_sf_configuration = '" + sf_configuration + "'," +
-//                    " @status = '" + status + "'," +
-//                    " @fk_inbound_order = " + inbound_order + ";";
 
             if (id >= Integer.MAX_VALUE / 2)
                 return;
@@ -42,15 +27,10 @@ public class M_part extends queries_buffer implements IM_part {
                     "SELECT part_id, sf_config, st, in_order " +
                     "FROM (SELECT '" + id + "' as part_id, '" + sf_configuration + "' as sf_config, '" + status + "' as st, '" + inbound_order + "' as in_order) temp " +
                     "WHERE EXISTS (SELECT id FROM inbound_orders WHERE id = " + inbound_order + ") " +
-//                    "VALUES (@id,@fk_sf_configuration,@status,@fk_inbound_order) " +
                     "ON DUPLICATE KEY UPDATE " +
                     " fk_inbound_orders = " + inbound_order + ";";
             getStoredQueries().add(query);
-//            Statement st = dbConnection.getInstance().getConnection().createStatement();
-//            st.addBatch(def_vars);
-//            st.addBatch(query);
-//
-//            return st.executeBatch()[1];
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -64,7 +44,6 @@ public class M_part extends queries_buffer implements IM_part {
                 return;
             String query = "DELETE FROM part WHERE id =" + id + " AND fk_sf_configuration='" + sf_configuration + "';";
             getStoredQueries().add(query);
-//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -79,7 +58,6 @@ public class M_part extends queries_buffer implements IM_part {
                     "SET status = '" + status + "' " +
                     "WHERE id = " + id + " AND fk_sf_configuration='" + sf_configuration + "';";
             getStoredQueries().add(query);
-//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -96,7 +74,6 @@ public class M_part extends queries_buffer implements IM_part {
                     "(SELECT id FROM outbound_orders WHERE id = " + outbound_order + ") " +
                     "WHERE part.id = " + id + " AND part.fk_sf_configuration = '" + sf_configuration + "';";
             getStoredQueries().add(query);
-//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -147,8 +124,7 @@ public class M_part extends queries_buffer implements IM_part {
                 } else {
                     // Not found in query2, so the part was in the warehouse
                     // it is necessary more information to create the correct part
-//                    list.add(new part());
-                    System.out.println("NOT SUPPOSED TO ENTER HERE! \nPart " + rs.getInt("id") + " do not have record in production_history table.");
+                   throw new RuntimeException("NOT SUPPOSED TO ENTER HERE! \nPart " + rs.getInt("id") + " do not have record in production_history table.");
                 }
 
             }
@@ -202,7 +178,6 @@ public class M_part extends queries_buffer implements IM_part {
                 } else {
                     // Not found in query2, so the part was in the warehouse
                     // it is necessary more information to create the correct part
-//                    list.add(new part());
                     System.out.println("NOT SUPPOSED TO ENTER HERE! \nPart " + rs.getInt("id") + " do not have record in production_history table.");
                 }
 

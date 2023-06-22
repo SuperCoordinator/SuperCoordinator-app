@@ -2,14 +2,12 @@ package controllers.production;
 
 import communication.modbus;
 import models.base.SFEE;
-import models.SFEx.SFEM_production;
-import monitor.production.SFEM_production_monitor;
+import models.base.SFE_role;
+import models.sfe_x.SFEM_production;
+
 
 import javax.xml.bind.annotation.*;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @XmlRootElement
@@ -18,7 +16,6 @@ public class cSFEM_production implements Runnable {
 
     @XmlElement
     private SFEM_production sfem;
-    private SFEM_production_monitor sfemMonitor;
     @XmlElement
     private ArrayList<cSFEE_production> sfeeControllers;
     private final viewers.SFEM viewer = new viewers.SFEM();
@@ -50,7 +47,7 @@ public class cSFEM_production implements Runnable {
                 SFEE sfee = new SFEE(
                         inputs[0],
                         Integer.parseInt(inputs[2]) == 1 ? SFEE.SFEE_environment.SIMULATION : SFEE.SFEE_environment.REAL,
-                        SFEE.SFEE_role.PRODUCTION,
+                        SFE_role.PRODUCTION,
                         Integer.parseInt(inputs[1]) == 1 ? SFEE.communicationOption.MODBUS : SFEE.communicationOption.OPC_UA);
 
                 sfem.addNewSFEE(sfee);
@@ -60,16 +57,13 @@ public class cSFEM_production implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        init_SFEM_production_monitor();
+
     }
 
-    private void init_SFEM_production_monitor() {
-        sfemMonitor = new SFEM_production_monitor(sfem);
-    }
+
 
     public void init_SFEE_controllers(/*int scene, int SFEM_idx*/) {
         try {
-//            int i = 0;
             for (Map.Entry<Integer, SFEE> sfee : sfem.getSFEEs().entrySet()) {
 
                 String[] comConfig = viewer.communicationParams(sfee.getValue().getCom().ordinal(), sfee.getValue().getName());
@@ -78,45 +72,10 @@ public class cSFEM_production implements Runnable {
                 cSFEE_production sfeeController = new cSFEE_production(sfee.getValue(), mb);
 
                 sfeeController.init();
-//                if (scene == 0)
-//                    sfeeController.init(i == 0 ? scene : -1);
-//                else if (scene == 1) {
-//                    if (SFEM_idx == 0)
-//                        sfeeController.init(3);
-//                    else
-//                        sfeeController.init(4);
-//                } else if (scene == 2) {
-//                    if (i == 0)
-//                        sfeeController.init(5);
-//                    else if (i == 1) {
-//                        sfeeController.init(6);
-//                    } else if (i == 2) {
-//                        sfeeController.init(7);
-//                    }
-//                } else if (scene == 3) {
-//                    if (SFEM_idx == 0) {
-//                        sfeeController.init(scene + 5);
-//                    } else if (SFEM_idx == 1) {
-//                        sfeeController.init(scene + 6 + i);
-//                        firstRun(false, i);
-//                    }
-//                } else if (scene == 4) {
-//                    sfeeController.init(scene + 8);
-//                } else if (scene == 5) {
-//                    sfeeController.init(scene + 8);
-//                } else if (scene == 6) {
-//                    if (i == 0) {
-//                        sfeeController.init(scene + 8);
-//                    } else {
-//                        sfeeController.init(scene + 8 + i);
-//                        firstRun(false, i);
-//                    }
-//                }
 
                 sfeeController.initFailures();
 
                 sfeeControllers.add(sfeeController);
-//                i++;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -175,24 +134,6 @@ public class cSFEM_production implements Runnable {
 
     }
 
-//    public void firstRun(boolean run, int itr) {
-//        if (run)
-//            for (cSFEE_production sfeeController : sfeeControllers) {
-//                sfeeController.launchSetup();
-//            }
-//        else {
-//            int[] array = new int[]{9, 33, 8};
-//            for (int i = 0; i < sfem.getSFEEbyIndex(itr).getSFEIs().size(); i++) {
-//                sfem.getSFEEbyIndex(itr).getSFEIbyIndex(i).setMinOperationTime(array[i]);
-//            }
-//
-///*            sfem.getSFEEbyIndex(1).getSFEIbyIndex(0).setMinOperationTime(9);
-//            sfem.getSFEEbyIndex(1).getSFEIbyIndex(1).setMinOperationTime(33);
-//            sfem.getSFEEbyIndex(1).getSFEIbyIndex(2).setMinOperationTime(8);*/
-//        }
-//
-//    }
-
     public modbus searchMBbySFEE(String sfeeName) {
         try {
             modbus mb = null;
@@ -221,12 +162,7 @@ public class cSFEM_production implements Runnable {
             for (cSFEE_production sfeeController : sfeeControllers) {
                 sfeeController.getMb().reOpenConnection();
             }
-
             firstExe = false;
-
-            // In case of load from XML
-            if (sfemMonitor == null)
-                init_SFEM_production_monitor();
         }
         sfeeControllers.get(0).launchSimulation();
     }
@@ -234,26 +170,21 @@ public class cSFEM_production implements Runnable {
     public void endSimulation() {
         sfeeControllers.get(0).stopSimulation();
 
-        for (cSFEE_production sfeeController : sfeeControllers) {
-            sfeeController.closeCommunication();
-        }
+//        for (cSFEE_production sfeeController : sfeeControllers) {
+//            sfeeController.closeCommunication();
+//        }
 
     }
 
 
-//    private final List<Long> C_Runtime = new ArrayList<>();
+
 
     @Override
     public void run() {
         try {
-//            Instant start_t = Instant.now();
-
             for (cSFEE_production sfeeController : sfeeControllers) {
                 sfeeController.loop();
             }
-//            sfemMonitor.loop(/*C_Runtime*/);
-
-//            C_Runtime.add(Duration.between(start_t, Instant.now()).toMillis());
         } catch (Exception e) {
             // In child thread, it must print the Exception because the main thread do not catch Runtime Exception from the others
             e.printStackTrace();

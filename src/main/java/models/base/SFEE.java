@@ -15,17 +15,10 @@ public class SFEE {
     }
 
     @XmlAttribute
-    private SFEE_environment SFEE_environment;
-
-    public enum SFEE_role {
-        PRODUCTION,
-        SORTING_STATION,
-        TRANSPORT,
-        WAREHOUSE
-    }
+    private SFEE_environment sfeeEnvironment;
 
     @XmlAttribute
-    private SFEE_role sfeeRole;
+    private SFE_role sfeeRole;
 
     public enum communicationOption {
         MODBUS, OPC_UA, MIXED
@@ -50,9 +43,9 @@ public class SFEE {
     public SFEE() {
     }
 
-    public SFEE(String name, SFEE_environment sfee_environment, SFEE_role sfeeFunction, communicationOption com) {
+    public SFEE(String name, SFEE_environment sfee_environment, SFE_role sfeeFunction, communicationOption com) {
         this.name = name;
-        this.SFEE_environment = sfee_environment;
+        this.sfeeEnvironment = sfee_environment;
         this.sfeeRole = sfeeFunction;
         this.com = com;
         this.io = new TreeMap<>((Comparator<Integer> & Serializable) Integer::compareTo);
@@ -63,14 +56,13 @@ public class SFEE {
         return name;
     }
 
-    public SFEE_environment getSFEE_environment() {
-        return SFEE_environment;
+    public SFEE_environment getSfeeEnvironment() {
+        return sfeeEnvironment;
     }
 
-    public SFEE_role getSFEE_role() {
+    public SFE_role getSFEE_role() {
         return sfeeRole;
     }
-
 
     public communicationOption getCom() {
         return com;

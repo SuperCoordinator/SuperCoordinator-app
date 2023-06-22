@@ -3,15 +3,15 @@ package controllers.transport;
 import communication.modbus;
 import failures.SFEE_transport_failures;
 import failures.stochasticTime;
-import models.SFEx.SFEI_transport;
-import models.SFEx.SFEM_transport;
+import models.base.SFE_role;
+import models.sfe_x.SFEI_transport;
+import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import models.sensor_actuator;
-import monitor.transport.SFEE_transport_monitor;
+import monitors.transport.SFEE_transport_monitor;
 import org.apache.commons.math3.util.Pair;
 import utility.serialize.serializer;
-import viewers.SFEE_transport;
 
 import javax.xml.bind.annotation.*;
 import java.time.Instant;
@@ -42,8 +42,6 @@ public class cSFEE_transport {
     @XmlAttribute
     private String nextSFEI_name;
 
-    private SFEE_transport viewer = new SFEE_transport();
-
     public cSFEE_transport() {
     }
 
@@ -62,25 +60,6 @@ public class cSFEE_transport {
 
     public SFEE getSfee() {
         return sfee;
-    }
-
-    public String getPrevSFEI_name() {
-        return prevSFEI_name;
-    }
-
-    public String getNextSFEI_name() {
-        return nextSFEI_name;
-    }
-
-    public String getSavedFormula() {
-
-        String reBuiltFormula;
-        if (sfeeFailures.getStochasticType().equals(stochasticTime.timeOptions.LINEAR))
-            reBuiltFormula = "linear [ " + sfeeFailures.getStochasticFormulas()[0] + "]";
-        else
-            reBuiltFormula = "gauss [ " + sfeeFailures.getStochasticFormulas()[0] + "; " + sfeeFailures.getStochasticFormulas()[1] + "]";
-
-        return reBuiltFormula;
     }
 
     /* Only to see if the next SFEE is free or with parts in production*/
@@ -165,8 +144,6 @@ public class cSFEE_transport {
 
     public void init_OperationMode(ArrayList<Object> data) {
 
-
-//        String[] sfeeTime = viewer.SFEE_stochasticTime();
         String operator = (String) data.get(0);
         String mean = (String) data.get(1);
         String dev = " ";
@@ -245,9 +222,7 @@ public class cSFEE_transport {
                     outMB.writeCoils(coilsState_outMB);
                     outMB.writeRegisters(holdRegsValues_outMB);
                 }
-                case SFEI2WH, RealSFEI2WH -> {
-                    inMB.writeCoils(coilsState_inMB);
-                }
+                case SFEI2WH, RealSFEI2WH -> inMB.writeCoils(coilsState_inMB);
                 default -> {
                     inMB.writeCoils(coilsState_inMB);
                     outMB.writeCoils(coilsState_outMB);
@@ -263,7 +238,7 @@ public class cSFEE_transport {
 
     private boolean nextSFEE_availability() {
         boolean free = true;
-        if (nextSFEE.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION)) {
+        if (nextSFEE.getSFEE_role().equals(SFE_role.PRODUCTION)) {
             for (SFEI sfei : nextSFEE.getSFEIs().values()) {
                 if (sfei.getPartsATM().size() > 0) {
                     free = false;

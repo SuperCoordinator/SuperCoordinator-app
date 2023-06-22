@@ -46,8 +46,5 @@ public class probFormula extends formula {
             case MORE_EQUAL -> state = n >= thres;
             case EQUAL -> state = n == thres;
         }
-
-//        System.out.println("PROB currentValue: " + state + " n: " + n + signal + " " + thres);
-
     }
 }

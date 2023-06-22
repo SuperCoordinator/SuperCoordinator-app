@@ -124,15 +124,9 @@ public class customCalculator {
                 }
             } else if (isVariable(ch)) {
                 switch (ch) {
-                    case 'n' -> {
-                        valueStack.push(n);
-                    }
-                    case 'a' -> {
-                        valueStack.push(a);
-                    }
-                    case 'm' -> {
-                        valueStack.push(m);
-                    }
+                    case 'n' -> valueStack.push(n);
+                    case 'a' -> valueStack.push(a);
+                    case 'm' -> valueStack.push(m);
                 }
             } else {
                 error = true;
@@ -218,11 +212,6 @@ public class customCalculator {
         // and for the type, remove possible blank space
         if (elements[0].charAt(elements[0].length() - 1) == ' ')
             elements[0] = elements[0].substring(0, elements[0].length() - 1);
-
-/*        for (String str : elements) {
-            System.out.print(str + "/");
-        }
-        System.out.println("");*/
 
         // gaussian
         if (elements[0].equalsIgnoreCase("gauss")) {

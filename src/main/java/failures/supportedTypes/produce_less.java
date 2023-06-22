@@ -2,9 +2,8 @@ package failures.supportedTypes;
 
 import failures.evaluations.failure_occurrence;
 import failures.evaluations.failures_conditions;
-import models.SFEx.SFEI_conveyor;
+import models.sfe_x.SFEI_conveyor;
 import models.base.part;
-import models.partDescription;
 import utility.utils;
 
 import java.time.Duration;
@@ -68,7 +67,7 @@ public class produce_less extends failures_conditions {
         if (state == SM.WORKING || state == SM.TURN_OFF) {
             int[] lastFailureOccurrenceDetails = getLastFailureOccurrence(sfeiConveyor);
 
-            nParts = sfeiConveyor.getnPiecesMoved() - lastFailureOccurrenceDetails[0];
+            nParts = sfeiConveyor.getnPartsMoved() - lastFailureOccurrenceDetails[0];
 
             // If it is 0, then not happened yet the 1st failure
             if (lastFailureOccurrenceDetails[1] == 0) {
@@ -90,18 +89,15 @@ public class produce_less extends failures_conditions {
                     state = SM.REMOVING;
                 }
             }
-            case REMOVING -> {
-                state = SM.WAITING;
-            }
+            case REMOVING -> state = SM.WAITING;
             case WAITING -> {
-                boolean sensor = (int) sensorsState.get(sfeiConveyor.getsRemover().getBit_offset()) == 1;
+                boolean sensor = (int) sensorsState.get(sfeiConveyor.getsRemover().getOffset()) == 1;
                 if (utils.getInstance().getLogicalOperator().FE_detector(sensor, old_sRemover)) {
                     state = SM.TURN_OFF;
                 }
                 old_sRemover = sensor;
             }
             case TURN_OFF -> {
-//                state = SM.WORKING;
                 if (!evalConditions(nParts, age, maintenance)) {
                     state = SM.WORKING;
                 }
@@ -111,14 +107,12 @@ public class produce_less extends failures_conditions {
         // Execute actions
         switch (state) {
             case WORKING, WAITING -> {
-                if (state != old_state) {
-                }
             }
 
             case REMOVING -> {
                 if (state != old_state) {
 
-                    actuatorsState.set(sfeiConveyor.getaRemover().getBit_offset(), 1);
+                    actuatorsState.set(sfeiConveyor.getaRemover().getOffset(), 1);
 
                     failure_occurrence.activationVariable actVar = null;
                     if (wasActivated_by_N()) {
@@ -129,19 +123,19 @@ public class produce_less extends failures_conditions {
                         actVar = failure_occurrence.activationVariable.M;
                     }
                     if (actVar != null)
-                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.PRODUCE_LESS, actVar, sfeiConveyor.getnPiecesMoved(), Instant.now());
+                        newOccurrence = new failure_occurrence(sfeiConveyor.getName(), type.PRODUCE_LESS, actVar, sfeiConveyor.getnPartsMoved(), Instant.now());
                     else
                         throw new RuntimeException("(Produce Less) Activation Variable null but evalConditions was TRUE");
 
                     // Produce Less happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + sfeiConveyor.getFailuresHistory().size() + " on " + sfeiConveyor.getName() + " " + newOccurrence);
+//                    System.out.println("********************");
                 }
             }
             case TURN_OFF -> {
                 if (state != old_state) {
-                    actuatorsState.set(sfeiConveyor.getaRemover().getBit_offset(), 0);
+                    actuatorsState.set(sfeiConveyor.getaRemover().getOffset(), 0);
                     part removedPart = Objects.requireNonNull(sfeiConveyor.getPartsATM().pollFirst());
                     removedPart.setState(part.status.REMOVED);
                     Instant t = Instant.now();
@@ -149,17 +143,15 @@ public class produce_less extends failures_conditions {
 
                     sfeiConveyor.addNewFailureOccurrence(newOccurrence);
                     // Produce Less happened
-                    System.out.println("********************");
-                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
-                    System.out.println("********************");
+//                    System.out.println("********************");
+//                    System.out.println("   Failure " + (sfeiConveyor.getFailuresHistory().size() - 1) + " on " + sfeiConveyor.getName() + " solved at " + newOccurrence.getEnd_t());
+//                    System.out.println("********************");
                     newOccurrence = new failure_occurrence();
 
                 }
             }
         }
-//        if (old_state != state) {
-//            System.out.println("*** Produce More on " + sfeiConveyor.getName() + " -> [" + state + "]");
-//        }
+
         old_state = state;
     }
 

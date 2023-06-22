@@ -5,18 +5,18 @@ import controllers.production.cSFEE_production;
 import controllers.production.cSFEM_production;
 import controllers.transport.cSFEM_transport;
 import controllers.warehouse.cSFEM_warehouse;
-import models.SFEx.SFEM_transport;
+import models.sfe_x.SFEM_transport;
 import models.base.SFEE;
 import models.base.SFEI;
 import org.apache.commons.math3.util.Pair;
 import org.apache.ibatis.jdbc.ScriptRunner;
+import utility.utils;
 
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,19 +39,6 @@ public class serializer {
         private static final serializer INSTANCE = new serializer();
     }
 
-    //    public enum scenes {
-//        CMC_connection,
-//        CMC2_con_individual,
-//        sorting_station,
-//        WH_SS_3CMC,
-//        MC_Staudinger,
-//        WH_SS_WH,
-//        WH_SS_3CMC_WH,
-//        WH_SS_3CMC_MCS_WH
-//    }
-//
-//    public final scenes scene = scenes.WH_SS_3CMC_WH;
-//    private final String filePath = "blocks/" + scene + "/saves/" + scene;
     public String scene;
     private serializable serializable = new serializable();
 
@@ -101,6 +88,7 @@ public class serializer {
             String scene = fileName.split(".xml")[0];
             this.scene = scene;
             createDB(scene);
+            utils.getInstance().setRnd_seed(serializable.getRandSeed());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -114,7 +102,7 @@ public class serializer {
             // create tables
             ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
             //Creating a reader object
-            Reader reader = new BufferedReader(new FileReader("src/main/resources/database/DDL.sql"));
+            Reader reader = new BufferedReader(new FileReader(serializable.getDatabasePath() + "/DDL.sql"));
             scriptRunner.setLogWriter(null); // not print in terminal
             //Running the script
             scriptRunner.runScript(reader);
@@ -128,7 +116,7 @@ public class serializer {
             // EMPTY tables
             ScriptRunner scriptRunner = new ScriptRunner(dbConnection.getInstance().getConnection());
             //Creating a reader object
-            Reader reader = new BufferedReader(new FileReader("src/main/resources/database/DROP.sql"));
+            Reader reader = new BufferedReader(new FileReader(serializable.getDatabasePath() + "/DROP.sql"));
             scriptRunner.setLogWriter(null); // not print in terminal
             //Running the script
             scriptRunner.runScript(reader);
@@ -160,8 +148,6 @@ public class serializer {
                     getC_Warehouse().getSfeeWarehouseController().getSfee().getName());
         });
 
-/*       dbConnection.getInstance().getSfeis().insert(getC_Warehouse().getSfeeWarehouseController().getSfee().getSFEIbyIndex(0).getName(),
-                getC_Warehouse().getSfeeWarehouseController().getSfee().getName());*/
 
         // Invented in sensor -> warehouse_entryDoor
         dbConnection.getInstance().getSensors().insert("warehouse_entryDoor",
@@ -303,8 +289,20 @@ public class serializer {
         serializable.setInboundOrdersPath(path);
     }
 
+    public void setDatabasePath(String path) {
+        serializable.setDatabasePath(path);
+    }
+
     public String getInboundOrdersPath() {
         return serializable.getInboundOrdersPath();
+    }
+
+    public String getDatabasePath() {
+        return serializable.getDatabasePath();
+    }
+
+    public long getRandomSeed() {
+        return serializable.getRandSeed();
     }
 
     public void saveFailuresHistory() {

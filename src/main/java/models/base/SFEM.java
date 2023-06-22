@@ -9,14 +9,8 @@ import java.util.TreeMap;
 @XmlAccessorType(XmlAccessType.NONE)
 public class SFEM {
 
-    public enum SFEM_role {
-        PRODUCTION,
-        TRANSPORT,
-        WAREHOUSE
-    }
-
     @XmlAttribute
-    private SFEM_role sfemRole;
+    private SFE_role sfemRole;
     @XmlAttribute
     private String name;
     private TreeMap<Integer, part_prodTime> productionHistory = new TreeMap<>();
@@ -24,7 +18,7 @@ public class SFEM {
     public SFEM() {
     }
 
-    public SFEM(String name, SFEM_role sfemType) {
+    public SFEM(String name, SFE_role sfemType) {
         this.sfemRole = sfemType;
         this.name = name;
     }
@@ -35,10 +29,6 @@ public class SFEM {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public SFEM_role getSfemRole() {
-        return sfemRole;
     }
 
     public void addPartToProductionHistory(part_prodTime producedPart) {

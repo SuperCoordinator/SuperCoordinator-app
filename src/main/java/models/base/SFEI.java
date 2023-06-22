@@ -1,18 +1,16 @@
 package models.base;
 
 import failures.evaluations.failure_occurrence;
-import models.SFEx.SFEI_conveyor;
-import models.SFEx.SFEI_machine;
-import models.SFEx.SFEI_pusher;
-import models.SFEx.SFEI_transport;
+import models.sfe_x.SFEI_conveyor;
+import models.sfe_x.SFEI_machine;
+import models.sfe_x.SFEI_pusher;
+import models.sfe_x.SFEI_transport;
 import models.sensor_actuator;
-import org.apache.commons.math3.util.Pair;
 import utility.InstantAdapter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -41,7 +39,7 @@ public class SFEI {
     @XmlAttribute
     private long minOperationTime;
     private TreeSet<part> partsATM = new TreeSet<>(partsOrder.INSTANCE);
-    private int nPiecesMoved = 0;
+    private int nPartsMoved = 0;
 
     @XmlAttribute(name = "manufacturing_date", required = true)
     @XmlJavaTypeAdapter(InstantAdapter.class)
@@ -130,12 +128,12 @@ public class SFEI {
     }
 
 
-    public int getnPiecesMoved() {
-        return nPiecesMoved;
+    public int getnPartsMoved() {
+        return nPartsMoved;
     }
 
-    public void setnPiecesMoved(int nPiecesMoved) {
-        this.nPiecesMoved = nPiecesMoved;
+    public void setnPartsMoved(int nPartsMoved) {
+        this.nPartsMoved = nPartsMoved;
     }
 
     public Instant getDayOfBirth() {
@@ -161,10 +159,6 @@ public class SFEI {
 
     public boolean isSimulation() {
         return simulation;
-    }
-
-    public boolean isSupportsFailures() {
-        return supportsFailures;
     }
 
     public boolean isLine_start() {

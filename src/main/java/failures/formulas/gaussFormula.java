@@ -61,7 +61,7 @@ public class gaussFormula extends formula {
 
         if (showHist) {
 
-            System.out.println(Arrays.toString(array.toArray()));
+//            System.out.println(Arrays.toString(array.toArray()));
 
             List<Double> xData = new ArrayList<>(discreteGaussDistr.keySet());
             List<Double> yData = new ArrayList<>(discreteGaussDistr.values());
@@ -84,7 +84,6 @@ public class gaussFormula extends formula {
             else
                 array_index = 0;
 
-//            System.out.println("GAUSSIAN nextValue: " + array.get(array_index).intValue());
             setCurrentValue(array.get(array_index).intValue());
         } while (getCurrentValue() <= 0);
     }

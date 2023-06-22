@@ -10,35 +10,18 @@ import java.util.List;
 
 public class M_sfem extends queries_buffer implements IM_SFEx {
 
-    /**
-     * Singleton pattern
-     */
     public M_sfem() {
     }
 
-    //
-//    public static M_sfem getInstance() {
-//        return M_sfem.db_sfemHolder.INSTANCE;
-//    }
-//
-//    private static class db_sfemHolder {
-//        private static final M_sfem INSTANCE = new M_sfem();
-//    }
     @Override
     public void insert(String sfem_name, String sf_configuration) {
         try {
-//            String def_vars = "SET @name = '" + sfem_name + "'," +
-//                    " @fk = '" + sf_configuration + "';";
+
             String query = "INSERT INTO sfem (name,fk_sf_configuration)" +
                     "VALUES ('" + sfem_name + "','" + sf_configuration + "')" +
                     "ON DUPLICATE KEY UPDATE" +
                     "   name = '" + sfem_name + "';";
             getStoredQueries().add(query);
-//            Statement st = dbConnection.getInstance().getConnection().createStatement();
-//            st.addBatch(def_vars);
-//            st.addBatch(query);
-//
-//            return st.executeBatch()[1];
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -50,7 +33,7 @@ public class M_sfem extends queries_buffer implements IM_SFEx {
         try {
             String query = "DELETE FROM sfem WHERE name ='" + sfem_name + "' AND fk_sf_configuration='" + sf_configuration + "';";
             getStoredQueries().add(query);
-//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +46,6 @@ public class M_sfem extends queries_buffer implements IM_SFEx {
                     "SET name = '" + new_sfem_name + "'" +
                     "WHERE name = '" + old_sfem_name + "' AND fk_sf_configuration='" + sf_configuration + "';";
             getStoredQueries().add(query);
-//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);

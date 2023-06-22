@@ -18,9 +18,8 @@ public class M_outbound_orders extends queries_buffer implements IM_outbound_ord
         try {
             String query = "INSERT INTO outbound_orders (order_date)" +
                     "VALUES (current_timestamp());";
-            // Nothing on update because this table PK is serial, so there are no repetitions
+
             getStoredQueries().add(query);
-//            return dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -32,7 +31,7 @@ public class M_outbound_orders extends queries_buffer implements IM_outbound_ord
         try {
             String query = "DELETE FROM outbound_orders WHERE id =" + id + ";";
             getStoredQueries().add(query);
-//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

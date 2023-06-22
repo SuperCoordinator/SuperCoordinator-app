@@ -4,8 +4,9 @@ import failures.formulas.gaussFormula;
 import failures.supportedTypes.*;
 import models.base.SFEE;
 import models.base.SFEI;
-import models.SFEx.SFEI_conveyor;
-import models.SFEx.SFEI_machine;
+import models.base.SFE_role;
+import models.sfe_x.SFEI_conveyor;
+import models.sfe_x.SFEI_machine;
 import utility.utils;
 
 import javax.xml.bind.annotation.*;
@@ -64,18 +65,6 @@ public class SFEE_production_failures {
 
         if (stochasticType.equals(stochasticTime.timeOptions.GAUSSIAN))
             this.gaussFormula = new gaussFormula();
-    }
-
-    public stochasticTime.timeOptions getStochasticType() {
-        return stochasticType;
-    }
-
-    public String[] getStochasticFormulas() {
-        return stochasticFormulas;
-    }
-
-    public ArrayList<String[]> getFailuresFormulas() {
-        return failuresFormulas;
     }
 
     private void init() {
@@ -216,7 +205,6 @@ public class SFEE_production_failures {
                         // and taking into account the time trigger (as for the event trigger all goes well)
                         // For the time, the part can be in the SFEI_idx 2 sleeping and the PRODUCE FAULTY turns on
 
-//                        if (produceFaulty.getSfei_idx() > object.getSfei_idx())
                         object.loop(sensorsState, actuatorsState);
                     }
                     produceFaulty.loop(sensorsState.get(0), actuatorsState.get(0));
@@ -243,16 +231,16 @@ public class SFEE_production_failures {
                     // Delete the completed tasks
                     if (stochasticTimeTasks.removeIf(object -> object.isConveyorFinished() || object.isPusherFinished() || object.isMachineFinished()
                             || object.isPartProduced() || object.isPartRemovedInProduction())) {
-                        System.out.println(" >>> " + sfee.getName() + " stochasticTasks: " + stochasticTimeTasks.size());
+//                        System.out.println(" >>> " + sfee.getName() + " stochasticTasks: " + stochasticTimeTasks.size());
                         if (stochasticTimeTasks.size() == 1) {
                             System.out.println(stochasticTimeTasks.get(0).getPart());
                         }
                     }
                 }
             }
-            if (sm_state != old_state) {
-                System.out.println("   ---> " + sfee.getName() + " failure state: " + sm_state);
-            }
+//            if (sm_state != old_state) {
+//                System.out.println("   ---> " + sfee.getName() + " failure state: " + sm_state);
+//            }
             old_state = sm_state;
 
         } catch (Exception e) {
@@ -266,23 +254,16 @@ public class SFEE_production_failures {
         boolean newPiece = checkNewPiece();
         if (newPiece) {
             int pickedSFEI = pickSFEI(false);
-//                int pickedSFEI = 0;
 
             // The part is in the initial SFEI, so it is needed to select the part and
             // associate with the correct SFEI to manipulate the time
             if (sfee.getSFEIbyIndex(0).getPartsATM().size() > 0) {
-//                int minSFEEminOperation_t = 0;
-//                if (sfee.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION)) {
-//                    minSFEEminOperation_t = calculateSFEEMinOperationTime();
-//                }
+
                 stochasticTime stochasticTime = new stochasticTime(
                         sfee.getSFEIbyIndex(pickedSFEI),
                         pickedSFEI,
                         sfee.getSFEIbyIndex(0).getPartsATM().first(),
-                        calculateDelay(pickedSFEI)
-/*                        stochasticType,
-                        stochasticFormulas,
-                        minSFEEminOperation_t*/);
+                        calculateDelay(pickedSFEI));
                 stochasticTimeTasks.add(stochasticTime);
             }
 
@@ -291,7 +272,7 @@ public class SFEE_production_failures {
 
     private double calculateSFEEMinOperationTime() {
         double total_t = 0;
-        if (sfee.getSFEE_role().equals(SFEE.SFEE_role.PRODUCTION))
+        if (sfee.getSFEE_role().equals(SFE_role.PRODUCTION))
             for (Map.Entry<Integer, SFEI> entry : sfee.getSFEIs().entrySet()) {
                 total_t = total_t + entry.getValue().getMinOperationTime();
             }
@@ -306,7 +287,7 @@ public class SFEE_production_failures {
             SFEI sfei = sfee.getSFEIbyIndex(sfei_idx);
 
             double m = utils.getInstance().getCustomCalculator().calcExpression(stochasticFormulas[0],
-                    sfei.getnPiecesMoved(),
+                    sfei.getnPartsMoved(),
                     (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toMinutes(),
                     (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toMinutes());
 
@@ -315,7 +296,7 @@ public class SFEE_production_failures {
             if (stochasticType.equals(stochasticTime.timeOptions.GAUSSIAN)) {
 
                 double dev = utils.getInstance().getCustomCalculator().calcExpression(stochasticFormulas[1],
-                        sfei.getnPiecesMoved(),
+                        sfei.getnPartsMoved(),
                         (double) Duration.between(sfei.getDayOfBirth(), Instant.now()).toMinutes(),
                         (double) Duration.between(sfei.getDayOfLastMaintenance(), Instant.now()).toMinutes());
 
@@ -337,10 +318,10 @@ public class SFEE_production_failures {
                 gaussFormula.setNextValue();
             }
 
-            total_Time = total_Time - /*sumSFEEminOperationTime*/ calculateSFEEMinOperationTime();
+            total_Time = total_Time - calculateSFEEMinOperationTime();
 
-            if (!sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT))
-                System.out.println(sfee.getSFEIbyIndex(0).getPartsATM().first() + " delay " + total_Time * 1000 + " (ms) on SFEI:" + sfei.getName());
+//            if (!sfei.getSfeiType().equals(SFEI.SFEI_type.TRANSPORT))
+//                System.out.println(sfee.getSFEIbyIndex(0).getPartsATM().first() + " delay " + total_Time * 1000 + " (ms) on SFEI:" + sfei.getName());
             if (total_Time < 0)
                 return 0;
             // For the result in millis

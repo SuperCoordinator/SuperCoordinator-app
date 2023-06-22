@@ -10,35 +10,16 @@ import java.util.List;
 
 public class M_sfei extends queries_buffer implements IM_SFEx {
 
-    /**
-     * Singleton pattern
-     */
     public M_sfei() {
     }
-
-    //
-//    public static M_sfei getInstance() {
-//        return M_sfei.db_sfeiHolder.INSTANCE;
-//    }
-//
-//    private static class db_sfeiHolder {
-//        private static final M_sfei INSTANCE = new M_sfei();
-//    }
     @Override
     public void insert(String sfei_name, String fk_sfee) {
         try {
-//            String def_vars = "SET @name = '" + sfei_name + "'," +
-//                    " @fk = '" + fk_sfee + "';";
             String query = "INSERT INTO sfei (name,fk_sfee)" +
                     "VALUES ('" + sfei_name + "','" + fk_sfee + "')" +
                     "ON DUPLICATE KEY UPDATE" +
                     "   name = '" + sfei_name + "';";
             getStoredQueries().add(query);
-//            Statement st = dbConnection.getInstance().getConnection().createStatement();
-//            st.addBatch(def_vars);
-//            st.addBatch(query);
-//
-//            return st.executeBatch()[1];
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -50,7 +31,6 @@ public class M_sfei extends queries_buffer implements IM_SFEx {
         try {
             String query = "DELETE FROM sfei WHERE name ='" + sfei_name + "' AND fk_sfee='" + fk_sfee + "';";
             getStoredQueries().add(query);
-//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +43,6 @@ public class M_sfei extends queries_buffer implements IM_SFEx {
                     "SET name = '" + new_sfei_name + "'" +
                     "WHERE name = '" + old_sfei_name + "' AND fk_sf_configuration='" + fk_sfee + "';";
             getStoredQueries().add(query);
-//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -72,11 +51,11 @@ public class M_sfei extends queries_buffer implements IM_SFEx {
 
     public void update_nMovedParts(String sfei_name, String fk_sfee, int nparts) {
         try {
+
             String query = "UPDATE sfei " +
-                    "SET moved_parts = " + nparts + " " +
+                    "SET moved_parts = COALESCE(moved_parts, 0) + 1 " +
                     "WHERE name = '" + sfei_name + "' AND fk_sfee ='" + fk_sfee + "';";
             getStoredQueries().add(query);
-//            dbConnection.getInstance().getConnection().prepareStatement(query).executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);

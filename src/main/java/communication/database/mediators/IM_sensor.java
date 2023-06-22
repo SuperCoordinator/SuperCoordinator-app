@@ -12,6 +12,6 @@ public interface IM_sensor {
 
     List<String> getAll_sensors();
 
-    List<String> getAll_sensors_of_SFEI(String fk_sfei);
+    List<String> getAll_sensorsFrom(String fk_sfei);
 
 }

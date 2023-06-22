@@ -36,8 +36,8 @@ public class ItemsPanel extends JPanel {
 
     private final int init_xPos = 10;
     private final int init_yPos = 10;
-    private int width = 100;
-    private int height = 50;
+    private final int width = 100;
+    private final int height = 50;
 
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
