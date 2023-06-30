@@ -344,8 +344,8 @@
     </c_Production>
     <!-- Transport from the entry WH -->
     <c_Transport>
-        <sfem sfemRole="TRANSPORT" name="SFEM_T_WH2SFEI">
-            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_WH2SFEI">
+        <sfem sfemRole="TRANSPORT" name="SFEM_T0_WH2SFEI">
+            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T0_WH2SFEI">
                 <outSensor name="s_emitter" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="38"/>
                 <SFEIs>
                     <entry>
@@ -371,13 +371,13 @@
     </c_Transport>
     <!-- Transport for the exit WH -->
     <c_Transport>
-        <sfem sfemRole="TRANSPORT" name="SFEM_T_SFEM2WH">
-            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_SFEE2WH">
+        <sfem sfemRole="TRANSPORT" name="SFEM_T0_SFEM2WH">
+            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T0_SFEE2WH">
                 <inSensor name="s_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="13"/>
                 <SFEIs>
                     <entry>
                         <key>0</key>
-                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-10T14:26:23.457327500Z" last_maintenance="2023-05-10T14:26:23.457327500Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
+                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T0_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-10T14:26:23.457327500Z" last_maintenance="2023-05-10T14:26:23.457327500Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
                             <inSensor name="s_R0" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="13"/>
                             <aRemover name="R0" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="14"/>
                         </value>
@@ -395,13 +395,13 @@
         </sfeeTransportController>
     </c_Transport>
     <c_Transport>
-        <sfem sfemRole="TRANSPORT" name="SFEM_T_SFEM2WH">
-            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_SFEE2WH">
+        <sfem sfemRole="TRANSPORT" name="SFEM_T1_SFEM2WH">
+            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T1_SFEE2WH">
                 <inSensor name="s_R1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="24"/>
                 <SFEIs>
                     <entry>
                         <key>0</key>
-                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-10T14:26:23.457327500Z" last_maintenance="2023-05-10T14:26:23.457327500Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
+                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T1_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-10T14:26:23.457327500Z" last_maintenance="2023-05-10T14:26:23.457327500Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
                             <inSensor name="s_R1" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="24"/>
                             <aRemover name="R1" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="26"/>
                         </value>
@@ -419,13 +419,13 @@
         </sfeeTransportController>
     </c_Transport>
     <c_Transport>
-        <sfem sfemRole="TRANSPORT" name="SFEM_T_SFEM2WH">
-            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T_SFEE2WH">
+        <sfem sfemRole="TRANSPORT" name="SFEM_T2_SFEM2WH">
+            <sfeeTransport sfeeEnvironment="SIMULATION" sfeeRole="TRANSPORT" com="MODBUS" name="SFEE_T2_SFEE2WH">
                 <inSensor name="s_R2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="35"/>
                 <SFEIs>
                     <entry>
                         <key>0</key>
-                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-10T14:26:23.457327500Z" last_maintenance="2023-05-10T14:26:23.457327500Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
+                        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sfeiTransport" name="SFEI_T2_SFEI2WH" sfeiType="TRANSPORT" minOperationTime="0" manufacturing_date="2023-05-10T14:26:23.457327500Z" last_maintenance="2023-05-10T14:26:23.457327500Z" simulation="true" supportsFailures="false" lineStart="false" lineEnd="false">
                             <inSensor name="s_R2" type="INPUT" invLogic="false" dataType="BOOL" addressType="DISCRETE_INPUT" register="0" offset="35"/>
                             <aRemover name="R2" type="OUTPUT" invLogic="false" dataType="BOOL" addressType="COIL" register="0" offset="38"/>
                         </value>

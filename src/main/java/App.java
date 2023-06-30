@@ -48,10 +48,11 @@ public class App {
 
                     case "1" -> {
                         String scene = newConfiguration();
-                        runApplication(scene);
-                        start_t = Instant.now();
-                        System.out.println("# Threads: " + Thread.activeCount());
-                        input = "3";
+                        exit(0);
+//                        runApplication(scene);
+//                        start_t = Instant.now();
+//                        System.out.println("# Threads: " + Thread.activeCount());
+//                        input = "3";
                     }
                     case "2" -> {
                         String scene = loadConfiguration();
@@ -256,10 +257,10 @@ public class App {
             production.openConnections();
         }
 
-        //Intermediate save before Transport Modules setup
+        // Intermediate save before Transport Modules setup
         serializer.getInstance().saveXML(xmlPath);
 
-        System.out.println("*** Warehouse/Transport Modules SETUP ***");
+        System.out.println("*** Warehouse Modules SETUP ***");
         System.out.println("Warehouse Organization");
         for (int i = 0; i < SFEM_warehouse.warehouseOrganization.values().length; i++) {
             System.out.println("    " + i + " - " + SFEM_warehouse.warehouseOrganization.values()[i].name());
@@ -267,46 +268,49 @@ public class App {
         int opt = utils.getInstance().validateUserOption(0, SFEM_warehouse.warehouseOrganization.values().length - 1);
         cSFEMWarehouse.getSfem().setWarehouseOrganization(SFEM_warehouse.warehouseOrganization.values()[opt]);
         System.out.println("Check new orders frequency (and expedition) in minutes");
-        System.out.println("> ");
+        System.out.print("> ");
         int check_period = Integer.parseInt(in.nextLine());
         cSFEMWarehouse.setCheckOrders_period(check_period);
 
         System.out.println("Start of Line Item (SFEI) to connect with the Warehouse is Simulation (y) or Real(n) ?");
         boolean isSimulation = utils.getInstance().validateUserOption();
         if (isSimulation) {
-            initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.WH2SFEI);
+            initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.WH2SFEI,0);
         } else {
-            initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.WH2RealSFEI);
+            initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.WH2RealSFEI,0);
         }
 
         System.out.println("Number END Items that links with the warehouse ? ");
         System.out.print("> ");
         nModules = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nModules; i++) {
-            System.out.println("Defining connection end item " + i + " of " + nModules);
+            System.out.println("Defining connection end item " + (i + 1) + " of " + nModules);
             System.out.println("End of Line Item (SFEI) to connect with the Warehouse is Simulation (y) or Real(n) ?");
             isSimulation = utils.getInstance().validateUserOption();
             if (isSimulation) {
-                initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.SFEI2WH);
+                initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.SFEI2WH,i);
             } else {
-                initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.RealSFEI2WH);
+                initializeTransport(cSFEMWarehouse, SFEM_transport.configuration.RealSFEI2WH,i);
             }
         }
-
+        System.out.println();
+        System.out.println("*** Transport Modules SETUP ***");
         System.out.println("Number of Transport Modules to configure? ");
         System.out.println("INFO: Transport Modules connects Elements");
         System.out.print("> ");
         nModules = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nModules; i++) {
-            initializeTransport(null, SFEM_transport.configuration.SFEI2SFEI);
+            initializeTransport(null, SFEM_transport.configuration.SFEI2SFEI,i);
         }
 
         serializer.getInstance().saveXML(xmlPath);
-
+        System.out.println("Configuration Done !!!");
+        System.out.println("File saved in: " + xmlPath);
         return confName;
+
     }
 
-    private static void initializeTransport(cSFEM_warehouse cSFEMWarehouse, SFEM_transport.configuration transportConfig) {
+    private static void initializeTransport(cSFEM_warehouse cSFEMWarehouse, SFEM_transport.configuration transportConfig, int index) {
         Scanner in = new Scanner(System.in);
 
         ArrayList<Object> data = new ArrayList<>();
@@ -317,22 +321,34 @@ public class App {
 
         switch (transportConfig) {
             case SFEI2SFEI -> {
-                System.out.print("Name Transport Module (SFEM)");
+                System.out.println("Transport Module (SFEM) name:");
+                System.out.print("> ");
                 String sfem_transport_name = in.nextLine();
 
-                System.out.print("Name Transport Element (SFEE)");
+                System.out.println("Transport Element (SFEE) name:");
+                System.out.print("> ");
                 String sfee_transport_name = in.nextLine();
 
                 System.out.println("Input Element (SFEE) name to connect with " + sfem_transport_name);
-                Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
+                Pair<SFEE, cSFEM_production> inSFEE;
+                String tempName = "empty";
+                do {
+                    if (!tempName.equals("empty")) {
+                        System.out.println("Enter name again!");
+                        System.out.print("> ");
+                    }
+                    tempName = in.nextLine();
+                    inSFEE = serializer.getInstance().searchSFEEbyName(tempName);
+                } while (inSFEE == null);
+//                Pair<SFEE, cSFEM_production> inSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
                 if (inSFEE.getFirst().getSfeeEnvironment().equals(SFEE.SFEE_environment.REAL))
                     configuration = SFEM_transport.configuration.RealSFEI2SFEI;
 
                 System.out.println("Connection Item (SFEI)");
-                int index = 0;
+                int idx = 0;
                 for (Map.Entry<Integer, SFEI> entry : inSFEE.getFirst().getSFEIs().entrySet()) {
-                    System.out.println("  " + index + " -> " + entry.getValue().getName());
-                    index++;
+                    System.out.println("  " + idx + " -> " + entry.getValue().getName());
+                    idx++;
                 }
                 SFEI inSFEI = inSFEE.getFirst().getSFEIbyIndex(utils.getInstance().validateUserOption(0, inSFEE.getFirst().getSFEIs().size() - 1));
 
@@ -342,10 +358,10 @@ public class App {
                     configuration = SFEM_transport.configuration.SFEI2RealSFEI;
 
                 System.out.println("Connection Item (SFEI)");
-                index = 0;
+                idx = 0;
                 for (Map.Entry<Integer, SFEI> entry : outSFEE.getFirst().getSFEIs().entrySet()) {
-                    System.out.println("  " + index + " -> " + entry.getValue().getName());
-                    index++;
+                    System.out.println("  " + idx + " -> " + entry.getValue().getName());
+                    idx++;
                 }
                 SFEI outSFEI = outSFEE.getFirst().getSFEIbyIndex(utils.getInstance().validateUserOption(0, outSFEE.getFirst().getSFEIs().size() - 1));
 
@@ -372,23 +388,34 @@ public class App {
             case WH2SFEI, WH2RealSFEI -> {
                 // Special Transport Module: warehouse -> in SFEI
 
-                data.add(0, "SFEM_T_WH2SFEI");
-                data.add(1, "SFEE_T_WH2SFEI");
+                data.add(0, "SFEM_T" + index + "_WH2SFEI");
+                data.add(1, "SFEE_T" + index + "_WH2SFEI");
 
-                System.out.println("Enter Element (SFEE) name to connect with the warehouse?");
-                Pair<SFEE, cSFEM_production> conSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
+                System.out.println("Enter Entry Element (SFEE) name to connect with the warehouse?");
+                Pair<SFEE, cSFEM_production> conSFEE;
+                String tempName = "empty";
+                do {
+                    if (!tempName.equals("empty")) {
+                        System.out.println("Enter name again!");
+                        System.out.print("> ");
+                    }
+                    tempName = in.nextLine();
+                    conSFEE = serializer.getInstance().searchSFEEbyName(tempName);
+                } while (conSFEE == null);
+//                Pair<SFEE, cSFEM_production> conSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
                 System.out.println("Which SFEI?");
-                int index = 0;
+                int idx = 0;
                 for (Map.Entry<Integer, SFEI> entry : conSFEE.getFirst().getSFEIs().entrySet()) {
-                    System.out.println("  " + index + " -> " + entry.getValue().getName());
-                    index++;
+                    System.out.println("  " + idx + " -> " + entry.getValue().getName());
+                    idx++;
                 }
+                System.out.print("> ");
                 SFEI conSFEI = conSFEE.getFirst().getSFEIbyIndex(Integer.parseInt(in.nextLine()));
                 SFEE_transport viewer = new SFEE_transport();
 
                 String[] visionSensorsRelation = viewer.associateSensor2Actuator(true, conSFEE.getFirst(), conSFEI.getInSensor().getName());
 
-                controllerData.add(0, "SFEI_T_WH2SFEI");
+                controllerData.add(0, "SFEI_T" + index + "_WH2SFEI");
                 // MB connection
                 controllerData.add(1, null);
                 controllerData.add(2, conSFEE.getSecond().searchMBbySFEE(conSFEE.getFirst().getName()));
@@ -402,28 +429,39 @@ public class App {
                 controllerData.add("none");
                 controllerData.addAll(List.of(visionSensorsRelation));
 
-                operationModeData = new ArrayList<>(List.of(viewer.SFEE_stochasticTime("SFEE_T_WH2SFEI")));
+                operationModeData = new ArrayList<>(List.of(viewer.SFEE_stochasticTime("SFEE_T" + index + "_WH2SFEI")));
             }
             case SFEI2WH, RealSFEI2WH -> {
                 // Special Transport Module: in SFEI -> warehouse
 
-                data.add(0, "SFEM_T_SFEI2WH");
-                data.add(1, "SFEE_T_SFEI2WH");
+                data.add(0, "SFEM_T" + index + "_SFEI2WH");
+                data.add(1, "SFEE_T" + index + "_SFEI2WH");
 
-                System.out.println("SFEE name to connect with SFEM_T_SFEI2WH ?");
-                Pair<SFEE, cSFEM_production> conSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
+                System.out.println("Enter Exit Element (SFEE) name to connect with the warehouse?");
+                Pair<SFEE, cSFEM_production> conSFEE;
+                String tempName = "empty";
+                do {
+                    if (!tempName.equals("empty")) {
+                        System.out.println("Enter name again!");
+                        System.out.print("> ");
+                    }
+                    tempName = in.nextLine();
+                    conSFEE = serializer.getInstance().searchSFEEbyName(tempName);
+                } while (conSFEE == null);
+//                Pair<SFEE, cSFEM_production> conSFEE = serializer.getInstance().searchSFEEbyName(in.nextLine());
                 System.out.println("Select its SFEI?");
-                int index = 0;
+                int idx = 0;
                 for (Map.Entry<Integer, SFEI> entry : conSFEE.getFirst().getSFEIs().entrySet()) {
-                    System.out.println("  " + index + " -> " + entry.getValue().getName());
-                    index++;
+                    System.out.println("  " + idx + " -> " + entry.getValue().getName());
+                    idx++;
                 }
+                System.out.print("> ");
                 SFEI conSFEI = conSFEE.getFirst().getSFEIbyIndex(Integer.parseInt(in.nextLine()));
                 SFEE_transport viewer = new SFEE_transport();
 
                 String[] visionSensorsRelation = viewer.associateSensor2Actuator(false, conSFEE.getFirst(), conSFEI.getOutSensor().getName());
 
-                controllerData.add(0, "SFEI_T_SFEI2WH");
+                controllerData.add(0, "SFEI_T" + index + "_SFEI2WH");
                 // MB connection
                 controllerData.add(1, conSFEE.getSecond().searchMBbySFEE(conSFEE.getFirst().getName()));
                 controllerData.add(2, null);
@@ -438,7 +476,7 @@ public class App {
                 controllerData.addAll(List.of(visionSensorsRelation));
                 controllerData.addAll(Arrays.asList("none", "none", "none"));
 
-                operationModeData = new ArrayList<>(List.of(viewer.SFEE_stochasticTime("SFEE_T_SFEI2WH")));
+                operationModeData = new ArrayList<>(List.of(viewer.SFEE_stochasticTime("SFEE_T" + index + "_SFEI2WH")));
 
             }
         }

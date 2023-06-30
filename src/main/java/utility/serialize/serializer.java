@@ -218,14 +218,12 @@ public class serializer {
             for (i = 0; i < serializer.getInstance().getC_Transport().size(); i++) {
                 if (serializer.getInstance().getC_Transport().removeIf(next -> next.getSfem().getName().equals(names.get(0)))) {
                     serializer.getInstance().getC_Transport().add(i, sfemController);
-                    System.out.println("Updated C_Transport");
                     break;
                 }
             }
 
-            if (i == serializer.getInstance().getC_Transport().size() /*&& i > 0*/) {
-                serializer.getInstance().getC_Transport().add(/*serializer.getInstance().getC_Transport().size() - 1,*/ sfemController);
-                System.out.println("Created new C_Transport");
+            if (i == serializer.getInstance().getC_Transport().size()) {
+                serializer.getInstance().getC_Transport().add(sfemController);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -245,7 +243,7 @@ public class serializer {
             }
         }
         if (sfee == null)
-            throw new RuntimeException("(" + serializer.class + ") SFEE " + name + " not found");
+            System.out.println("(" + serializer.class + ") SFEE " + name + " not found");
 
         return sfee;
     }
