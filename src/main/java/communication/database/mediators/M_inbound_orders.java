@@ -12,7 +12,8 @@ public class M_inbound_orders extends queries_buffer implements IM_inbound_order
 
     public M_inbound_orders() {
     }
-        @Override
+
+    @Override
     public void insert(int metal_qty, int green_qty, int blue_qty) {
         try {
 
